@@ -14,7 +14,7 @@ Ren statisk HTML/CSS/JS. Ingen build, ingen dependencies, intet backend.
 mappe `/ (root)`), eller **GitHub Actions** — så bruges workflowen i
 `.github/workflows/pages.yml`, der deployer ved hvert push til `main`.
 
-Første gang siden åbnes, indlæses de 215 items fra regnearket plus 104 Class-kort automatisk.
+Første gang siden åbnes, indlæses de 215 items fra regnearket, 140 Class-kort og 441 magic items automatisk.
 
 ## Data
 
@@ -22,7 +22,7 @@ Første gang siden åbnes, indlæses de 215 items fra regnearket plus 104 Class-
 |-----|---------|
 | `data/dnd_items.xlsx` | Dit originale regneark — kilden til alt udstyr |
 | `assets/data/items.js` | 215 items genereret fra arket `Alle items` |
-| `assets/data/class-cards.js` | 104 Class-kort (levels, attributter, feats, perks) |
+| `assets/data/class-cards.js` | 140 Class-kort i fem typer (Class, Stat, Feat, Skill, Perk) |
 | `scripts/import_xlsx.py` | Konverterer regnearket til `items.js` |
 
 Har du opdateret regnearket, så kør konverteringen igen:
@@ -114,7 +114,7 @@ eksport/import af hele opsætningen som JSON.
 | Armor | Rustning | 14 | Bronze / Sølv / Guld |
 | Consumables | alle forbrugsvarer | 24 + 75 magiske | Bronze / Sølv / Guld |
 | Magic | alle magic items | 441 | Bronze / Sølv / Guld |
-| Classes | Class | 104 | Standard (ikke gradueret) |
+| Classes | Class | 140 | Standard (ikke gradueret) |
 
 ### Adventurer
 
@@ -150,6 +150,21 @@ er 29 % magiske, mod 2 % i Bronze.
 Adventurer, Weapons og Armor står på **både forbrugsvarer og varigt udstyr**. Vil du have
 poisons, fakler og rationer helt ud af Adventurer, er det én dropdown under Pakker —
 puljen går så fra 166 til 142, og legendary-items fra 16 til 7, fordi ni af dem er gift.
+
+Det samme gælder på magisiden: Adventurer trækker både permanente magic items og magiske
+forbrugsvarer, så en healing potion eller et spell scroll kan falde som loot. Hvilket
+korttrin de lander på følger af deres magi-rarity:
+
+| Item | Magi-rarity | Kommer typisk på |
+|------|-------------|------------------|
+| Potion of Healing, Spell Scroll (Cantrip / 1st) | Common | allerede et Rare-kort |
+| Potion of Healing (Greater) | Uncommon | Rare og opefter |
+| Potion of Healing (Superior), Spell Scroll (5th) | Rare | Very Rare og opefter |
+| Potion of Healing (Supreme) | Very Rare | Very Rare / Legendary |
+| Spell Scroll (9th) | Legendary | Legendary |
+
+Det falder ud som ønsket uden særregler: de mindste kommer helt ned på Rare-kort, de
+største kræver de høje trin.
 
 ### To pakker der kræver din opmærksomhed
 
@@ -247,16 +262,23 @@ have dem med, skal de tilføjes manuelt.
 
 ## Classes-pakken
 
-Class-kortene er ikke items, men det der mekanisk sker med spilleren. De har ingen pris,
-så deres rarity er sat manuelt. Fordelingen er et **forslag**:
+Class-kortene er ikke items, men det der mekanisk sker med spilleren. De er delt i **fem
+korttyper**, som ligger som tag på hvert kort, så en kortplads kan bede om præcis én type:
 
-| Rarity | Indhold | Antal |
-|--------|---------|-------|
-| Common | Attribut +1, Origin feats | 18 |
-| Uncommon | Fighting Style feats, simple perks | 15 |
-| Rare | General feats, stærkere perks | 44 |
-| Very Rare | Class levels, attribut +2 | 18 |
-| Legendary | Epic Boons | 9 |
+| Type | Indhold | Antal | Rarities |
+|------|---------|-------|----------|
+| **Class** | Class levels for de 12 klasser | 12 | Very Rare |
+| **Stat** | Attribut +1 og +2 | 12 | Common, Very Rare |
+| **Feat** | Origin feats, fighting styles, general feats, epic boons | 73 | Common → Legendary |
+| **Skill** | Proficiency og expertise i de 18 færdigheder | 36 | Uncommon, Rare |
+| **Perk** | Mekaniske fordele udenfor de fire ovenstående (homebrew) | 7 | Uncommon, Rare |
+
+Pakken har tre kortpladser — én Class, én Perk, én Stat — og hver plads har en fordeling
+der matcher netop den types rarities, så der hverken bliver fallback eller tomme kort.
+Verificeret over 24.000 kort: nul fejltyper, nul fallback.
+
+**Feat- og Skill-kortene har ingen plads endnu.** De ligger klar med 73 og 36 kort; vil du
+have dem med, så tilføj et kort på tieren og vælg typen som tag.
 
 Class levels ligger på Very Rare, fordi de er pakkens egentlige gevinst. Rediger frit i
 Items-fanen, eller udskift hele `assets/data/class-cards.js` med dit eget indhold.
