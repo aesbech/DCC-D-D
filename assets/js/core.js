@@ -184,6 +184,9 @@ window.LB = (function () {
         // følger af magi-rarity — de mindste er Common og kan derfor komme
         // allerede på et Rare-kort, mens Supreme Healing kræver et højere trin.
         magic: packMagic({ rare: 10, very_rare: 20, legendary: 30 }, [], 'all'),
+        // Udstyr er den største gruppe og ville ellers fylde over halvdelen af
+        // pakken. Våben og rustning vægtes op, så de falder oftere.
+        weights: { 'Våben': 2, 'Rustning': 4, 'Ammunition': 2 },
         tiers: gradedTiers(
           [card('Kort 1', { common: 100 }),
            card('Kort 2', { common: 50, uncommon: 50 }),
@@ -379,6 +382,11 @@ window.LB = (function () {
         p.filter.consumables = 'all';
       delete p.categories;
       if (typeof p.note !== 'string') p.note = '';
+      if (!p.weights || typeof p.weights !== 'object') {
+        var dw = null;
+        def.packs.forEach(function (x) { if (x.id === p.id) dw = x.weights; });
+        p.weights = dw ? JSON.parse(JSON.stringify(dw)) : {};
+      }
       var dp = null;
       def.packs.forEach(function (x) { if (x.id === p.id) dp = x; });
       if (!p.magic || typeof p.magic !== 'object')
@@ -659,10 +667,27 @@ window.LB = (function () {
     });
   }
 
-  function drawOne(pool, rarity, used, cfg) {
+  /* Vægtning pr. kategori. Uden vægte er alle items i en rarity lige
+     sandsynlige, hvilket lader den største kategori dominere. En vægt på 3
+     gør hvert item i kategorien tre gange så sandsynligt som et uvægtet. */
+  function pickWeighted(cands, weights) {
+    if (!cands.length) return null;
+    if (!weights) return cands[Math.floor(Math.random() * cands.length)];
+    var total = 0, i;
+    for (i = 0; i < cands.length; i++) total += (weights[cands[i].category] || 1);
+    if (total <= 0) return cands[Math.floor(Math.random() * cands.length)];
+    var roll = Math.random() * total;
+    for (i = 0; i < cands.length; i++) {
+      roll -= (weights[cands[i].category] || 1);
+      if (roll < 0) return cands[i];
+    }
+    return cands[cands.length - 1];
+  }
+
+  function drawOne(pool, rarity, used, cfg, weights) {
     function pick(r, allowUsed) {
       var c = pool.filter(function (i) { return i.rarity === r && (allowUsed || !used[i.id]); });
-      return c.length ? c[Math.floor(Math.random() * c.length)] : null;
+      return pickWeighted(c, weights);
     }
 
     var hit = pick(rarity, false);
@@ -798,7 +823,7 @@ window.LB = (function () {
         }
       }
 
-      var res = drawOne(pool, rarity, used, cfg);
+      var res = drawOne(pool, rarity, used, cfg, pack.weights);
       if (res.item && cfg.noDuplicates) used[res.item.id] = true;
       return {
         slot: slot, item: res.item, rolled: res.rolled, actual: res.actual,
