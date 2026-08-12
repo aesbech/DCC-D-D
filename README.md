@@ -80,13 +80,16 @@ underkategori, beskrivelse, rarity og pris. Resultatet kan printes eller kopiere
 Magic- og Pokémon-kort. Ni kort pr. A4-side i et 3 × 3-gitter, hvor kortene støder op til
 hinanden, så ét snit deler to kort.
 
-Kortene sættes op til papir frem for skærm: hvid bund, sort tekst, og rarity vist som en
-farvet kant i venstre side i stedet for en baggrundsfarve — mange printere er sat til at
-udelade baggrunde, mens kantfarver altid kommer med. Pakkeoverskrifterne forsvinder, og
-hvert kort får i stedet en lille linje nederst med pakke, tier og pakkenummer, så du kan
-sortere bunken bagefter.
+Kortene sættes op til papir frem for skærm: hvid bund, sort tekst og ingen farvekode.
+Rarity vises i stedet som **1–5 stjerner** i en lille pille — Common er én stjerne,
+Legendary er fem. På magic items står stjernerne i guld og viser magic itemets **egen**
+rarity, ikke korttrinnet.
 
-Slå **baggrundsgrafik** til i printdialogen, hvis du vil have de farvede kanter med.
+Våben og rustning tager deres spilmekanik med: skade og skadetype, mastery, egenskaber som
+Finesse og Thrown, AC, styrkekrav og stealth-ulempe. Er et magic item rullet på et
+basisvåben, står basisitemets tal også på kortet.
+
+Kortnummer (`Kort 1/2/3`) og pakkeoprindelse er arbejdsdata og udelades ved print.
 
 Under kontrollerne står puljens størrelse — og en rød advarsel hvis en fordeling peger på
 en rarity der ikke findes items af.

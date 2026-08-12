@@ -181,6 +181,20 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 .rarity.r-very_rare{color:var(--r-very_rare)}
 .rarity.r-legendary{color:var(--r-legendary)}
 .fallback-note{font-size:11px;color:var(--accent-2)}
+.card-kind{font-size:11px;color:var(--accent-2);text-transform:uppercase;letter-spacing:.06em}
+.card-stats{font-size:12px;font-weight:600;color:var(--text)}
+.card-props{font-size:11px;color:var(--muted);line-height:1.35}
+.meta-rarity{display:flex;align-items:center;gap:6px}
+
+/* Rarity som 1-5 stjerner, så kortet kan læses uden farvekode. */
+.stars{
+  display:inline-flex;align-items:center;gap:1px;
+  border:1px solid currentColor;border-radius:999px;
+  padding:2px 5px;line-height:0;color:var(--muted);
+}
+.stars svg{width:8px;height:8px;fill:currentColor;display:block}
+.stars.is-gold{color:var(--accent)}
+
 /* Oprindelseslinjen bruges kun ved print, hvor pakkeoverskrifterne er væk. */
 .card-origin{display:none}
 
@@ -288,19 +302,26 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
     width:63mm;height:88mm;min-height:0;
     box-sizing:border-box;
     margin:0;padding:3.5mm 3mm 2.5mm;
-    gap:1.2mm;
+    gap:1.1mm;
     border:0.2mm solid #9a9a9a;
-    border-left-width:3mm;
     border-radius:0;
     background:#fff;color:#000;
     overflow:hidden;
     break-inside:avoid;page-break-inside:avoid;
     -webkit-print-color-adjust:exact;print-color-adjust:exact;
   }
+  /* Rarity vises med stjerner, ikke med farve. */
+  .card.r-common,.card.r-uncommon,.card.r-rare,
+  .card.r-very_rare,.card.r-legendary,.card.is-magic{border-left-color:#9a9a9a}
   .card.is-magic{background:#fff}
-  .card.is-empty{opacity:1;border-left-color:#c00}
+  .card.is-empty{opacity:1}
 
-  .card-slot{font-size:6pt;letter-spacing:.08em;color:#666}
+  /* Kortnummer og pakkeoprindelse er arbejdsdata, ikke spilinformation. */
+  .card-slot,.card-origin,.meta-tier,.fallback-note{display:none!important}
+  .card-kind{
+    font-size:6pt;letter-spacing:.1em;color:#000;font-weight:700;
+    text-transform:uppercase;
+  }
   .card-name{font-size:11.5pt;line-height:1.15;color:#000}
   .card-sub{font-size:7pt;color:#444}
   .card-desc{
@@ -309,10 +330,18 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
     flex:1;overflow:hidden;
   }
   .card-base{
-    font-size:7pt;color:#000;font-weight:600;
+    font-size:7.5pt;color:#000;font-weight:700;
     border-top:0.2mm dashed #aaa;padding-top:1.2mm;
   }
-  .fallback-note{font-size:5.5pt;color:#777}
+  .card-stats{font-size:8pt;font-weight:700;color:#000}
+  .card-props{font-size:6.6pt;color:#333;line-height:1.3}
+  .meta-rarity{display:flex;align-items:center;gap:1.4mm}
+  .stars{
+    color:#000;border-color:#000;
+    padding:0.5mm 1.2mm;gap:0.3mm;
+  }
+  .stars svg{width:2.1mm;height:2.1mm}
+  .stars.is-gold{color:#b8860b;border-color:#b8860b}
   .card-meta{
     font-size:7pt;color:#333;
     border-top:0.2mm solid #ccc;padding-top:1.2mm;margin-top:0;

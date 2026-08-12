@@ -35,6 +35,8 @@ EXTRA = [
     ("Egenskaber", "properties"),
     ("Mastery", "mastery"),
     ("AC", "ac"),
+    ("Styrkekrav", "strength"),
+    ("Stealth", "stealth"),
     ("Vægt (lbs)", "weight"),
 ]
 

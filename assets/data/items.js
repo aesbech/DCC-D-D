@@ -1,5 +1,5 @@
 /* Auto-genereret fra dnd_items.xlsx. Redigér regnearket og kør scripts/import_xlsx.py igen. */
-window.DND_ITEMS_VERSION = "23e779a4e111";
+window.DND_ITEMS_VERSION = "57f009f2eb34";
 window.DND_ITEMS = [
  {
   "name": "Candle",
@@ -1607,6 +1607,7 @@ window.DND_ITEMS = [
   ],
   "desc": "This armor is leather armor with heavy rings sewn into it. The rings help reinforce the armor against blows from swords and axes. Ring mail is inferior to chain mail, and it's usually worn only by those who can't afford better armor.",
   "ac": "14",
+  "stealth": "Disadvantage",
   "weight": 40
  },
  {
@@ -1624,6 +1625,8 @@ window.DND_ITEMS = [
   ],
   "desc": "Made of interlocking metal rings, chain mail includes a layer of quilted fabric worn underneath the mail to prevent chafing and to cushion the impact of blows. The suit includes gauntlets.",
   "ac": "16",
+  "strength": "13",
+  "stealth": "Disadvantage",
   "weight": 55
  },
  {
@@ -1641,6 +1644,8 @@ window.DND_ITEMS = [
   ],
   "desc": "This armor is made of narrow vertical strips of metal riveted to a backing of leather that is worn over cloth padding. Flexible chain mail protects the joints.",
   "ac": "17",
+  "strength": "15",
+  "stealth": "Disadvantage",
   "weight": 60
  },
  {
@@ -1658,6 +1663,8 @@ window.DND_ITEMS = [
   ],
   "desc": "Plate consists of shaped, interlocking metal plates to cover the entire body. A suit of plate includes gauntlets, heavy leather boots, a visored helmet, and thick layers of padding underneath the armor. Buckles and straps distribute the weight over the body.",
   "ac": "18",
+  "strength": "15",
+  "stealth": "Disadvantage",
   "weight": 65
  },
  {
@@ -1721,6 +1728,7 @@ window.DND_ITEMS = [
   ],
   "desc": "Padded armor consists of quilted layers of cloth and batting.",
   "ac": "11 + Dex modifier",
+  "stealth": "Disadvantage",
   "weight": 8
  },
  {
@@ -2293,6 +2301,7 @@ window.DND_ITEMS = [
   ],
   "desc": "This armor consists of a coat and leggings (and perhaps a separate skirt) of leather covered with overlapping pieces of metal, much like the scales of a fish. The suit includes gauntlets.",
   "ac": "14 + Dex modifier (max 2)",
+  "stealth": "Disadvantage",
   "weight": 45
  },
  {
@@ -2311,6 +2320,7 @@ window.DND_ITEMS = [
   ],
   "desc": "Spiked armor is a rare type of medium armor made by dwarves. It consists of a leather coat and leggings covered with spikes that are usually made of metal.",
   "ac": "14 + Dex modifier (max 2)",
+  "stealth": "Disadvantage",
   "weight": 45
  },
  {
@@ -2345,6 +2355,7 @@ window.DND_ITEMS = [
   ],
   "desc": "Half plate consists of shaped metal plates that cover most of the wearer's body. It does not include leg protection beyond simple greaves that are attached with leather straps.",
   "ac": "15 + Dex modifier (max 2)",
+  "stealth": "Disadvantage",
   "weight": 40
  },
  {
