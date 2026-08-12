@@ -71,17 +71,26 @@
 <section class="view" id="view-items">
   <div class="panel">
     <h2>Importér items</h2>
-    <p class="hint">Understøtter CSV (komma eller semikolon) og JSON. Rarity beregnes automatisk ud fra pris,
-       hvis kolonnen ikke findes &mdash; tærskler kan justeres under Indstillinger.</p>
+    <p class="hint">Understøtter CSV (komma, semikolon eller tab) og JSON. Har dine data en Rarity-kolonne,
+       bliver den brugt; ellers udledes rarity af prisen via den valgte skala.</p>
     <div class="row">
+      <label class="field">
+        <span>Prisskala for det importerede</span>
+        <select id="importScale"></select>
+      </label>
       <label class="btn btn-primary file-btn">
         Vælg fil&hellip;
         <input type="file" id="fileInput" accept=".csv,.json,.txt,.tsv" hidden>
       </label>
       <button class="btn" id="btnPasteToggle">Indsæt tekst</button>
-      <button class="btn" id="btnLoadSample">Indlæs eksempeldata</button>
       <span class="spacer"></span>
+      <button class="btn" id="btnLoadDnd">Genindlæs D&amp;D-items</button>
+      <button class="btn" id="btnLoadClass">Genindlæs Class-kort</button>
+    </div>
+    <div class="row">
       <button class="btn" id="btnExportItems">Eksportér items (JSON)</button>
+      <button class="btn" id="btnExportCsv">Eksportér items (CSV)</button>
+      <span class="spacer"></span>
       <button class="btn btn-danger" id="btnClearItems">Slet alle items</button>
     </div>
     <div id="pasteBox" class="hidden">
@@ -95,6 +104,7 @@
     <div class="row">
       <input type="search" id="itemSearch" placeholder="Søg efter navn&hellip;">
       <select id="itemCatFilter"><option value="">Alle kategorier</option></select>
+      <select id="itemTagFilter"><option value="">Alle tags</option></select>
       <select id="itemRarFilter"><option value="">Alle rarities</option></select>
       <span class="spacer"></span>
       <span class="hint" id="itemCount"></span>
@@ -102,7 +112,7 @@
     <div id="itemStats" class="stats"></div>
     <div class="table-wrap">
       <table class="table" id="itemTable">
-        <thead><tr><th>Navn</th><th>Kategori</th><th>Pris</th><th>Rarity</th><th>Kilde</th><th></th></tr></thead>
+        <thead><tr><th>Navn</th><th>Kategori</th><th>Pris</th><th>Rarity</th><th>Skala</th><th>Kilde</th><th></th></tr></thead>
         <tbody></tbody>
       </table>
     </div>
@@ -114,9 +124,10 @@
 <section class="view" id="view-settings">
   <div class="panel">
     <h2>Rarity ud fra pris</h2>
-    <p class="hint">Nedre grænse i guldstykker (gp). Et item får den højeste rarity hvis pris &ge; grænsen.
-       Ændringer genberegner alle items der ikke har manuelt låst rarity.</p>
-    <div id="thresholds"></div>
+    <p class="hint">Øvre grænse i guldstykker (gp) &mdash; et item får den første rarity hvor prisen er
+       mindre end eller lig grænsen. De to skalaer kommer fra dit regneark: udstyr og magic items
+       prissættes helt forskelligt. Items hvor du selv har sat rarity bliver ikke rørt.</p>
+    <div id="scales"></div>
     <button class="btn btn-primary" id="btnRecalc">Genberegn rarities</button>
   </div>
 
@@ -126,11 +137,14 @@
     <label class="field">
       <span>Hvis der ikke findes et item med den trukne rarity</span>
       <select id="optFallback">
-        <option value="down">Fald ned til nærmeste lavere rarity</option>
         <option value="nearest">Brug nærmeste rarity (ned eller op)</option>
+        <option value="down">Fald kun ned til lavere rarity</option>
         <option value="none">Vis tomt kort (så jeg kan se hullet)</option>
       </select>
     </label>
+    <h3>Kategorier der aldrig må trækkes af en pakke uden filter</h3>
+    <p class="hint">Forhindrer fx Class-kort i at dukke op i Adventurer-pakken, som trækker fra alt.</p>
+    <div id="excludeChips" class="cats"></div>
   </div>
 
   <div class="panel">
@@ -149,7 +163,8 @@
 
 <div id="toast" class="toast"></div>
 
-<script src="assets/js/sample-items.js"></script>
+<script src="assets/data/items.js"></script>
+<script src="assets/data/class-cards.js"></script>
 <script src="assets/js/core.js"></script>
 <script src="assets/js/ui.js"></script>
 </body>

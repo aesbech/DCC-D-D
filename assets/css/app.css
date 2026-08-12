@@ -67,6 +67,9 @@ main{max-width:1180px;margin:0 auto;padding:20px}
 /* ---------- form ---------- */
 .field{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
 .field-sm input{width:90px}
+.field-grow{flex:1;min-width:200px}
+.field-grow input{width:100%}
+.warn-text{color:var(--danger)}
 input,select,textarea{
   background:var(--bg-3);color:var(--text);
   border:1px solid var(--line);border-radius:8px;
@@ -131,6 +134,12 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 .bar{display:flex;height:6px;border-radius:3px;overflow:hidden;margin-top:8px;background:var(--bg-2)}
 .bar span{display:block}
 
+.filter-group{margin-top:12px}
+.filter-group h3{margin-bottom:4px}
+.scale-box{
+  border:1px solid var(--line);border-radius:var(--radius);
+  padding:12px;margin-bottom:12px;background:var(--bg-3);
+}
 .cats{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 0}
 .chip{
   border:1px solid var(--line);background:var(--bg-3);color:var(--muted);
@@ -159,7 +168,12 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 .card.is-empty{border-left-color:var(--danger);opacity:.75}
 .card-slot{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
 .card-name{font-weight:600;line-height:1.3}
-.card-meta{margin-top:auto;display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
+.card-sub{font-size:12px;color:var(--muted)}
+.card-desc{
+  font-size:12px;line-height:1.45;color:var(--muted);
+  display:-webkit-box;-webkit-line-clamp:5;line-clamp:5;-webkit-box-orient:vertical;overflow:hidden;
+}
+.card-meta{margin-top:auto;padding-top:6px;display:flex;justify-content:space-between;gap:8px;font-size:12px;color:var(--muted)}
 .rarity{font-weight:600}
 .rarity.r-common{color:var(--r-common)}
 .rarity.r-uncommon{color:var(--r-uncommon)}
@@ -214,3 +228,9 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
   .card{background:#fff;border:1px solid #999;break-inside:avoid}
   .card-meta,.card-slot{color:#555}
 }
+
+/* tilføjet: undertekst i tabelceller */
+.cell-sub{font-size:12px;color:var(--muted);margin-top:2px}
+.card{min-height:150px}
+.cards{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+.filter-mode{margin-top:12px;max-width:320px}

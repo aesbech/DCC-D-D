@@ -6,13 +6,12 @@
 
   var state = {
     cfg: C.migrateConfig(C.storage.load(C.storage.K_CFG, null)),
-    items: C.storage.load(C.storage.K_ITEMS, []) || [],
+    items: C.storage.load(C.storage.K_ITEMS, null),
     packId: null,
     results: [],
     pending: null,   // midlertidigt parsed import-data
     page: 0
   };
-  if (state.cfg.packs.length) state.packId = state.cfg.packs[0].id;
 
   var PAGE_SIZE = 100;
 
@@ -41,15 +40,15 @@
     t.textContent = msg;
     t.classList.add('show');
     clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2600);
+    toastTimer = setTimeout(function () { t.classList.remove('show'); }, 2800);
   }
 
   var saveTimer;
   function persist() {
-    var okCfg = C.storage.save(C.storage.K_CFG, state.cfg);
-    var okItems = C.storage.save(C.storage.K_ITEMS, state.items);
+    var ok = C.storage.save(C.storage.K_CFG, state.cfg) &&
+             C.storage.save(C.storage.K_ITEMS, state.items);
     var s = $('#saveState');
-    if (!okCfg || !okItems) {
+    if (!ok) {
       s.textContent = 'Kunne ikke gemme (lagerplads fuld?)';
       s.classList.remove('flash');
       return;
@@ -63,8 +62,8 @@
     }, 1200);
   }
 
-  function download(filename, text) {
-    var blob = new Blob([text], { type: 'application/json' });
+  function download(filename, text, mime) {
+    var blob = new Blob([text], { type: mime || 'application/json' });
     var url = URL.createObjectURL(blob);
     var a = el('a', { href: url, download: filename });
     document.body.appendChild(a);
@@ -79,6 +78,11 @@
     return null;
   }
 
+  function currentTier(pack, tierId) {
+    for (var i = 0; i < pack.tiers.length; i++) if (pack.tiers[i].id === tierId) return pack.tiers[i];
+    return null;
+  }
+
   function slug(s) {
     return String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'x';
   }
@@ -88,6 +92,27 @@
     while (taken.indexOf(id) >= 0) { id = base + '-' + n; n++; }
     return id;
   }
+
+  function priceLabel(it) {
+    if (it.priceText) return it.priceText;
+    if (it.price === null || it.price === undefined) return '—';
+    return it.price + ' gp';
+  }
+
+  /* ---------------- første besøg: indlæs data ---------------- */
+
+  function seedItems() {
+    var seeded = [];
+    if (window.DND_ITEMS) seeded = seeded.concat(C.itemsFromJSON(window.DND_ITEMS, state.cfg, 'gear'));
+    if (window.CLASS_CARDS) seeded = seeded.concat(C.itemsFromJSON(window.CLASS_CARDS, state.cfg, 'none'));
+    return seeded;
+  }
+
+  if (!Array.isArray(state.items)) {
+    state.items = seedItems();
+    C.storage.save(C.storage.K_SEEDED, true);
+  }
+  if (state.cfg.packs.length) state.packId = state.cfg.packs[0].id;
 
   /* ---------------- faneblade ---------------- */
 
@@ -123,25 +148,52 @@
       sel.appendChild(el('option', { value: t.id, text: t.name }));
     });
     if (prev && pack.tiers.some(function (t) { return t.id === prev; })) sel.value = prev;
+    sel.disabled = pack.tiers.length < 2;
     updateGenHint();
   }
 
   function updateGenHint() {
     var pack = findPack($('#genPack').value);
     var hint = $('#genHint');
-    if (!pack) { hint.textContent = ''; return; }
+    hint.innerHTML = '';
+    if (!pack) return;
     if (!state.items.length) {
-      hint.textContent = 'Ingen items indlæst endnu — gå til fanen Items og importér din liste (eller indlæs eksempeldata).';
+      hint.textContent = 'Ingen items indlæst — gå til fanen Items.';
       return;
     }
-    var pool = pack.categories.length
-      ? state.items.filter(function (i) { return pack.categories.indexOf(i.category) >= 0; })
-      : state.items;
-    var tierObj = null;
-    pack.tiers.forEach(function (t) { if (t.id === $('#genTier').value) tierObj = t; });
-    hint.textContent = pool.length + ' item(s) i puljen for denne pakketype' +
-      (tierObj ? ' · ' + tierObj.cards.length + ' kort pr. pakke' : '') +
-      (pack.categories.length ? ' · kategorier: ' + pack.categories.join(', ') : ' · alle kategorier');
+    var pool = C.poolFor(state.items, pack.filter, state.cfg);
+    var tierObj = currentTier(pack, $('#genTier').value);
+    var parts = [pool.length + ' item(s) i puljen'];
+    if (tierObj) parts.push(tierObj.cards.length + ' kort pr. pakke');
+    var f = pack.filter;
+    if (f.categories.length) parts.push('kategorier: ' + f.categories.join(', '));
+    if (f.tags.length) parts.push('tags: ' + f.tags.join(', '));
+    if (!f.categories.length && !f.tags.length) parts.push('alle kategorier');
+    hint.appendChild(document.createTextNode(parts.join(' · ')));
+
+    // Advar hvis en trukket rarity ikke findes i puljen.
+    if (tierObj) {
+      var have = {};
+      pool.forEach(function (i) { have[i.rarity] = true; });
+      var missing = [];
+      tierObj.cards.forEach(function (c) {
+        C.RKEYS.forEach(function (k) {
+          if ((c.dist[k] || 0) > 0 && !have[k] && missing.indexOf(k) < 0) missing.push(k);
+        });
+      });
+      if (missing.length) {
+        hint.appendChild(el('br'));
+        hint.appendChild(el('span', {
+          class: 'warn-text',
+          text: 'Puljen har ingen ' + missing.map(C.rarityLabel).join(' / ') +
+                ' — de trækninger falder tilbage på en anden rarity.'
+        }));
+      }
+    }
+    if (pack.note) {
+      hint.appendChild(el('br'));
+      hint.appendChild(el('span', { text: pack.note }));
+    }
   }
 
   $('#genPack').addEventListener('change', function () {
@@ -153,8 +205,7 @@
   $('#btnGenerate').addEventListener('click', function () {
     var pack = findPack($('#genPack').value);
     if (!pack) return;
-    var tierObj = null;
-    pack.tiers.forEach(function (t) { if (t.id === $('#genTier').value) tierObj = t; });
+    var tierObj = currentTier(pack, $('#genTier').value);
     if (!tierObj) { toast('Vælg et tier'); return; }
     if (!state.items.length) { toast('Importér items først'); return; }
 
@@ -188,10 +239,8 @@
     });
     var text = lines.join('\n');
     if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(text).then(
-        function () { toast('Kopieret'); },
-        function () { fallbackCopy(text); }
-      );
+      navigator.clipboard.writeText(text).then(function () { toast('Kopieret'); },
+                                              function () { fallbackCopy(text); });
     } else fallbackCopy(text);
   });
 
@@ -211,28 +260,29 @@
     state.results.forEach(function (box, idx) {
       var cards = el('div', { class: 'cards' });
       box.cards.forEach(function (c) {
-        var cls = 'card' + (c.item ? ' r-' + c.actual : ' is-empty');
-        var meta = el('div', { class: 'card-meta' }, [
-          el('span', {
-            class: 'rarity ' + (c.actual ? 'r-' + c.actual : ''),
-            text: c.actual ? C.rarityLabel(c.actual) : '—'
-          }),
-          el('span', { text: c.item && c.item.price !== null ? c.item.price + ' gp' : '' })
-        ]);
+        var it = c.item;
         var kids = [
           el('div', { class: 'card-slot', text: c.slot }),
-          el('div', { class: 'card-name', text: c.item ? c.item.name : 'Intet item matcher' })
+          el('div', { class: 'card-name', text: it ? it.name : 'Intet item matcher' })
         ];
-        if (c.item && c.item.category)
-          kids.push(el('div', { class: 'card-slot', text: c.item.category }));
+        if (it && (it.subcategory || it.category))
+          kids.push(el('div', { class: 'card-sub', text: it.subcategory || it.category }));
+        if (it && it.desc)
+          kids.push(el('div', { class: 'card-desc', text: it.desc }));
         if (c.actual && c.rolled && c.actual !== c.rolled)
           kids.push(el('div', { class: 'fallback-note', text: 'Trak ' + C.rarityLabel(c.rolled) + ' — puljen var tom' }));
         if (c.duplicate)
           kids.push(el('div', { class: 'fallback-note', text: 'Dublet (puljen er for lille)' }));
-        if (!c.item && c.rolled)
+        if (!it && c.rolled)
           kids.push(el('div', { class: 'fallback-note', text: 'Trak ' + C.rarityLabel(c.rolled) + ' — ingen items i puljen' }));
-        kids.push(meta);
-        cards.appendChild(el('div', { class: cls }, kids));
+        kids.push(el('div', { class: 'card-meta' }, [
+          el('span', {
+            class: 'rarity ' + (c.actual ? 'r-' + c.actual : ''),
+            text: c.actual ? C.rarityLabel(c.actual) : '—'
+          }),
+          el('span', { text: it ? priceLabel(it) : '' })
+        ]));
+        cards.appendChild(el('div', { class: 'card' + (it ? ' r-' + c.actual : ' is-empty') }, kids));
       });
 
       wrap.appendChild(el('div', { class: 'box' }, [
@@ -268,28 +318,59 @@
     if (total <= 0) return bar;
     C.RKEYS.forEach(function (k) {
       var w = (d[k] || 0) / total * 100;
-      if (w > 0) bar.appendChild(el('span', {
-        style: 'width:' + w + '%;background:var(--r-' + k + ')'
-      }));
+      if (w > 0) bar.appendChild(el('span', { style: 'width:' + w + '%;background:var(--r-' + k + ')' }));
     });
     return bar;
   }
 
-  function categoryChips(selected, onToggle) {
+  /* Chip-vælger for kategorier og tags i ét filter-objekt. */
+  function filterEditor(filter, onChange) {
+    var wrap = el('div');
     var cats = C.categoriesOf(state.items);
-    var wrap = el('div', { class: 'cats' });
-    if (!cats.length) {
-      wrap.appendChild(el('span', { class: 'hint', text: 'Ingen kategorier endnu — importér items først.' }));
-      return wrap;
+    var tags = C.tagsOf(state.items);
+
+    function group(title, all, selected, note) {
+      var chips = el('div', { class: 'cats' });
+      if (!all.length) {
+        chips.appendChild(el('span', { class: 'hint', text: 'Ingen fundet — importér items først.' }));
+      } else {
+        all.forEach(function (v) {
+          var on = selected.indexOf(v) >= 0;
+          chips.appendChild(el('button', {
+            class: 'chip' + (on ? ' on' : ''),
+            text: v,
+            onclick: function () {
+              var i = selected.indexOf(v);
+              if (i >= 0) selected.splice(i, 1); else selected.push(v);
+              onChange();
+            }
+          }));
+        });
+      }
+      return el('div', { class: 'filter-group' }, [
+        el('h3', { text: title }),
+        note ? el('p', { class: 'hint', text: note }) : null,
+        chips
+      ]);
     }
-    cats.forEach(function (cat) {
-      var on = selected.indexOf(cat) >= 0;
-      wrap.appendChild(el('button', {
-        class: 'chip' + (on ? ' on' : ''),
-        text: cat,
-        onclick: function () { onToggle(cat); }
-      }));
-    });
+
+    wrap.appendChild(group('Kategorier', cats, filter.categories,
+      'Ingen valgt = alle kategorier (undtagen de udelukkede under Indstillinger).'));
+    wrap.appendChild(group('Tags', tags, filter.tags,
+      'Ingen valgt = ingen tag-begrænsning. Vælges flere, tæller et item med hvis det har mindst ét af dem.'));
+
+    if (cats.length || tags.length) {
+      wrap.appendChild(el('label', { class: 'field filter-mode' }, [
+        el('span', { text: 'Sådan kombineres kategorier og tags' }),
+        el('select', {
+          onchange: function () { filter.mode = this.value; onChange(); }
+        }, [
+          el('option', { value: 'and', text: 'Begge skal passe (snævrere)' }),
+          el('option', { value: 'or', text: 'Én af delene er nok (bredere)' })
+        ])
+      ]));
+      wrap.querySelector('.filter-mode select').value = filter.mode === 'or' ? 'or' : 'and';
+    }
     return wrap;
   }
 
@@ -304,8 +385,9 @@
       return;
     }
 
-    /* --- hoved --- */
-    var head = el('div', { class: 'panel' }, [
+    var poolCount = C.poolFor(state.items, pack.filter, state.cfg).length;
+
+    host.appendChild(el('div', { class: 'panel' }, [
       el('div', { class: 'row' }, [
         el('label', { class: 'field' }, [
           el('span', { text: 'Navn' }),
@@ -314,7 +396,13 @@
             oninput: function () { pack.name = this.value; renderPackList(); renderGenControls(); persist(); }
           })
         ]),
-        el('span', { class: 'spacer' }),
+        el('label', { class: 'field field-grow' }, [
+          el('span', { text: 'Note (vises i generatoren)' }),
+          el('input', {
+            type: 'text', value: pack.note || '', placeholder: 'valgfri',
+            oninput: function () { pack.note = this.value; updateGenHint(); persist(); }
+          })
+        ]),
         el('button', {
           class: 'btn btn-danger btn-sm', text: 'Slet pakketype',
           onclick: function () {
@@ -325,31 +413,23 @@
           }
         })
       ]),
-      el('h3', { text: 'Kategorier i denne pakke' }),
-      el('p', { class: 'hint', text: 'Ingen valgt = alle items kan trækkes. Enkelte kort kan overstyre dette nedenfor.' }),
-      categoryChips(pack.categories, function (cat) {
-        var i = pack.categories.indexOf(cat);
-        if (i >= 0) pack.categories.splice(i, 1); else pack.categories.push(cat);
+      el('p', { class: 'hint', text: poolCount + ' item(s) matcher pakkens filter.' }),
+      filterEditor(pack.filter, function () {
         renderPackDetail(); updateGenHint(); persist();
       })
-    ]);
-    host.appendChild(head);
+    ]));
 
-    /* --- tiers --- */
-    pack.tiers.forEach(function (t, ti) {
-      host.appendChild(renderTier(pack, t, ti));
-    });
+    pack.tiers.forEach(function (t, ti) { host.appendChild(renderTier(pack, t, ti)); });
 
     host.appendChild(el('div', { class: 'row' }, [
       el('button', {
         class: 'btn', text: '+ Tilføj tier',
         onclick: function () {
           var taken = pack.tiers.map(function (x) { return x.id; });
-          var base = 'tier-' + (pack.tiers.length + 1);
           pack.tiers.push({
-            id: uniqueId(base, taken),
+            id: uniqueId('tier-' + (pack.tiers.length + 1), taken),
             name: 'Nyt tier',
-            cards: [{ label: 'Kort 1', dist: C.emptyDist(), categories: null }]
+            cards: [{ label: 'Kort 1', dist: C.emptyDist(), filter: null }]
           });
           renderPackDetail(); renderTierOptions(); persist();
         }
@@ -359,16 +439,13 @@
 
   function renderTier(pack, t, ti) {
     var body = el('div', { class: 'tier-body' });
-
-    t.cards.forEach(function (c, ci) {
-      body.appendChild(renderCard(pack, t, c, ci));
-    });
+    t.cards.forEach(function (c, ci) { body.appendChild(renderCard(pack, t, c, ci)); });
 
     body.appendChild(el('div', { class: 'row' }, [
       el('button', {
         class: 'btn btn-sm', text: '+ Tilføj kort',
         onclick: function () {
-          t.cards.push({ label: 'Kort ' + (t.cards.length + 1), dist: C.emptyDist(), categories: null });
+          t.cards.push({ label: 'Kort ' + (t.cards.length + 1), dist: C.emptyDist(), filter: null });
           renderPackDetail(); updateGenHint(); persist();
         }
       }),
@@ -412,8 +489,7 @@
     function refreshSum() {
       var total = 0;
       C.RKEYS.forEach(function (k) { total += (Number(c.dist[k]) || 0); });
-      var rounded = Math.round(total * 100) / 100;
-      sumEl.textContent = 'Sum: ' + rounded + '%';
+      sumEl.textContent = 'Sum: ' + (Math.round(total * 100) / 100) + '%';
       sumEl.className = 'sum ' + (Math.abs(total - 100) < 0.01 ? 'good' : 'bad');
       barHost.innerHTML = '';
       barHost.appendChild(distBar(c.dist));
@@ -427,8 +503,7 @@
           document.createTextNode(r.label)
         ]),
         el('input', {
-          type: 'number', min: '0', max: '100', step: '0.1',
-          value: c.dist[r.key] || 0,
+          type: 'number', min: '0', max: '100', step: '0.1', value: c.dist[r.key] || 0,
           oninput: function () {
             c.dist[r.key] = Math.max(0, Number(this.value) || 0);
             refreshSum(); persist();
@@ -439,31 +514,26 @@
     distWrap.appendChild(sumEl);
 
     var catHost = el('div');
-    var overrideOn = !!(c.categories && c.categories.length);
-
-    function renderCatOverride() {
+    function renderOverride() {
       catHost.innerHTML = '';
+      var on = !!c.filter;
       catHost.appendChild(el('label', { class: 'check' }, [
         el('input', {
-          type: 'checkbox', checked: overrideOn ? 'checked' : null,
+          type: 'checkbox', checked: on ? 'checked' : null,
           onchange: function () {
-            overrideOn = this.checked;
-            c.categories = overrideOn ? (c.categories || []) : null;
-            renderCatOverride(); persist();
+            c.filter = this.checked ? C.emptyFilter() : null;
+            renderOverride(); updateGenHint(); persist();
           }
         }),
-        document.createTextNode('Egne kategorier for dette kort')
+        document.createTextNode('Eget filter for dette kort (overstyrer pakkens)')
       ]));
-      if (overrideOn) {
-        catHost.appendChild(categoryChips(c.categories || [], function (cat) {
-          if (!c.categories) c.categories = [];
-          var i = c.categories.indexOf(cat);
-          if (i >= 0) c.categories.splice(i, 1); else c.categories.push(cat);
-          renderCatOverride(); persist();
+      if (on) {
+        catHost.appendChild(filterEditor(c.filter, function () {
+          renderOverride(); updateGenHint(); persist();
         }));
       }
     }
-    renderCatOverride();
+    renderOverride();
 
     var node = el('div', { class: 'card-row' }, [
       el('div', { class: 'card-row-head' }, [
@@ -481,9 +551,7 @@
           }
         })
       ]),
-      distWrap,
-      barHost,
-      catHost
+      distWrap, barHost, catHost
     ]);
 
     refreshSum();
@@ -491,15 +559,10 @@
   }
 
   $('#btnAddPack').addEventListener('click', function () {
-    var taken = state.cfg.packs.map(function (p) { return p.id; });
     var pack = {
-      id: uniqueId('pakke-' + (state.cfg.packs.length + 1), taken),
-      name: 'Ny pakketype',
-      categories: [],
-      tiers: [{
-        id: 'bronze', name: 'Bronze',
-        cards: [{ label: 'Kort 1', dist: C.emptyDist(), categories: null }]
-      }]
+      id: uniqueId('pakke-' + (state.cfg.packs.length + 1), state.cfg.packs.map(function (p) { return p.id; })),
+      name: 'Ny pakketype', filter: C.emptyFilter(), note: '',
+      tiers: [{ id: 'bronze', name: 'Bronze', cards: [{ label: 'Kort 1', dist: C.emptyDist(), filter: null }] }]
     };
     state.cfg.packs.push(pack);
     state.packId = pack.id;
@@ -507,6 +570,15 @@
   });
 
   /* ================= ITEMS ================= */
+
+  function renderImportScale() {
+    var sel = $('#importScale');
+    sel.innerHTML = '';
+    state.cfg.scales.forEach(function (s) {
+      sel.appendChild(el('option', { value: s.id, text: s.name }));
+    });
+    sel.appendChild(el('option', { value: 'none', text: 'Ingen (rarity sættes manuelt)' }));
+  }
 
   $('#btnPasteToggle').addEventListener('click', function () {
     $('#pasteBox').classList.toggle('hidden');
@@ -529,14 +601,11 @@
   });
 
   function handleText(text) {
+    var scaleId = $('#importScale').value;
     var trimmed = text.trim();
     if (trimmed[0] === '[' || trimmed[0] === '{') {
-      try {
-        var items = C.itemsFromJSON(JSON.parse(trimmed), state.cfg.thresholds);
-        commitItems(items);
-      } catch (e) {
-        toast('Kunne ikke læse JSON: ' + e.message);
-      }
+      try { commitItems(C.itemsFromJSON(JSON.parse(trimmed), state.cfg, scaleId)); }
+      catch (e) { toast('Kunne ikke læse JSON: ' + e.message); }
       return;
     }
     var rows = C.parseCSV(text);
@@ -555,33 +624,24 @@
     });
 
     var fields = [
-      ['name', 'Navn *'], ['category', 'Kategori'], ['price', 'Pris'],
-      ['rarity', 'Rarity'], ['source', 'Kilde'], ['notes', 'Noter']
+      ['name', 'Navn *'], ['category', 'Kategori (gruppe)'], ['subcategory', 'Underkategori'],
+      ['price', 'Pris'], ['rarity', 'Rarity'], ['source', 'Kilde'],
+      ['tags', 'Tags'], ['desc', 'Beskrivelse']
     ];
 
     var grid = el('div', { class: 'map-grid' });
     fields.forEach(function (f) {
       var sel = el('select', {
         onchange: function () {
-          var v = this.value;
-          if (v === '') delete p.mapping[f[0]];
-          else p.mapping[f[0]] = parseInt(v, 10);
+          if (this.value === '') delete p.mapping[f[0]];
+          else p.mapping[f[0]] = parseInt(this.value, 10);
         }
       });
       sel.appendChild(el('option', { value: '', text: '— ikke i data —' }));
-      headers.forEach(function (h, i) {
-        sel.appendChild(el('option', { value: String(i), text: h }));
-      });
+      headers.forEach(function (h, i) { sel.appendChild(el('option', { value: String(i), text: h })); });
       if (p.mapping[f[0]] !== undefined) sel.value = String(p.mapping[f[0]]);
       grid.appendChild(el('label', { class: 'field' }, [el('span', { text: f[1] }), sel]));
     });
-
-    var preview = el('p', { class: 'hint' });
-    function updatePreview() {
-      var n = p.rows.length - (p.hasHeader ? 1 : 0);
-      preview.textContent = n + ' rækker klar til import.';
-    }
-    updatePreview();
 
     host.appendChild(el('h3', { text: 'Sæt kolonner på plads' }));
     host.appendChild(el('label', { class: 'check' }, [
@@ -596,18 +656,17 @@
       document.createTextNode('Første række er overskrifter')
     ]));
     host.appendChild(grid);
-    host.appendChild(preview);
+    host.appendChild(el('p', { class: 'hint',
+      text: (p.rows.length - (p.hasHeader ? 1 : 0)) + ' rækker klar til import.' }));
     host.appendChild(el('div', { class: 'row' }, [
       el('button', {
         class: 'btn btn-primary', text: 'Importér',
         onclick: function () {
           if (p.mapping.name === undefined) { toast('Vælg hvilken kolonne der er navnet'); return; }
-          var items = C.itemsFromRows(p.rows, p.mapping, state.cfg.thresholds, p.hasHeader);
+          var items = C.itemsFromRows(p.rows, p.mapping, state.cfg, p.hasHeader, $('#importScale').value);
           if (!items.length) { toast('Ingen brugbare rækker fundet'); return; }
           commitItems(items);
-          host.className = 'hidden';
-          host.innerHTML = '';
-          state.pending = null;
+          host.className = 'hidden'; host.innerHTML = ''; state.pending = null;
         }
       }),
       el('button', {
@@ -626,18 +685,20 @@
     }
     state.items = replace ? items : state.items.concat(items);
     state.page = 0;
-    renderItems();
-    renderPackDetail();
-    updateGenHint();
-    persist();
+    renderItems(); renderPackDetail(); updateGenHint(); renderExcludeChips(); persist();
     toast(items.length + ' items importeret');
     $('#pasteArea').value = '';
     $('#pasteBox').classList.add('hidden');
   }
 
-  $('#btnLoadSample').addEventListener('click', function () {
-    if (!window.SAMPLE_ITEMS) { toast('Eksempeldata mangler'); return; }
-    commitItems(C.itemsFromJSON(window.SAMPLE_ITEMS, state.cfg.thresholds));
+  $('#btnLoadDnd').addEventListener('click', function () {
+    if (!window.DND_ITEMS) { toast('Datafilen mangler'); return; }
+    commitItems(C.itemsFromJSON(window.DND_ITEMS, state.cfg, 'gear'));
+  });
+
+  $('#btnLoadClass').addEventListener('click', function () {
+    if (!window.CLASS_CARDS) { toast('Datafilen mangler'); return; }
+    commitItems(C.itemsFromJSON(window.CLASS_CARDS, state.cfg, 'none'));
   });
 
   $('#btnClearItems').addEventListener('click', function () {
@@ -645,49 +706,68 @@
     if (!confirm('Slet alle ' + state.items.length + ' items?')) return;
     state.items = [];
     state.page = 0;
-    renderItems(); renderPackDetail(); updateGenHint(); persist();
+    renderItems(); renderPackDetail(); updateGenHint(); renderExcludeChips(); persist();
   });
 
   $('#btnExportItems').addEventListener('click', function () {
     download('dnd-items.json', JSON.stringify(state.items, null, 2));
   });
 
+  $('#btnExportCsv').addEventListener('click', function () {
+    var cols = ['name', 'category', 'subcategory', 'price', 'rarity', 'scale', 'source', 'tags', 'desc'];
+    function cell(v) {
+      if (v === null || v === undefined) return '';
+      var s = Array.isArray(v) ? v.join(', ') : String(v);
+      return /[",;\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }
+    var lines = [cols.join(';')];
+    state.items.forEach(function (it) {
+      lines.push(cols.map(function (c) { return cell(it[c]); }).join(';'));
+    });
+    download('dnd-items.csv', '﻿' + lines.join('\n'), 'text/csv');
+  });
+
   function filteredItems() {
     var q = $('#itemSearch').value.trim().toLowerCase();
     var cat = $('#itemCatFilter').value;
+    var tag = $('#itemTagFilter').value;
     var rar = $('#itemRarFilter').value;
     return state.items.filter(function (i) {
       if (q && i.name.toLowerCase().indexOf(q) < 0) return false;
       if (cat && i.category !== cat) return false;
-      if (rar && i.rarity !== rar) return false;
+      if (tag && (i.tags || []).indexOf(tag) < 0) return false;
+      if (rar === '__none' ? !!i.rarity : (rar && i.rarity !== rar)) return false;
       return true;
     });
   }
 
-  function renderItemFilters() {
-    var catSel = $('#itemCatFilter');
-    var prev = catSel.value;
-    catSel.innerHTML = '';
-    catSel.appendChild(el('option', { value: '', text: 'Alle kategorier' }));
-    C.categoriesOf(state.items).forEach(function (c) {
-      catSel.appendChild(el('option', { value: c, text: c }));
-    });
-    catSel.value = prev;
+  function fillSelect(sel, values, allLabel, extra) {
+    var prev = sel.value;
+    sel.innerHTML = '';
+    sel.appendChild(el('option', { value: '', text: allLabel }));
+    values.forEach(function (v) { sel.appendChild(el('option', { value: v.value || v, text: v.text || v })); });
+    (extra || []).forEach(function (o) { sel.appendChild(el('option', { value: o.value, text: o.text })); });
+    sel.value = prev;
+    if (sel.value !== prev) sel.value = '';
+  }
 
-    var rarSel = $('#itemRarFilter');
-    if (rarSel.options.length <= 1) {
-      C.RARITIES.forEach(function (r) {
-        rarSel.appendChild(el('option', { value: r.key, text: r.label }));
-      });
-    }
+  function renderItemFilters() {
+    fillSelect($('#itemCatFilter'), C.categoriesOf(state.items), 'Alle kategorier');
+    fillSelect($('#itemTagFilter'), C.tagsOf(state.items), 'Alle tags');
+    fillSelect($('#itemRarFilter'),
+      C.RARITIES.map(function (r) { return { value: r.key, text: r.label }; }),
+      'Alle rarities', [{ value: '__none', text: 'Uden rarity' }]);
   }
 
   function renderStats() {
     var host = $('#itemStats');
     host.innerHTML = '';
-    var counts = {};
+    var counts = {}, missing = 0;
     C.RKEYS.forEach(function (k) { counts[k] = 0; });
-    state.items.forEach(function (i) { if (counts[i.rarity] !== undefined) counts[i.rarity]++; });
+    state.items.forEach(function (i) {
+      if (!i.rarity) missing++;
+      else if (counts[i.rarity] !== undefined) counts[i.rarity]++;
+    });
     C.RARITIES.forEach(function (r) {
       host.appendChild(el('div', {
         class: 'stat' + (state.items.length && counts[r.key] === 0 ? ' warn' : '')
@@ -696,6 +776,12 @@
         el('span', { text: r.label })
       ]));
     });
+    if (missing) {
+      host.appendChild(el('div', { class: 'stat warn' }, [
+        el('b', { text: String(missing) }),
+        el('span', { text: 'uden rarity — trækkes aldrig' })
+      ]));
+    }
   }
 
   function renderItems() {
@@ -712,31 +798,50 @@
     var tbody = $('#itemTable tbody');
     tbody.innerHTML = '';
     slice.forEach(function (it) {
-      var sel = el('select', {
+      var rarSel = el('select', {
         onchange: function () {
-          it.rarity = this.value;
-          it.rarityLocked = true;
-          renderStats(); persist();
+          it.rarity = this.value || null;
+          it.rarityLocked = !!this.value;
+          rarSel.className = 'rarity r-' + (it.rarity || '');
+          renderStats(); updateGenHint(); persist();
         }
       });
-      C.RARITIES.forEach(function (r) {
-        sel.appendChild(el('option', { value: r.key, text: r.label }));
+      rarSel.appendChild(el('option', { value: '', text: '—' }));
+      C.RARITIES.forEach(function (r) { rarSel.appendChild(el('option', { value: r.key, text: r.label })); });
+      rarSel.value = it.rarity || '';
+      rarSel.className = 'rarity r-' + (it.rarity || '');
+
+      var scaleSel = el('select', {
+        onchange: function () {
+          it.scale = this.value;
+          if (!it.rarityLocked) C.recalcRarities([it], state.cfg);
+          renderItems(); persist();
+        }
       });
-      sel.value = it.rarity;
-      sel.className = 'rarity r-' + it.rarity;
+      state.cfg.scales.forEach(function (s) {
+        scaleSel.appendChild(el('option', { value: s.id, text: s.name }));
+      });
+      scaleSel.appendChild(el('option', { value: 'none', text: 'Ingen' }));
+      scaleSel.value = it.scale || 'gear';
+
+      var nameCell = el('td', {}, [
+        el('div', { text: it.name }),
+        it.subcategory ? el('div', { class: 'cell-sub', text: it.subcategory }) : null
+      ]);
 
       tbody.appendChild(el('tr', {}, [
-        el('td', { text: it.name }),
+        nameCell,
         el('td', { text: it.category }),
-        el('td', { text: it.price === null ? '—' : it.price + ' gp' }),
-        el('td', {}, [sel]),
+        el('td', { text: priceLabel(it) }),
+        el('td', {}, [rarSel]),
+        el('td', {}, [scaleSel]),
         el('td', { text: it.source || '' }),
         el('td', {}, [
           el('button', {
             class: 'btn btn-sm btn-danger', text: '×', title: 'Slet item',
             onclick: function () {
               state.items = state.items.filter(function (x) { return x !== it; });
-              renderItems(); persist();
+              renderItems(); updateGenHint(); persist();
             }
           })
         ])
@@ -758,37 +863,72 @@
     }
   }
 
-  $('#itemSearch').addEventListener('input', function () { state.page = 0; renderItems(); });
-  $('#itemCatFilter').addEventListener('change', function () { state.page = 0; renderItems(); });
-  $('#itemRarFilter').addEventListener('change', function () { state.page = 0; renderItems(); });
+  ['#itemSearch', '#itemCatFilter', '#itemTagFilter', '#itemRarFilter'].forEach(function (sel) {
+    $(sel).addEventListener(sel === '#itemSearch' ? 'input' : 'change', function () {
+      state.page = 0; renderItems();
+    });
+  });
 
   /* ================= INDSTILLINGER ================= */
 
-  function renderThresholds() {
-    var host = $('#thresholds');
+  function renderScales() {
+    var host = $('#scales');
     host.innerHTML = '';
-    C.RARITIES.forEach(function (r) {
-      var row = null;
-      state.cfg.thresholds.forEach(function (t) { if (t.r === r.key) row = t; });
-      if (!row) { row = { r: r.key, min: 0 }; state.cfg.thresholds.push(row); }
-      host.appendChild(el('div', { class: 'thresh-row' }, [
-        el('label', {}, [
-          el('i', { class: 'dot', style: 'background:var(--r-' + r.key + ')' }),
-          document.createTextNode(' ' + r.label)
-        ]),
-        el('span', { class: 'hint', text: 'fra' }),
-        el('input', {
-          type: 'number', min: '0', step: '1', value: row.min,
-          oninput: function () { row.min = Number(this.value) || 0; persist(); }
-        }),
-        el('span', { class: 'hint', text: 'gp' })
+    state.cfg.scales.forEach(function (sc) {
+      var rows = el('div');
+      C.RARITIES.forEach(function (r, i) {
+        var step = null;
+        sc.steps.forEach(function (s) { if (s.r === r.key) step = s; });
+        if (!step) { step = { r: r.key, max: null }; sc.steps.push(step); }
+        var last = i === C.RARITIES.length - 1;
+        rows.appendChild(el('div', { class: 'thresh-row' }, [
+          el('label', {}, [
+            el('i', { class: 'dot', style: 'background:var(--r-' + r.key + ')' }),
+            document.createTextNode(' ' + r.label)
+          ]),
+          el('span', { class: 'hint', text: last ? 'alt derover' : 'til og med' }),
+          last ? el('span', { class: 'hint', text: '∞' }) : el('input', {
+            type: 'number', min: '0', step: 'any', value: step.max === null ? '' : step.max,
+            oninput: function () {
+              step.max = this.value === '' ? null : Number(this.value);
+              persist();
+            }
+          }),
+          el('span', { class: 'hint', text: last ? '' : 'gp' })
+        ]));
+      });
+      host.appendChild(el('div', { class: 'scale-box' }, [
+        el('h3', { text: sc.name }),
+        rows
       ]));
     });
   }
 
+  function renderExcludeChips() {
+    var host = $('#excludeChips');
+    host.innerHTML = '';
+    var cats = C.categoriesOf(state.items);
+    if (!cats.length) {
+      host.appendChild(el('span', { class: 'hint', text: 'Ingen kategorier endnu.' }));
+      return;
+    }
+    cats.forEach(function (cat) {
+      var on = state.cfg.excludeFromAll.indexOf(cat) >= 0;
+      host.appendChild(el('button', {
+        class: 'chip' + (on ? ' on' : ''), text: cat,
+        onclick: function () {
+          var i = state.cfg.excludeFromAll.indexOf(cat);
+          if (i >= 0) state.cfg.excludeFromAll.splice(i, 1);
+          else state.cfg.excludeFromAll.push(cat);
+          renderExcludeChips(); updateGenHint(); renderPackDetail(); persist();
+        }
+      }));
+    });
+  }
+
   $('#btnRecalc').addEventListener('click', function () {
-    C.recalcRarities(state.items, state.cfg.thresholds);
-    renderItems(); persist();
+    C.recalcRarities(state.items, state.cfg);
+    renderItems(); updateGenHint(); persist();
     toast('Rarities genberegnet (manuelt satte items er urørt)');
   });
 
@@ -796,7 +936,7 @@
     state.cfg.noDuplicates = this.checked; persist();
   });
   $('#optFallback').addEventListener('change', function () {
-    state.cfg.fallback = this.value; persist();
+    state.cfg.fallback = this.value; updateGenHint(); persist();
   });
 
   $('#btnExportConfig').addEventListener('click', function () {
@@ -813,9 +953,7 @@
         state.packId = state.cfg.packs.length ? state.cfg.packs[0].id : null;
         renderAll(); persist();
         toast('Opsætning importeret');
-      } catch (e) {
-        toast('Kunne ikke læse filen: ' + e.message);
-      }
+      } catch (e) { toast('Kunne ikke læse filen: ' + e.message); }
     };
     reader.readAsText(f);
     this.value = '';
@@ -834,7 +972,9 @@
   function renderAll() {
     $('#optNoDupes').checked = state.cfg.noDuplicates;
     $('#optFallback').value = state.cfg.fallback;
-    renderThresholds();
+    renderScales();
+    renderExcludeChips();
+    renderImportScale();
     renderPackList();
     renderPackDetail();
     renderGenControls();
@@ -843,6 +983,7 @@
   }
 
   renderAll();
+  persist();
 
   if (!C.storage.available()) {
     $('#saveState').textContent = 'Kan ikke gemme i denne browser';
