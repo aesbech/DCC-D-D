@@ -74,8 +74,19 @@ et banner med valget mellem at genindlæse eller beholde sine egne rettelser.
 
 ### Generator
 Vælg pakketype, tier og antal pakker, og tryk **Generér**. Hvert kort viser item,
-underkategori, beskrivelse, rarity og pris. Resultatet kan printes (der er et print-stylesheet)
-eller kopieres som tekst.
+underkategori, beskrivelse, rarity og pris. Resultatet kan printes eller kopieres som tekst.
+
+**Print** giver klippeklare samlekort i standardstørrelsen **63 × 88 mm** — samme mål som
+Magic- og Pokémon-kort. Ni kort pr. A4-side i et 3 × 3-gitter, hvor kortene støder op til
+hinanden, så ét snit deler to kort.
+
+Kortene sættes op til papir frem for skærm: hvid bund, sort tekst, og rarity vist som en
+farvet kant i venstre side i stedet for en baggrundsfarve — mange printere er sat til at
+udelade baggrunde, mens kantfarver altid kommer med. Pakkeoverskrifterne forsvinder, og
+hvert kort får i stedet en lille linje nederst med pakke, tier og pakkenummer, så du kan
+sortere bunken bagefter.
+
+Slå **baggrundsgrafik** til i printdialogen, hvis du vil have de farvede kanter med.
 
 Under kontrollerne står puljens størrelse — og en rød advarsel hvis en fordeling peger på
 en rarity der ikke findes items af.
