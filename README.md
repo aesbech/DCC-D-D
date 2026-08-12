@@ -102,9 +102,17 @@ Venstrekanten er farvet efter **type**, så en bunke kan sorteres visuelt:
 Magic items følger deres egen type, så et magisk sværd får samme røde kant som et
 almindeligt.
 
-Våben og rustning tager deres spilmekanik med: skade og skadetype, mastery, egenskaber som
-Finesse og Thrown, AC, styrkekrav og stealth-ulempe. Er et magic item rullet på et
-basisvåben, står basisitemets tal også på kortet.
+Våben og rustning tager deres spilmekanik med. Tallene man slår med — skade og skadetype,
+AC, styrkekrav og stealth-ulempe — står fremhævet. Egenskaber som Finesse og Thrown samt
+mastery står i en mindre linje under, da det er regeltekst og ikke tal. Mastery-egenskaben
+tages ud af egenskabslisten og får sin egen etiket, så den ikke står to gange.
+
+**Generiske magic items navngives efter det basisitem de blev rullet på.** `Weapon, +1`
+bliver til `Shortsword, +1` med kortsværdets 1d6 Piercing, `Armor of Resistance` bliver til
+`Chain Mail of Resistance`, og `Walloping Ammunition` bliver til `Walloping Sling Bullets`.
+47 af de 52 magic items med basisrul har et generisk ord at erstatte. De sidste fem —
+Flame Tongue, Holy Avenger, Defender, Dragon Slayer og Giant Slayer — har et egennavn uden
+generisk ord, så de beholder navnet og viser basisitemet på sin egen linje.
 
 Kortnummer (`Kort 1/2/3`) og pakkeoprindelse er arbejdsdata og udelades ved print.
 
