@@ -163,8 +163,9 @@ window.LB = (function () {
         id: 'adventurer', name: 'Adventurer',
         filter: filt(['Ammunition', 'Gift', 'Rustning', 'Udstyr', 'Våben', 'Værktøj'], []),
         note: 'Den almindelige pakke — udstyr, våben, rustning, værktøj, gift og ammunition. ' +
-              'Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra.',
-        magic: packMagic({ rare: 10, very_rare: 20, legendary: 30 }, []),
+              'Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra. Magic item-kort er ' +
+              'permanente; forbrugsvarer ligger i Consumables.',
+        magic: packMagic({ rare: 10, very_rare: 20, legendary: 30 }, [], 'exclude'),
         tiers: gradedTiers(
           [card('Kort 1', { common: 100 }),
            card('Kort 2', { common: 50, uncommon: 50 }),
@@ -178,15 +179,15 @@ window.LB = (function () {
         )
       },
       { id: 'weapons', name: 'Weapons', filter: filt(['Våben', 'Ammunition'], []),
-        note: 'Magic item-kort er begrænset til våben.',
-        magic: packMagic({ rare: 15, very_rare: 25, legendary: 40 }, ['Weapon']),
+        note: 'Magic item-kort er begrænset til permanente våben — potions hører til i Consumables.',
+        magic: packMagic({ rare: 15, very_rare: 25, legendary: 40 }, ['Weapon'], 'exclude'),
         tiers: standardTiers() },
       {
         id: 'armor', name: 'Armor', filter: filt(['Rustning'], []),
         note: 'Rustning ligger højt på udstyrs-skalaen — billigste er Padded til 5 gp, så der findes ' +
               'ingen Common. Fordelingerne starter derfor ved Uncommon. Kun 14 items i alt, så ' +
               'gentagelser er uundgåelige.',
-        magic: packMagic({ rare: 15, very_rare: 25, legendary: 40 }, ['Armor']),
+        magic: packMagic({ rare: 15, very_rare: 25, legendary: 40 }, ['Armor'], 'exclude'),
         tiers: gradedTiers(
           // Kun ét Uncommon-item (Padded), så kun kort 1 sigter efter det —
           // ellers slås dubletfiltret og fordelingen indbyrdes.
@@ -203,14 +204,14 @@ window.LB = (function () {
       },
       { id: 'consumables', name: 'Consumables', filter: filt(['Gift'], ['Consumable', 'Healing'], 'or'),
         note: 'Union-filter: hele Gift-gruppen plus alt med tagget Consumable eller Healing. ' +
-              'Magic item-kort er begrænset til potions og scrolls.',
-        magic: packMagic({ rare: 20, very_rare: 30, legendary: 40 }, ['Potion', 'Scroll']),
+              'Magic item-kort er de magiske forbrugsvarer: potions, scrolls, dust, oil og lignende.',
+        magic: packMagic({ rare: 25, very_rare: 40, legendary: 55 }, [], 'only'),
         tiers: standardTiers() },
       {
         id: 'magic', name: 'Magic', filter: filt([], []),
         note: 'Hvert kort er et magic item. Korttrinnet afgør hvilken magi-rarity der trækkes ' +
               '— se tabellen under fanen Magic. Trinnene ligger højt, fordi hele pakken er magi.',
-        magic: packMagic({ common: 100, uncommon: 100, rare: 100, very_rare: 100, legendary: 100 }, []),
+        magic: packMagic({ common: 100, uncommon: 100, rare: 100, very_rare: 100, legendary: 100 }, [], 'all'),
         tiers: gradedTiers(
           [card('Kort 1', { rare: 100 }),
            card('Kort 2', { rare: 100 }),
@@ -266,9 +267,13 @@ window.LB = (function () {
     return d;
   }
 
-  function packMagic(chance, types) {
+  function packMagic(chance, types, consumables) {
     // types tomt = alle typer magic items kan trækkes i pakken.
-    return { chance: magicChanceObj(chance), types: types || [] };
+    return {
+      chance: magicChanceObj(chance),
+      types: types || [],
+      consumables: consumables || 'all'
+    };
   }
 
   function defaultConfig() {
@@ -343,6 +348,8 @@ window.LB = (function () {
         p.magic = dp ? dp.magic : packMagic({}, []);
       p.magic.chance = magicChanceObj(p.magic.chance);
       if (!Array.isArray(p.magic.types)) p.magic.types = [];
+      if (['all', 'exclude', 'only'].indexOf(p.magic.consumables) < 0)
+        p.magic.consumables = dp ? dp.magic.consumables : 'all';
       if (!Array.isArray(p.tiers)) p.tiers = [];
       p.tiers.forEach(function (t) {
         if (!Array.isArray(t.cards)) t.cards = [];
@@ -615,11 +622,16 @@ window.LB = (function () {
        3. Er magic itemet generisk ("Weapon, +1"), rulles der til sidst hvilket
           basisitem det sidder på.                                          */
 
-  function magicPool(magicItems, types) {
+  /* consumables: 'all' = både forbrugsvarer og permanente magic items,
+                  'exclude' = kun permanente, 'only' = kun forbrugsvarer. */
+  function magicPool(magicItems, types, consumables) {
+    var mode = consumables || 'all';
     return magicItems.filter(function (m) {
       if (m.enabled === false) return false;
       if (!m.rarity) return false;
       if (types && types.length && types.indexOf(m.type) < 0) return false;
+      if (mode === 'exclude' && m.consumable) return false;
+      if (mode === 'only' && !m.consumable) return false;
       return true;
     });
   }
@@ -691,7 +703,7 @@ window.LB = (function () {
     var used = {};
     var pm = pack.magic || { chance: {}, types: [] };
     var mPool = (cfg.magic && cfg.magic.enabled && magicItems)
-      ? magicPool(magicItems, pm.types) : [];
+      ? magicPool(magicItems, pm.types, pm.consumables) : [];
 
     var cards = tierObj.cards.map(function (c, idx) {
       var f = (c.filter && (c.filter.categories.length || c.filter.tags.length)) ? c.filter : pack.filter;
@@ -734,7 +746,9 @@ window.LB = (function () {
         type: String(o.type || '').trim(),
         rarity: normalizeRarity(o.rarity),
         attunement: !!o.attunement,
+        consumable: !!o.consumable,
         typeLine: o.typeLine || '',
+        tags: Array.isArray(o.tags) ? o.tags : [],
         desc: o.desc || '',
         source: o.source || '',
         baseFilter: o.baseFilter || null,

@@ -262,3 +262,4 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
   .map-row{grid-template-columns:90px repeat(6,1fr) 60px;font-size:12px}
   .map-row input{padding:4px}
 }
+.cons-mode{margin-top:6px;max-width:320px}

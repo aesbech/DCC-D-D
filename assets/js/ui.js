@@ -247,7 +247,9 @@
           text: 'Magic item-chance: ' + on.map(function (k) {
             return C.rarityLabel(k) + ' ' + pm.chance[k] + '%';
           }).join(', ') +
-          ' · ' + C.magicPool(state.magic, pm.types).length + ' magic items i puljen'
+          ' · ' + C.magicPool(state.magic, pm.types, pm.consumables).length + ' magic items i puljen' +
+          (pm.consumables === 'only' ? ' (kun forbrugsvarer)'
+            : pm.consumables === 'exclude' ? ' (kun permanente)' : '')
         }));
       }
     }
@@ -471,7 +473,7 @@
      fælles for alle pakker og ligger under fanen Magic. */
   function magicPanel(pack) {
     var pm = pack.magic;
-    var pool = C.magicPool(state.magic, pm.types);
+    var pool = C.magicPool(state.magic, pm.types, pm.consumables);
 
     var chances = el('div', { class: 'dist' });
     C.RARITIES.forEach(function (r) {
@@ -503,17 +505,35 @@
       }));
     });
 
-    return el('div', { class: 'panel' }, [
+    var panel = el('div', { class: 'panel' }, [
       el('h3', { text: 'Magic item-kort' }),
       el('p', { class: 'hint',
         text: 'Chance i procent for at et kort med det pågældende korttrin bliver et magic item ' +
               'i stedet for et almindeligt item. Hvilken magi-rarity man så får, styres af ' +
               'tabellen under fanen Magic.' }),
       chances,
+      el('h3', { text: 'Forbrugsvarer', style: 'margin-top:14px' }),
+      el('p', { class: 'hint',
+        text: 'Potions, scrolls, dust, oil og andet der bruges op, kan holdes adskilt fra ' +
+              'de permanente magic items.' }),
+      el('label', { class: 'field cons-mode' }, [
+        el('select', {
+          onchange: function () {
+            pm.consumables = this.value;
+            renderPackDetail(); updateGenHint(); persist();
+          }
+        }, [
+          el('option', { value: 'all', text: 'Både permanente og forbrugsvarer' }),
+          el('option', { value: 'exclude', text: 'Kun permanente magic items' }),
+          el('option', { value: 'only', text: 'Kun forbrugsvarer' })
+        ])
+      ]),
       el('h3', { text: 'Tilladte typer', style: 'margin-top:14px' }),
       el('p', { class: 'hint', text: 'Ingen valgt = alle typer. ' + pool.length + ' magic items i puljen.' }),
       types
     ]);
+    panel.querySelector('.cons-mode select').value = pm.consumables || 'all';
+    return panel;
   }
 
   function renderPackDetail() {
@@ -1098,6 +1118,9 @@
       if (q && m.name.toLowerCase().indexOf(q) < 0) return false;
       if (type && m.type !== type) return false;
       if (rar && m.rarity !== rar) return false;
+      var cons = $('#magicConsFilter').value;
+      if (cons === 'only' && !m.consumable) return false;
+      if (cons === 'exclude' && m.consumable) return false;
       return true;
     });
   }
@@ -1121,6 +1144,14 @@
         el('span', { text: r.label })
       ]));
     });
+    var nCons = state.magic.filter(function (m) { return m.enabled !== false && m.consumable; }).length;
+    var nPerm = state.magic.filter(function (m) { return m.enabled !== false && !m.consumable; }).length;
+    stats.appendChild(el('div', { class: 'stat' }, [
+      el('b', { text: String(nPerm) }), el('span', { text: 'permanente' })
+    ]));
+    stats.appendChild(el('div', { class: 'stat' }, [
+      el('b', { text: String(nCons) }), el('span', { text: 'forbrugsvarer' })
+    ]));
 
     var list = filteredMagic();
     $('#magicCount').textContent = list.length + ' af ' + state.magic.length + ' magic items';
@@ -1129,11 +1160,13 @@
     bulk.innerHTML = '';
     if (list.length) {
       bulk.appendChild(el('span', { class: 'hint', text: 'For alle ' + list.length + ' viste:' }));
-      [['Med i puljen', true], ['Ude af puljen', false]].forEach(function (opt) {
+      [['Med i puljen', 'enabled', true], ['Ude af puljen', 'enabled', false],
+       ['Marker som forbrugsvare', 'consumable', true], ['Marker som permanent', 'consumable', false]
+      ].forEach(function (opt) {
         bulk.appendChild(el('button', {
           class: 'btn btn-sm', text: opt[0],
           onclick: function () {
-            list.forEach(function (m) { m.enabled = opt[1]; });
+            list.forEach(function (m) { m[opt[1]] = opt[2]; });
             renderMagicItems(); persist();
             toast(list.length + ' magic items opdateret');
           }
@@ -1170,6 +1203,12 @@
           m.attunement ? el('div', { class: 'cell-sub', text: 'kræver attunement' }) : null
         ]),
         el('td', { text: m.type }),
+        el('td', {}, [
+          el('input', {
+            type: 'checkbox', checked: m.consumable ? 'checked' : null,
+            onchange: function () { m.consumable = this.checked; renderMagicItems(); persist(); }
+          })
+        ]),
         el('td', {}, [rarSel]),
         el('td', { class: 'cell-sub', text: base }),
         el('td', {}, [
@@ -1196,7 +1235,7 @@
     }
   }
 
-  ['#magicSearch', '#magicTypeFilter', '#magicRarFilter'].forEach(function (sel) {
+  ['#magicSearch', '#magicTypeFilter', '#magicRarFilter', '#magicConsFilter'].forEach(function (sel) {
     $(sel).addEventListener(sel === '#magicSearch' ? 'input' : 'change', function () {
       state.magicPage = 0; renderMagicItems();
     });
