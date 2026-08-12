@@ -80,10 +80,27 @@ underkategori, beskrivelse, rarity og pris. Resultatet kan printes eller kopiere
 Magic- og Pokémon-kort. Ni kort pr. A4-side i et 3 × 3-gitter, hvor kortene støder op til
 hinanden, så ét snit deler to kort.
 
-Kortene sættes op til papir frem for skærm: hvid bund, sort tekst og ingen farvekode.
-Rarity vises i stedet som **1–5 stjerner** i en lille pille — Common er én stjerne,
-Legendary er fem. På magic items står stjernerne i guld og viser magic itemets **egen**
-rarity, ikke korttrinnet.
+Kortene sættes op til papir frem for skærm: hvid bund og sort tekst. Rarity vises som
+**1–5 stjerner** i en lille pille — Common er én stjerne, Legendary er fem. På magic items
+står stjernerne i guld og viser magic itemets **egen** rarity, ikke korttrinnet.
+
+Venstrekanten er farvet efter **type**, så en bunke kan sorteres visuelt:
+
+| Farve | Type |
+|-------|------|
+| Rød | Våben |
+| Rustrød | Ammunition |
+| Blå | Rustning |
+| Okker | Værktøj |
+| Grøn | Gift |
+| Turkis | Potions og scrolls |
+| Lilla | Fokus, ringe, staver, wands, wondrous items |
+| Brun | Udstyr og pakker |
+| Grå | Køretøjer og ridedyr |
+| Guld | Class-kort |
+
+Magic items følger deres egen type, så et magisk sværd får samme røde kant som et
+almindeligt.
 
 Våben og rustning tager deres spilmekanik med: skade og skadetype, mastery, egenskaber som
 Finesse og Thrown, AC, styrkekrav og stealth-ulempe. Er et magic item rullet på et
@@ -145,6 +162,28 @@ Verificeret over 20.000 simulerede pakker pr. tier: alle ni fordelinger rammer i
 0,4 procentpoint, og der er hverken fallback, tomme kort eller dubletter.
 
 Øvrige pakketyper er startgæt, tænkt til at blive tunet i UI'et.
+
+### Vægtning pr. kategori
+
+Uden vægte er alle items i en rarity lige sandsynlige, og så dominerer den største
+kategori. Udstyr fyldte 55 % af en bronzepakke, mens rustning lå på under 2 %.
+
+Hver pakke kan derfor vægte sine kategorier. En vægt på 2 gør hvert item i kategorien
+dobbelt så sandsynligt som et uvægtet item af samme rarity; 1 er neutralt, og 0 slår
+kategorien fra uden at fjerne den fra filteret.
+
+Adventurer bruger **Våben 2, Rustning 4, Ammunition 2**:
+
+| Tier | Våben | Rustning | Udstyr | Værktøj |
+|------|-------|----------|--------|---------|
+| Bronze | 21 % → **32 %** | 1 % → **5 %** | 55 % → **43 %** | 19 % → 15 % |
+| Sølv | 23 % → **34 %** | 4 % → **10 %** | 44 % → **33 %** | 24 % → 17 % |
+| Guld | 24 % → **33 %** | 5 % → **13 %** | 39 % → **30 %** | 25 % → 17 % |
+
+Rustning kan ikke komme meget højere i Bronze: der findes ingen Common rustning, og kun
+ét Uncommon-item, så en bronzepakke har sjældent et trin hvor rustning overhovedet kan
+trækkes. Skal rustning være almindeligt i bronzepakker, kræver det billigere rustninger
+i regnearket — ikke en højere vægt.
 
 ### Forbrugsvarer
 

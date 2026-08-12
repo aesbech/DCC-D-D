@@ -327,6 +327,27 @@
   }
 
 
+  /* Kortets venstrekant farves efter type, så en bunke kan sorteres visuelt.
+     Magic items følger deres egen type, så et magisk sværd får samme farve
+     som et almindeligt. */
+  var TYPE_COLORS = {
+    'Våben': 'weapon', 'Weapon': 'weapon',
+    'Ammunition': 'ammo',
+    'Rustning': 'armor', 'Armor': 'armor',
+    'Værktøj': 'tool',
+    'Gift': 'poison',
+    'Potion': 'potion', 'Scroll': 'potion',
+    'Fokus': 'arcane', 'Ring': 'arcane', 'Rod': 'arcane',
+    'Staff': 'arcane', 'Wand': 'arcane', 'Wondrous Item': 'arcane',
+    'Køretøj': 'vehicle', 'Ridedyr': 'vehicle',
+    'Class': 'class',
+    'Udstyr': 'gear', 'Pakke': 'gear'
+  };
+
+  function typeClass(value) {
+    return ' t-' + (TYPE_COLORS[value] || 'other');
+  }
+
   /* Rarity som 1-5 stjerner i en lille pille, så kortet kan læses uden farvekode.
      Magic items får guldstjerner, der viser magic itemets egen rarity. */
   function starBadge(keys, key, gold) {
@@ -396,7 +417,9 @@
             el('span', { class: 'meta-tier', text: C.rarityLabel(c.rolled) + '-kort' })
           ]));
           mk.push(el('div', { class: 'card-origin', text: origin }));
-          cards.appendChild(el('div', { class: 'card is-magic r-' + c.magic.magicRarity }, mk));
+          cards.appendChild(el('div', {
+            class: 'card is-magic r-' + c.magic.magicRarity + typeClass(m.type)
+          }, mk));
           return;
         }
 
@@ -430,7 +453,9 @@
           el('span', { text: it ? priceLabel(it) : '' })
         ]));
         kids.push(el('div', { class: 'card-origin', text: origin }));
-        cards.appendChild(el('div', { class: 'card' + (it ? ' r-' + c.actual : ' is-empty') }, kids));
+        cards.appendChild(el('div', {
+          class: 'card' + (it ? ' r-' + c.actual + typeClass(it.category) : ' is-empty')
+        }, kids));
       });
 
       wrap.appendChild(el('div', { class: 'box' }, [
@@ -602,6 +627,41 @@
     return panel;
   }
 
+  /* Uden vægte er alle items i en rarity lige sandsynlige, så den største
+     kategori dominerer. Vægten ganges på hvert item i kategorien. */
+  function weightPanel(pack) {
+    var pool = C.poolFor(state.items, pack.filter, state.cfg);
+    var counts = {};
+    pool.forEach(function (i) { counts[i.category] = (counts[i.category] || 0) + 1; });
+    var cats = Object.keys(counts).sort();
+
+    var rows = el('div', { class: 'dist' });
+    cats.forEach(function (cat) {
+      rows.appendChild(el('label', { class: 'field' }, [
+        el('span', { text: cat + ' (' + counts[cat] + ')' }),
+        el('input', {
+          type: 'number', min: '0', step: '0.5',
+          value: pack.weights[cat] === undefined ? 1 : pack.weights[cat],
+          oninput: function () {
+            var v = Number(this.value);
+            if (!isFinite(v) || v < 0) v = 0;
+            if (v === 1) delete pack.weights[cat]; else pack.weights[cat] = v;
+            persist();
+          }
+        })
+      ]));
+    });
+
+    return el('div', { class: 'panel' }, [
+      el('h3', { text: 'Vægtning pr. kategori' }),
+      el('p', { class: 'hint',
+        text: '1 er neutralt. En vægt på 2 gør hvert item i kategorien dobbelt så ' +
+              'sandsynligt som et uvægtet item af samme rarity. 0 slår kategorien fra ' +
+              'uden at fjerne den fra filteret. Tallet i parentes er antal items i puljen.' }),
+      cats.length ? rows : el('p', { class: 'hint', text: 'Ingen kategorier i puljen.' })
+    ]);
+  }
+
   function renderPackDetail() {
     var host = $('#packDetail');
     host.innerHTML = '';
@@ -646,6 +706,8 @@
         renderPackDetail(); updateGenHint(); persist();
       })
     ]));
+
+    host.appendChild(weightPanel(pack));
 
     host.appendChild(magicPanel(pack));
 
