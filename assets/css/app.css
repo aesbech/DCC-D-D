@@ -234,3 +234,10 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 .card{min-height:150px}
 .cards{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
 .filter-mode{margin-top:12px;max-width:320px}
+.bulk-bar{margin-top:12px;align-items:center}
+.bulk-bar:empty{display:none}
+.notice{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  background:var(--bg-3);border:1px solid var(--accent);
+  border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;font-size:14px;
+}

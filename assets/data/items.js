@@ -1,4 +1,5 @@
 /* Auto-genereret fra dnd_items.xlsx. Redigér regnearket og kør scripts/import_xlsx.py igen. */
+window.DND_ITEMS_VERSION = "05b27db53f36";
 window.DND_ITEMS = [
  {
   "name": "Candle",
@@ -1001,7 +1002,7 @@ window.DND_ITEMS = [
   "subcategory": "Adventuring Gear",
   "price": null,
   "priceText": "",
-  "rarity": "common",
+  "rarity": null,
   "scale": "gear",
   "source": "Dungeon Master's Guide",
   "tags": [
@@ -1016,7 +1017,7 @@ window.DND_ITEMS = [
   "subcategory": "Adventuring Gear",
   "price": null,
   "priceText": "",
-  "rarity": "common",
+  "rarity": null,
   "scale": "gear",
   "source": "Dungeon Master's Guide",
   "tags": [
@@ -1031,7 +1032,7 @@ window.DND_ITEMS = [
   "subcategory": "Adventuring Gear",
   "price": null,
   "priceText": "",
-  "rarity": "common",
+  "rarity": null,
   "scale": "gear",
   "source": "Dungeon Master's Guide",
   "tags": [
@@ -1091,7 +1092,7 @@ window.DND_ITEMS = [
   "subcategory": "Ammunition",
   "price": null,
   "priceText": "",
-  "rarity": "common",
+  "rarity": null,
   "scale": "gear",
   "source": "D&D Beyond Basic Rules",
   "tags": [
@@ -1226,7 +1227,7 @@ window.DND_ITEMS = [
   "subcategory": "Druidic Focus",
   "price": null,
   "priceText": "",
-  "rarity": "common",
+  "rarity": null,
   "scale": "gear",
   "source": "Player's Handbook",
   "tags": [
@@ -1366,7 +1367,7 @@ window.DND_ITEMS = [
   "subcategory": "Firearms Ranged Weapon",
   "price": null,
   "priceText": "",
-  "rarity": "common",
+  "rarity": null,
   "scale": "gear",
   "source": "Dungeon Master's Guide",
   "tags": [
@@ -1386,7 +1387,7 @@ window.DND_ITEMS = [
   "subcategory": "Firearms Ranged Weapon",
   "price": null,
   "priceText": "",
-  "rarity": "common",
+  "rarity": null,
   "scale": "gear",
   "source": "Dungeon Master's Guide",
   "tags": [
@@ -1406,7 +1407,7 @@ window.DND_ITEMS = [
   "subcategory": "Firearms Ranged Weapon",
   "price": null,
   "priceText": "",
-  "rarity": "common",
+  "rarity": null,
   "scale": "gear",
   "source": "Dungeon Master's Guide",
   "tags": [
@@ -1426,7 +1427,7 @@ window.DND_ITEMS = [
   "subcategory": "Firearms Ranged Weapon",
   "price": null,
   "priceText": "",
-  "rarity": "common",
+  "rarity": null,
   "scale": "gear",
   "source": "Dungeon Master's Guide",
   "tags": [
@@ -1446,7 +1447,7 @@ window.DND_ITEMS = [
   "subcategory": "Firearms Ranged Weapon",
   "price": null,
   "priceText": "",
-  "rarity": "common",
+  "rarity": null,
   "scale": "gear",
   "source": "Dungeon Master's Guide",
   "tags": [
@@ -1466,7 +1467,7 @@ window.DND_ITEMS = [
   "subcategory": "Firearms Ranged Weapon",
   "price": null,
   "priceText": "",
-  "rarity": "common",
+  "rarity": null,
   "scale": "gear",
   "source": "Dungeon Master's Guide",
   "tags": [],
@@ -1483,7 +1484,7 @@ window.DND_ITEMS = [
   "subcategory": "Firearms Ranged Weapon",
   "price": null,
   "priceText": "",
-  "rarity": "common",
+  "rarity": null,
   "scale": "gear",
   "source": "Dungeon Master's Guide",
   "tags": [
@@ -1596,7 +1597,7 @@ window.DND_ITEMS = [
   "subcategory": "Holy Symbol",
   "price": null,
   "priceText": "",
-  "rarity": "common",
+  "rarity": null,
   "scale": "gear",
   "source": "Player's Handbook",
   "tags": [
@@ -3407,7 +3408,7 @@ window.DND_ITEMS = [
   "name": "Rowboat",
   "category": "Køretøj",
   "subcategory": "Vehicle (Water)",
-  "price": null,
+  "price": 50.0,
   "priceText": "50 GP",
   "rarity": "very_rare",
   "scale": "gear",
@@ -3425,7 +3426,7 @@ window.DND_ITEMS = [
   "name": "Keelboat",
   "category": "Køretøj",
   "subcategory": "Vehicle (Water)",
-  "price": null,
+  "price": 3000.0,
   "priceText": "3,000 GP",
   "rarity": null,
   "scale": "gear",
@@ -3442,7 +3443,7 @@ window.DND_ITEMS = [
   "name": "Longship",
   "category": "Køretøj",
   "subcategory": "Vehicle (Water)",
-  "price": null,
+  "price": 10000.0,
   "priceText": "10,000 GP",
   "rarity": null,
   "scale": "gear",
@@ -3459,7 +3460,7 @@ window.DND_ITEMS = [
   "name": "Sailing Ship",
   "category": "Køretøj",
   "subcategory": "Vehicle (Water)",
-  "price": null,
+  "price": 10000.0,
   "priceText": "10,000 GP",
   "rarity": null,
   "scale": "gear",
@@ -3476,7 +3477,7 @@ window.DND_ITEMS = [
   "name": "Warship",
   "category": "Køretøj",
   "subcategory": "Vehicle (Water)",
-  "price": null,
+  "price": 25000.0,
   "priceText": "25,000 GP",
   "rarity": null,
   "scale": "gear",
@@ -3493,7 +3494,7 @@ window.DND_ITEMS = [
   "name": "Galley",
   "category": "Køretøj",
   "subcategory": "Vehicle (Water)",
-  "price": null,
+  "price": 30000.0,
   "priceText": "30,000 GP",
   "rarity": null,
   "scale": "gear",

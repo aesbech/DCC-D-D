@@ -9,6 +9,7 @@ Rarity tages fra regnearkets egen Rarity-kolonne. Rækker uden en gyldig rarity
 får None, og bliver markeret i appen som "uden rarity" i stedet for at blive gættet.
 """
 
+import hashlib
 import json
 import re
 import sys
@@ -44,6 +45,39 @@ def clean(value):
     return re.sub(r"\s+", " ", str(value)).strip()
 
 
+def parse_price(text):
+    """Læser prisen fra tekstkolonnen, fx '3,000 GP', '5 SP', '1 CP' -> gp.
+
+    Nogle rækker (bl.a. de store skibe) har en pris i tekstkolonnen, men
+    en tom 'Pris (GP)'-formelkolonne, så den her er nødvendig som reserve.
+    """
+    if not text:
+        return None
+    lowered = text.lower()
+    unit = 1.0
+    if re.search(r"\bsp\b", lowered):
+        unit = 0.1
+    elif re.search(r"\bcp\b", lowered):
+        unit = 0.01
+    elif re.search(r"\bpp\b", lowered):
+        unit = 10.0
+
+    digits = re.sub(r"[^0-9.,]", "", lowered)
+    if not digits:
+        return None
+    # Sidste separator med 1-2 cifre efter er en decimal; ellers tusindtalsseparator.
+    decimal = re.search(r"[.,](\d{1,2})$", digits)
+    if decimal:
+        digits = digits[: -len(decimal.group(0))].replace(".", "").replace(",", "")
+        digits = f"{digits or '0'}.{decimal.group(1)}"
+    else:
+        digits = digits.replace(".", "").replace(",", "")
+    try:
+        return float(digits) * unit
+    except ValueError:
+        return None
+
+
 def main():
     src = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_XLSX
     if not src.exists():
@@ -60,16 +94,24 @@ def main():
         if not name:
             continue
 
+        price_text = clean(row[col["Pris"]])
         price = row[col["Pris (GP)"]]
-        price = price if isinstance(price, (int, float)) else None
+        if not isinstance(price, (int, float)):
+            price = parse_price(price_text)
+
+        # Regnearkets Rarity-formel er IF(pris < 2; "Common"; ...), og en tom
+        # celle tæller som 0 — derfor står prisløst moderne udstyr som Common.
+        # Uden en pris findes der ingen udledt rarity, så den lades tom og
+        # markeres i appen i stedet for at blive gættet.
+        rarity = RARITY.get(clean(row[col["Rarity"]])) if price is not None else None
 
         item = {
             "name": name,
             "category": clean(row[col["Gruppe"]]) or "Ukategoriseret",
             "subcategory": clean(row[col["Kategori"]]),
             "price": price,
-            "priceText": clean(row[col["Pris"]]),
-            "rarity": RARITY.get(clean(row[col["Rarity"]])),
+            "priceText": price_text,
+            "rarity": rarity,
             "scale": "gear",
             "source": clean(row[col["Kilde"]]),
             "tags": [t.strip() for t in clean(row[col["Tags"]]).split(",") if t.strip()],
@@ -86,15 +128,22 @@ def main():
 
         items.append(item)
 
+    payload = json.dumps(items, ensure_ascii=False, indent=1)
+
+    # Fingeraftryk af indholdet. Appen sammenligner det med hvad brugeren har
+    # gemt lokalt, og tilbyder at genindlæse når regnearket har ændret sig.
+    version = hashlib.sha1(payload.encode("utf-8")).hexdigest()[:12]
+
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(
         "/* Auto-genereret fra %s. Redigér regnearket og kør scripts/import_xlsx.py igen. */\n"
-        "window.DND_ITEMS = %s;\n" % (src.name, json.dumps(items, ensure_ascii=False, indent=1)),
+        'window.DND_ITEMS_VERSION = "%s";\n'
+        "window.DND_ITEMS = %s;\n" % (src.name, version, payload),
         encoding="utf-8",
     )
 
     missing = [i["name"] for i in items if not i["rarity"]]
-    print(f"Skrev {len(items)} items til {OUT.relative_to(ROOT)}")
+    print(f"Skrev {len(items)} items til {OUT.relative_to(ROOT)} (version {version})")
     if missing:
         print(f"Uden rarity ({len(missing)}): {', '.join(missing)}")
 

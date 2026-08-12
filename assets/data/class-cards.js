@@ -2,6 +2,9 @@
    Rarity er sat manuelt (ingen pris) — se README for begrundelsen bag fordelingen.
    Det er et FORSLAG, tænkt til at blive tunet i Items-fanen. */
 (function () {
+  // Hæv denne når indholdet ændres, så appen tilbyder at genindlæse.
+  window.CLASS_CARDS_VERSION = '2';
+
   var out = [];
 
   function add(names, subcategory, rarity, note) {
