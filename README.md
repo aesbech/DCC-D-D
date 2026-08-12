@@ -109,24 +109,28 @@ eksport/import af hele opsætningen som JSON.
 
 | Pakke | Filter | Pulje | Tiers |
 |-------|--------|-------|-------|
-| Adventurer | alt undtagen Class | 210 | Bronze / Sølv / Guld |
+| Adventurer | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 166 | Bronze / Sølv / Guld |
 | Weapons | Våben + Ammunition | 48 | Bronze / Sølv / Guld |
 | Armor | Rustning | 14 | Bronze / Sølv / Guld |
 | Consumables | Gift **eller** tag Consumable/Healing | 22 | Bronze / Sølv / Guld |
 | Magic | Magic Item | 0 | Bronze / Sølv / Guld |
 | Classes | Class | 104 | Standard (ikke gradueret) |
 
-Adventurer Bronze er sat op præcis som specificeret:
+### Adventurer
 
-| Kort | Fordeling |
-|------|-----------|
-| Kort 1 | 100 % Common |
-| Kort 2 | 90 % Common, 10 % Uncommon |
-| Kort 3 | 95 % Uncommon, 4 % Rare, 1 % Very Rare |
+Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra — en galej eller en ridehest
+hører ikke hjemme i en almindelig pakke.
 
-Verificeret over 20.000 simulerede pakker: 100 % / 90,0 + 10,0 / 94,9 + 3,9 + 1,1.
+| Kort | Bronze | Sølv | Guld |
+|------|--------|------|------|
+| Kort 1 | 100 % C | 20 % C, 80 % U | 25 % C, 50 % U, 25 % R |
+| Kort 2 | 50 % C, 50 % U | 80 % U, 20 % R | 75 % U, 25 % R |
+| Kort 3 | 96 % U, 3,7 % R, 0,2 % VR, 0,1 % L | 60 % U, 35 % R, 4 % VR, 1 % L | 40 % U, 45 % R, 12 % VR, 3 % L |
 
-Øvrige tiers og pakketyper er startgæt, tænkt til at blive tunet i UI'et.
+Verificeret over 20.000 simulerede pakker pr. tier: alle ni fordelinger rammer inden for
+0,4 procentpoint, og der er hverken fallback, tomme kort eller dubletter.
+
+Øvrige pakketyper er startgæt, tænkt til at blive tunet i UI'et.
 
 ### To pakker der kræver din opmærksomhed
 

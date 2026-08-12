@@ -141,18 +141,20 @@ window.LB = (function () {
   function defaultPacks() {
     return [
       {
-        id: 'adventurer', name: 'Adventurer', filter: filt([], []),
-        note: 'Den almindelige pakke — trækker fra alt undtagen Class-kort.',
+        id: 'adventurer', name: 'Adventurer',
+        filter: filt(['Ammunition', 'Gift', 'Rustning', 'Udstyr', 'Våben', 'Værktøj'], []),
+        note: 'Den almindelige pakke — udstyr, våben, rustning, værktøj, gift og ammunition. ' +
+              'Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra.',
         tiers: gradedTiers(
           [card('Kort 1', { common: 100 }),
-           card('Kort 2', { common: 90, uncommon: 10 }),
-           card('Kort 3', { uncommon: 95, rare: 4, very_rare: 1 })],
-          [card('Kort 1', { common: 80, uncommon: 20 }),
-           card('Kort 2', { common: 60, uncommon: 40 }),
-           card('Kort 3', { uncommon: 70, rare: 25, very_rare: 5 })],
-          [card('Kort 1', { common: 50, uncommon: 50 }),
-           card('Kort 2', { common: 30, uncommon: 70 }),
-           card('Kort 3', { uncommon: 40, rare: 45, very_rare: 13, legendary: 2 })]
+           card('Kort 2', { common: 50, uncommon: 50 }),
+           card('Kort 3', { uncommon: 96, rare: 3.7, very_rare: 0.2, legendary: 0.1 })],
+          [card('Kort 1', { common: 20, uncommon: 80 }),
+           card('Kort 2', { uncommon: 80, rare: 20 }),
+           card('Kort 3', { uncommon: 60, rare: 35, very_rare: 4, legendary: 1 })],
+          [card('Kort 1', { common: 25, uncommon: 50, rare: 25 }),
+           card('Kort 2', { uncommon: 75, rare: 25 }),
+           card('Kort 3', { uncommon: 40, rare: 45, very_rare: 12, legendary: 3 })]
         )
       },
       { id: 'weapons', name: 'Weapons', filter: filt(['Våben', 'Ammunition'], []),
