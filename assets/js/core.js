@@ -120,9 +120,16 @@ window.LB = (function () {
   }
 
   /* mode: 'and' = skal matche både kategori- og tag-listen (tomme lister ignoreres).
-           'or'  = tæller med hvis den matcher enten kategori- eller tag-listen. */
-  function filt(categories, tags, mode) {
-    return { categories: categories || [], tags: tags || [], mode: mode === 'or' ? 'or' : 'and' };
+           'or'  = tæller med hvis den matcher enten kategori- eller tag-listen.
+     consumables: 'all' | 'exclude' | 'only' — samme tre valg som for magic items,
+     så forbrugsvarer kan holdes ude af eller alene i en pakke. */
+  function filt(categories, tags, mode, consumables) {
+    return {
+      categories: categories || [],
+      tags: tags || [],
+      mode: mode === 'or' ? 'or' : 'and',
+      consumables: consumables || 'all'
+    };
   }
 
   function card(label, d, filter) {
@@ -202,11 +209,24 @@ window.LB = (function () {
            card('Kort 3', { very_rare: 60, legendary: 40 })]
         )
       },
-      { id: 'consumables', name: 'Consumables', filter: filt(['Gift'], ['Consumable', 'Healing'], 'or'),
-        note: 'Union-filter: hele Gift-gruppen plus alt med tagget Consumable eller Healing. ' +
-              'Magic item-kort er de magiske forbrugsvarer: potions, scrolls, dust, oil og lignende.',
+      {
+        id: 'consumables', name: 'Consumables', filter: filt([], [], 'and', 'only'),
+        note: 'Alt der bruges op: gift, fakler, rationer, olie, vievand — og på magisiden ' +
+              'potions, scrolls, dust og lignende. Kun 24 almindelige forbrugsvarer, og de ' +
+              'ni dyreste er alle gift, så de høje trin læner sig på magic item-kortene.',
         magic: packMagic({ rare: 25, very_rare: 40, legendary: 55 }, [], 'only'),
-        tiers: standardTiers() },
+        tiers: gradedTiers(
+          [card('Kort 1', { common: 100 }),
+           card('Kort 2', { common: 90, uncommon: 10 }),
+           card('Kort 3', { common: 50, uncommon: 30, rare: 20 })],
+          [card('Kort 1', { common: 70, uncommon: 30 }),
+           card('Kort 2', { common: 40, uncommon: 30, rare: 30 }),
+           card('Kort 3', { rare: 60, very_rare: 40 })],
+          [card('Kort 1', { common: 40, uncommon: 30, rare: 30 }),
+           card('Kort 2', { rare: 50, very_rare: 50 }),
+           card('Kort 3', { very_rare: 50, legendary: 50 })]
+        )
+      },
       {
         id: 'magic', name: 'Magic', filter: filt([], []),
         note: 'Hvert kort er et magic item. Korttrinnet afgør hvilken magi-rarity der trækkes ' +
@@ -340,6 +360,8 @@ window.LB = (function () {
       if (!Array.isArray(p.filter.categories)) p.filter.categories = [];
       if (!Array.isArray(p.filter.tags)) p.filter.tags = [];
       if (p.filter.mode !== 'or') p.filter.mode = 'and';
+      if (['all', 'exclude', 'only'].indexOf(p.filter.consumables) < 0)
+        p.filter.consumables = 'all';
       delete p.categories;
       if (typeof p.note !== 'string') p.note = '';
       var dp = null;
@@ -362,6 +384,8 @@ window.LB = (function () {
             if (!Array.isArray(c.filter.categories)) c.filter.categories = [];
             if (!Array.isArray(c.filter.tags)) c.filter.tags = [];
             if (c.filter.mode !== 'or') c.filter.mode = 'and';
+            if (['all', 'exclude', 'only'].indexOf(c.filter.consumables) < 0)
+              c.filter.consumables = 'all';
           }
         });
       });
@@ -424,6 +448,7 @@ window.LB = (function () {
     rarity:      ['rarity', 'sjældenhed', 'sjaeldenhed'],
     source:      ['kilde', 'source', 'book', 'bog'],
     tags:        ['tags', 'tag', 'mærker'],
+    consumable:  ['forbrugsvare', 'consumable', 'forbrug'],
     desc:        ['beskrivelse', 'description', 'noter', 'notes', 'note', 'desc', 'text']
   };
 
@@ -471,6 +496,9 @@ window.LB = (function () {
       rarity: rarity || null,
       rarityLocked: raw.rarityLocked !== undefined ? !!raw.rarityLocked : !!explicit,
       scale: scaleId,
+      consumable: typeof raw.consumable === 'string'
+        ? /^(1|true|ja|yes|x)$/i.test(raw.consumable.trim())
+        : !!raw.consumable,
       source: String(raw.source || '').trim(),
       tags: splitTags(raw.tags),
       desc: String(raw.desc || '').trim()
@@ -502,6 +530,7 @@ window.LB = (function () {
         rarity: o.rarity || o.sjaeldenhed,
         rarityLocked: o.rarityLocked,
         scale: o.scale,
+        consumable: o.consumable,
         source: o.source || o.kilde,
         tags: o.tags,
         desc: o.desc || o.description || o.beskrivelse || o.notes
@@ -566,6 +595,7 @@ window.LB = (function () {
     var cats = (filter && filter.categories) || [];
     var tags = (filter && filter.tags) || [];
     var or = filter && filter.mode === 'or';
+    var cons = (filter && filter.consumables) || 'all';
     var empty = !cats.length && !tags.length;
     var exclude = empty ? (cfg.excludeFromAll || []) : [];
 
@@ -578,6 +608,8 @@ window.LB = (function () {
     return items.filter(function (i) {
       if (!i.rarity) return false;
       if (exclude.indexOf(i.category) >= 0) return false;
+      if (cons === 'exclude' && i.consumable) return false;
+      if (cons === 'only' && !i.consumable) return false;
       if (empty) return true;
       if (or) return (cats.length && cats.indexOf(i.category) >= 0) || (tags.length && hasTag(i));
       if (cats.length && cats.indexOf(i.category) < 0) return false;
