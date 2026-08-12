@@ -509,13 +509,25 @@ window.LB = (function () {
     return String(raw).split(/[,;|]/).map(function (t) { return t.trim(); }).filter(Boolean);
   }
 
+  /* Felter fra regnearket som hører til på selve kortet: skade, egenskaber,
+     AC og den slags. De skal med hele vejen fra items.js til kortvisningen. */
+  var STAT_FIELDS = ['damage', 'damageType', 'properties', 'mastery',
+                     'ac', 'strength', 'stealth', 'weight'];
+
+  function copyStats(from, to) {
+    STAT_FIELDS.forEach(function (f) {
+      if (from[f] !== undefined && from[f] !== null && from[f] !== '') to[f] = from[f];
+    });
+    return to;
+  }
+
   function buildItem(raw, cfg, defaultScaleId) {
     var price = parsePrice(raw.price);
     var explicit = normalizeRarity(raw.rarity);
     var scaleId = raw.scale || defaultScaleId || 'gear';
     var rarity = explicit;
     if (!rarity && scaleId !== 'none') rarity = priceToRarity(price, findScale(cfg, scaleId));
-    return {
+    return copyStats(raw, {
       id: makeId(raw.name),
       name: String(raw.name || '').trim() || '(uden navn)',
       category: String(raw.category || '').trim() || 'Ukategoriseret',
@@ -531,7 +543,7 @@ window.LB = (function () {
       source: String(raw.source || '').trim(),
       tags: splitTags(raw.tags),
       desc: String(raw.desc || '').trim()
-    };
+    });
   }
 
   function itemsFromRows(rows, mapping, cfg, hasHeader, defaultScaleId) {
@@ -550,7 +562,7 @@ window.LB = (function () {
     var arr = Array.isArray(data) ? data : (data && Array.isArray(data.items) ? data.items : null);
     if (!arr) throw new Error('JSON skal være en liste af items, eller et objekt med "items".');
     return arr.map(function (o) {
-      return buildItem({
+      return buildItem(copyStats(o, {
         name: o.name || o.navn || o.title,
         category: o.category || o.kategori || o.gruppe,
         subcategory: o.subcategory || o.underkategori,
@@ -563,7 +575,7 @@ window.LB = (function () {
         source: o.source || o.kilde,
         tags: o.tags,
         desc: o.desc || o.description || o.beskrivelse || o.notes
-      }, cfg, defaultScaleId);
+      }), cfg, defaultScaleId);
     });
   }
 

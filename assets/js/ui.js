@@ -326,6 +326,40 @@
     document.body.removeChild(ta);
   }
 
+
+  /* Rarity som 1-5 stjerner i en lille pille, så kortet kan læses uden farvekode.
+     Magic items får guldstjerner, der viser magic itemets egen rarity. */
+  function starBadge(keys, key, gold) {
+    var n = Math.min(keys.indexOf(key) + 1, 5);
+    var wrap = el('span', { class: 'stars' + (gold ? ' is-gold' : '') });
+    for (var i = 0; i < n; i++) {
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 20 19');
+      svg.setAttribute('aria-hidden', 'true');
+      var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', 'M10 0l2.9 6.2 6.6.9-4.8 4.8 1.2 6.7L10 15.4 3.9 18.6l1.2-6.7L.3 7.1l6.6-.9z');
+      svg.appendChild(path);
+      wrap.appendChild(svg);
+    }
+    return wrap;
+  }
+
+  /* Spilmekanikken fra regnearket: skade, AC, styrkekrav og stealth. */
+  function statLine(it) {
+    var parts = [];
+    if (it.damage) parts.push(it.damage + (it.damageType ? ' ' + it.damageType : ''));
+    // Et skjolds AC-værdi i regnearket er en bonus, ikke en samlet AC.
+    if (it.ac) parts.push('AC ' + (it.subcategory === 'Shield' ? '+' : '') + it.ac);
+    if (it.strength) parts.push('Styrke ' + it.strength);
+    if (it.stealth) parts.push('Stealth: ' + it.stealth);
+    if (it.mastery) parts.push('Mastery: ' + it.mastery);
+    return parts.length ? el('div', { class: 'card-stats', text: parts.join(' · ') }) : null;
+  }
+
+  function propLine(it) {
+    return it.properties ? el('div', { class: 'card-props', text: it.properties }) : null;
+  }
+
   function renderResults() {
     var wrap = $('#results');
     wrap.innerHTML = '';
@@ -339,20 +373,27 @@
         if (c.magic) {
           var m = c.magic.item;
           var mk = [
-            el('div', { class: 'card-slot', text: c.slot + ' · Magic item' }),
+            el('div', { class: 'card-slot', text: c.slot }),
+            el('div', { class: 'card-kind', text: 'Magic item' }),
             el('div', { class: 'card-name', text: m.name })
           ];
-          if (c.magic.base)
-            mk.push(el('div', { class: 'card-base', text: 'Basis: ' + c.magic.base.name }));
           mk.push(el('div', { class: 'card-sub', text: m.type + (m.attunement ? ' · attunement' : '') }));
+          if (c.magic.base) {
+            mk.push(el('div', { class: 'card-base', text: 'Basis: ' + c.magic.base.name }));
+            var bs = statLine(c.magic.base); if (bs) mk.push(bs);
+            var bp = propLine(c.magic.base); if (bp) mk.push(bp);
+          }
           if (m.desc) mk.push(el('div', { class: 'card-desc', text: m.desc }));
           if (c.magic.magicRolled !== c.magic.magicRarity)
             mk.push(el('div', { class: 'fallback-note',
               text: 'Slog ' + C.magicRarityLabel(c.magic.magicRolled) + ' — puljen var tom' }));
           mk.push(el('div', { class: 'card-meta' }, [
-            el('span', { class: 'rarity r-' + c.magic.magicRarity,
-                         text: C.magicRarityLabel(c.magic.magicRarity) }),
-            el('span', { text: C.rarityLabel(c.rolled) + '-kort' })
+            el('span', { class: 'meta-rarity' }, [
+              starBadge(C.MKEYS, c.magic.magicRarity, true),
+              el('span', { class: 'rarity r-' + c.magic.magicRarity,
+                           text: C.magicRarityLabel(c.magic.magicRarity) })
+            ]),
+            el('span', { class: 'meta-tier', text: C.rarityLabel(c.rolled) + '-kort' })
           ]));
           mk.push(el('div', { class: 'card-origin', text: origin }));
           cards.appendChild(el('div', { class: 'card is-magic r-' + c.magic.magicRarity }, mk));
@@ -366,6 +407,10 @@
         ];
         if (it && (it.subcategory || it.category))
           kids.push(el('div', { class: 'card-sub', text: it.subcategory || it.category }));
+        if (it) {
+          var sl = statLine(it); if (sl) kids.push(sl);
+          var pl = propLine(it); if (pl) kids.push(pl);
+        }
         if (it && it.desc)
           kids.push(el('div', { class: 'card-desc', text: it.desc }));
         if (c.actual && c.rolled && c.actual !== c.rolled)
@@ -375,10 +420,13 @@
         if (!it && c.rolled)
           kids.push(el('div', { class: 'fallback-note', text: 'Trak ' + C.rarityLabel(c.rolled) + ' — ingen items i puljen' }));
         kids.push(el('div', { class: 'card-meta' }, [
-          el('span', {
-            class: 'rarity ' + (c.actual ? 'r-' + c.actual : ''),
-            text: c.actual ? C.rarityLabel(c.actual) : '—'
-          }),
+          el('span', { class: 'meta-rarity' }, [
+            c.actual ? starBadge(C.RKEYS, c.actual, false) : null,
+            el('span', {
+              class: 'rarity ' + (c.actual ? 'r-' + c.actual : ''),
+              text: c.actual ? C.rarityLabel(c.actual) : '—'
+            })
+          ]),
           el('span', { text: it ? priceLabel(it) : '' })
         ]));
         kids.push(el('div', { class: 'card-origin', text: origin }));
