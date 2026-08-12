@@ -18,6 +18,7 @@
     <button class="tab is-active" data-tab="generate">Generator</button>
     <button class="tab" data-tab="packs">Pakker</button>
     <button class="tab" data-tab="items">Items</button>
+    <button class="tab" data-tab="magic">Magic</button>
     <button class="tab" data-tab="settings">Indstillinger</button>
   </nav>
   <div class="topbar-right">
@@ -123,6 +124,46 @@
   </div>
 </section>
 
+<!-- ============ MAGIC ============ -->
+<section class="view" id="view-magic">
+  <div class="panel">
+    <h2>To slags rarity</h2>
+    <p class="hint">
+      <b>Korttrin</b> er hvad en kortplads i en pakke slår &mdash; det styres af fordelingen på kortet.
+      <b>Magi-rarity</b> er magic itemets egen rarity fra D&amp;D. De hedder det samme, men betyder
+      ikke det samme: et Rare <i>kort</i> giver som regel et Common <i>magic item</i>.
+    </p>
+    <label class="check"><input type="checkbox" id="magicEnabled"> Magic item-kort er slået til</label>
+  </div>
+
+  <div class="panel">
+    <h2>Korttrin &rarr; magi-rarity</h2>
+    <p class="hint">Slår en kortplads et givet korttrin, og bliver kortet til et magic item,
+       afgør denne række hvilken magi-rarity der trækkes. Hvor ofte det sker, sættes pr. pakke
+       under fanen Pakker.</p>
+    <div id="magicMapping"></div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <input type="search" id="magicSearch" placeholder="Søg efter navn&hellip;">
+      <select id="magicTypeFilter"><option value="">Alle typer</option></select>
+      <select id="magicRarFilter"><option value="">Alle magi-rarities</option></select>
+      <span class="spacer"></span>
+      <span class="hint" id="magicCount"></span>
+    </div>
+    <div id="magicStats" class="stats"></div>
+    <div class="row bulk-bar" id="magicBulk"></div>
+    <div class="table-wrap">
+      <table class="table" id="magicTable">
+        <thead><tr><th>Navn</th><th>Type</th><th>Magi-rarity</th><th>Basisitem-rul</th><th>Med i puljen</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="row" id="magicPager"></div>
+  </div>
+</section>
+
 <!-- ============ INDSTILLINGER ============ -->
 <section class="view" id="view-settings">
   <div class="panel">
@@ -168,6 +209,7 @@
 
 <script src="assets/data/items.js"></script>
 <script src="assets/data/class-cards.js"></script>
+<script src="assets/data/magic-items.js"></script>
 <script src="assets/js/core.js"></script>
 <script src="assets/js/ui.js"></script>
 </body>

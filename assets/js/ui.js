@@ -7,6 +7,8 @@
   var state = {
     cfg: C.migrateConfig(C.storage.load(C.storage.K_CFG, null)),
     items: C.storage.load(C.storage.K_ITEMS, null),
+    magic: C.storage.load(C.storage.K_MAGIC, null),
+    magicPage: 0,
     packId: null,
     results: [],
     pending: null,   // midlertidigt parsed import-data
@@ -46,7 +48,8 @@
   var saveTimer;
   function persist() {
     var ok = C.storage.save(C.storage.K_CFG, state.cfg) &&
-             C.storage.save(C.storage.K_ITEMS, state.items);
+             C.storage.save(C.storage.K_ITEMS, state.items) &&
+             C.storage.save(C.storage.K_MAGIC, state.magic);
     var s = $('#saveState');
     if (!ok) {
       s.textContent = 'Kunne ikke gemme (lagerplads fuld?)';
@@ -110,13 +113,15 @@
 
   function bundledVersion() {
     return 'dnd:' + (window.DND_ITEMS_VERSION || '?') +
-           '|class:' + (window.CLASS_CARDS_VERSION || '?');
+           '|class:' + (window.CLASS_CARDS_VERSION || '?') +
+           '|magic:' + (window.MAGIC_ITEMS_VERSION || '?');
   }
 
   if (!Array.isArray(state.items)) {
     state.items = seedItems();
     C.storage.save(C.storage.K_SEEDED, bundledVersion());
   }
+  if (!Array.isArray(state.magic)) state.magic = C.magicFromJSON(window.MAGIC_ITEMS || []);
   if (state.cfg.packs.length) state.packId = state.cfg.packs[0].id;
 
   /* Datafilerne i repoet kan være nyere end det, browseren har gemt — fx efter
@@ -140,7 +145,9 @@
       onclick: function () {
         if (!confirm('Erstat alle ' + state.items.length + ' items med de opdaterede datafiler?')) return;
         state.items = seedItems();
+        state.magic = C.magicFromJSON(window.MAGIC_ITEMS || []);
         state.page = 0;
+        state.magicPage = 0;
         C.storage.save(C.storage.K_SEEDED, bundledVersion());
         renderAll(); persist();
         toast('Data genindlæst');
@@ -231,6 +238,19 @@
         }));
       }
     }
+    var pm = pack.magic;
+    if (state.cfg.magic.enabled && pm) {
+      var on = C.RKEYS.filter(function (k) { return (pm.chance[k] || 0) > 0; });
+      if (on.length) {
+        hint.appendChild(el('br'));
+        hint.appendChild(el('span', {
+          text: 'Magic item-chance: ' + on.map(function (k) {
+            return C.rarityLabel(k) + ' ' + pm.chance[k] + '%';
+          }).join(', ') +
+          ' · ' + C.magicPool(state.magic, pm.types).length + ' magic items i puljen'
+        }));
+      }
+    }
     if (pack.note) {
       hint.appendChild(el('br'));
       hint.appendChild(el('span', { text: pack.note }));
@@ -252,7 +272,7 @@
 
     var count = Math.max(1, Math.min(50, parseInt($('#genCount').value, 10) || 1));
     var out = [];
-    for (var i = 0; i < count; i++) out.push(C.generate(pack, tierObj, state.items, state.cfg));
+    for (var i = 0; i < count; i++) out.push(C.generate(pack, tierObj, state.items, state.cfg, state.magic));
     state.results = out;
     renderResults();
   });
@@ -273,6 +293,13 @@
     state.results.forEach(function (box, i) {
       lines.push('=== ' + box.pack + ' — ' + box.tier + ' #' + (i + 1) + ' ===');
       box.cards.forEach(function (c) {
+        if (c.magic) {
+          lines.push('  ' + c.slot + ': [MAGIC] ' + c.magic.item.name +
+            (c.magic.base ? ' (' + c.magic.base.name + ')' : '') +
+            ' [' + C.magicRarityLabel(c.magic.magicRarity) + ' magic item, ' +
+            C.rarityLabel(c.rolled) + '-kort]');
+          return;
+        }
         lines.push('  ' + c.slot + ': ' + (c.item ? c.item.name : '(intet item)') +
           (c.actual ? ' [' + C.rarityLabel(c.actual) + ']' : ''));
       });
@@ -301,6 +328,30 @@
     state.results.forEach(function (box, idx) {
       var cards = el('div', { class: 'cards' });
       box.cards.forEach(function (c) {
+        // Magic item-kort: viser magic itemet, dets magi-rarity og et
+        // eventuelt udrullet basisitem. Kortets eget trin står nederst.
+        if (c.magic) {
+          var m = c.magic.item;
+          var mk = [
+            el('div', { class: 'card-slot', text: c.slot + ' · Magic item' }),
+            el('div', { class: 'card-name', text: m.name })
+          ];
+          if (c.magic.base)
+            mk.push(el('div', { class: 'card-base', text: '⚔ ' + c.magic.base.name }));
+          mk.push(el('div', { class: 'card-sub', text: m.type + (m.attunement ? ' · attunement' : '') }));
+          if (m.desc) mk.push(el('div', { class: 'card-desc', text: m.desc }));
+          if (c.magic.magicRolled !== c.magic.magicRarity)
+            mk.push(el('div', { class: 'fallback-note',
+              text: 'Slog ' + C.magicRarityLabel(c.magic.magicRolled) + ' — puljen var tom' }));
+          mk.push(el('div', { class: 'card-meta' }, [
+            el('span', { class: 'rarity r-' + c.magic.magicRarity,
+                         text: C.magicRarityLabel(c.magic.magicRarity) }),
+            el('span', { text: C.rarityLabel(c.rolled) + '-kort' })
+          ]));
+          cards.appendChild(el('div', { class: 'card is-magic r-' + c.magic.magicRarity }, mk));
+          return;
+        }
+
         var it = c.item;
         var kids = [
           el('div', { class: 'card-slot', text: c.slot }),
@@ -415,6 +466,56 @@
     return wrap;
   }
 
+  /* Chancen for at et korttrin bliver et magic item-kort, plus hvilke typer
+     magic items pakken må trække. Selve korttrin -> magi-rarity-tabellen er
+     fælles for alle pakker og ligger under fanen Magic. */
+  function magicPanel(pack) {
+    var pm = pack.magic;
+    var pool = C.magicPool(state.magic, pm.types);
+
+    var chances = el('div', { class: 'dist' });
+    C.RARITIES.forEach(function (r) {
+      chances.appendChild(el('label', { class: 'field' }, [
+        el('span', {}, [
+          el('i', { class: 'dot', style: 'background:var(--r-' + r.key + ')' }),
+          document.createTextNode(r.label)
+        ]),
+        el('input', {
+          type: 'number', min: '0', max: '100', step: '0.1', value: pm.chance[r.key] || 0,
+          oninput: function () {
+            pm.chance[r.key] = Math.max(0, Math.min(100, Number(this.value) || 0));
+            updateGenHint(); persist();
+          }
+        })
+      ]));
+    });
+
+    var types = el('div', { class: 'cats' });
+    C.magicTypesOf(state.magic).forEach(function (t) {
+      var on = pm.types.indexOf(t) >= 0;
+      types.appendChild(el('button', {
+        class: 'chip' + (on ? ' on' : ''), text: t,
+        onclick: function () {
+          var i = pm.types.indexOf(t);
+          if (i >= 0) pm.types.splice(i, 1); else pm.types.push(t);
+          renderPackDetail(); updateGenHint(); persist();
+        }
+      }));
+    });
+
+    return el('div', { class: 'panel' }, [
+      el('h3', { text: 'Magic item-kort' }),
+      el('p', { class: 'hint',
+        text: 'Chance i procent for at et kort med det pågældende korttrin bliver et magic item ' +
+              'i stedet for et almindeligt item. Hvilken magi-rarity man så får, styres af ' +
+              'tabellen under fanen Magic.' }),
+      chances,
+      el('h3', { text: 'Tilladte typer', style: 'margin-top:14px' }),
+      el('p', { class: 'hint', text: 'Ingen valgt = alle typer. ' + pool.length + ' magic items i puljen.' }),
+      types
+    ]);
+  }
+
   function renderPackDetail() {
     var host = $('#packDetail');
     host.innerHTML = '';
@@ -459,6 +560,8 @@
         renderPackDetail(); updateGenHint(); persist();
       })
     ]));
+
+    host.appendChild(magicPanel(pack));
 
     pack.tiers.forEach(function (t, ti) { host.appendChild(renderTier(pack, t, ti)); });
 
@@ -937,6 +1040,168 @@
     });
   });
 
+  /* ================= MAGIC ================= */
+
+  function renderMagicSettings() {
+    $('#magicEnabled').checked = !!state.cfg.magic.enabled;
+
+    var host = $('#magicMapping');
+    host.innerHTML = '';
+
+    var head = el('div', { class: 'map-row map-head' }, [el('span', { text: 'Korttrin' })]);
+    C.MAGIC_RARITIES.forEach(function (r) {
+      head.appendChild(el('span', {}, [
+        el('i', { class: 'dot', style: 'background:var(--r-' + r.key + ')' }),
+        document.createTextNode(' ' + r.label)
+      ]));
+    });
+    head.appendChild(el('span', { text: 'Sum' }));
+    host.appendChild(head);
+
+    C.RARITIES.forEach(function (tierR) {
+      var d = state.cfg.magic.mapping[tierR.key];
+      var sumEl = el('span', { class: 'sum' });
+      function refresh() {
+        var total = 0;
+        C.MKEYS.forEach(function (k) { total += (Number(d[k]) || 0); });
+        sumEl.textContent = (Math.round(total * 100) / 100) + '%';
+        sumEl.className = 'sum ' + (Math.abs(total - 100) < 0.01 ? 'good' : 'bad');
+      }
+      var row = el('div', { class: 'map-row' }, [
+        el('span', { class: 'rarity r-' + tierR.key, text: tierR.label })
+      ]);
+      C.MAGIC_RARITIES.forEach(function (mr) {
+        row.appendChild(el('input', {
+          type: 'number', min: '0', max: '100', step: '0.1', value: d[mr.key] || 0,
+          oninput: function () {
+            d[mr.key] = Math.max(0, Number(this.value) || 0);
+            refresh(); persist();
+          }
+        }));
+      });
+      row.appendChild(sumEl);
+      refresh();
+      host.appendChild(row);
+    });
+  }
+
+  $('#magicEnabled').addEventListener('change', function () {
+    state.cfg.magic.enabled = this.checked;
+    updateGenHint(); persist();
+  });
+
+  function filteredMagic() {
+    var q = $('#magicSearch').value.trim().toLowerCase();
+    var type = $('#magicTypeFilter').value;
+    var rar = $('#magicRarFilter').value;
+    return state.magic.filter(function (m) {
+      if (q && m.name.toLowerCase().indexOf(q) < 0) return false;
+      if (type && m.type !== type) return false;
+      if (rar && m.rarity !== rar) return false;
+      return true;
+    });
+  }
+
+  function renderMagicItems() {
+    fillSelect($('#magicTypeFilter'), C.magicTypesOf(state.magic), 'Alle typer');
+    fillSelect($('#magicRarFilter'),
+      C.MAGIC_RARITIES.map(function (r) { return { value: r.key, text: r.label }; }),
+      'Alle magi-rarities');
+
+    var stats = $('#magicStats');
+    stats.innerHTML = '';
+    var counts = {};
+    C.MKEYS.forEach(function (k) { counts[k] = 0; });
+    state.magic.forEach(function (m) {
+      if (m.enabled !== false && counts[m.rarity] !== undefined) counts[m.rarity]++;
+    });
+    C.MAGIC_RARITIES.forEach(function (r) {
+      stats.appendChild(el('div', { class: 'stat' }, [
+        el('b', { text: String(counts[r.key]), style: 'color:var(--r-' + r.key + ')' }),
+        el('span', { text: r.label })
+      ]));
+    });
+
+    var list = filteredMagic();
+    $('#magicCount').textContent = list.length + ' af ' + state.magic.length + ' magic items';
+
+    var bulk = $('#magicBulk');
+    bulk.innerHTML = '';
+    if (list.length) {
+      bulk.appendChild(el('span', { class: 'hint', text: 'For alle ' + list.length + ' viste:' }));
+      [['Med i puljen', true], ['Ude af puljen', false]].forEach(function (opt) {
+        bulk.appendChild(el('button', {
+          class: 'btn btn-sm', text: opt[0],
+          onclick: function () {
+            list.forEach(function (m) { m.enabled = opt[1]; });
+            renderMagicItems(); persist();
+            toast(list.length + ' magic items opdateret');
+          }
+        }));
+      });
+    }
+
+    var pages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
+    if (state.magicPage >= pages) state.magicPage = pages - 1;
+    var slice = list.slice(state.magicPage * PAGE_SIZE, (state.magicPage + 1) * PAGE_SIZE);
+
+    var tbody = $('#magicTable tbody');
+    tbody.innerHTML = '';
+    slice.forEach(function (m) {
+      var rarSel = el('select', {
+        onchange: function () {
+          m.rarity = this.value || null;
+          this.className = 'rarity r-' + (m.rarity || '');
+          renderMagicItems(); persist();
+        }
+      });
+      C.MAGIC_RARITIES.forEach(function (r) {
+        rarSel.appendChild(el('option', { value: r.key, text: r.label }));
+      });
+      rarSel.value = m.rarity || '';
+      rarSel.className = 'rarity r-' + (m.rarity || '');
+
+      var base = m.baseFilter && m.baseFilter.subcategories.length
+        ? m.baseFilter.subcategories.join(', ') : '—';
+
+      tbody.appendChild(el('tr', {}, [
+        el('td', {}, [
+          el('div', { text: m.name }),
+          m.attunement ? el('div', { class: 'cell-sub', text: 'kræver attunement' }) : null
+        ]),
+        el('td', { text: m.type }),
+        el('td', {}, [rarSel]),
+        el('td', { class: 'cell-sub', text: base }),
+        el('td', {}, [
+          el('input', {
+            type: 'checkbox', checked: m.enabled !== false ? 'checked' : null,
+            onchange: function () { m.enabled = this.checked; renderMagicItems(); persist(); }
+          })
+        ])
+      ]));
+    });
+
+    var pager = $('#magicPager');
+    pager.innerHTML = '';
+    if (pages > 1) {
+      pager.appendChild(el('button', {
+        class: 'btn btn-sm', text: '‹ Forrige',
+        onclick: function () { if (state.magicPage > 0) { state.magicPage--; renderMagicItems(); } }
+      }));
+      pager.appendChild(el('span', { class: 'hint', text: 'Side ' + (state.magicPage + 1) + ' af ' + pages }));
+      pager.appendChild(el('button', {
+        class: 'btn btn-sm', text: 'Næste ›',
+        onclick: function () { if (state.magicPage < pages - 1) { state.magicPage++; renderMagicItems(); } }
+      }));
+    }
+  }
+
+  ['#magicSearch', '#magicTypeFilter', '#magicRarFilter'].forEach(function (sel) {
+    $(sel).addEventListener(sel === '#magicSearch' ? 'input' : 'change', function () {
+      state.magicPage = 0; renderMagicItems();
+    });
+  });
+
   /* ================= INDSTILLINGER ================= */
 
   function renderScales() {
@@ -1047,6 +1312,8 @@
     renderPackDetail();
     renderGenControls();
     renderItems();
+    renderMagicSettings();
+    renderMagicItems();
     renderResults();
     renderDataNotice();
   }
