@@ -365,7 +365,8 @@
     return wrap;
   }
 
-  /* Spilmekanikken fra regnearket: skade, AC, styrkekrav og stealth. */
+  /* Tallene man slår med: skade, AC, styrkekrav og stealth. Mastery hører
+     ikke til her — det er regeltekst og står i den mindre egenskabslinje. */
   function statLine(it) {
     var parts = [];
     if (it.damage) parts.push(it.damage + (it.damageType ? ' ' + it.damageType : ''));
@@ -373,12 +374,30 @@
     if (it.ac) parts.push('AC ' + (it.subcategory === 'Shield' ? '+' : '') + it.ac);
     if (it.strength) parts.push('Styrke ' + it.strength);
     if (it.stealth) parts.push('Stealth: ' + it.stealth);
-    if (it.mastery) parts.push('Mastery: ' + it.mastery);
     return parts.length ? el('div', { class: 'card-stats', text: parts.join(' · ') }) : null;
   }
 
+  /* Mastery-egenskaben står typisk også i egenskabslisten. Den tages ud dér
+     og vises med sin egen etiket, så den ikke står to gange. */
   function propLine(it) {
-    return it.properties ? el('div', { class: 'card-props', text: it.properties }) : null;
+    var props = String(it.properties || '').split(',')
+      .map(function (x) { return x.trim(); })
+      .filter(function (x) { return x && x !== it.mastery; });
+    var parts = [];
+    if (props.length) parts.push(props.join(', '));
+    if (it.mastery) parts.push('Mastery: ' + it.mastery);
+    return parts.length ? el('div', { class: 'card-props', text: parts.join(' · ') }) : null;
+  }
+
+  /* Generiske magic items navngives efter det basisitem de blev rullet på,
+     så "Weapon, +1" bliver til "Shortsword, +1". Har navnet intet generisk
+     ord — Flame Tongue, Holy Avenger — beholdes det, og basisitemet vises
+     på sin egen linje i stedet. */
+  var GENERIC_WORD = /\b(Weapon|Armor|Ammunition|Shield)\b/;
+
+  function composeMagicName(magicName, baseName) {
+    if (!baseName || !GENERIC_WORD.test(magicName)) return null;
+    return magicName.replace(GENERIC_WORD, baseName);
   }
 
   function renderResults() {
@@ -393,16 +412,19 @@
         // eventuelt udrullet basisitem. Kortets eget trin står nederst.
         if (c.magic) {
           var m = c.magic.item;
+          var base = c.magic.base;
+          var composed = base ? composeMagicName(m.name, base.name) : null;
           var mk = [
             el('div', { class: 'card-slot', text: c.slot }),
             el('div', { class: 'card-kind', text: 'Magic item' }),
-            el('div', { class: 'card-name', text: m.name })
+            el('div', { class: 'card-name', text: composed || m.name })
           ];
           mk.push(el('div', { class: 'card-sub', text: m.type + (m.attunement ? ' · attunement' : '') }));
-          if (c.magic.base) {
-            mk.push(el('div', { class: 'card-base', text: 'Basis: ' + c.magic.base.name }));
-            var bs = statLine(c.magic.base); if (bs) mk.push(bs);
-            var bp = propLine(c.magic.base); if (bp) mk.push(bp);
+          if (base) {
+            // Navnet rummer allerede basisitemet når det kunne sættes sammen.
+            if (!composed) mk.push(el('div', { class: 'card-base', text: 'Basis: ' + base.name }));
+            var bs = statLine(base); if (bs) mk.push(bs);
+            var bp = propLine(base); if (bp) mk.push(bp);
           }
           if (m.desc) mk.push(el('div', { class: 'card-desc', text: m.desc }));
           if (c.magic.magicRolled !== c.magic.magicRarity)
