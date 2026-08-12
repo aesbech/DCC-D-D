@@ -113,7 +113,7 @@ eksport/import af hele opsætningen som JSON.
 | Weapons | Våben + Ammunition | 48 | Bronze / Sølv / Guld |
 | Armor | Rustning | 14 | Bronze / Sølv / Guld |
 | Consumables | Gift **eller** tag Consumable/Healing | 22 | Bronze / Sølv / Guld |
-| Magic | Magic Item | 0 | Bronze / Sølv / Guld |
+| Magic | alle magic items | 441 | Bronze / Sølv / Guld |
 | Classes | Class | 104 | Standard (ikke gradueret) |
 
 ### Adventurer
@@ -139,8 +139,78 @@ hvilket er Uncommon på udstyrs-skalaen. Pakkens fordelinger starter derfor ved 
 og Bronze kort 1 er den eneste der sigter efter Uncommon, fordi der kun findes ét sådant
 item. Gentagelser på tværs af pakker er uundgåelige med så lille en pulje.
 
-**Magic** er tom indtil du har importeret dine magic items. Giv dem kategorien
-`Magic Item` og vælg prisskalaen **Magic Items** under importen, så virker pakken med det samme.
+**Magic** trækker nu fra de 441 magic items — se afsnittet om magic items nedenfor.
+
+## Magic items
+
+Et magic item kommer ikke i puljen på linje med almindelige items. I stedet kan en
+kortplads **blive til et magic item-kort**, og så følger to rul mere.
+
+### To slags rarity
+
+Ordet "rarity" dækker over to forskellige ting, og det er værd at holde adskilt:
+
+| Begreb | Hvad det er | Værdier |
+|--------|-------------|---------|
+| **Korttrin** | Hvad en kortplads i en pakke slår. Styres af fordelingen på kortet. | Common … Legendary |
+| **Magi-rarity** | Magic itemets egen rarity fra D&D. | Common … Artifact |
+
+De to er bevidst afkoblet: et **Rare kort** giver som regel et **Common magic item**.
+
+### De tre rul
+
+1. **Bliver kortet magisk?** Kortpladsen har allerede slået sit korttrin. Pakkens
+   magic item-chance for netop det trin afgør, om kortet bliver et magic item i stedet
+   for et almindeligt item. Sættes pr. pakke under fanen Pakker.
+2. **Hvilken magi-rarity?** Tabellen under fanen Magic oversætter korttrinnet til en
+   fordeling over magi-rarity.
+3. **Hvilket basisitem?** Er magic itemet generisk — `Weapon, +1`, `Armor of Resistance`,
+   `Shield, +2` — rulles der til sidst hvilket konkret våben eller rustning det sidder på.
+   52 af de 441 magic items har sådan et rul.
+
+Standardtabellen for rul 2:
+
+| Korttrin | Common | Uncommon | Rare | Very Rare | Legendary |
+|----------|--------|----------|------|-----------|-----------|
+| Common | 100 % | | | | |
+| Uncommon | 90 % | 10 % | | | |
+| Rare | 70 % | 25 % | 5 % | | |
+| Very Rare | 40 % | 40 % | 18 % | 2 % | |
+| Legendary | 10 % | 30 % | 40 % | 17 % | 3 % |
+
+Artifacts står på 0 % overalt. De 11 artifacts ligger i listen, men trækkes aldrig,
+før du selv giver dem vægt.
+
+### Chance pr. pakke
+
+| Pakke | Rare | Very Rare | Legendary | Tilladte typer |
+|-------|------|-----------|-----------|----------------|
+| Adventurer | 10 % | 20 % | 30 % | alle |
+| Weapons | 15 % | 25 % | 40 % | Weapon |
+| Armor | 15 % | 25 % | 40 % | Armor |
+| Consumables | 20 % | 30 % | 40 % | Potion, Scroll |
+| Magic | 100 % | 100 % | 100 % | alle |
+| Classes | — | — | — | — |
+
+Typefiltret sikrer, at en Weapons-pakke ikke deler ringe ud. Magic-pakken har 100 %
+på alle trin, så hvert kort er et magic item; dens korttrin ligger til gengæld højt,
+fordi trinnet nu kun bruges som opslag i tabellen ovenfor.
+
+### Data
+
+`data/magic_items.txt` er kilden, og `scripts/import_magic.py` laver den om til
+`assets/data/magic-items.js`:
+
+```bash
+python3 scripts/import_magic.py
+```
+
+441 magic items, hvoraf 92 er foldet ud fra varianttabeller — `Potion of Healing`
+bliver til fire poster, `Ioun Stone` til fjorten, `Belt of Giant Strength` til seks.
+
+Tre poster kunne ikke tages med, fordi kilden ikke angiver deres varianters rarity:
+**Horn of Valhalla**, **Rod of the Pact Keeper** og **Wand of the War Mage**. Vil du
+have dem med, skal de tilføjes manuelt.
 
 ## Classes-pakken
 
@@ -198,6 +268,9 @@ assets/js/core.js              datamodel, prisparsing, import, trækning
 assets/js/ui.js                UI og hændelser
 assets/data/items.js           items fra regnearket
 assets/data/class-cards.js     Class-pakkens indhold
+assets/data/magic-items.js     magic items
 scripts/import_xlsx.py         regneark → items.js
+scripts/import_magic.py        magic_items.txt → magic-items.js
 data/dnd_items.xlsx            kilderegnearket
+data/magic_items.txt           kildeliste over magic items
 ```

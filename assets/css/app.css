@@ -241,3 +241,24 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
   background:var(--bg-3);border:1px solid var(--accent);
   border-radius:var(--radius);padding:12px 16px;margin-bottom:16px;font-size:14px;
 }
+
+/* ---------- magic ---------- */
+.map-row{
+  display:grid;grid-template-columns:110px repeat(6,1fr) 78px;
+  gap:6px;align-items:center;margin-bottom:6px;
+}
+.map-row input{width:100%;padding:6px 8px}
+.map-head{font-size:12px;color:var(--muted);margin-bottom:8px}
+.map-head span{display:flex;align-items:center;gap:5px}
+.map-row .sum{text-align:center;padding:6px 4px}
+.card.is-magic{background:linear-gradient(160deg,var(--bg-3),#241f33)}
+.card-base{
+  font-size:12px;color:var(--accent-2);
+  border-top:1px dashed var(--line);padding-top:6px;
+}
+.r-artifact{color:#f472b6}
+:root{--r-artifact:#f472b6}
+@media (max-width:860px){
+  .map-row{grid-template-columns:90px repeat(6,1fr) 60px;font-size:12px}
+  .map-row input{padding:4px}
+}

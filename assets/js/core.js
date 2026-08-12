@@ -13,6 +13,24 @@ window.LB = (function () {
   ];
   var RKEYS = RARITIES.map(function (r) { return r.key; });
 
+  /* To slags rarity, som er nemme at forveksle:
+
+       korttrin    — hvad en kortplads i en pakke slår. Styres af fordelingen
+                     på kortet. Common … Legendary.
+       magi-rarity — magic itemets egen rarity fra D&D. Common … Artifact.
+
+     Et korttrin kan blive til et magic item-kort; derefter afgør tabellen i
+     cfg.magic.mapping hvilken magi-rarity der trækkes på det trin.        */
+
+  var MAGIC_RARITIES = RARITIES.concat([{ key: 'artifact', label: 'Artifact' }]);
+  var MKEYS = MAGIC_RARITIES.map(function (r) { return r.key; });
+
+  function magicRarityLabel(key) {
+    for (var i = 0; i < MAGIC_RARITIES.length; i++)
+      if (MAGIC_RARITIES[i].key === key) return MAGIC_RARITIES[i].label;
+    return key || '—';
+  }
+
   function rarityLabel(key) {
     for (var i = 0; i < RARITIES.length; i++) if (RARITIES[i].key === key) return RARITIES[i].label;
     return key || '—';
@@ -27,6 +45,7 @@ window.LB = (function () {
     if (s === 'veryrare' || s === 'vr') return 'very_rare';
     if (s === 'rare' || s === 'r') return 'rare';
     if (s === 'legendary' || s === 'l') return 'legendary';
+    if (s === 'artifact') return 'artifact';
     return null;
   }
 
@@ -145,6 +164,7 @@ window.LB = (function () {
         filter: filt(['Ammunition', 'Gift', 'Rustning', 'Udstyr', 'Våben', 'Værktøj'], []),
         note: 'Den almindelige pakke — udstyr, våben, rustning, værktøj, gift og ammunition. ' +
               'Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra.',
+        magic: packMagic({ rare: 10, very_rare: 20, legendary: 30 }, []),
         tiers: gradedTiers(
           [card('Kort 1', { common: 100 }),
            card('Kort 2', { common: 50, uncommon: 50 }),
@@ -158,12 +178,15 @@ window.LB = (function () {
         )
       },
       { id: 'weapons', name: 'Weapons', filter: filt(['Våben', 'Ammunition'], []),
-        note: '', tiers: standardTiers() },
+        note: 'Magic item-kort er begrænset til våben.',
+        magic: packMagic({ rare: 15, very_rare: 25, legendary: 40 }, ['Weapon']),
+        tiers: standardTiers() },
       {
         id: 'armor', name: 'Armor', filter: filt(['Rustning'], []),
         note: 'Rustning ligger højt på udstyrs-skalaen — billigste er Padded til 5 gp, så der findes ' +
               'ingen Common. Fordelingerne starter derfor ved Uncommon. Kun 14 items i alt, så ' +
               'gentagelser er uundgåelige.',
+        magic: packMagic({ rare: 15, very_rare: 25, legendary: 40 }, ['Armor']),
         tiers: gradedTiers(
           // Kun ét Uncommon-item (Padded), så kun kort 1 sigter efter det —
           // ellers slås dubletfiltret og fordelingen indbyrdes.
@@ -179,14 +202,31 @@ window.LB = (function () {
         )
       },
       { id: 'consumables', name: 'Consumables', filter: filt(['Gift'], ['Consumable', 'Healing'], 'or'),
-        note: 'Union-filter: hele Gift-gruppen plus alt med tagget Consumable eller Healing.',
+        note: 'Union-filter: hele Gift-gruppen plus alt med tagget Consumable eller Healing. ' +
+              'Magic item-kort er begrænset til potions og scrolls.',
+        magic: packMagic({ rare: 20, very_rare: 30, legendary: 40 }, ['Potion', 'Scroll']),
         tiers: standardTiers() },
-      { id: 'magic', name: 'Magic', filter: filt(['Magic Item'], []),
-        note: 'Venter på data. Importér dine magic items med kategorien "Magic Item" og skalaen Magic Items.',
-        tiers: standardTiers() },
+      {
+        id: 'magic', name: 'Magic', filter: filt([], []),
+        note: 'Hvert kort er et magic item. Korttrinnet afgør hvilken magi-rarity der trækkes ' +
+              '— se tabellen under fanen Magic. Trinnene ligger højt, fordi hele pakken er magi.',
+        magic: packMagic({ common: 100, uncommon: 100, rare: 100, very_rare: 100, legendary: 100 }, []),
+        tiers: gradedTiers(
+          [card('Kort 1', { rare: 100 }),
+           card('Kort 2', { rare: 100 }),
+           card('Kort 3', { rare: 70, very_rare: 30 })],
+          [card('Kort 1', { rare: 100 }),
+           card('Kort 2', { rare: 50, very_rare: 50 }),
+           card('Kort 3', { very_rare: 80, legendary: 20 })],
+          [card('Kort 1', { rare: 50, very_rare: 50 }),
+           card('Kort 2', { very_rare: 100 }),
+           card('Kort 3', { very_rare: 40, legendary: 60 })]
+        )
+      },
       {
         id: 'classes', name: 'Classes', filter: filt(['Class'], []),
         note: 'Ikke gradueret — ét tier. Indeholder class levels, attributter, feats og perks.',
+        magic: packMagic({}, []),
         tiers: [tier('standard', 'Standard', [
           card('Kort 1', { common: 100 }),
           card('Kort 2', { common: 70, uncommon: 30 }),
@@ -196,13 +236,49 @@ window.LB = (function () {
     ];
   }
 
+  /* Fordeling over magi-rarity for hvert korttrin. Tallene er sat så et
+     Rare-kort overvejende giver et Common magic item, mens et Legendary-kort
+     har sit tyngdepunkt på Rare. Artifacts er slået fra som standard. */
+  function magicDist(o) {
+    var d = {};
+    MKEYS.forEach(function (k) { d[k] = (o && o[k]) || 0; });
+    return d;
+  }
+
+  function defaultMagic() {
+    return {
+      enabled: true,
+      mapping: {
+        common:    magicDist({ common: 100 }),
+        uncommon:  magicDist({ common: 90, uncommon: 10 }),
+        rare:      magicDist({ common: 70, uncommon: 25, rare: 5 }),
+        very_rare: magicDist({ common: 40, uncommon: 40, rare: 18, very_rare: 2 }),
+        legendary: magicDist({ common: 10, uncommon: 30, rare: 40, very_rare: 17, legendary: 3 })
+      }
+    };
+  }
+
+  /* Chance i procent for at et korttrin bliver et magic item-kort i stedet
+     for et almindeligt item. Nøglen er korttrinnet, ikke magi-rarity. */
+  function magicChanceObj(chance) {
+    var d = {};
+    RKEYS.forEach(function (k) { d[k] = (chance && chance[k]) || 0; });
+    return d;
+  }
+
+  function packMagic(chance, types) {
+    // types tomt = alle typer magic items kan trækkes i pakken.
+    return { chance: magicChanceObj(chance), types: types || [] };
+  }
+
   function defaultConfig() {
     return {
-      version: 2,
+      version: 3,
       scales: defaultScales(),
       noDuplicates: true,
       fallback: 'nearest',
       excludeFromAll: ['Class'],
+      magic: defaultMagic(),
       packs: defaultPacks()
     };
   }
@@ -212,6 +288,7 @@ window.LB = (function () {
   var K_CFG = 'dccdd.config.v1';
   var K_ITEMS = 'dccdd.items.v1';
   var K_SEEDED = 'dccdd.seeded.v1';
+  var K_MAGIC = 'dccdd.magic.v1';
 
   function available() {
     try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); return true; }
@@ -244,6 +321,15 @@ window.LB = (function () {
     if (!Array.isArray(cfg.excludeFromAll)) cfg.excludeFromAll = def.excludeFromAll;
     delete cfg.thresholds;
 
+    // v2 -> v3: magic item-kort med eget korttrin -> magi-rarity-opslag.
+    if (!cfg.magic || typeof cfg.magic !== 'object') cfg.magic = def.magic;
+    if (typeof cfg.magic.enabled !== 'boolean') cfg.magic.enabled = true;
+    if (!cfg.magic.mapping || typeof cfg.magic.mapping !== 'object')
+      cfg.magic.mapping = def.magic.mapping;
+    RKEYS.forEach(function (k) {
+      cfg.magic.mapping[k] = magicDist(cfg.magic.mapping[k]);
+    });
+
     cfg.packs.forEach(function (p) {
       if (!p.filter) p.filter = filt(Array.isArray(p.categories) ? p.categories : [], []);
       if (!Array.isArray(p.filter.categories)) p.filter.categories = [];
@@ -251,6 +337,12 @@ window.LB = (function () {
       if (p.filter.mode !== 'or') p.filter.mode = 'and';
       delete p.categories;
       if (typeof p.note !== 'string') p.note = '';
+      var dp = null;
+      def.packs.forEach(function (x) { if (x.id === p.id) dp = x; });
+      if (!p.magic || typeof p.magic !== 'object')
+        p.magic = dp ? dp.magic : packMagic({}, []);
+      p.magic.chance = magicChanceObj(p.magic.chance);
+      if (!Array.isArray(p.magic.types)) p.magic.types = [];
       if (!Array.isArray(p.tiers)) p.tiers = [];
       p.tiers.forEach(function (t) {
         if (!Array.isArray(t.cards)) t.cards = [];
@@ -267,7 +359,7 @@ window.LB = (function () {
         });
       });
     });
-    cfg.version = 2;
+    cfg.version = 3;
     return cfg;
   }
 
@@ -514,14 +606,113 @@ window.LB = (function () {
     return { item: null, rolled: rarity, actual: null };
   }
 
-  function generate(pack, tierObj, items, cfg) {
+  /* ---------------- magic items ----------------
+
+     Tre rul i kæde:
+       1. Korttrinnet er allerede slået. Chancen i pack.magic.chance afgør om
+          kortet bliver et magic item-kort i stedet for et almindeligt item.
+       2. cfg.magic.mapping[korttrin] afgør hvilken magi-rarity der trækkes.
+       3. Er magic itemet generisk ("Weapon, +1"), rulles der til sidst hvilket
+          basisitem det sidder på.                                          */
+
+  function magicPool(magicItems, types) {
+    return magicItems.filter(function (m) {
+      if (m.enabled === false) return false;
+      if (!m.rarity) return false;
+      if (types && types.length && types.indexOf(m.type) < 0) return false;
+      return true;
+    });
+  }
+
+  function pickMagicWeighted(d) {
+    var total = 0, k;
+    for (k in d) if (d[k] > 0) total += d[k];
+    if (total <= 0) return null;
+    var roll = Math.random() * total;
+    for (var i = 0; i < MKEYS.length; i++) {
+      var w = d[MKEYS[i]] || 0;
+      if (w <= 0) continue;
+      roll -= w;
+      if (roll < 0) return MKEYS[i];
+    }
+    return MKEYS[MKEYS.length - 1];
+  }
+
+  /* Tredje rul: hvilket basisvåben eller -rustning sidder magien på. */
+  function rollBaseItem(magicItem, items) {
+    var bf = magicItem.baseFilter;
+    if (!bf || !bf.subcategories || !bf.subcategories.length) return null;
+    var cands = items.filter(function (i) {
+      // Samme krav som ved en almindelig trækning: items uden rarity er
+      // taget ud af spillet og må heller ikke dukke op som basisitem.
+      if (!i.rarity) return false;
+      if (bf.subcategories.indexOf(i.subcategory) < 0 &&
+          bf.subcategories.indexOf(i.category) < 0) return false;
+      for (var e = 0; e < (bf.excludeNames || []).length; e++)
+        if (i.name.toLowerCase().indexOf(bf.excludeNames[e].toLowerCase()) >= 0) return false;
+      return true;
+    });
+    return cands.length ? cands[Math.floor(Math.random() * cands.length)] : null;
+  }
+
+  function drawMagic(pool, tierKey, used, cfg, items) {
+    var mapping = (cfg.magic && cfg.magic.mapping && cfg.magic.mapping[tierKey]) || null;
+    if (!mapping) return null;
+    var wanted = pickMagicWeighted(mapping);
+    if (!wanted) return null;
+
+    function pick(r, allowUsed) {
+      var c = pool.filter(function (m) {
+        return m.rarity === r && (allowUsed || !used['magic:' + m.id]);
+      });
+      return c.length ? c[Math.floor(Math.random() * c.length)] : null;
+    }
+
+    var hit = pick(wanted, false), actual = wanted;
+    if (!hit) {
+      var order = fallbackOrder(wanted, cfg.fallback === 'none' ? 'nearest' : cfg.fallback);
+      for (var i = 0; i < order.length && !hit; i++) {
+        hit = pick(order[i], false);
+        if (hit) actual = order[i];
+      }
+    }
+    if (!hit) { hit = pick(wanted, true); actual = wanted; }
+    if (!hit) return null;
+
+    return {
+      item: hit,
+      magicRolled: wanted,
+      magicRarity: actual,
+      base: rollBaseItem(hit, items)
+    };
+  }
+
+  function generate(pack, tierObj, items, cfg, magicItems) {
     var used = {};
+    var pm = pack.magic || { chance: {}, types: [] };
+    var mPool = (cfg.magic && cfg.magic.enabled && magicItems)
+      ? magicPool(magicItems, pm.types) : [];
+
     var cards = tierObj.cards.map(function (c, idx) {
       var f = (c.filter && (c.filter.categories.length || c.filter.tags.length)) ? c.filter : pack.filter;
       var pool = poolFor(items, f, cfg);
       var rarity = weightedPick(c.dist);
       var slot = c.label || ('Kort ' + (idx + 1));
       if (!rarity) return { slot: slot, item: null, rolled: null, actual: null, poolSize: pool.length };
+
+      // Rul 1: bliver kortet et magic item?
+      var chance = (pm.chance && pm.chance[rarity]) || 0;
+      if (mPool.length && chance > 0 && Math.random() * 100 < chance) {
+        var mag = drawMagic(mPool, rarity, used, cfg, items);
+        if (mag) {
+          if (cfg.noDuplicates) used['magic:' + mag.item.id] = true;
+          return {
+            slot: slot, item: null, magic: mag, rolled: rarity, actual: rarity,
+            poolSize: mPool.length
+          };
+        }
+      }
+
       var res = drawOne(pool, rarity, used, cfg);
       if (res.item && cfg.noDuplicates) used[res.item.id] = true;
       return {
@@ -532,8 +723,38 @@ window.LB = (function () {
     return { pack: pack.name, tier: tierObj.name, cards: cards };
   }
 
+  var muid = 0;
+  function magicFromJSON(arr) {
+    if (!Array.isArray(arr)) return [];
+    return arr.map(function (o) {
+      muid++;
+      return {
+        id: makeId(o.name).replace(/-(\d+)$/, '-m$1') + '-' + muid,
+        name: String(o.name || '').trim(),
+        type: String(o.type || '').trim(),
+        rarity: normalizeRarity(o.rarity),
+        attunement: !!o.attunement,
+        typeLine: o.typeLine || '',
+        desc: o.desc || '',
+        source: o.source || '',
+        baseFilter: o.baseFilter || null,
+        variantOf: o.variantOf || null,
+        enabled: o.enabled !== false
+      };
+    });
+  }
+
+  function magicTypesOf(magicItems) {
+    var seen = {};
+    magicItems.forEach(function (m) { if (m.type) seen[m.type] = true; });
+    return Object.keys(seen).sort();
+  }
+
   return {
     RARITIES: RARITIES, RKEYS: RKEYS,
+    MAGIC_RARITIES: MAGIC_RARITIES, MKEYS: MKEYS,
+    magicRarityLabel: magicRarityLabel, magicFromJSON: magicFromJSON,
+    magicTypesOf: magicTypesOf, magicPool: magicPool, emptyMagicDist: function () { return magicDist({}); },
     rarityLabel: rarityLabel, normalizeRarity: normalizeRarity,
     defaultConfig: defaultConfig, defaultScales: defaultScales, findScale: findScale,
     migrateConfig: migrateConfig, emptyDist: function () { return dist({}); },
@@ -544,7 +765,7 @@ window.LB = (function () {
     categoriesOf: categoriesOf, tagsOf: tagsOf, poolFor: poolFor, generate: generate,
     storage: {
       available: available, load: load, save: save,
-      K_CFG: K_CFG, K_ITEMS: K_ITEMS, K_SEEDED: K_SEEDED
+      K_CFG: K_CFG, K_ITEMS: K_ITEMS, K_SEEDED: K_SEEDED, K_MAGIC: K_MAGIC
     }
   };
 })();
