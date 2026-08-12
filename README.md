@@ -181,20 +181,34 @@ Standardtabellen for rul 2:
 Artifacts står på 0 % overalt. De 11 artifacts ligger i listen, men trækkes aldrig,
 før du selv giver dem vægt.
 
+### Forbrugsvarer holdes adskilt
+
+En potion er ikke det samme som et permanent magic item, så hvert magic item er markeret
+som enten **forbrugsvare** eller **permanent**, og hver pakke vælger hvad den må trække:
+begge dele, kun permanente, eller kun forbrugsvarer.
+
+75 af de 441 er forbrugsvarer. Markeringen kommer fra tre kilder i prioriteret rækkefølge:
+typen `Potion` eller `Scroll`, kildens eget `Consumable`-tag (kun 19 poster har det), og
+til sidst navnemønstre som `Dust of…`, `Oil of…`, `Philter…`, `Elemental Gem`,
+`Necklace of Fireballs` og `Tome of…`. `Tome of the Stilled Tongue` er undtaget, da den er
+permanent. Alt kan rettes i tabellen på Magic-fanen, også som bulk-handling på et filter.
+
 ### Chance pr. pakke
 
-| Pakke | Rare | Very Rare | Legendary | Tilladte typer |
-|-------|------|-----------|-----------|----------------|
-| Adventurer | 10 % | 20 % | 30 % | alle |
-| Weapons | 15 % | 25 % | 40 % | Weapon |
-| Armor | 15 % | 25 % | 40 % | Armor |
-| Consumables | 20 % | 30 % | 40 % | Potion, Scroll |
-| Magic | 100 % | 100 % | 100 % | alle |
-| Classes | — | — | — | — |
+| Pakke | Rare | Very Rare | Legendary | Typer | Forbrugsvarer |
+|-------|------|-----------|-----------|-------|---------------|
+| Adventurer | 10 % | 20 % | 30 % | alle | kun permanente |
+| Weapons | 15 % | 25 % | 40 % | Weapon | kun permanente |
+| Armor | 15 % | 25 % | 40 % | Armor | kun permanente |
+| Consumables | 25 % | 40 % | 55 % | alle | **kun forbrugsvarer** |
+| Magic | 100 % | 100 % | 100 % | alle | begge dele |
+| Classes | — | — | — | — | — |
 
-Typefiltret sikrer, at en Weapons-pakke ikke deler ringe ud. Magic-pakken har 100 %
-på alle trin, så hvert kort er et magic item; dens korttrin ligger til gengæld højt,
-fordi trinnet nu kun bruges som opslag i tabellen ovenfor.
+Typefiltret sikrer, at en Weapons-pakke ikke deler ringe ud. Consumables-pakken bruger
+ikke længere et typefilter — den tager alle forbrugsvarer, så den også fanger `Dust of
+Disappearance` og andre wondrous items der bruges op. Magic-pakken har 100 % på alle trin,
+så hvert kort er et magic item; dens korttrin ligger til gengæld højt, fordi trinnet nu
+kun bruges som opslag i tabellen ovenfor.
 
 ### Data
 

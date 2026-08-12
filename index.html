@@ -149,6 +149,11 @@
       <input type="search" id="magicSearch" placeholder="Søg efter navn&hellip;">
       <select id="magicTypeFilter"><option value="">Alle typer</option></select>
       <select id="magicRarFilter"><option value="">Alle magi-rarities</option></select>
+      <select id="magicConsFilter">
+        <option value="">Permanente og forbrugsvarer</option>
+        <option value="exclude">Kun permanente</option>
+        <option value="only">Kun forbrugsvarer</option>
+      </select>
       <span class="spacer"></span>
       <span class="hint" id="magicCount"></span>
     </div>
@@ -156,7 +161,7 @@
     <div class="row bulk-bar" id="magicBulk"></div>
     <div class="table-wrap">
       <table class="table" id="magicTable">
-        <thead><tr><th>Navn</th><th>Type</th><th>Magi-rarity</th><th>Basisitem-rul</th><th>Med i puljen</th></tr></thead>
+        <thead><tr><th>Navn</th><th>Type</th><th>Forbrugsvare</th><th>Magi-rarity</th><th>Basisitem-rul</th><th>Med i puljen</th></tr></thead>
         <tbody></tbody>
       </table>
     </div>

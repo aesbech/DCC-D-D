@@ -102,6 +102,43 @@ def base_filter(kind, constraint):
     return {"subcategories": ordered, "excludeNames": exclude}
 
 
+# Magiske forbrugsvarer. Kilden mærker kun 19 poster med tagget "Consumable",
+# så typen og navnet må supplere. Alt herunder kan rettes i appen bagefter.
+CONSUMABLE_NAME = re.compile(
+    r"^(dust of|oil of|philter|potion|elemental gem|feather token|bead of force|"
+    r"sovereign glue|universal solvent|keoghtom's ointment|nolzur's marvelous pigments|"
+    r"necklace of fireballs|manual of|tome of|spell scroll|scroll of|"
+    r"quaal's feather token|chime of opening|bag of beans)",
+    re.I,
+)
+# Undtagelser: fanget af mønsteret ovenfor, men er permanente.
+NOT_CONSUMABLE = {"Tome of the Stilled Tongue"}
+
+
+def read_tags(rec):
+    tags = []
+    if "Tags:" in rec:
+        for line in rec[rec.index("Tags:") + 1:]:
+            if line.startswith("Notes:") or line.endswith(("Guide", "Handbook", "Rules")):
+                break
+            tags.append(line)
+    note = next((l[len("Notes:"):] for l in rec if l.startswith("Notes:")), "")
+    for t in (x.strip() for x in note.split(",")):
+        if t and t not in tags:
+            tags.append(t)
+    return tags
+
+
+def is_consumable(name, kind, tags):
+    if name in NOT_CONSUMABLE:
+        return False
+    if kind in ("Potion", "Scroll"):
+        return True
+    if any(t.lower() == "consumable" for t in tags):
+        return True
+    return bool(CONSUMABLE_NAME.match(name))
+
+
 def split_records(lines):
     starts = [
         i for i in range(len(lines) - 2)
@@ -216,12 +253,15 @@ def main():
         source = rec[-1] if rec[-1] not in RARITY_WORDS else ""
         bf = base_filter(kind, constraint) if constraint else None
         variants = variant_rows(rec, name)
+        tags = read_tags(rec)
 
         base = {
             "name": name,
             "type": kind,
             "attunement": attunement,
+            "consumable": is_consumable(name, kind, tags),
             "typeLine": type_line or "",
+            "tags": tags,
             "desc": desc,
             "source": source,
         }
@@ -236,6 +276,7 @@ def main():
                 item = dict(base)
                 item["name"] = v["name"]
                 item["rarity"] = v["rarity"]
+                item["consumable"] = is_consumable(v["name"], kind, tags) or base["consumable"]
                 item["variantOf"] = name
                 items.append(item)
         else:
@@ -260,6 +301,7 @@ def main():
     print(f"Skrev {len(items)} magic items til {OUT.relative_to(ROOT)} (version {version})")
     print("  pr. rarity:", by_rarity)
     print("  med basisitem-rul:", sum(1 for i in items if "baseFilter" in i))
+    print("  forbrugsvarer:", sum(1 for i in items if i["consumable"]))
     if skipped:
         print(f"  sprunget over (Varies uden tabel): {', '.join(skipped)}")
 
