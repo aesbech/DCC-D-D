@@ -45,6 +45,28 @@ def clean(value):
     return re.sub(r"\s+", " ", str(value)).strip()
 
 
+# Forbrugsvarer i udstyrslisten. Hele Gift-gruppen tæller med — en dosis gift
+# bruges op — og desuden alt med regnearkets Consumable-tag samt de oplagte
+# navne. Kan rettes i appen bagefter.
+CONSUMABLE_NAME = re.compile(
+    r"^(torch|oil|acid|alchemist|antitoxin|holy water|rations|candle|paper|"
+    r"parchment|ink|perfume|feed|healer's kit|basic poison|poison)\b",
+    re.I,
+)
+# Fanget af mønsteret ovenfor, men er værktøj der kan bruges igen.
+NOT_CONSUMABLE = {"Ink Pen", "Poisoner's Kit"}
+
+
+def is_consumable(name, group, tags):
+    if name in NOT_CONSUMABLE:
+        return False
+    if group == "Gift":
+        return True
+    if any(t.lower() == "consumable" for t in tags):
+        return True
+    return bool(CONSUMABLE_NAME.match(name))
+
+
 def parse_price(text):
     """Læser prisen fra tekstkolonnen, fx '3,000 GP', '5 SP', '1 CP' -> gp.
 
@@ -105,16 +127,20 @@ def main():
         # markeres i appen i stedet for at blive gættet.
         rarity = RARITY.get(clean(row[col["Rarity"]])) if price is not None else None
 
+        group = clean(row[col["Gruppe"]]) or "Ukategoriseret"
+        tags = [t.strip() for t in clean(row[col["Tags"]]).split(",") if t.strip()]
+
         item = {
             "name": name,
-            "category": clean(row[col["Gruppe"]]) or "Ukategoriseret",
+            "category": group,
             "subcategory": clean(row[col["Kategori"]]),
             "price": price,
             "priceText": price_text,
             "rarity": rarity,
             "scale": "gear",
+            "consumable": is_consumable(name, group, tags),
             "source": clean(row[col["Kilde"]]),
-            "tags": [t.strip() for t in clean(row[col["Tags"]]).split(",") if t.strip()],
+            "tags": tags,
             "desc": clean(row[col["Beskrivelse"]]),
         }
 
@@ -142,6 +168,7 @@ def main():
         encoding="utf-8",
     )
 
+    print(f"  forbrugsvarer: {sum(1 for i in items if i['consumable'])}")
     missing = [i["name"] for i in items if not i["rarity"]]
     print(f"Skrev {len(items)} items til {OUT.relative_to(ROOT)} (version {version})")
     if missing:

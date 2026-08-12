@@ -86,8 +86,8 @@ antal **tiers**, som hver har et antal **kort** med sin egen rarity-fordeling i 
 Summen vises live og bliver rød hvis den ikke rammer 100.
 
 Filteret kan kombineres på to måder: *begge skal passe* (kategori **og** tag) eller
-*én af delene er nok* (kategori **eller** tag). Consumables bruger det sidste, så pakken
-rammer både hele Gift-gruppen og alt med tagget Consumable eller Healing.
+*én af delene er nok* (kategori **eller** tag). Hver pakke vælger desuden om den vil have
+forbrugsvarer med, udenom, eller kun dem.
 
 Et enkelt kort kan overstyre pakkens filter — fx hvis kort 3 i en Adventurer-pakke kun
 skal trække magiske ting.
@@ -112,7 +112,7 @@ eksport/import af hele opsætningen som JSON.
 | Adventurer | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 166 | Bronze / Sølv / Guld |
 | Weapons | Våben + Ammunition | 48 | Bronze / Sølv / Guld |
 | Armor | Rustning | 14 | Bronze / Sølv / Guld |
-| Consumables | Gift **eller** tag Consumable/Healing | 22 | Bronze / Sølv / Guld |
+| Consumables | alle forbrugsvarer | 24 + 75 magiske | Bronze / Sølv / Guld |
 | Magic | alle magic items | 441 | Bronze / Sølv / Guld |
 | Classes | Class | 104 | Standard (ikke gradueret) |
 
@@ -131,6 +131,25 @@ Verificeret over 20.000 simulerede pakker pr. tier: alle ni fordelinger rammer i
 0,4 procentpoint, og der er hverken fallback, tomme kort eller dubletter.
 
 Øvrige pakketyper er startgæt, tænkt til at blive tunet i UI'et.
+
+### Forbrugsvarer
+
+Forbrugsvare er en markering på både udstyr og magic items, så alt der bruges op kan
+holdes samlet ét sted. **24 af de 215 udstyrsting** er markeret: hele Gift-gruppen (13
+poisons — en dosis bruges op), plus fakler, olie, vievand, rationer, papir, pergament,
+blæk, parfume, lys, foder og healer's kit. `Ink Pen` og `Poisoner's Kit` er undtaget, da
+de er værktøj der kan bruges igen.
+
+På magisiden er **75 af de 441** forbrugsvarer — se afsnittet om magic items.
+
+Consumables-pakken bruger nu markeringen frem for et kategori- og tagfilter, så den fanger
+alt uanset hvor det står i regnearket. Puljen er tynd i midten (kun to uncommon), og de ni
+dyreste er alle gift, så pakkens høje trin læner sig bevidst på magic item-kortene: Guld
+er 29 % magiske, mod 2 % i Bronze.
+
+Adventurer, Weapons og Armor står på **både forbrugsvarer og varigt udstyr**. Vil du have
+poisons, fakler og rationer helt ud af Adventurer, er det én dropdown under Pakker —
+puljen går så fra 166 til 142, og legendary-items fra 16 til 7, fordi ni af dem er gift.
 
 ### To pakker der kræver din opmærksomhed
 

@@ -109,6 +109,11 @@
       <select id="itemCatFilter"><option value="">Alle kategorier</option></select>
       <select id="itemTagFilter"><option value="">Alle tags</option></select>
       <select id="itemRarFilter"><option value="">Alle rarities</option></select>
+      <select id="itemConsFilter">
+        <option value="">Forbrugsvarer og varigt</option>
+        <option value="exclude">Kun varigt udstyr</option>
+        <option value="only">Kun forbrugsvarer</option>
+      </select>
       <span class="spacer"></span>
       <span class="hint" id="itemCount"></span>
     </div>
@@ -116,7 +121,7 @@
     <div class="row bulk-bar" id="bulkBar"></div>
     <div class="table-wrap">
       <table class="table" id="itemTable">
-        <thead><tr><th>Navn</th><th>Kategori</th><th>Pris</th><th>Rarity</th><th>Skala</th><th>Kilde</th><th></th></tr></thead>
+        <thead><tr><th>Navn</th><th>Kategori</th><th>Forbrugsvare</th><th>Pris</th><th>Rarity</th><th>Skala</th><th>Kilde</th><th></th></tr></thead>
         <tbody></tbody>
       </table>
     </div>

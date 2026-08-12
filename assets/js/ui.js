@@ -217,6 +217,8 @@
     if (f.categories.length) parts.push('kategorier: ' + f.categories.join(', '));
     if (f.tags.length) parts.push('tags: ' + f.tags.join(', '));
     if (!f.categories.length && !f.tags.length) parts.push('alle kategorier');
+    if (f.consumables === 'only') parts.push('kun forbrugsvarer');
+    else if (f.consumables === 'exclude') parts.push('uden forbrugsvarer');
     hint.appendChild(document.createTextNode(parts.join(' · ')));
 
     // Advar hvis en trukket rarity ikke findes i puljen.
@@ -452,6 +454,18 @@
       'Ingen valgt = alle kategorier (undtagen de udelukkede under Indstillinger).'));
     wrap.appendChild(group('Tags', tags, filter.tags,
       'Ingen valgt = ingen tag-begrænsning. Vælges flere, tæller et item med hvis det har mindst ét af dem.'));
+
+    wrap.appendChild(el('label', { class: 'field cons-mode' }, [
+      el('span', { text: 'Forbrugsvarer (gift, fakler, rationer, olie …)' }),
+      el('select', {
+        onchange: function () { filter.consumables = this.value; onChange(); }
+      }, [
+        el('option', { value: 'all', text: 'Både forbrugsvarer og varigt udstyr' }),
+        el('option', { value: 'exclude', text: 'Kun varigt udstyr' }),
+        el('option', { value: 'only', text: 'Kun forbrugsvarer' })
+      ])
+    ]));
+    wrap.querySelector('.cons-mode select').value = filter.consumables || 'all';
 
     if (cats.length || tags.length) {
       wrap.appendChild(el('label', { class: 'field filter-mode' }, [
@@ -878,7 +892,8 @@
   });
 
   $('#btnExportCsv').addEventListener('click', function () {
-    var cols = ['name', 'category', 'subcategory', 'price', 'rarity', 'scale', 'source', 'tags', 'desc'];
+    var cols = ['name', 'category', 'subcategory', 'price', 'rarity', 'scale',
+                'consumable', 'source', 'tags', 'desc'];
     function cell(v) {
       if (v === null || v === undefined) return '';
       var s = Array.isArray(v) ? v.join(', ') : String(v);
@@ -901,6 +916,9 @@
       if (cat && i.category !== cat) return false;
       if (tag && (i.tags || []).indexOf(tag) < 0) return false;
       if (rar === '__none' ? !!i.rarity : (rar && i.rarity !== rar)) return false;
+      var cons = $('#itemConsFilter').value;
+      if (cons === 'only' && !i.consumable) return false;
+      if (cons === 'exclude' && i.consumable) return false;
       return true;
     });
   }
@@ -946,6 +964,10 @@
         el('span', { text: 'uden rarity — trækkes aldrig' })
       ]));
     }
+    var nCons = state.items.filter(function (i) { return i.consumable; }).length;
+    host.appendChild(el('div', { class: 'stat' }, [
+      el('b', { text: String(nCons) }), el('span', { text: 'forbrugsvarer' })
+    ]));
   }
 
   /* Sæt rarity på alt der matcher det aktive filter — bruges bl.a. til at rydde
@@ -959,10 +981,10 @@
     sel.appendChild(el('option', { value: '', text: 'Ingen rarity (trækkes aldrig)' }));
     C.RARITIES.forEach(function (r) { sel.appendChild(el('option', { value: r.key, text: r.label })); });
 
-    host.appendChild(el('span', { class: 'hint', text: 'Sæt rarity på alle ' + list.length + ' viste:' }));
+    host.appendChild(el('span', { class: 'hint', text: 'For alle ' + list.length + ' viste:' }));
     host.appendChild(sel);
     host.appendChild(el('button', {
-      class: 'btn btn-sm', text: 'Anvend',
+      class: 'btn btn-sm', text: 'Sæt rarity',
       onclick: function () {
         var v = sel.value || null;
         if (!confirm('Sæt rarity til "' + (v ? C.rarityLabel(v) : 'ingen') +
@@ -972,6 +994,16 @@
         toast(list.length + ' items opdateret');
       }
     }));
+    [['Marker som forbrugsvare', true], ['Marker som varigt', false]].forEach(function (opt) {
+      host.appendChild(el('button', {
+        class: 'btn btn-sm', text: opt[0],
+        onclick: function () {
+          list.forEach(function (it) { it.consumable = opt[1]; });
+          renderItems(); updateGenHint(); persist();
+          toast(list.length + ' items opdateret');
+        }
+      }));
+    });
   }
 
   function renderItems() {
@@ -1023,6 +1055,12 @@
       tbody.appendChild(el('tr', {}, [
         nameCell,
         el('td', { text: it.category }),
+        el('td', {}, [
+          el('input', {
+            type: 'checkbox', checked: it.consumable ? 'checked' : null,
+            onchange: function () { it.consumable = this.checked; renderItems(); updateGenHint(); persist(); }
+          })
+        ]),
         el('td', { text: priceLabel(it) }),
         el('td', {}, [rarSel]),
         el('td', {}, [scaleSel]),
@@ -1054,7 +1092,7 @@
     }
   }
 
-  ['#itemSearch', '#itemCatFilter', '#itemTagFilter', '#itemRarFilter'].forEach(function (sel) {
+  ['#itemSearch', '#itemCatFilter', '#itemTagFilter', '#itemRarFilter', '#itemConsFilter'].forEach(function (sel) {
     $(sel).addEventListener(sel === '#itemSearch' ? 'input' : 'change', function () {
       state.page = 0; renderItems();
     });

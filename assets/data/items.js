@@ -1,5 +1,5 @@
 /* Auto-genereret fra dnd_items.xlsx. Redigér regnearket og kør scripts/import_xlsx.py igen. */
-window.DND_ITEMS_VERSION = "05b27db53f36";
+window.DND_ITEMS_VERSION = "23e779a4e111";
 window.DND_ITEMS = [
  {
   "name": "Candle",
@@ -9,6 +9,7 @@ window.DND_ITEMS = [
   "priceText": "1 CP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": true,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -25,6 +26,7 @@ window.DND_ITEMS = [
   "priceText": "1 CP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Container"
@@ -40,6 +42,7 @@ window.DND_ITEMS = [
   "priceText": "1 CP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": true,
   "source": "Player's Handbook",
   "tags": [
    "Damage",
@@ -58,6 +61,7 @@ window.DND_ITEMS = [
   "priceText": "2 CP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Container"
@@ -73,6 +77,7 @@ window.DND_ITEMS = [
   "priceText": "2 CP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Communication",
@@ -89,6 +94,7 @@ window.DND_ITEMS = [
   "priceText": "2 CP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Container"
@@ -104,6 +110,7 @@ window.DND_ITEMS = [
   "priceText": "5 CP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Container"
@@ -119,6 +126,7 @@ window.DND_ITEMS = [
   "priceText": "5 CP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": true,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -135,6 +143,7 @@ window.DND_ITEMS = [
   "priceText": "5 CP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -151,6 +160,7 @@ window.DND_ITEMS = [
   "priceText": "5 CP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Communication",
@@ -166,6 +176,7 @@ window.DND_ITEMS = [
   "priceText": "1 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -182,6 +193,7 @@ window.DND_ITEMS = [
   "priceText": "1 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": true,
   "source": "Player's Handbook",
   "tags": [
    "Damage",
@@ -199,6 +211,7 @@ window.DND_ITEMS = [
   "priceText": "1 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": true,
   "source": "Player's Handbook",
   "tags": [
    "Communication",
@@ -216,6 +229,7 @@ window.DND_ITEMS = [
   "priceText": "1 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -230,6 +244,7 @@ window.DND_ITEMS = [
   "priceText": "2 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": true,
   "source": "Player's Handbook",
   "tags": [
    "Communication",
@@ -247,6 +262,7 @@ window.DND_ITEMS = [
   "priceText": "2 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Container"
@@ -262,6 +278,7 @@ window.DND_ITEMS = [
   "priceText": "5 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -278,6 +295,7 @@ window.DND_ITEMS = [
   "priceText": "5 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Container"
@@ -293,6 +311,7 @@ window.DND_ITEMS = [
   "priceText": "5 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": true,
   "source": "Player's Handbook",
   "tags": [
    "Social",
@@ -310,6 +329,7 @@ window.DND_ITEMS = [
   "priceText": "5 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -326,6 +346,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Damage",
@@ -343,6 +364,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Container"
@@ -358,6 +380,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -373,6 +396,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [],
   "desc": "If you consult an accurate Map, you gain a +5 bonus to Wisdom (Survival) checks you make to find your way in the place represented on it."
@@ -385,6 +409,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Container"
@@ -400,6 +425,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [],
   "desc": "When you take the Attack action, you can replace one of your attacks with throwing a Net. Target a creature you can see within 15 feet of yourself. The target must succeed on a Dexterity saving throw (DC 8 plus your Dexterity modifier and Proficiency Bonus) or have the Restrained condition until it escapes. The target succeeds automatically if it is Huge or larger. To escape, the target or a creature within 5 feet of it must take an action to make a DC 10 Strength (Athletics) check, freeing the Restrained creature on a success. Destroying the Net (AC 10; 5 HP; Immunity to Bludgeoning, Poison, and Psychic damage) also frees the target, ending the effect.",
@@ -413,6 +439,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Container"
@@ -428,6 +455,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [],
   "desc": "A Robe has vocational or ceremonial significance. Some events and locations admit only people wearing a Robe bearing certain colors or symbols.",
@@ -441,6 +469,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [],
   "desc": "As a Utilize action, you can tie a knot with Rope if you succeed on a DC 10 Dexterity (Sleight of Hand) check. The Rope can be burst with a successful DC 20 Strength (Athletics) check. You can bind an unwilling creature with the Rope only if the creature has the Grappled, Incapacitated, or Restrained condition. If the creature’s legs are bound, the creature has the Restrained condition until it escapes. Escaping the Rope requires the creature to make a successful DC 15 Dexterity (Acrobatics) check as an action.",
@@ -454,6 +483,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Container"
@@ -468,6 +498,7 @@ window.DND_ITEMS = [
   "priceText": "2 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -484,6 +515,7 @@ window.DND_ITEMS = [
   "priceText": "2 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Container"
@@ -499,6 +531,7 @@ window.DND_ITEMS = [
   "priceText": "2 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -515,6 +548,7 @@ window.DND_ITEMS = [
   "priceText": "2 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Container"
@@ -530,6 +564,7 @@ window.DND_ITEMS = [
   "priceText": "2 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Control",
@@ -546,6 +581,7 @@ window.DND_ITEMS = [
   "priceText": "2 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -561,6 +597,7 @@ window.DND_ITEMS = [
   "priceText": "2 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social",
@@ -578,6 +615,7 @@ window.DND_ITEMS = [
   "priceText": "2 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social",
@@ -594,6 +632,7 @@ window.DND_ITEMS = [
   "priceText": "4 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -610,6 +649,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [],
   "desc": "As a Utilize action, you can wrap a Chain around an unwilling creature within 5 feet of yourself that has the Grappled, Incapacitated, or Restrained condition if you succeed on a DC 13 Strength (Athletics) check. If the creature’s legs are bound, the creature has the Restrained condition until it escapes. Escaping the Chain requires the creature to make a successful DC 18 Dexterity (Acrobatics) check as an action. Bursting the Chain requires a successful DC 20 Strength (Athletics) check as an action.",
@@ -623,6 +663,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Container"
@@ -638,6 +679,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social",
@@ -655,6 +697,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": true,
   "source": "Player's Handbook",
   "tags": [
    "Healing",
@@ -671,6 +714,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -687,6 +731,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Damage",
@@ -703,6 +748,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social",
@@ -719,6 +765,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": true,
   "source": "Player's Handbook",
   "tags": [
    "Social",
@@ -735,6 +782,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -751,6 +799,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": true,
   "source": "Player's Handbook",
   "tags": [
    "Communication",
@@ -768,6 +817,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -784,6 +834,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -799,6 +850,7 @@ window.DND_ITEMS = [
   "priceText": "15 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social",
@@ -815,6 +867,7 @@ window.DND_ITEMS = [
   "priceText": "20 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -830,6 +883,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social",
@@ -846,6 +900,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -863,6 +918,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -879,6 +935,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": true,
   "source": "Player's Handbook",
   "tags": [
    "Damage",
@@ -896,6 +953,7 @@ window.DND_ITEMS = [
   "priceText": "35 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [
    "Explosives"
@@ -911,6 +969,7 @@ window.DND_ITEMS = [
   "priceText": "50 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [
    "Explosives"
@@ -926,6 +985,7 @@ window.DND_ITEMS = [
   "priceText": "60 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -941,6 +1001,7 @@ window.DND_ITEMS = [
   "priceText": "100 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [
    "Explosives"
@@ -956,6 +1017,7 @@ window.DND_ITEMS = [
   "priceText": "100 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Detection",
@@ -972,6 +1034,7 @@ window.DND_ITEMS = [
   "priceText": "250 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [
    "Explosives"
@@ -987,6 +1050,7 @@ window.DND_ITEMS = [
   "priceText": "1,000 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social",
@@ -1004,6 +1068,7 @@ window.DND_ITEMS = [
   "priceText": "",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [
    "Explosives"
@@ -1019,6 +1084,7 @@ window.DND_ITEMS = [
   "priceText": "",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [
    "Explosives"
@@ -1034,6 +1100,7 @@ window.DND_ITEMS = [
   "priceText": "",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [
    "Explosives"
@@ -1049,6 +1116,7 @@ window.DND_ITEMS = [
   "priceText": "4 CP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Damage",
@@ -1065,6 +1133,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Damage",
@@ -1081,6 +1150,7 @@ window.DND_ITEMS = [
   "priceText": "3 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [],
   "desc": "Firearm Bullets are destroyed upon use in a modern firearm.",
@@ -1094,6 +1164,7 @@ window.DND_ITEMS = [
   "priceText": "",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1110,6 +1181,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -1125,6 +1197,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -1140,6 +1213,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -1155,6 +1229,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -1170,6 +1245,7 @@ window.DND_ITEMS = [
   "priceText": "20 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -1185,6 +1261,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -1199,6 +1276,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -1214,6 +1292,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -1229,6 +1308,7 @@ window.DND_ITEMS = [
   "priceText": "",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -1243,6 +1323,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -1260,6 +1341,7 @@ window.DND_ITEMS = [
   "priceText": "12 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -1277,6 +1359,7 @@ window.DND_ITEMS = [
   "priceText": "16 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -1294,6 +1377,7 @@ window.DND_ITEMS = [
   "priceText": "33 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social",
@@ -1313,6 +1397,7 @@ window.DND_ITEMS = [
   "priceText": "39 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social",
@@ -1332,6 +1417,7 @@ window.DND_ITEMS = [
   "priceText": "40 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social",
@@ -1352,6 +1438,7 @@ window.DND_ITEMS = [
   "priceText": "40 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social",
@@ -1369,6 +1456,7 @@ window.DND_ITEMS = [
   "priceText": "",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [
    "Damage",
@@ -1389,6 +1477,7 @@ window.DND_ITEMS = [
   "priceText": "",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [
    "Damage",
@@ -1409,6 +1498,7 @@ window.DND_ITEMS = [
   "priceText": "",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [
    "Damage",
@@ -1429,6 +1519,7 @@ window.DND_ITEMS = [
   "priceText": "",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [
    "Damage",
@@ -1449,6 +1540,7 @@ window.DND_ITEMS = [
   "priceText": "",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [
    "Damage",
@@ -1469,6 +1561,7 @@ window.DND_ITEMS = [
   "priceText": "",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "It’s up to you to decide whether a character has proficiency with a firearm. Characters in most D&D worlds wouldn’t have such proficiency. During their downtime, characters can use the training rules in the Player’s Handbook to acquire proficiency, assuming that they have enough ammunition to keep the weapons working while mastering their use. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Vex. If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn.",
@@ -1486,6 +1579,7 @@ window.DND_ITEMS = [
   "priceText": "",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [
    "Damage",
@@ -1506,6 +1600,7 @@ window.DND_ITEMS = [
   "priceText": "30 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Warding"
@@ -1522,6 +1617,7 @@ window.DND_ITEMS = [
   "priceText": "75 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Warding"
@@ -1538,6 +1634,7 @@ window.DND_ITEMS = [
   "priceText": "200 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Warding"
@@ -1554,6 +1651,7 @@ window.DND_ITEMS = [
   "priceText": "1,500 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Warding"
@@ -1570,6 +1668,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -1584,6 +1683,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -1599,6 +1699,7 @@ window.DND_ITEMS = [
   "priceText": "",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -1613,6 +1714,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Warding"
@@ -1629,6 +1731,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Warding"
@@ -1645,6 +1748,7 @@ window.DND_ITEMS = [
   "priceText": "45 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Warding"
@@ -1661,6 +1765,7 @@ window.DND_ITEMS = [
   "priceText": "2 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1682,6 +1787,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1703,6 +1809,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1723,6 +1830,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1743,6 +1851,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1763,6 +1872,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1784,6 +1894,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1804,6 +1915,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1824,6 +1936,7 @@ window.DND_ITEMS = [
   "priceText": "15 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1844,6 +1957,7 @@ window.DND_ITEMS = [
   "priceText": "15 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1864,6 +1978,7 @@ window.DND_ITEMS = [
   "priceText": "15 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1884,6 +1999,7 @@ window.DND_ITEMS = [
   "priceText": "20 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1905,6 +2021,7 @@ window.DND_ITEMS = [
   "priceText": "20 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1926,6 +2043,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1946,6 +2064,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1966,6 +2085,7 @@ window.DND_ITEMS = [
   "priceText": "30 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -1986,6 +2106,7 @@ window.DND_ITEMS = [
   "priceText": "50 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2006,6 +2127,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Control",
@@ -2025,6 +2147,7 @@ window.DND_ITEMS = [
   "priceText": "50 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2045,6 +2168,7 @@ window.DND_ITEMS = [
   "priceText": "50 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2065,6 +2189,7 @@ window.DND_ITEMS = [
   "priceText": "75 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2085,6 +2210,7 @@ window.DND_ITEMS = [
   "priceText": "250 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Damage",
@@ -2105,6 +2231,7 @@ window.DND_ITEMS = [
   "priceText": "500 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Damage",
@@ -2125,6 +2252,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Warding"
@@ -2141,6 +2269,7 @@ window.DND_ITEMS = [
   "priceText": "50 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Warding"
@@ -2157,6 +2286,7 @@ window.DND_ITEMS = [
   "priceText": "50 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Warding"
@@ -2173,6 +2303,7 @@ window.DND_ITEMS = [
   "priceText": "75 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2190,6 +2321,7 @@ window.DND_ITEMS = [
   "priceText": "400 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Warding"
@@ -2206,6 +2338,7 @@ window.DND_ITEMS = [
   "priceText": "750 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Warding"
@@ -2222,6 +2355,7 @@ window.DND_ITEMS = [
   "priceText": "8 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -2238,6 +2372,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -2254,6 +2389,7 @@ window.DND_ITEMS = [
   "priceText": "30 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -2270,6 +2406,7 @@ window.DND_ITEMS = [
   "priceText": "50 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -2286,6 +2423,7 @@ window.DND_ITEMS = [
   "priceText": "50 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -2302,6 +2440,7 @@ window.DND_ITEMS = [
   "priceText": "75 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -2318,6 +2457,7 @@ window.DND_ITEMS = [
   "priceText": "200 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -2334,6 +2474,7 @@ window.DND_ITEMS = [
   "priceText": "400 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -2350,6 +2491,7 @@ window.DND_ITEMS = [
   "priceText": "150 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": true,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "A creature subjected to Truth Serum must succeed on a DC 11 Constitution saving throw or have the Poisoned condition for 1 hour. The Poisoned creature can’t knowingly communicate a lie."
@@ -2362,6 +2504,7 @@ window.DND_ITEMS = [
   "priceText": "200 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": true,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "A creature subjected to Carrion Crawler Mucus must succeed on a DC 13 Constitution saving throw or have the Poisoned condition for 1 minute. The creature also has the Paralyzed condition while Poisoned in this way. The creature repeats the save at the end of each of its turns, ending the effect on itself on a success."
@@ -2374,6 +2517,7 @@ window.DND_ITEMS = [
   "priceText": "200 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": true,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "A creature subjected to Lolth’s Sting must succeed on a DC 13 Constitution saving throw or have the Poisoned condition for 1 hour. If the creature fails the save by 5 or more, the creature also has the Unconscious condition while Poisoned in this way. The creature wakes up if it takes damage or if another creature takes an action to shake it awake."
@@ -2386,6 +2530,7 @@ window.DND_ITEMS = [
   "priceText": "200 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": true,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "A creature subjected to Serpent Venom must succeed on a DC 11 Constitution saving throw, taking 10 (3d6) Poison damage on a failed save or half as much damage on a successful one."
@@ -2398,6 +2543,7 @@ window.DND_ITEMS = [
   "priceText": "250 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": true,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "A creature subjected to Malice must succeed on a DC 15 Constitution saving throw or have the Poisoned condition for 1 hour. The creature also has the Blinded condition while Poisoned in this way."
@@ -2410,6 +2556,7 @@ window.DND_ITEMS = [
   "priceText": "250 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": true,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "A creature subjected to Pale Tincture must succeed on a DC 16 Constitution saving throw or take 3 (1d6) Poison damage and have the Poisoned condition. The Poisoned creature repeats the save every 24 hours, taking 3 (1d6) Poison damage on a failed save. The damage the poison deals can’t be healed by any means while the creature remains Poisoned. After seven successful saves against the poison, the creature is no longer Poisoned."
@@ -2422,6 +2569,7 @@ window.DND_ITEMS = [
   "priceText": "300 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": true,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "A creature subjected to Essence of Ether must succeed on a DC 15 Constitution saving throw or have the Poisoned condition for 8 hours. The creature also has the Unconscious condition while Poisoned in this way. The creature wakes up if it takes damage or if another creature takes an action to shake it awake."
@@ -2434,6 +2582,7 @@ window.DND_ITEMS = [
   "priceText": "400 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": true,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "A creature subjected to Oil of Taggit must succeed on a DC 13 Constitution saving throw or have the Poisoned condition for 24 hours. The creature also has the Unconscious condition while Poisoned in this way. It wakes up if it takes damage."
@@ -2446,6 +2595,7 @@ window.DND_ITEMS = [
   "priceText": "500 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": true,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "A creature subjected to Burnt Othur Fumes must succeed on a DC 13 Constitution saving throw or take 10 (3d6) Poison damage, and it must repeat the save at the start of each of its turns. On each successive failed save, the creature takes 3 (1d6) Poison damage. After three successful saves, the poison ends."
@@ -2458,6 +2608,7 @@ window.DND_ITEMS = [
   "priceText": "600 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": true,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "A creature subjected to Torpor poison must succeed on a DC 15 Constitution saving throw or have the Poisoned condition for 4d6 hours. The creature’s Speed is halved while the creature is Poisoned in this way."
@@ -2470,6 +2621,7 @@ window.DND_ITEMS = [
   "priceText": "1,200 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": true,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "A creature subjected to Wyvern Poison makes a DC 14 Constitution saving throw, taking 24 (7d6) Poison damage on a failed save or half as much damage on a successful one."
@@ -2482,6 +2634,7 @@ window.DND_ITEMS = [
   "priceText": "1,500 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": true,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "A creature that ingests Midnight Tears suffers no effect until the stroke of midnight. Any effect that ends the Poisoned condition neutralizes this poison. If the poison hasn’t been neutralized before midnight, the creature makes a DC 17 Constitution saving throw, taking 31 (9d6) Poison damage on a failed save or half as much damage on a successful one."
@@ -2494,6 +2647,7 @@ window.DND_ITEMS = [
   "priceText": "2,000 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": true,
   "source": "Dungeon Master's Guide",
   "tags": [],
   "desc": "A creature subjected to Purple Worm Poison makes a DC 21 Constitution saving throw, taking 35 (10d6) Poison damage on a failed save or half as much damage on a successful one."
@@ -2506,6 +2660,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Warding"
@@ -2522,6 +2677,7 @@ window.DND_ITEMS = [
   "priceText": "1 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2542,6 +2698,7 @@ window.DND_ITEMS = [
   "priceText": "2 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2562,6 +2719,7 @@ window.DND_ITEMS = [
   "priceText": "2 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2582,6 +2740,7 @@ window.DND_ITEMS = [
   "priceText": "5 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2602,6 +2761,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2622,6 +2782,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2642,6 +2803,7 @@ window.DND_ITEMS = [
   "priceText": "2 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2662,6 +2824,7 @@ window.DND_ITEMS = [
   "priceText": "2 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2682,6 +2845,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2702,6 +2866,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2722,6 +2887,7 @@ window.DND_ITEMS = [
   "priceText": "5 CP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2742,6 +2908,7 @@ window.DND_ITEMS = [
   "priceText": "1 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2761,6 +2928,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2781,6 +2949,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "D&D Beyond Basic Rules",
   "tags": [
    "Damage",
@@ -2801,6 +2970,7 @@ window.DND_ITEMS = [
   "priceText": "1 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social"
@@ -2815,6 +2985,7 @@ window.DND_ITEMS = [
   "priceText": "5 SP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social"
@@ -2829,6 +3000,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -2844,6 +3016,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social"
@@ -2858,6 +3031,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Social"
@@ -2872,6 +3046,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -2887,6 +3062,7 @@ window.DND_ITEMS = [
   "priceText": "1 GP",
   "rarity": "common",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -2902,6 +3078,7 @@ window.DND_ITEMS = [
   "priceText": "2 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Instrument"
@@ -2917,6 +3094,7 @@ window.DND_ITEMS = [
   "priceText": "2 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Instrument"
@@ -2932,6 +3110,7 @@ window.DND_ITEMS = [
   "priceText": "3 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Instrument"
@@ -2947,6 +3126,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -2962,6 +3142,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Healing",
@@ -2978,6 +3159,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -2993,6 +3175,7 @@ window.DND_ITEMS = [
   "priceText": "6 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Instrument"
@@ -3008,6 +3191,7 @@ window.DND_ITEMS = [
   "priceText": "8 GP",
   "rarity": "uncommon",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -3023,6 +3207,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -3038,6 +3223,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -3053,6 +3239,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -3068,6 +3255,7 @@ window.DND_ITEMS = [
   "priceText": "10 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -3083,6 +3271,7 @@ window.DND_ITEMS = [
   "priceText": "12 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Instrument"
@@ -3098,6 +3287,7 @@ window.DND_ITEMS = [
   "priceText": "15 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -3113,6 +3303,7 @@ window.DND_ITEMS = [
   "priceText": "15 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -3129,6 +3320,7 @@ window.DND_ITEMS = [
   "priceText": "20 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -3144,6 +3336,7 @@ window.DND_ITEMS = [
   "priceText": "20 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -3159,6 +3352,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -3175,6 +3369,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Instrument"
@@ -3190,6 +3385,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -3205,6 +3401,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -3221,6 +3418,7 @@ window.DND_ITEMS = [
   "priceText": "25 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility",
@@ -3237,6 +3435,7 @@ window.DND_ITEMS = [
   "priceText": "30 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -3252,6 +3451,7 @@ window.DND_ITEMS = [
   "priceText": "30 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Instrument"
@@ -3267,6 +3467,7 @@ window.DND_ITEMS = [
   "priceText": "30 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Instrument"
@@ -3282,6 +3483,7 @@ window.DND_ITEMS = [
   "priceText": "35 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Instrument"
@@ -3297,6 +3499,7 @@ window.DND_ITEMS = [
   "priceText": "50 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -3312,6 +3515,7 @@ window.DND_ITEMS = [
   "priceText": "50 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Utility"
@@ -3327,6 +3531,7 @@ window.DND_ITEMS = [
   "priceText": "15 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -3344,6 +3549,7 @@ window.DND_ITEMS = [
   "priceText": "20 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -3361,6 +3567,7 @@ window.DND_ITEMS = [
   "priceText": "35 GP",
   "rarity": "rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -3378,6 +3585,7 @@ window.DND_ITEMS = [
   "priceText": "100 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -3395,6 +3603,7 @@ window.DND_ITEMS = [
   "priceText": "250 GP",
   "rarity": "legendary",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -3412,6 +3621,7 @@ window.DND_ITEMS = [
   "priceText": "50 GP",
   "rarity": "very_rare",
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -3430,6 +3640,7 @@ window.DND_ITEMS = [
   "priceText": "3,000 GP",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -3447,6 +3658,7 @@ window.DND_ITEMS = [
   "priceText": "10,000 GP",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -3464,6 +3676,7 @@ window.DND_ITEMS = [
   "priceText": "10,000 GP",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -3481,6 +3694,7 @@ window.DND_ITEMS = [
   "priceText": "25,000 GP",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
@@ -3498,6 +3712,7 @@ window.DND_ITEMS = [
   "priceText": "30,000 GP",
   "rarity": null,
   "scale": "gear",
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Movement",
