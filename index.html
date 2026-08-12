@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loot Box Generator — D&amp;D</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2312131a'/%3E%3Cpath d='M16 6l2.9 6.2 6.6.9-4.8 4.8 1.2 6.7-5.9-3.2-5.9 3.2 1.2-6.7L6.5 13.1l6.6-.9z' fill='%23c9a227'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">&#9733;</span>
+    <span>Loot Box Generator</span>
+  </div>
+  <nav class="tabs" id="tabs">
+    <button class="tab is-active" data-tab="generate">Generator</button>
+    <button class="tab" data-tab="packs">Pakker</button>
+    <button class="tab" data-tab="items">Items</button>
+    <button class="tab" data-tab="settings">Indstillinger</button>
+  </nav>
+  <div class="topbar-right">
+    <span class="save-state" id="saveState">Gemt lokalt</span>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ GENERATOR ============ -->
+<section class="view is-active" id="view-generate">
+  <div class="panel">
+    <div class="row">
+      <label class="field">
+        <span>Pakketype</span>
+        <select id="genPack"></select>
+      </label>
+      <label class="field">
+        <span>Tier</span>
+        <select id="genTier"></select>
+      </label>
+      <label class="field field-sm">
+        <span>Antal pakker</span>
+        <input type="number" id="genCount" value="1" min="1" max="50">
+      </label>
+      <button class="btn btn-primary" id="btnGenerate">Generér</button>
+      <button class="btn" id="btnPrint">Print</button>
+      <button class="btn" id="btnCopy">Kopiér som tekst</button>
+      <button class="btn btn-ghost" id="btnClearResults">Ryd</button>
+    </div>
+    <p class="hint" id="genHint"></p>
+  </div>
+  <div id="results" class="results"></div>
+</section>
+
+<!-- ============ PAKKER ============ -->
+<section class="view" id="view-packs">
+  <div class="split">
+    <aside class="sidebar">
+      <div class="sidebar-head">
+        <h2>Pakketyper</h2>
+        <button class="btn btn-sm" id="btnAddPack">+ Ny</button>
+      </div>
+      <ul class="pack-list" id="packList"></ul>
+    </aside>
+    <div class="detail" id="packDetail"></div>
+  </div>
+</section>
+
+<!-- ============ ITEMS ============ -->
+<section class="view" id="view-items">
+  <div class="panel">
+    <h2>Importér items</h2>
+    <p class="hint">Understøtter CSV (komma, semikolon eller tab) og JSON. Har dine data en Rarity-kolonne,
+       bliver den brugt; ellers udledes rarity af prisen via den valgte skala.</p>
+    <div class="row">
+      <label class="field">
+        <span>Prisskala for det importerede</span>
+        <select id="importScale"></select>
+      </label>
+      <label class="btn btn-primary file-btn">
+        Vælg fil&hellip;
+        <input type="file" id="fileInput" accept=".csv,.json,.txt,.tsv" hidden>
+      </label>
+      <button class="btn" id="btnPasteToggle">Indsæt tekst</button>
+      <span class="spacer"></span>
+      <button class="btn" id="btnLoadDnd">Genindlæs D&amp;D-items</button>
+      <button class="btn" id="btnLoadClass">Genindlæs Class-kort</button>
+    </div>
+    <div class="row">
+      <button class="btn" id="btnExportItems">Eksportér items (JSON)</button>
+      <button class="btn" id="btnExportCsv">Eksportér items (CSV)</button>
+      <span class="spacer"></span>
+      <button class="btn btn-danger" id="btnClearItems">Slet alle items</button>
+    </div>
+    <div id="pasteBox" class="hidden">
+      <textarea id="pasteArea" rows="8" placeholder="Indsæt CSV eller JSON her&hellip;"></textarea>
+      <button class="btn btn-primary" id="btnParsePaste">Læs data</button>
+    </div>
+    <div id="mapBox" class="hidden"></div>
+  </div>
+
+  <div class="panel">
+    <div class="row">
+      <input type="search" id="itemSearch" placeholder="Søg efter navn&hellip;">
+      <select id="itemCatFilter"><option value="">Alle kategorier</option></select>
+      <select id="itemTagFilter"><option value="">Alle tags</option></select>
+      <select id="itemRarFilter"><option value="">Alle rarities</option></select>
+      <span class="spacer"></span>
+      <span class="hint" id="itemCount"></span>
+    </div>
+    <div id="itemStats" class="stats"></div>
+    <div class="table-wrap">
+      <table class="table" id="itemTable">
+        <thead><tr><th>Navn</th><th>Kategori</th><th>Pris</th><th>Rarity</th><th>Skala</th><th>Kilde</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div class="row" id="itemPager"></div>
+  </div>
+</section>
+
+<!-- ============ INDSTILLINGER ============ -->
+<section class="view" id="view-settings">
+  <div class="panel">
+    <h2>Rarity ud fra pris</h2>
+    <p class="hint">Øvre grænse i guldstykker (gp) &mdash; et item får den første rarity hvor prisen er
+       mindre end eller lig grænsen. De to skalaer kommer fra dit regneark: udstyr og magic items
+       prissættes helt forskelligt. Items hvor du selv har sat rarity bliver ikke rørt.</p>
+    <div id="scales"></div>
+    <button class="btn btn-primary" id="btnRecalc">Genberegn rarities</button>
+  </div>
+
+  <div class="panel">
+    <h2>Trækning</h2>
+    <label class="check"><input type="checkbox" id="optNoDupes"> Undgå dubletter inden for samme pakke</label>
+    <label class="field">
+      <span>Hvis der ikke findes et item med den trukne rarity</span>
+      <select id="optFallback">
+        <option value="nearest">Brug nærmeste rarity (ned eller op)</option>
+        <option value="down">Fald kun ned til lavere rarity</option>
+        <option value="none">Vis tomt kort (så jeg kan se hullet)</option>
+      </select>
+    </label>
+    <h3>Kategorier der aldrig må trækkes af en pakke uden filter</h3>
+    <p class="hint">Forhindrer fx Class-kort i at dukke op i Adventurer-pakken, som trækker fra alt.</p>
+    <div id="excludeChips" class="cats"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Gem og del opsætning</h2>
+    <p class="hint">Alt gemmes automatisk i browseren (localStorage). Eksportér hvis du vil flytte
+       opsætningen til en anden maskine eller lægge den i repoet.</p>
+    <div class="row">
+      <button class="btn" id="btnExportConfig">Eksportér opsætning</button>
+      <label class="btn file-btn">Importér opsætning<input type="file" id="importConfig" accept=".json" hidden></label>
+      <button class="btn btn-danger" id="btnResetConfig">Nulstil til standard</button>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div id="toast" class="toast"></div>
+
+<script src="assets/data/items.js"></script>
+<script src="assets/data/class-cards.js"></script>
+<script src="assets/js/core.js"></script>
+<script src="assets/js/ui.js"></script>
+</body>
+</html>

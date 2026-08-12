@@ -1,0 +1,548 @@
+/* Loot Box Generator — kerne: datamodel, lagring, import og trækning. */
+window.LB = (function () {
+  'use strict';
+
+  /* ---------------- rarities ---------------- */
+
+  var RARITIES = [
+    { key: 'common',    label: 'Common' },
+    { key: 'uncommon',  label: 'Uncommon' },
+    { key: 'rare',      label: 'Rare' },
+    { key: 'very_rare', label: 'Very Rare' },
+    { key: 'legendary', label: 'Legendary' }
+  ];
+  var RKEYS = RARITIES.map(function (r) { return r.key; });
+
+  function rarityLabel(key) {
+    for (var i = 0; i < RARITIES.length; i++) if (RARITIES[i].key === key) return RARITIES[i].label;
+    return key || '—';
+  }
+
+  /* Normaliserer fritekst ("very rare", "Very-Rare", "vr") til en rarity-nøgle. */
+  function normalizeRarity(raw) {
+    if (!raw) return null;
+    var s = String(raw).toLowerCase().replace(/[\s_-]+/g, '');
+    if (s === 'common' || s === 'c') return 'common';
+    if (s === 'uncommon' || s === 'u') return 'uncommon';
+    if (s === 'veryrare' || s === 'vr') return 'very_rare';
+    if (s === 'rare' || s === 'r') return 'rare';
+    if (s === 'legendary' || s === 'l') return 'legendary';
+    return null;
+  }
+
+  /* ---------------- rarity-skalaer ----------------
+     To prisskalaer fra regnearket. "gear" bruger øvre grænser i gp fra
+     Oversigt-arket; "magic" bruger DMG-priserne. "none" = ingen pris,
+     rarity sættes manuelt (fx Class-kort).                            */
+
+  function defaultScales() {
+    return [
+      {
+        id: 'gear', name: 'Udstyr',
+        // max = øvre grænse (inklusiv). Et item får første rarity hvor pris <= max.
+        steps: [
+          { r: 'common',    max: 1.99 },
+          { r: 'uncommon',  max: 9.99 },
+          { r: 'rare',      max: 39.99 },
+          { r: 'very_rare', max: 249.99 },
+          { r: 'legendary', max: null }
+        ]
+      },
+      {
+        id: 'magic', name: 'Magic Items',
+        steps: [
+          { r: 'common',    max: 100 },
+          { r: 'uncommon',  max: 400 },
+          { r: 'rare',      max: 4000 },
+          { r: 'very_rare', max: 40000 },
+          { r: 'legendary', max: null }
+        ]
+      }
+    ];
+  }
+
+  function findScale(cfg, id) {
+    for (var i = 0; i < cfg.scales.length; i++) if (cfg.scales[i].id === id) return cfg.scales[i];
+    return cfg.scales[0];
+  }
+
+  /* Understøtter "150 gp", "1.500", "2,5 gp", "50 SP", "10 CP" -> gp. */
+  function parsePrice(raw) {
+    if (raw === null || raw === undefined || raw === '') return null;
+    if (typeof raw === 'number') return isFinite(raw) ? raw : null;
+    var s = String(raw).toLowerCase().trim();
+    var unit = /\bsp\b/.test(s) ? 0.1 : /\bcp\b/.test(s) ? 0.01 : /\bpp\b/.test(s) ? 10 : 1;
+    var num = s.replace(/[^0-9.,]/g, '');
+    if (!num) return null;
+    // Tusindtalsseparator vs decimal: sidste separator med 1-2 cifre efter = decimal.
+    var m = num.match(/[.,](\d{1,2})$/);
+    if (m) num = num.slice(0, num.length - m[0].length).replace(/[.,]/g, '') + '.' + m[1];
+    else num = num.replace(/[.,]/g, '');
+    var v = parseFloat(num);
+    return isFinite(v) ? v * unit : null;
+  }
+
+  function priceToRarity(price, scale) {
+    if (price === null || price === undefined || !isFinite(price)) return null;
+    if (!scale || !scale.steps) return null;
+    for (var i = 0; i < scale.steps.length; i++) {
+      var st = scale.steps[i];
+      if (st.max === null || st.max === undefined || price <= st.max) return st.r;
+    }
+    return scale.steps[scale.steps.length - 1].r;
+  }
+
+  /* ---------------- standardopsætning ---------------- */
+
+  function dist(o) {
+    var d = {};
+    RKEYS.forEach(function (k) { d[k] = (o && o[k]) || 0; });
+    return d;
+  }
+
+  /* mode: 'and' = skal matche både kategori- og tag-listen (tomme lister ignoreres).
+           'or'  = tæller med hvis den matcher enten kategori- eller tag-listen. */
+  function filt(categories, tags, mode) {
+    return { categories: categories || [], tags: tags || [], mode: mode === 'or' ? 'or' : 'and' };
+  }
+
+  function card(label, d, filter) {
+    return { label: label || '', dist: dist(d), filter: filter || null };
+  }
+
+  function tier(id, name, cards) {
+    return { id: id, name: name, cards: cards };
+  }
+
+  /* Standardprogression for de graduerede pakker. Tallene for Adventurer Bronze
+     er specificeret; resten er startgæt der kan tunes i UI'et. */
+  function gradedTiers(bronze, silver, gold) {
+    return [
+      tier('bronze', 'Bronze', bronze),
+      tier('silver', 'Sølv', silver),
+      tier('gold', 'Guld', gold)
+    ];
+  }
+
+  function standardTiers() {
+    return gradedTiers(
+      [card('Kort 1', { common: 100 }),
+       card('Kort 2', { common: 85, uncommon: 15 }),
+       card('Kort 3', { uncommon: 90, rare: 9, very_rare: 1 })],
+      [card('Kort 1', { common: 70, uncommon: 30 }),
+       card('Kort 2', { common: 50, uncommon: 50 }),
+       card('Kort 3', { uncommon: 65, rare: 30, very_rare: 5 })],
+      [card('Kort 1', { common: 40, uncommon: 60 }),
+       card('Kort 2', { uncommon: 80, rare: 20 }),
+       card('Kort 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 })]
+    );
+  }
+
+  function defaultPacks() {
+    return [
+      {
+        id: 'adventurer', name: 'Adventurer', filter: filt([], []),
+        note: 'Den almindelige pakke — trækker fra alt undtagen Class-kort.',
+        tiers: gradedTiers(
+          [card('Kort 1', { common: 100 }),
+           card('Kort 2', { common: 90, uncommon: 10 }),
+           card('Kort 3', { uncommon: 95, rare: 4, very_rare: 1 })],
+          [card('Kort 1', { common: 80, uncommon: 20 }),
+           card('Kort 2', { common: 60, uncommon: 40 }),
+           card('Kort 3', { uncommon: 70, rare: 25, very_rare: 5 })],
+          [card('Kort 1', { common: 50, uncommon: 50 }),
+           card('Kort 2', { common: 30, uncommon: 70 }),
+           card('Kort 3', { uncommon: 40, rare: 45, very_rare: 13, legendary: 2 })]
+        )
+      },
+      { id: 'weapons', name: 'Weapons', filter: filt(['Våben', 'Ammunition'], []),
+        note: '', tiers: standardTiers() },
+      {
+        id: 'armor', name: 'Armor', filter: filt(['Rustning'], []),
+        note: 'Rustning ligger højt på udstyrs-skalaen — billigste er Padded til 5 gp, så der findes ' +
+              'ingen Common. Fordelingerne starter derfor ved Uncommon. Kun 14 items i alt, så ' +
+              'gentagelser er uundgåelige.',
+        tiers: gradedTiers(
+          // Kun ét Uncommon-item (Padded), så kun kort 1 sigter efter det —
+          // ellers slås dubletfiltret og fordelingen indbyrdes.
+          [card('Kort 1', { uncommon: 100 }),
+           card('Kort 2', { rare: 100 }),
+           card('Kort 3', { rare: 80, very_rare: 20 })],
+          [card('Kort 1', { uncommon: 50, rare: 50 }),
+           card('Kort 2', { rare: 90, very_rare: 10 }),
+           card('Kort 3', { rare: 40, very_rare: 55, legendary: 5 })],
+          [card('Kort 1', { rare: 100 }),
+           card('Kort 2', { rare: 30, very_rare: 70 }),
+           card('Kort 3', { very_rare: 60, legendary: 40 })]
+        )
+      },
+      { id: 'consumables', name: 'Consumables', filter: filt(['Gift'], ['Consumable', 'Healing'], 'or'),
+        note: 'Union-filter: hele Gift-gruppen plus alt med tagget Consumable eller Healing.',
+        tiers: standardTiers() },
+      { id: 'magic', name: 'Magic', filter: filt(['Magic Item'], []),
+        note: 'Venter på data. Importér dine magic items med kategorien "Magic Item" og skalaen Magic Items.',
+        tiers: standardTiers() },
+      {
+        id: 'classes', name: 'Classes', filter: filt(['Class'], []),
+        note: 'Ikke gradueret — ét tier. Indeholder class levels, attributter, feats og perks.',
+        tiers: [tier('standard', 'Standard', [
+          card('Kort 1', { common: 100 }),
+          card('Kort 2', { common: 70, uncommon: 30 }),
+          card('Kort 3', { uncommon: 60, rare: 30, very_rare: 9, legendary: 1 })
+        ])]
+      }
+    ];
+  }
+
+  function defaultConfig() {
+    return {
+      version: 2,
+      scales: defaultScales(),
+      noDuplicates: true,
+      fallback: 'nearest',
+      excludeFromAll: ['Class'],
+      packs: defaultPacks()
+    };
+  }
+
+  /* ---------------- lagring ---------------- */
+
+  var K_CFG = 'dccdd.config.v1';
+  var K_ITEMS = 'dccdd.items.v1';
+  var K_SEEDED = 'dccdd.seeded.v1';
+
+  function available() {
+    try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); return true; }
+    catch (e) { return false; }
+  }
+
+  function load(key, fallbackValue) {
+    try {
+      var raw = localStorage.getItem(key);
+      return raw ? JSON.parse(raw) : fallbackValue;
+    } catch (e) { return fallbackValue; }
+  }
+
+  function save(key, value) {
+    try { localStorage.setItem(key, JSON.stringify(value)); return true; }
+    catch (e) { return false; }
+  }
+
+  /* Fylder manglende felter ud, så gammelt gemt data ikke crasher nye versioner. */
+  function migrateConfig(cfg) {
+    var def = defaultConfig();
+    if (!cfg || typeof cfg !== 'object') return def;
+
+    // v1 -> v2: flad thresholds-liste blev til navngivne skalaer, og
+    // pack.categories blev til pack.filter {categories, tags}.
+    if (!Array.isArray(cfg.scales)) cfg.scales = def.scales;
+    if (!Array.isArray(cfg.packs)) cfg.packs = def.packs;
+    if (typeof cfg.noDuplicates !== 'boolean') cfg.noDuplicates = def.noDuplicates;
+    if (['down', 'nearest', 'none'].indexOf(cfg.fallback) < 0) cfg.fallback = def.fallback;
+    if (!Array.isArray(cfg.excludeFromAll)) cfg.excludeFromAll = def.excludeFromAll;
+    delete cfg.thresholds;
+
+    cfg.packs.forEach(function (p) {
+      if (!p.filter) p.filter = filt(Array.isArray(p.categories) ? p.categories : [], []);
+      if (!Array.isArray(p.filter.categories)) p.filter.categories = [];
+      if (!Array.isArray(p.filter.tags)) p.filter.tags = [];
+      if (p.filter.mode !== 'or') p.filter.mode = 'and';
+      delete p.categories;
+      if (typeof p.note !== 'string') p.note = '';
+      if (!Array.isArray(p.tiers)) p.tiers = [];
+      p.tiers.forEach(function (t) {
+        if (!Array.isArray(t.cards)) t.cards = [];
+        t.cards.forEach(function (c) {
+          c.dist = dist(c.dist);
+          if (!c.filter && Array.isArray(c.categories) && c.categories.length)
+            c.filter = filt(c.categories, []);
+          delete c.categories;
+          if (c.filter) {
+            if (!Array.isArray(c.filter.categories)) c.filter.categories = [];
+            if (!Array.isArray(c.filter.tags)) c.filter.tags = [];
+            if (c.filter.mode !== 'or') c.filter.mode = 'and';
+          }
+        });
+      });
+    });
+    cfg.version = 2;
+    return cfg;
+  }
+
+  /* ---------------- items ---------------- */
+
+  var uid = 0;
+  function makeId(name) {
+    uid++;
+    return String(name || 'item').toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40) + '-' + uid;
+  }
+
+  /* CSV-parser med understøttelse af citerede felter og "" som escapet citationstegn. */
+  function parseCSV(text) {
+    text = String(text).replace(/^﻿/, '').replace(/\r\n?/g, '\n');
+    var firstLine = text.split('\n')[0] || '';
+    var counts = { ',': 0, ';': 0, '\t': 0 };
+    var inQ0 = false;
+    for (var x = 0; x < firstLine.length; x++) {
+      var ch0 = firstLine[x];
+      if (ch0 === '"') inQ0 = !inQ0;
+      else if (!inQ0 && counts.hasOwnProperty(ch0)) counts[ch0]++;
+    }
+    var delim = ',';
+    if (counts[';'] > counts[',']) delim = ';';
+    if (counts['\t'] > counts[delim]) delim = '\t';
+
+    var rows = [], row = [], field = '', inQ = false;
+    for (var i = 0; i < text.length; i++) {
+      var ch = text[i];
+      if (inQ) {
+        if (ch === '"') {
+          if (text[i + 1] === '"') { field += '"'; i++; }
+          else inQ = false;
+        } else field += ch;
+      } else if (ch === '"') {
+        inQ = true;
+      } else if (ch === delim) {
+        row.push(field); field = '';
+      } else if (ch === '\n') {
+        row.push(field); rows.push(row); row = []; field = '';
+      } else {
+        field += ch;
+      }
+    }
+    if (field.length || row.length) { row.push(field); rows.push(row); }
+    return rows.filter(function (r) { return r.some(function (c) { return String(c).trim() !== ''; }); });
+  }
+
+  /* Gætter hvilken kolonne der er hvad, ud fra overskriften. */
+  var FIELD_HINTS = {
+    name:        ['navn', 'name', 'item', 'title', 'titel'],
+    category:    ['gruppe', 'group', 'kategori', 'category', 'type'],
+    subcategory: ['kategori', 'category', 'underkategori', 'subcategory'],
+    price:       ['pris (gp)', 'price (gp)', 'pris', 'price', 'cost', 'værdi', 'vaerdi', 'gp'],
+    rarity:      ['rarity', 'sjældenhed', 'sjaeldenhed'],
+    source:      ['kilde', 'source', 'book', 'bog'],
+    tags:        ['tags', 'tag', 'mærker'],
+    desc:        ['beskrivelse', 'description', 'noter', 'notes', 'note', 'desc', 'text']
+  };
+
+  function guessMapping(headers) {
+    var map = {};
+    var used = {};
+    var lower = headers.map(function (h) { return String(h).toLowerCase().trim(); });
+
+    function claim(field, idx) { map[field] = idx; used[idx] = true; }
+
+    Object.keys(FIELD_HINTS).forEach(function (field) {
+      var hints = FIELD_HINTS[field];
+      for (var h = 0; h < hints.length; h++) {
+        var idx = lower.indexOf(hints[h]);
+        if (idx >= 0 && !used[idx]) { claim(field, idx); return; }
+      }
+      for (var h2 = 0; h2 < hints.length; h2++) {
+        for (var j = 0; j < lower.length; j++) {
+          if (!used[j] && lower[j].indexOf(hints[h2]) >= 0) { claim(field, j); return; }
+        }
+      }
+    });
+    return map;
+  }
+
+  function splitTags(raw) {
+    if (Array.isArray(raw)) return raw.map(function (t) { return String(t).trim(); }).filter(Boolean);
+    if (!raw) return [];
+    return String(raw).split(/[,;|]/).map(function (t) { return t.trim(); }).filter(Boolean);
+  }
+
+  function buildItem(raw, cfg, defaultScaleId) {
+    var price = parsePrice(raw.price);
+    var explicit = normalizeRarity(raw.rarity);
+    var scaleId = raw.scale || defaultScaleId || 'gear';
+    var rarity = explicit;
+    if (!rarity && scaleId !== 'none') rarity = priceToRarity(price, findScale(cfg, scaleId));
+    return {
+      id: makeId(raw.name),
+      name: String(raw.name || '').trim() || '(uden navn)',
+      category: String(raw.category || '').trim() || 'Ukategoriseret',
+      subcategory: String(raw.subcategory || '').trim(),
+      price: price,
+      priceText: String(raw.priceText || '').trim(),
+      rarity: rarity || null,
+      rarityLocked: raw.rarityLocked !== undefined ? !!raw.rarityLocked : !!explicit,
+      scale: scaleId,
+      source: String(raw.source || '').trim(),
+      tags: splitTags(raw.tags),
+      desc: String(raw.desc || '').trim()
+    };
+  }
+
+  function itemsFromRows(rows, mapping, cfg, hasHeader, defaultScaleId) {
+    var body = hasHeader ? rows.slice(1) : rows;
+    return body.map(function (r) {
+      var raw = {};
+      Object.keys(mapping).forEach(function (f) {
+        var idx = mapping[f];
+        if (idx !== null && idx !== undefined && idx >= 0) raw[f] = r[idx];
+      });
+      return buildItem(raw, cfg, defaultScaleId);
+    }).filter(function (it) { return it.name !== '(uden navn)'; });
+  }
+
+  function itemsFromJSON(data, cfg, defaultScaleId) {
+    var arr = Array.isArray(data) ? data : (data && Array.isArray(data.items) ? data.items : null);
+    if (!arr) throw new Error('JSON skal være en liste af items, eller et objekt med "items".');
+    return arr.map(function (o) {
+      return buildItem({
+        name: o.name || o.navn || o.title,
+        category: o.category || o.kategori || o.gruppe,
+        subcategory: o.subcategory || o.underkategori,
+        price: o.price !== undefined ? o.price : (o.pris !== undefined ? o.pris : o.cost),
+        priceText: o.priceText,
+        rarity: o.rarity || o.sjaeldenhed,
+        rarityLocked: o.rarityLocked,
+        scale: o.scale,
+        source: o.source || o.kilde,
+        tags: o.tags,
+        desc: o.desc || o.description || o.beskrivelse || o.notes
+      }, cfg, defaultScaleId);
+    });
+  }
+
+  function recalcRarities(items, cfg) {
+    items.forEach(function (it) {
+      if (it.rarityLocked || it.scale === 'none') return;
+      it.rarity = priceToRarity(it.price, findScale(cfg, it.scale));
+    });
+    return items;
+  }
+
+  function categoriesOf(items) {
+    var seen = {};
+    items.forEach(function (i) { seen[i.category] = true; });
+    return Object.keys(seen).sort();
+  }
+
+  function tagsOf(items) {
+    var seen = {};
+    items.forEach(function (i) { (i.tags || []).forEach(function (t) { seen[t] = true; }); });
+    return Object.keys(seen).sort();
+  }
+
+  /* ---------------- trækning ---------------- */
+
+  function weightedPick(d) {
+    var total = 0, k;
+    for (k in d) if (d[k] > 0) total += d[k];
+    if (total <= 0) return null;
+    var roll = Math.random() * total;
+    for (var i = 0; i < RKEYS.length; i++) {
+      var w = d[RKEYS[i]] || 0;
+      if (w <= 0) continue;
+      roll -= w;
+      if (roll < 0) return RKEYS[i];
+    }
+    return RKEYS[RKEYS.length - 1];
+  }
+
+  function fallbackOrder(rarity, mode) {
+    var idx = RKEYS.indexOf(rarity);
+    var order = [];
+    if (mode === 'none') return order;
+    if (mode === 'down') {
+      for (var i = idx - 1; i >= 0; i--) order.push(RKEYS[i]);
+      return order;
+    }
+    for (var d = 1; d < RKEYS.length; d++) {
+      if (idx - d >= 0) order.push(RKEYS[idx - d]);
+      if (idx + d < RKEYS.length) order.push(RKEYS[idx + d]);
+    }
+    return order;
+  }
+
+  /* Et tomt filter betyder "alt" — bortset fra kategorier på excludeFromAll,
+     så Class-kort ikke lækker ind i Adventurer-pakken. */
+  function poolFor(items, filter, cfg) {
+    var cats = (filter && filter.categories) || [];
+    var tags = (filter && filter.tags) || [];
+    var or = filter && filter.mode === 'or';
+    var empty = !cats.length && !tags.length;
+    var exclude = empty ? (cfg.excludeFromAll || []) : [];
+
+    function hasTag(i) {
+      var t = i.tags || [];
+      for (var k = 0; k < tags.length; k++) if (t.indexOf(tags[k]) >= 0) return true;
+      return false;
+    }
+
+    return items.filter(function (i) {
+      if (!i.rarity) return false;
+      if (exclude.indexOf(i.category) >= 0) return false;
+      if (empty) return true;
+      if (or) return (cats.length && cats.indexOf(i.category) >= 0) || (tags.length && hasTag(i));
+      if (cats.length && cats.indexOf(i.category) < 0) return false;
+      if (tags.length && !hasTag(i)) return false;
+      return true;
+    });
+  }
+
+  function drawOne(pool, rarity, used, cfg) {
+    function pick(r, allowUsed) {
+      var c = pool.filter(function (i) { return i.rarity === r && (allowUsed || !used[i.id]); });
+      return c.length ? c[Math.floor(Math.random() * c.length)] : null;
+    }
+
+    var hit = pick(rarity, false);
+    if (hit) return { item: hit, rolled: rarity, actual: rarity };
+
+    var order = fallbackOrder(rarity, cfg.fallback);
+    for (var i = 0; i < order.length; i++) {
+      var alt = pick(order[i], false);
+      if (alt) return { item: alt, rolled: rarity, actual: order[i] };
+    }
+
+    // Poolen er tom for alle brugbare rarities — tillad dublet frem for tomt kort.
+    if (cfg.noDuplicates) {
+      var dup = pick(rarity, true);
+      if (dup) return { item: dup, rolled: rarity, actual: rarity, duplicate: true };
+      for (var j = 0; j < order.length; j++) {
+        var dup2 = pick(order[j], true);
+        if (dup2) return { item: dup2, rolled: rarity, actual: order[j], duplicate: true };
+      }
+    }
+    return { item: null, rolled: rarity, actual: null };
+  }
+
+  function generate(pack, tierObj, items, cfg) {
+    var used = {};
+    var cards = tierObj.cards.map(function (c, idx) {
+      var f = (c.filter && (c.filter.categories.length || c.filter.tags.length)) ? c.filter : pack.filter;
+      var pool = poolFor(items, f, cfg);
+      var rarity = weightedPick(c.dist);
+      var slot = c.label || ('Kort ' + (idx + 1));
+      if (!rarity) return { slot: slot, item: null, rolled: null, actual: null, poolSize: pool.length };
+      var res = drawOne(pool, rarity, used, cfg);
+      if (res.item && cfg.noDuplicates) used[res.item.id] = true;
+      return {
+        slot: slot, item: res.item, rolled: res.rolled, actual: res.actual,
+        duplicate: !!res.duplicate, poolSize: pool.length
+      };
+    });
+    return { pack: pack.name, tier: tierObj.name, cards: cards };
+  }
+
+  return {
+    RARITIES: RARITIES, RKEYS: RKEYS,
+    rarityLabel: rarityLabel, normalizeRarity: normalizeRarity,
+    defaultConfig: defaultConfig, defaultScales: defaultScales, findScale: findScale,
+    migrateConfig: migrateConfig, emptyDist: function () { return dist({}); },
+    emptyFilter: function () { return filt([], []); },
+    parsePrice: parsePrice, priceToRarity: priceToRarity, recalcRarities: recalcRarities,
+    parseCSV: parseCSV, guessMapping: guessMapping,
+    itemsFromRows: itemsFromRows, itemsFromJSON: itemsFromJSON,
+    categoriesOf: categoriesOf, tagsOf: tagsOf, poolFor: poolFor, generate: generate,
+    storage: {
+      available: available, load: load, save: save,
+      K_CFG: K_CFG, K_ITEMS: K_ITEMS, K_SEEDED: K_SEEDED
+    }
+  };
+})();
