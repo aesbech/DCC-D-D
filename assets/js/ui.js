@@ -108,11 +108,52 @@
     return seeded;
   }
 
+  function bundledVersion() {
+    return 'dnd:' + (window.DND_ITEMS_VERSION || '?') +
+           '|class:' + (window.CLASS_CARDS_VERSION || '?');
+  }
+
   if (!Array.isArray(state.items)) {
     state.items = seedItems();
-    C.storage.save(C.storage.K_SEEDED, true);
+    C.storage.save(C.storage.K_SEEDED, bundledVersion());
   }
   if (state.cfg.packs.length) state.packId = state.cfg.packs[0].id;
+
+  /* Datafilerne i repoet kan være nyere end det, browseren har gemt — fx efter
+     at regnearket er blevet rettet. Tilbyd en genindlæsning frem for at
+     overskrive brugerens egne rettelser i det stille. */
+  function renderDataNotice() {
+    var host = $('#dataNotice');
+    var stored = C.storage.load(C.storage.K_SEEDED, null);
+    host.innerHTML = '';
+    if (typeof stored !== 'string' || stored === bundledVersion()) {
+      host.className = 'hidden';
+      return;
+    }
+    host.className = 'notice';
+    host.appendChild(el('span', {
+      text: 'Datafilerne i appen er opdateret siden du hentede dem. ' +
+            'Dine egne rettelser til de medfølgende items går tabt ved en genindlæsning.'
+    }));
+    host.appendChild(el('button', {
+      class: 'btn btn-sm btn-primary', text: 'Genindlæs data',
+      onclick: function () {
+        if (!confirm('Erstat alle ' + state.items.length + ' items med de opdaterede datafiler?')) return;
+        state.items = seedItems();
+        state.page = 0;
+        C.storage.save(C.storage.K_SEEDED, bundledVersion());
+        renderAll(); persist();
+        toast('Data genindlæst');
+      }
+    }));
+    host.appendChild(el('button', {
+      class: 'btn btn-sm', text: 'Behold mine',
+      onclick: function () {
+        C.storage.save(C.storage.K_SEEDED, bundledVersion());
+        renderDataNotice();
+      }
+    }));
+  }
 
   /* ---------------- faneblade ---------------- */
 
@@ -784,11 +825,38 @@
     }
   }
 
+  /* Sæt rarity på alt der matcher det aktive filter — bruges bl.a. til at rydde
+     op i items uden pris, som ellers aldrig bliver trukket. */
+  function renderBulkBar(list) {
+    var host = $('#bulkBar');
+    host.innerHTML = '';
+    if (!list.length) return;
+
+    var sel = el('select', {});
+    sel.appendChild(el('option', { value: '', text: 'Ingen rarity (trækkes aldrig)' }));
+    C.RARITIES.forEach(function (r) { sel.appendChild(el('option', { value: r.key, text: r.label })); });
+
+    host.appendChild(el('span', { class: 'hint', text: 'Sæt rarity på alle ' + list.length + ' viste:' }));
+    host.appendChild(sel);
+    host.appendChild(el('button', {
+      class: 'btn btn-sm', text: 'Anvend',
+      onclick: function () {
+        var v = sel.value || null;
+        if (!confirm('Sæt rarity til "' + (v ? C.rarityLabel(v) : 'ingen') +
+                     '" på ' + list.length + ' items?')) return;
+        list.forEach(function (it) { it.rarity = v; it.rarityLocked = !!v; });
+        renderItems(); updateGenHint(); persist();
+        toast(list.length + ' items opdateret');
+      }
+    }));
+  }
+
   function renderItems() {
     renderItemFilters();
     renderStats();
 
     var list = filteredItems();
+    renderBulkBar(list);
     var pages = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
     if (state.page >= pages) state.page = pages - 1;
     var slice = list.slice(state.page * PAGE_SIZE, (state.page + 1) * PAGE_SIZE);
@@ -980,6 +1048,7 @@
     renderGenControls();
     renderItems();
     renderResults();
+    renderDataNotice();
   }
 
   renderAll();

@@ -48,9 +48,27 @@ Udstyrs-skalaen er verificeret mod arket: den reproducerer rarity for alle 210 i
 en pris, uden en eneste afvigelse. Magic-skalaen ligger klar til når du får dine magic items
 ind — vælg blot **Magic Items** som prisskala under importen.
 
-Items uden pris får ingen rarity og bliver aldrig trukket. Det gælder pt. fem skibe
-(Keelboat, Longship, Sailing Ship, Warship, Galley), som er markeret i statistikken på
-Items-fanen. Sæt en rarity på dem manuelt, hvis de skal med i puljen.
+### Items uden pris
+
+Regnearkets rarity-formel er `IF(pris < 2; "Common"; …)`, og en tom celle tæller som 0.
+Derfor stod prisløst moderne udstyr — granatkastere, laserrifler, revolvere — som Common.
+Importen bruger derfor kun arkets Rarity-kolonne når der faktisk er en pris; uden pris
+får et item ingen rarity og bliver aldrig trukket.
+
+Det gælder pt. 13 items: syv skydevåben, tre eksplosiver, en energicelle og to generiske
+fokus-rækker. De er markeret i statistikken på Items-fanen. Skal de med i spillet, så
+filtrér på **Uden rarity** og brug bulk-vælgeren over tabellen til at sætte dem alle på
+én gang.
+
+Prisen læses desuden fra tekstkolonnen når `Pris (GP)` er tom — det er tilfældet for de
+store skibe, som derfor nu får deres rigtige pris (Keelboat 3.000 gp, Galley 30.000 gp)
+og dermed Legendary.
+
+### Når regnearket ændrer sig
+
+`items.js` indeholder et fingeraftryk af sit eget indhold. Har du kørt importen igen og
+deployet, opdager appen at dens datafiler er nyere end det browseren har gemt, og viser
+et banner med valget mellem at genindlæse eller beholde sine egne rettelser.
 
 ## Fanerne
 
