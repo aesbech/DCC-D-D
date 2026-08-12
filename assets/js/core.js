@@ -140,6 +140,12 @@ window.LB = (function () {
     return { id: id, name: name, cards: cards };
   }
 
+  /* Class-kort bærer deres type som tag, så en kortplads kan bede om præcis
+     én af dem: Class, Perk, Stat, Feat eller Skill. */
+  function classFilter(type) {
+    return filt(['Class'], [type], 'and');
+  }
+
   /* Standardprogression for de graduerede pakker. Tallene for Adventurer Bronze
      er specificeret; resten er startgæt der kan tunes i UI'et. */
   function gradedTiers(bronze, silver, gold) {
@@ -170,9 +176,14 @@ window.LB = (function () {
         id: 'adventurer', name: 'Adventurer',
         filter: filt(['Ammunition', 'Gift', 'Rustning', 'Udstyr', 'Våben', 'Værktøj'], []),
         note: 'Den almindelige pakke — udstyr, våben, rustning, værktøj, gift og ammunition. ' +
-              'Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra. Magic item-kort er ' +
-              'permanente; forbrugsvarer ligger i Consumables.',
-        magic: packMagic({ rare: 10, very_rare: 20, legendary: 30 }, [], 'exclude'),
+              'Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra. Magic item-kort kan ' +
+              'være både permanente og forbrugsvarer, så healing potions og spell scrolls ' +
+              'kan falde her.',
+        // Både permanente og forbrugsvarer: en healing potion eller et spell
+        // scroll er fin loot i en adventurer-pakke. Hvilket trin de lander på
+        // følger af magi-rarity — de mindste er Common og kan derfor komme
+        // allerede på et Rare-kort, mens Supreme Healing kræver et højere trin.
+        magic: packMagic({ rare: 10, very_rare: 20, legendary: 30 }, [], 'all'),
         tiers: gradedTiers(
           [card('Kort 1', { common: 100 }),
            card('Kort 2', { common: 50, uncommon: 50 }),
@@ -246,12 +257,16 @@ window.LB = (function () {
       },
       {
         id: 'classes', name: 'Classes', filter: filt(['Class'], []),
-        note: 'Ikke gradueret — ét tier. Indeholder class levels, attributter, feats og perks.',
+        note: 'Ikke gradueret — ét tier. Hver kortplads beder om sin egen korttype via ' +
+              'tags: Class, Perk, Stat, Feat og Skill. Feat- og Skill-kortene findes, men ' +
+              'har ingen plads endnu — tilføj et kort, hvis de skal med.',
         magic: packMagic({}, []),
         tiers: [tier('standard', 'Standard', [
-          card('Kort 1', { common: 100 }),
-          card('Kort 2', { common: 70, uncommon: 30 }),
-          card('Kort 3', { uncommon: 60, rare: 30, very_rare: 9, legendary: 1 })
+          // Fordelingerne matcher hver types faktiske rarities, så der hverken
+          // bliver fallback eller tomme kort.
+          card('Class', { very_rare: 100 }, classFilter('Class')),
+          card('Perk', { uncommon: 60, rare: 40 }, classFilter('Perk')),
+          card('Stat', { common: 85, very_rare: 15 }, classFilter('Stat'))
         ])]
       }
     ];
@@ -298,7 +313,7 @@ window.LB = (function () {
 
   function defaultConfig() {
     return {
-      version: 3,
+      version: 4,
       scales: defaultScales(),
       noDuplicates: true,
       fallback: 'nearest',
@@ -390,7 +405,21 @@ window.LB = (function () {
         });
       });
     });
-    cfg.version = 3;
+    // Classes-pakken fik typede kortpladser i v4. Opgradér kun hvis pakken
+    // står urørt — dvs. ingen af dens kort har fået sit eget filter — så
+    // egne tilpasninger ikke bliver overskrevet.
+    cfg.packs.forEach(function (p) {
+      if (p.id !== 'classes' || !p.tiers.length) return;
+      var untouched = p.tiers.every(function (t) {
+        return t.cards.every(function (c) { return !c.filter; });
+      });
+      if (!untouched) return;
+      var dp = null;
+      def.packs.forEach(function (x) { if (x.id === 'classes') dp = x; });
+      if (dp) { p.tiers = dp.tiers; p.note = dp.note; }
+    });
+
+    cfg.version = 4;
     return cfg;
   }
 
