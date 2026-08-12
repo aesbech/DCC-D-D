@@ -331,6 +331,8 @@
     wrap.innerHTML = '';
     state.results.forEach(function (box, idx) {
       var cards = el('div', { class: 'cards' });
+      // Vises kun ved print, hvor pakkeoverskrifterne er væk.
+      var origin = box.pack + ' · ' + box.tier + ' · pakke ' + (idx + 1);
       box.cards.forEach(function (c) {
         // Magic item-kort: viser magic itemet, dets magi-rarity og et
         // eventuelt udrullet basisitem. Kortets eget trin står nederst.
@@ -341,7 +343,7 @@
             el('div', { class: 'card-name', text: m.name })
           ];
           if (c.magic.base)
-            mk.push(el('div', { class: 'card-base', text: '⚔ ' + c.magic.base.name }));
+            mk.push(el('div', { class: 'card-base', text: 'Basis: ' + c.magic.base.name }));
           mk.push(el('div', { class: 'card-sub', text: m.type + (m.attunement ? ' · attunement' : '') }));
           if (m.desc) mk.push(el('div', { class: 'card-desc', text: m.desc }));
           if (c.magic.magicRolled !== c.magic.magicRarity)
@@ -352,6 +354,7 @@
                          text: C.magicRarityLabel(c.magic.magicRarity) }),
             el('span', { text: C.rarityLabel(c.rolled) + '-kort' })
           ]));
+          mk.push(el('div', { class: 'card-origin', text: origin }));
           cards.appendChild(el('div', { class: 'card is-magic r-' + c.magic.magicRarity }, mk));
           return;
         }
@@ -378,6 +381,7 @@
           }),
           el('span', { text: it ? priceLabel(it) : '' })
         ]));
+        kids.push(el('div', { class: 'card-origin', text: origin }));
         cards.appendChild(el('div', { class: 'card' + (it ? ' r-' + c.actual : ' is-empty') }, kids));
       });
 
