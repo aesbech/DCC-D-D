@@ -102,6 +102,35 @@ def parse_price(text):
         return None
 
 
+# Regnearket mangler to rækker fra Player's Handbooks ammunitionstabel. De
+# tilføjes her frem for i arket, så arket kan blive som det er, og ændringen
+# kan ses i git. Flytter du dem ind i regnearket, så slet dem herfra —
+# navnene skal ikke stå to steder.
+AMMO_DESC = (
+    "{what} are used with a weapon that has the ammunition property to make a ranged "
+    "attack. Each time you attack with the weapon, you expend one piece of ammunition. "
+    "Drawing the ammunition from a quiver, case, or other container is part of the attack "
+    "(you need a free hand to load a one-handed weapon). At the end of the battle, you can "
+    "recover half your expended ammunition by taking a minute to search the battlefield. "
+    "Sold in bundles of {count}."
+)
+
+MISSING_ROWS = [
+    {
+        "name": "Arrows", "category": "Ammunition", "subcategory": "Ammunition",
+        "price": 1.0, "priceText": "1 GP", "rarity": "common", "scale": "gear",
+        "consumable": False, "source": "Player's Handbook", "tags": ["Damage", "Combat"],
+        "desc": AMMO_DESC.format(what="Arrows", count=20), "weight": 1,
+    },
+    {
+        "name": "Crossbow Bolts", "category": "Ammunition", "subcategory": "Ammunition",
+        "price": 1.0, "priceText": "1 GP", "rarity": "common", "scale": "gear",
+        "consumable": False, "source": "Player's Handbook", "tags": ["Damage", "Combat"],
+        "desc": AMMO_DESC.format(what="Crossbow bolts", count=20), "weight": 1.5,
+    },
+]
+
+
 # Regnearket fører de fleste rustninger under materialet alene — "Padded",
 # "Plate", "Hide". Alene på et kort ser det forkert ud, så de får det ord med
 # som Player's Handbook selv sætter på dem. De øvrige (Chain Mail, Breastplate,
@@ -170,6 +199,10 @@ def main():
 
         items.append(item)
 
+    have = {i["name"] for i in items}
+    added = [dict(row) for row in MISSING_ROWS if row["name"] not in have]
+    items += added
+
     payload = json.dumps(items, ensure_ascii=False, indent=1)
 
     # Fingeraftryk af indholdet. Appen sammenligner det med hvad brugeren har
@@ -185,6 +218,8 @@ def main():
     )
 
     print(f"  forbrugsvarer: {sum(1 for i in items if i['consumable'])}")
+    if added:
+        print(f"  tilføjet uden om arket: {', '.join(i['name'] for i in added)}")
     missing = [i["name"] for i in items if not i["rarity"]]
     print(f"Skrev {len(items)} items til {OUT.relative_to(ROOT)} (version {version})")
     if missing:
