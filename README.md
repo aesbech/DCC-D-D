@@ -143,6 +143,22 @@ kan komme med i samme print. Det er dér etiketten tjener sig hjem: tre rækker,
 forskellige bokse, hver med sit navn i margenen. **Generér** erstatter som før, og **Ryd**
 tømmer.
 
+#### Målestregen
+
+Øverst på første ark står en **50 mm målestreg**. Den fanger den dyreste printfejl:
+browseren eller printerdriveren sætter "tilpas til side", og 63 × 88 mm bliver til noget
+andet, som ikke passer i kortlommer. Mål efter med en lineal, før du bruger en hel bunke
+300 g papir. Stregen ligger i den ledige plads — tre rækker fylder 264 mm, målestregen
+gør det til 271 mm, og der er 285 mm at tage af, så der er stadig ni kort på siden.
+
+Under **Printindstillinger** på Generator-fanen står resten: skalering 100 %, standard­marginer
+(ikke uden kant), papirtype tykt papir, og at arkene skal tørre før de stables.
+
+Kortene bruger **ingen baggrundsfarver** — den farvede typekant er en ramme og stjernerne
+er streger. Det betyder to ting: printet er uafhængigt af driverens "udskriv baggrunds­grafik",
+og der bruges kun blæk på tekst og de ni farvede kanter. Verificeret ved at rendere arket
+med alle baggrunde slået fra: kanter og stjerner står uændret.
+
 Kortene sættes op til papir frem for skærm: hvid bund og sort tekst. Rarity vises som
 **1–5 stjerner** i en lille pille — Common er én stjerne, Legendary er fem. På magic items
 står stjernerne i guld og viser magic itemets **egen** rarity, ikke korttrinnet.

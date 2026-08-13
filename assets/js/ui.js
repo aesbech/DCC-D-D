@@ -503,6 +503,20 @@
   function renderResults() {
     var wrap = $('#results');
     wrap.innerHTML = '';
+
+    /* Den dyreste printfejl er skalering: browseren eller driveren sætter
+       "tilpas til side", og 63 × 88 mm bliver til noget andet, som ikke passer
+       i lommer. Målestregen står øverst på første ark, så det kan afsløres med
+       en lineal før man bruger 300 g papir på en hel bunke. */
+    if (state.results.length) {
+      wrap.appendChild(el('div', { class: 'print-check' }, [
+        el('span', { class: 'print-ruler' }),
+        el('span', { text: 'Kontrolmål: stregen skal være præcis 50 mm. Er den kortere, ' +
+                           'printes der med skalering — sæt den til 100 %, ikke "tilpas til side". ' +
+                           'Kortene er 63 × 88 mm.' })
+      ]));
+    }
+
     state.results.forEach(function (box, idx) {
       var cards = el('div', { class: 'cards' });
       // Etiketten i printets venstremargen, hvor overskrifterne er væk.
