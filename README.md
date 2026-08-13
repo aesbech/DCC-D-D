@@ -23,6 +23,8 @@ Første gang siden åbnes, indlæses de 215 items fra regnearket, 140 Class-kort
 | `data/dnd_items.xlsx` | Dit originale regneark — kilden til alt udstyr |
 | `assets/data/items.js` | 215 items genereret fra arket `Alle items` |
 | `assets/data/class-cards.js` | 140 Class-kort i fem typer (Class, Stat, Feat, Skill, Perk) |
+| `assets/data/magic-items.js` | 450 magic items, heraf 9 tomes vi selv genererer |
+| `assets/data/spells.js` | 202 spells fra D&D Beyond, fordelt på niveau 0–9 |
 | `scripts/import_xlsx.py` | Konverterer regnearket til `items.js` |
 
 Har du opdateret regnearket, så kør konverteringen igen:
@@ -180,18 +182,25 @@ Hver pakke kan derfor vægte sine kategorier. En vægt på 2 gør hvert item i k
 dobbelt så sandsynligt som et uvægtet item af samme rarity; 1 er neutralt, og 0 slår
 kategorien fra uden at fjerne den fra filteret.
 
-Adventurer bruger **Våben 2, Rustning 4, Ammunition 2**:
+Vægtene kan **overstyres pr. tier**, så en pakke kan opføre sig forskelligt i Bronze og
+Guld. Adventurer bruger det til rustning:
 
-| Tier | Våben | Rustning | Udstyr | Værktøj |
-|------|-------|----------|--------|---------|
-| Bronze | 21 % → **32 %** | 1 % → **5 %** | 55 % → **43 %** | 19 % → 15 % |
-| Sølv | 23 % → **34 %** | 4 % → **10 %** | 44 % → **33 %** | 24 % → 17 % |
-| Guld | 24 % → **33 %** | 5 % → **13 %** | 39 % → **30 %** | 25 % → 17 % |
+| Tier | Rustningsvægt | Resultat |
+|------|---------------|----------|
+| Bronze | 0 | **0 %** rustning |
+| Sølv | 6 (pakkens egen) | **14 %** |
+| Guld | 8 | **21 %** |
 
-Rustning kan ikke komme meget højere i Bronze: der findes ingen Common rustning, og kun
-ét Uncommon-item, så en bronzepakke har sjældent et trin hvor rustning overhovedet kan
-trækkes. Skal rustning være almindeligt i bronzepakker, kræver det billigere rustninger
-i regnearket — ikke en højere vægt.
+Bronze er bevidst uden rustning: den eneste Uncommon-rustning er Padded, så den ville bare
+gå igen og igen. Til gengæld vægter Sølv og Guld den tungt.
+
+Resten af fordelingen, målt over 15.000 pakker pr. tier:
+
+| Tier | Våben | Udstyr | Værktøj |
+|------|-------|--------|---------|
+| Bronze | 34 % | 45 % | 15 % |
+| Sølv | 32 % | 32 % | 16 % |
+| Guld | 30 % | 26 % | 16 % |
 
 ### Forbrugsvarer
 
@@ -259,9 +268,10 @@ De to er bevidst afkoblet: et **Rare kort** giver som regel et **Common magic it
    for et almindeligt item. Sættes pr. pakke under fanen Pakker.
 2. **Hvilken magi-rarity?** Tabellen under fanen Magic oversætter korttrinnet til en
    fordeling over magi-rarity.
-3. **Hvilket basisitem?** Er magic itemet generisk — `Weapon, +1`, `Armor of Resistance`,
-   `Shield, +2` — rulles der til sidst hvilket konkret våben eller rustning det sidder på.
-   52 af de 441 magic items har sådan et rul.
+3. **Hvilket basisitem eller hvilken spell?** Er magic itemet generisk — `Weapon, +1`,
+   `Armor of Resistance`, `Shield, +2` — rulles der hvilket konkret våben eller rustning det
+   sidder på. 52 af magic itemsne har sådan et rul. Er det en spell scroll eller en tome,
+   rulles der i stedet en spell af kortets niveau blandt de 202 spells.
 
 Standardtabellen for rul 2:
 
@@ -320,6 +330,35 @@ bliver til fire poster, `Ioun Stone` til fjorten, `Belt of Giant Strength` til s
 Tre poster kunne ikke tages med, fordi kilden ikke angiver deres varianters rarity:
 **Horn of Valhalla**, **Rod of the Pact Keeper** og **Wand of the War Mage**. Vil du
 have dem med, skal de tilføjes manuelt.
+
+### Spell scrolls og tomes
+
+En spell scroll bærer ikke en bestemt spell, men et **niveau**. Når kortet trækkes, rulles
+der en spell af netop det niveau, og kortet hedder så `Spell Scroll of Fireball` med
+spellens egne tal og tekst: niveau, skole, casting time, rækkevidde og komponenter.
+
+**Tomes** er den permanente udgave — man læser bogen og lærer spellen for altid. En tome
+ligger derfor **ét rarity-trin over** scrollen med samme spellniveau:
+
+| Spellniveau | Spell Scroll | Tome |
+|-------------|--------------|------|
+| Cantrip, 1st | Common | Uncommon |
+| 2nd, 3rd | Uncommon | Rare |
+| 4th, 5th | Rare | Very Rare |
+| 6th, 7th, 8th | Very Rare | Legendary |
+| 9th | Legendary | **findes ikke** |
+
+Der er intet trin over Legendary, så der findes ingen tome til 9.-niveau spells — de
+stærkeste spells kan kun findes som scroll og bruges én gang.
+
+Tomes er homebrew og genereres af `scripts/import_magic.py` ud fra scroll-posterne. De er
+markeret som forbrugsvarer, da bogen bruges op, selvom gevinsten er permanent.
+
+Spell-listen kommer fra `data/spells.txt`:
+
+```bash
+python3 scripts/import_spells.py
+```
 
 ## Classes-pakken
 

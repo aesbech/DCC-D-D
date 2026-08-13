@@ -136,8 +136,9 @@ window.LB = (function () {
     return { label: label || '', dist: dist(d), filter: filter || null };
   }
 
-  function tier(id, name, cards) {
-    return { id: id, name: name, cards: cards };
+  /* weights kan overstyres pr. tier. Uden overstyring bruges pakkens egne. */
+  function tier(id, name, cards, weights) {
+    return { id: id, name: name, cards: cards, weights: weights || null };
   }
 
   /* Class-kort bærer deres type som tag, så en kortplads kan bede om præcis
@@ -148,11 +149,12 @@ window.LB = (function () {
 
   /* Standardprogression for de graduerede pakker. Tallene for Adventurer Bronze
      er specificeret; resten er startgæt der kan tunes i UI'et. */
-  function gradedTiers(bronze, silver, gold) {
+  function gradedTiers(bronze, silver, gold, weights) {
+    weights = weights || {};
     return [
-      tier('bronze', 'Bronze', bronze),
-      tier('silver', 'Sølv', silver),
-      tier('gold', 'Guld', gold)
+      tier('bronze', 'Bronze', bronze, weights.bronze),
+      tier('silver', 'Sølv', silver, weights.silver),
+      tier('gold', 'Guld', gold, weights.gold)
     ];
   }
 
@@ -186,7 +188,7 @@ window.LB = (function () {
         magic: packMagic({ rare: 10, very_rare: 20, legendary: 30 }, [], 'all'),
         // Udstyr er den største gruppe og ville ellers fylde over halvdelen af
         // pakken. Våben og rustning vægtes op, så de falder oftere.
-        weights: { 'Våben': 2, 'Rustning': 4, 'Ammunition': 2 },
+        weights: { 'Våben': 2, 'Rustning': 6, 'Ammunition': 2 },
         tiers: gradedTiers(
           [card('Kort 1', { common: 100 }),
            card('Kort 2', { common: 50, uncommon: 50 }),
@@ -196,7 +198,13 @@ window.LB = (function () {
            card('Kort 3', { uncommon: 60, rare: 35, very_rare: 4, legendary: 1 })],
           [card('Kort 1', { common: 25, uncommon: 50, rare: 25 }),
            card('Kort 2', { uncommon: 75, rare: 25 }),
-           card('Kort 3', { uncommon: 40, rare: 45, very_rare: 12, legendary: 3 })]
+           card('Kort 3', { uncommon: 40, rare: 45, very_rare: 12, legendary: 3 })],
+          // Bronze er uden rustning: den eneste Uncommon-rustning er Padded, så
+          // den ville bare gå igen. Sølv og Guld vægter rustning tungere i stedet.
+          {
+            bronze: { 'Våben': 2, 'Rustning': 0, 'Ammunition': 2 },
+            gold: { 'Våben': 2, 'Rustning': 8, 'Ammunition': 2 }
+          }
         )
       },
       { id: 'weapons', name: 'Weapons', filter: filt(['Våben', 'Ammunition'], []),
@@ -397,6 +405,7 @@ window.LB = (function () {
         p.magic.consumables = dp ? dp.magic.consumables : 'all';
       if (!Array.isArray(p.tiers)) p.tiers = [];
       p.tiers.forEach(function (t) {
+        if (t.weights !== null && (!t.weights || typeof t.weights !== 'object')) t.weights = null;
         if (!Array.isArray(t.cards)) t.cards = [];
         t.cards.forEach(function (c) {
           c.dist = dist(c.dist);
@@ -670,15 +679,24 @@ window.LB = (function () {
   /* Vægtning pr. kategori. Uden vægte er alle items i en rarity lige
      sandsynlige, hvilket lader den største kategori dominere. En vægt på 3
      gør hvert item i kategorien tre gange så sandsynligt som et uvægtet. */
+  /* En manglende vægt betyder 1. En vægt på 0 betyder nul — den må ikke
+     forveksles med "ikke sat", hvilket `weights[cat] || 1` ellers gør. */
+  function weightOf(weights, category) {
+    var w = weights ? weights[category] : undefined;
+    return (typeof w === 'number' && isFinite(w) && w >= 0) ? w : 1;
+  }
+
   function pickWeighted(cands, weights) {
     if (!cands.length) return null;
     if (!weights) return cands[Math.floor(Math.random() * cands.length)];
     var total = 0, i;
-    for (i = 0; i < cands.length; i++) total += (weights[cands[i].category] || 1);
-    if (total <= 0) return cands[Math.floor(Math.random() * cands.length)];
+    for (i = 0; i < cands.length; i++) total += weightOf(weights, cands[i].category);
+    // Alt i denne rarity er vægtet til nul: behandl den som tom, så
+    // trækningen falder videre til en anden rarity.
+    if (total <= 0) return null;
     var roll = Math.random() * total;
     for (i = 0; i < cands.length; i++) {
-      roll -= (weights[cands[i].category] || 1);
+      roll -= weightOf(weights, cands[i].category);
       if (roll < 0) return cands[i];
     }
     return cands[cands.length - 1];
@@ -765,7 +783,15 @@ window.LB = (function () {
     return cands.length ? cands[Math.floor(Math.random() * cands.length)] : null;
   }
 
-  function drawMagic(pool, tierKey, used, cfg, items) {
+  /* Fjerde rul: spell scrolls og tomes bærer ikke en bestemt spell, men et
+     niveau. Der rulles en spell af netop det niveau. */
+  function rollSpell(magicItem, spells) {
+    if (!spells || magicItem.spellLevel === null || magicItem.spellLevel === undefined) return null;
+    var cands = spells.filter(function (sp) { return sp.level === magicItem.spellLevel; });
+    return cands.length ? cands[Math.floor(Math.random() * cands.length)] : null;
+  }
+
+  function drawMagic(pool, tierKey, used, cfg, items, spells) {
     var mapping = (cfg.magic && cfg.magic.mapping && cfg.magic.mapping[tierKey]) || null;
     if (!mapping) return null;
     var wanted = pickMagicWeighted(mapping);
@@ -793,11 +819,12 @@ window.LB = (function () {
       item: hit,
       magicRolled: wanted,
       magicRarity: actual,
-      base: rollBaseItem(hit, items)
+      base: rollBaseItem(hit, items),
+      spell: rollSpell(hit, spells)
     };
   }
 
-  function generate(pack, tierObj, items, cfg, magicItems) {
+  function generate(pack, tierObj, items, cfg, magicItems, spells) {
     var used = {};
     var pm = pack.magic || { chance: {}, types: [] };
     var mPool = (cfg.magic && cfg.magic.enabled && magicItems)
@@ -813,7 +840,7 @@ window.LB = (function () {
       // Rul 1: bliver kortet et magic item?
       var chance = (pm.chance && pm.chance[rarity]) || 0;
       if (mPool.length && chance > 0 && Math.random() * 100 < chance) {
-        var mag = drawMagic(mPool, rarity, used, cfg, items);
+        var mag = drawMagic(mPool, rarity, used, cfg, items, spells);
         if (mag) {
           if (cfg.noDuplicates) used['magic:' + mag.item.id] = true;
           return {
@@ -823,7 +850,7 @@ window.LB = (function () {
         }
       }
 
-      var res = drawOne(pool, rarity, used, cfg, pack.weights);
+      var res = drawOne(pool, rarity, used, cfg, tierObj.weights || pack.weights);
       if (res.item && cfg.noDuplicates) used[res.item.id] = true;
       return {
         slot: slot, item: res.item, rolled: res.rolled, actual: res.actual,
@@ -845,6 +872,8 @@ window.LB = (function () {
         rarity: normalizeRarity(o.rarity),
         attunement: !!o.attunement,
         consumable: !!o.consumable,
+        spellLevel: (typeof o.spellLevel === 'number') ? o.spellLevel : null,
+        spellName: o.spellName || '',
         typeLine: o.typeLine || '',
         tags: Array.isArray(o.tags) ? o.tags : [],
         desc: o.desc || '',
@@ -866,7 +895,7 @@ window.LB = (function () {
     RARITIES: RARITIES, RKEYS: RKEYS,
     MAGIC_RARITIES: MAGIC_RARITIES, MKEYS: MKEYS,
     magicRarityLabel: magicRarityLabel, magicFromJSON: magicFromJSON,
-    magicTypesOf: magicTypesOf, magicPool: magicPool, emptyMagicDist: function () { return magicDist({}); },
+    magicTypesOf: magicTypesOf, magicPool: magicPool, rollSpell: rollSpell, emptyMagicDist: function () { return magicDist({}); },
     rarityLabel: rarityLabel, normalizeRarity: normalizeRarity,
     defaultConfig: defaultConfig, defaultScales: defaultScales, findScale: findScale,
     migrateConfig: migrateConfig, emptyDist: function () { return dist({}); },

@@ -1,5 +1,5 @@
 /* Auto-genereret fra magic_items.txt. Kør scripts/import_magic.py igen efter ændringer. */
-window.MAGIC_ITEMS_VERSION = "c7460131514a";
+window.MAGIC_ITEMS_VERSION = "4260beb583c3";
 window.MAGIC_ITEMS = [
  {
   "name": "Adamantine Armor",
@@ -5198,7 +5198,9 @@ window.MAGIC_ITEMS = [
   "desc": "A Spell Scroll bears the words of a single spell, written in a mystical cipher. If the spell is on your spell list, you can read the scroll and cast its spell without Material components. Otherwise, the scroll is unintelligible. Casting the spell by reading the scroll requires the spell's normal casting time. Once the spell is cast, the scroll crumbles to dust. If the casting is interrupted, the scroll isn't lost.",
   "source": "Dungeon Master's Guide",
   "rarity": "common",
-  "variantOf": "Spell Scroll"
+  "variantOf": "Spell Scroll",
+  "spellLevel": 1,
+  "spellName": "Spell Scroll of {spell}"
  },
  {
   "name": "Spell Scroll (2nd)",
@@ -5213,7 +5215,9 @@ window.MAGIC_ITEMS = [
   "desc": "A Spell Scroll bears the words of a single spell, written in a mystical cipher. If the spell is on your spell list, you can read the scroll and cast its spell without Material components. Otherwise, the scroll is unintelligible. Casting the spell by reading the scroll requires the spell's normal casting time. Once the spell is cast, the scroll crumbles to dust. If the casting is interrupted, the scroll isn't lost.",
   "source": "Dungeon Master's Guide",
   "rarity": "uncommon",
-  "variantOf": "Spell Scroll"
+  "variantOf": "Spell Scroll",
+  "spellLevel": 2,
+  "spellName": "Spell Scroll of {spell}"
  },
  {
   "name": "Spell Scroll (3rd)",
@@ -5228,7 +5232,9 @@ window.MAGIC_ITEMS = [
   "desc": "A Spell Scroll bears the words of a single spell, written in a mystical cipher. If the spell is on your spell list, you can read the scroll and cast its spell without Material components. Otherwise, the scroll is unintelligible. Casting the spell by reading the scroll requires the spell's normal casting time. Once the spell is cast, the scroll crumbles to dust. If the casting is interrupted, the scroll isn't lost.",
   "source": "Dungeon Master's Guide",
   "rarity": "uncommon",
-  "variantOf": "Spell Scroll"
+  "variantOf": "Spell Scroll",
+  "spellLevel": 3,
+  "spellName": "Spell Scroll of {spell}"
  },
  {
   "name": "Spell Scroll (4th)",
@@ -5243,7 +5249,9 @@ window.MAGIC_ITEMS = [
   "desc": "A Spell Scroll bears the words of a single spell, written in a mystical cipher. If the spell is on your spell list, you can read the scroll and cast its spell without Material components. Otherwise, the scroll is unintelligible. Casting the spell by reading the scroll requires the spell's normal casting time. Once the spell is cast, the scroll crumbles to dust. If the casting is interrupted, the scroll isn't lost.",
   "source": "Dungeon Master's Guide",
   "rarity": "rare",
-  "variantOf": "Spell Scroll"
+  "variantOf": "Spell Scroll",
+  "spellLevel": 4,
+  "spellName": "Spell Scroll of {spell}"
  },
  {
   "name": "Spell Scroll (5th)",
@@ -5258,7 +5266,9 @@ window.MAGIC_ITEMS = [
   "desc": "A Spell Scroll bears the words of a single spell, written in a mystical cipher. If the spell is on your spell list, you can read the scroll and cast its spell without Material components. Otherwise, the scroll is unintelligible. Casting the spell by reading the scroll requires the spell's normal casting time. Once the spell is cast, the scroll crumbles to dust. If the casting is interrupted, the scroll isn't lost.",
   "source": "Dungeon Master's Guide",
   "rarity": "rare",
-  "variantOf": "Spell Scroll"
+  "variantOf": "Spell Scroll",
+  "spellLevel": 5,
+  "spellName": "Spell Scroll of {spell}"
  },
  {
   "name": "Spell Scroll (6th)",
@@ -5273,7 +5283,9 @@ window.MAGIC_ITEMS = [
   "desc": "A Spell Scroll bears the words of a single spell, written in a mystical cipher. If the spell is on your spell list, you can read the scroll and cast its spell without Material components. Otherwise, the scroll is unintelligible. Casting the spell by reading the scroll requires the spell's normal casting time. Once the spell is cast, the scroll crumbles to dust. If the casting is interrupted, the scroll isn't lost.",
   "source": "Dungeon Master's Guide",
   "rarity": "very_rare",
-  "variantOf": "Spell Scroll"
+  "variantOf": "Spell Scroll",
+  "spellLevel": 6,
+  "spellName": "Spell Scroll of {spell}"
  },
  {
   "name": "Spell Scroll (7th)",
@@ -5288,7 +5300,9 @@ window.MAGIC_ITEMS = [
   "desc": "A Spell Scroll bears the words of a single spell, written in a mystical cipher. If the spell is on your spell list, you can read the scroll and cast its spell without Material components. Otherwise, the scroll is unintelligible. Casting the spell by reading the scroll requires the spell's normal casting time. Once the spell is cast, the scroll crumbles to dust. If the casting is interrupted, the scroll isn't lost.",
   "source": "Dungeon Master's Guide",
   "rarity": "very_rare",
-  "variantOf": "Spell Scroll"
+  "variantOf": "Spell Scroll",
+  "spellLevel": 7,
+  "spellName": "Spell Scroll of {spell}"
  },
  {
   "name": "Spell Scroll (8th)",
@@ -5303,7 +5317,9 @@ window.MAGIC_ITEMS = [
   "desc": "A Spell Scroll bears the words of a single spell, written in a mystical cipher. If the spell is on your spell list, you can read the scroll and cast its spell without Material components. Otherwise, the scroll is unintelligible. Casting the spell by reading the scroll requires the spell's normal casting time. Once the spell is cast, the scroll crumbles to dust. If the casting is interrupted, the scroll isn't lost.",
   "source": "Dungeon Master's Guide",
   "rarity": "very_rare",
-  "variantOf": "Spell Scroll"
+  "variantOf": "Spell Scroll",
+  "spellLevel": 8,
+  "spellName": "Spell Scroll of {spell}"
  },
  {
   "name": "Spell Scroll (9th)",
@@ -5318,7 +5334,9 @@ window.MAGIC_ITEMS = [
   "desc": "A Spell Scroll bears the words of a single spell, written in a mystical cipher. If the spell is on your spell list, you can read the scroll and cast its spell without Material components. Otherwise, the scroll is unintelligible. Casting the spell by reading the scroll requires the spell's normal casting time. Once the spell is cast, the scroll crumbles to dust. If the casting is interrupted, the scroll isn't lost.",
   "source": "Dungeon Master's Guide",
   "rarity": "legendary",
-  "variantOf": "Spell Scroll"
+  "variantOf": "Spell Scroll",
+  "spellLevel": 9,
+  "spellName": "Spell Scroll of {spell}"
  },
  {
   "name": "Spell Scroll (Cantrip)",
@@ -5333,7 +5351,9 @@ window.MAGIC_ITEMS = [
   "desc": "A Spell Scroll bears the words of a single spell, written in a mystical cipher. If the spell is on your spell list, you can read the scroll and cast its spell without Material components. Otherwise, the scroll is unintelligible. Casting the spell by reading the scroll requires the spell's normal casting time. Once the spell is cast, the scroll crumbles to dust. If the casting is interrupted, the scroll isn't lost.",
   "source": "Dungeon Master's Guide",
   "rarity": "common",
-  "variantOf": "Spell Scroll"
+  "variantOf": "Spell Scroll",
+  "spellLevel": 0,
+  "spellName": "Spell Scroll of {spell}"
  },
  {
   "name": "Spell Scroll of Fireball",
@@ -5906,6 +5926,150 @@ window.MAGIC_ITEMS = [
   "desc": "This book contains guidelines for influencing and charming others, and its words are charged with magic. If you spend 48 hours over a period of 6 days or fewer studying the book's contents and practicing its guidelines, your Charisma increases by 2, to a maximum of 30. The manual then loses its magic but regains it in a century.",
   "source": "Dungeon Master's Guide",
   "rarity": "very_rare"
+ },
+ {
+  "name": "Tome of Spells (1st)",
+  "type": "Wondrous Item",
+  "attunement": false,
+  "consumable": true,
+  "typeLine": "Wondrous Item, uncommon",
+  "tags": [
+   "Consumable",
+   "Spellcaster"
+  ],
+  "desc": "Study this tome to learn the spell permanently. It then crumbles to dust.",
+  "source": "Homebrew",
+  "rarity": "uncommon",
+  "spellLevel": 1,
+  "spellName": "Tome of {spell}"
+ },
+ {
+  "name": "Tome of Spells (2nd)",
+  "type": "Wondrous Item",
+  "attunement": false,
+  "consumable": true,
+  "typeLine": "Wondrous Item, rare",
+  "tags": [
+   "Consumable",
+   "Spellcaster"
+  ],
+  "desc": "Study this tome to learn the spell permanently. It then crumbles to dust.",
+  "source": "Homebrew",
+  "rarity": "rare",
+  "spellLevel": 2,
+  "spellName": "Tome of {spell}"
+ },
+ {
+  "name": "Tome of Spells (3rd)",
+  "type": "Wondrous Item",
+  "attunement": false,
+  "consumable": true,
+  "typeLine": "Wondrous Item, rare",
+  "tags": [
+   "Consumable",
+   "Spellcaster"
+  ],
+  "desc": "Study this tome to learn the spell permanently. It then crumbles to dust.",
+  "source": "Homebrew",
+  "rarity": "rare",
+  "spellLevel": 3,
+  "spellName": "Tome of {spell}"
+ },
+ {
+  "name": "Tome of Spells (4th)",
+  "type": "Wondrous Item",
+  "attunement": false,
+  "consumable": true,
+  "typeLine": "Wondrous Item, very rare",
+  "tags": [
+   "Consumable",
+   "Spellcaster"
+  ],
+  "desc": "Study this tome to learn the spell permanently. It then crumbles to dust.",
+  "source": "Homebrew",
+  "rarity": "very_rare",
+  "spellLevel": 4,
+  "spellName": "Tome of {spell}"
+ },
+ {
+  "name": "Tome of Spells (5th)",
+  "type": "Wondrous Item",
+  "attunement": false,
+  "consumable": true,
+  "typeLine": "Wondrous Item, very rare",
+  "tags": [
+   "Consumable",
+   "Spellcaster"
+  ],
+  "desc": "Study this tome to learn the spell permanently. It then crumbles to dust.",
+  "source": "Homebrew",
+  "rarity": "very_rare",
+  "spellLevel": 5,
+  "spellName": "Tome of {spell}"
+ },
+ {
+  "name": "Tome of Spells (6th)",
+  "type": "Wondrous Item",
+  "attunement": false,
+  "consumable": true,
+  "typeLine": "Wondrous Item, legendary",
+  "tags": [
+   "Consumable",
+   "Spellcaster"
+  ],
+  "desc": "Study this tome to learn the spell permanently. It then crumbles to dust.",
+  "source": "Homebrew",
+  "rarity": "legendary",
+  "spellLevel": 6,
+  "spellName": "Tome of {spell}"
+ },
+ {
+  "name": "Tome of Spells (7th)",
+  "type": "Wondrous Item",
+  "attunement": false,
+  "consumable": true,
+  "typeLine": "Wondrous Item, legendary",
+  "tags": [
+   "Consumable",
+   "Spellcaster"
+  ],
+  "desc": "Study this tome to learn the spell permanently. It then crumbles to dust.",
+  "source": "Homebrew",
+  "rarity": "legendary",
+  "spellLevel": 7,
+  "spellName": "Tome of {spell}"
+ },
+ {
+  "name": "Tome of Spells (8th)",
+  "type": "Wondrous Item",
+  "attunement": false,
+  "consumable": true,
+  "typeLine": "Wondrous Item, legendary",
+  "tags": [
+   "Consumable",
+   "Spellcaster"
+  ],
+  "desc": "Study this tome to learn the spell permanently. It then crumbles to dust.",
+  "source": "Homebrew",
+  "rarity": "legendary",
+  "spellLevel": 8,
+  "spellName": "Tome of {spell}"
+ },
+ {
+  "name": "Tome of Spells (Cantrip)",
+  "type": "Wondrous Item",
+  "attunement": false,
+  "consumable": true,
+  "typeLine": "Wondrous Item, uncommon",
+  "tags": [
+   "Consumable",
+   "Spellcaster"
+  ],
+  "desc": "Study this tome to learn the spell permanently. It then crumbles to dust.",
+  "source": "Homebrew",
+  "rarity": "uncommon",
+  "spellLevel": 0,
+  "spellName": "Tome of {spell}"
  },
  {
   "name": "Tome of Understanding",
