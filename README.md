@@ -252,7 +252,7 @@ eksport/import af hele opsætningen som JSON.
 | Weapons | Våben, Ammunition, Udstyr | 105 | Bronze / Sølv / Guld |
 | Armor | Rustning, Udstyr | 78 | Bronze / Sølv / Guld |
 | Consumables | Gift **eller** tagget Consumable/Healing | 22 + 49 magiske | Bronze / Sølv / Guld |
-| Magic | alle magic items | 450 | Bronze / Sølv / Guld |
+| Magic | alle magic items — potion, scroll, frit | 450 | Bronze / Sølv / Guld |
 | Classes | Class | 140 | Standard (ikke gradueret) |
 
 ### Adventurer
@@ -270,7 +270,8 @@ Verificeret over 20.000 simulerede pakker pr. tier: alle ni fordelinger rammer i
 0,4 procentpoint, og der er hverken fallback, tomme kort eller dubletter.
 
 Weapons og Armor har deres egne tunede fordelinger — se afsnittet om det garanterede kort.
-Consumables og Magic er stadig startgæt, tænkt til at blive tunet i UI'et.
+Magic-pakken har sin egen korttrin-tabel og typer pr. kort — se afsnittet om magic items.
+Consumables er stadig et startgæt, tænkt til at blive tunet i UI'et.
 
 ### Vægtning pr. kategori
 
@@ -505,12 +506,48 @@ permanent. Alt kan rettes i tabellen på Magic-fanen, også som bulk-handling p�
 | Weapons | 15 % | 25 % | 40 % | Weapon | kun permanente |
 | Armor | 15 % | 25 % | 40 % | Armor | kun permanente |
 | Consumables | 20 % | 30 % | 40 % | Potion, Scroll | **kun forbrugsvarer** |
-| Magic | 100 % | 100 % | 100 % | alle | begge dele |
+| Magic | 100 % | 100 % | 100 % | pr. kort | begge dele |
 | Classes | — | — | — | — | — |
 
-Typefiltret sikrer, at en Weapons-pakke ikke deler ringe ud. Magic-pakken har 100 % på alle trin,
-så hvert kort er et magic item; dens korttrin ligger til gengæld højt, fordi trinnet nu
-kun bruges som opslag i tabellen ovenfor.
+Typefiltret sikrer, at en Weapons-pakke ikke deler ringe ud.
+
+### Typer pr. kort
+
+Typerne kan også sættes **pr. kortplads**, så én pakke kan give forskellige slags magi.
+Det er sådan Magic-pakken er bygget:
+
+| Kort | Typer | Bronze | Sølv | Guld |
+|------|-------|--------|------|------|
+| Potion | `Potion` | 86 % C, 14 % U | 44 % C, 48 % U, 8 % R | 35 % U, 50 % R, 9 % VR |
+| Scroll | `Scroll` | 66 % C, 30 % U, 4 % R | 54 % U, 32 % R, 4 % VR | 55 % R, 31 % VR, 4 % L |
+| Magic item | alle | 54 % U, 28 % R, 6 % VR | 52 % R, 30 % VR, 7 % L | 51 % VR, 41 % L |
+
+Målt over 3.000 pakker pr. tier. Kort 1 er 100 % potions, kort 2 er 100 % scrolls, og kort 3
+falder frit — 43–55 % wondrous items, resten våben, rustning, staver, ringe og resten.
+
+Feltet **Egne magic item-typer for dette kort** ligger ved hver kortplads under Pakker og
+vises kun når pakken faktisk kan give magic item-kort. Uden det følger kortet pakkens typer.
+Vil du have tre frie magic items i stedet, fjernes fluebenet på kort 1 og 2.
+
+### Egen korttrin → magi-rarity pr. pakke
+
+Den fælles tabel er lavet til pakker hvor magi er sjældent: et Rare-kort giver som regel et
+Common magic item, fordi selve det at få magi allerede er gevinsten. I Magic-pakken er hvert
+kort magi, og så holder den tabel resultatet nede uanset hvad trinnene sættes til.
+
+Derfor kan en pakke **overstyre tabellen**. Magic-pakken gør det, med en tabel hvor trinnet
+peger næsten direkte på magi-rarityen:
+
+| Korttrin | Common | Uncommon | Rare | Very Rare | Legendary |
+|----------|--------|----------|------|-----------|-----------|
+| Common | 85 % | 15 % | | | |
+| Uncommon | 15 % | 70 % | 15 % | | |
+| Rare | | 15 % | 70 % | 15 % | |
+| Very Rare | | | 15 % | 70 % | 15 % |
+| Legendary | | | | 20 % | 80 % |
+
+Overstyringen slås til og fra under Pakker, ved **Korttrin → magi-rarity**, og rører ikke den
+fælles tabel. De øvrige pakker følger som før fanen Magic.
 
 ### Data
 

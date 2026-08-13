@@ -133,11 +133,14 @@ window.LB = (function () {
   }
 
   /* weights gælder kun sammen med et eget filter — uden det trækker kortet fra
-     pakkens pulje, og så er det pakkens (eller tierets) vægte der er de rigtige. */
-  function card(label, d, filter, weights) {
+     pakkens pulje, og så er det pakkens (eller tierets) vægte der er de rigtige.
+     magicTypes overstyrer pakkens tilladte magic item-typer for netop denne
+     plads, så en pakke kan give en potion, et scroll og et frit magic item. */
+  function card(label, d, filter, weights, magicTypes) {
     return {
       label: label || '', dist: dist(d),
-      filter: filter || null, weights: weights || null
+      filter: filter || null, weights: weights || null,
+      magicTypes: (magicTypes && magicTypes.length) ? magicTypes.slice() : null
     };
   }
 
@@ -254,19 +257,35 @@ window.LB = (function () {
       },
       {
         id: 'magic', name: 'Magic', filter: filt([], []),
-        note: 'Hvert kort er et magic item. Korttrinnet afgør hvilken magi-rarity der trækkes ' +
-              '— se tabellen under fanen Magic. Trinnene ligger højt, fordi hele pakken er magi.',
-        magic: packMagic({ common: 100, uncommon: 100, rare: 100, very_rare: 100, legendary: 100 }, [], 'all'),
+        note: 'En potion, et spell scroll og et frit magic item. Hvert kort er magi, så ' +
+              'korttrinnet bruges ikke til andet end at slå magi-rarity op — pakken har ' +
+              'derfor sin egen tabel, hvor trinnet peger næsten direkte på den magi-rarity ' +
+              'man vil have. Vil du have tre frie magic items, så fjern typerne på kort 1 og 2.',
+        // Egen tabel: den fælles er lavet til pakker hvor magic er sjældent og
+        // et Rare-kort derfor bør give et beskedent magic item. Her er hvert
+        // kort magi, og så skal trinnet betyde det det siger.
+        magic: packMagic(
+          { common: 100, uncommon: 100, rare: 100, very_rare: 100, legendary: 100 }, [], 'all',
+          {
+            common:    { common: 85, uncommon: 15 },
+            uncommon:  { common: 15, uncommon: 70, rare: 15 },
+            rare:      { uncommon: 15, rare: 70, very_rare: 15 },
+            very_rare: { rare: 15, very_rare: 70, legendary: 15 },
+            legendary: { very_rare: 20, legendary: 80 }
+          }
+        ),
+        // Pakken er bygget som "en potion, et scroll og et frit magic item":
+        // hver plads binder sine egne typer, og tieret afgør hvor gode de er.
         tiers: gradedTiers(
-          [card('Kort 1', { rare: 100 }),
-           card('Kort 2', { rare: 100 }),
-           card('Kort 3', { rare: 70, very_rare: 30 })],
-          [card('Kort 1', { rare: 100 }),
-           card('Kort 2', { rare: 50, very_rare: 50 }),
-           card('Kort 3', { very_rare: 80, legendary: 20 })],
-          [card('Kort 1', { rare: 50, very_rare: 50 }),
-           card('Kort 2', { very_rare: 100 }),
-           card('Kort 3', { very_rare: 40, legendary: 60 })]
+          [card('Potion', { common: 100 }, null, null, ['Potion']),
+           card('Scroll', { common: 70, uncommon: 30 }, null, null, ['Scroll']),
+           card('Magic item', { uncommon: 75, rare: 22, very_rare: 3 })],
+          [card('Potion', { common: 40, uncommon: 60 }, null, null, ['Potion']),
+           card('Scroll', { uncommon: 70, rare: 30 }, null, null, ['Scroll']),
+           card('Magic item', { rare: 70, very_rare: 25, legendary: 5 })],
+          [card('Potion', { uncommon: 40, rare: 60 }, null, null, ['Potion']),
+           card('Scroll', { rare: 70, very_rare: 30 }, null, null, ['Scroll']),
+           card('Magic item', { very_rare: 60, legendary: 40 })]
         )
       },
       {
@@ -319,13 +338,24 @@ window.LB = (function () {
     return d;
   }
 
-  function packMagic(chance, types, consumables) {
+  /* mapping overstyrer den fælles korttrin -> magi-rarity-tabel for denne ene
+     pakke. null = brug tabellen under fanen Magic. En pakke hvor hvert kort er
+     et magic item har brug for det: dens korttrin bruges ikke til andet, så de
+     skal kunne pege direkte på den magi-rarity man vil have. */
+  function packMagic(chance, types, consumables, mapping) {
     // types tomt = alle typer magic items kan trækkes i pakken.
     return {
       chance: magicChanceObj(chance),
       types: types || [],
-      consumables: consumables || 'all'
+      consumables: consumables || 'all',
+      mapping: mapping ? magicMapping(mapping) : null
     };
+  }
+
+  function magicMapping(rows) {
+    var out = {};
+    RKEYS.forEach(function (k) { out[k] = magicDist(rows && rows[k]); });
+    return out;
   }
 
   function defaultConfig() {
@@ -419,6 +449,12 @@ window.LB = (function () {
       if (!Array.isArray(p.magic.types)) p.magic.types = [];
       if (['all', 'exclude', 'only'].indexOf(p.magic.consumables) < 0)
         p.magic.consumables = dp ? dp.magic.consumables : 'all';
+      // Egen korttrin -> magi-rarity-tabel pr. pakke. Har en gammel opsætning
+      // ingen, arver den standardpakkens — Magic-pakken har brug for sin.
+      if (p.magic.mapping === undefined)
+        p.magic.mapping = (dp && dp.magic.mapping) ? magicMapping(dp.magic.mapping) : null;
+      else if (p.magic.mapping)
+        p.magic.mapping = magicMapping(p.magic.mapping);
       if (!Array.isArray(p.tiers)) p.tiers = [];
       p.tiers.forEach(function (t) {
         if (t.weights !== null && (!t.weights || typeof t.weights !== 'object')) t.weights = null;
@@ -435,6 +471,9 @@ window.LB = (function () {
             if (['all', 'exclude', 'only'].indexOf(c.filter.consumables) < 0)
               c.filter.consumables = 'all';
           }
+          // En tom liste betyder "alle typer" og er stadig en overstyring —
+          // kun null betyder at kortet følger pakken.
+          if (!Array.isArray(c.magicTypes)) c.magicTypes = null;
           // Vægte uden eget filter ville aldrig blive brugt — smid dem væk,
           // så en gammel opsætning ikke bærer rundt på død konfiguration.
           if (!c.filter || !c.weights || typeof c.weights !== 'object') c.weights = null;
@@ -871,8 +910,10 @@ window.LB = (function () {
     };
   }
 
-  function drawMagic(pool, tierKey, used, cfg, items, spells) {
-    var mapping = (cfg.magic && cfg.magic.mapping && cfg.magic.mapping[tierKey]) || null;
+  function drawMagic(pool, tierKey, used, cfg, items, spells, packMapping) {
+    // Pakkens egen tabel vinder over den fælles, når den er sat.
+    var table = packMapping || (cfg.magic && cfg.magic.mapping) || null;
+    var mapping = (table && table[tierKey]) || null;
     if (!mapping) return null;
     var wanted = pickMagicWeighted(mapping);
     if (!wanted) return null;
@@ -907,10 +948,20 @@ window.LB = (function () {
   function generate(pack, tierObj, items, cfg, magicItems, spells) {
     var used = {};
     var pm = pack.magic || { chance: {}, types: [] };
-    var mPool = (cfg.magic && cfg.magic.enabled && magicItems)
-      ? magicPool(magicItems, pm.types, pm.consumables) : [];
+    var magicOn = !!(cfg.magic && cfg.magic.enabled && magicItems);
+
+    // Et kort kan begrænse magipuljen til sine egne typer. Puljerne genbruges
+    // inden for pakken, så samme typeliste kun filtreres én gang.
+    var pools = {};
+    function poolForTypes(types) {
+      if (!magicOn) return [];
+      var key = (types || []).join('|');
+      if (!pools[key]) pools[key] = magicPool(magicItems, types, pm.consumables);
+      return pools[key];
+    }
 
     var cards = tierObj.cards.map(function (c, idx) {
+      var mPool = poolForTypes(c.magicTypes || pm.types);
       var own = !!(c.filter && (c.filter.categories.length || c.filter.tags.length));
       var f = own ? c.filter : pack.filter;
       var pool = poolFor(items, f, cfg);
@@ -924,7 +975,7 @@ window.LB = (function () {
       // Rul 1: bliver kortet et magic item?
       var chance = (pm.chance && pm.chance[rarity]) || 0;
       if (mPool.length && chance > 0 && Math.random() * 100 < chance) {
-        var mag = drawMagic(mPool, rarity, used, cfg, items, spells);
+        var mag = drawMagic(mPool, rarity, used, cfg, items, spells, pm.mapping);
         if (mag) {
           if (cfg.noDuplicates) used['magic:' + mag.item.id] = true;
           return {
