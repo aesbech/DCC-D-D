@@ -132,8 +132,13 @@ window.LB = (function () {
     };
   }
 
-  function card(label, d, filter) {
-    return { label: label || '', dist: dist(d), filter: filter || null };
+  /* weights gælder kun sammen med et eget filter — uden det trækker kortet fra
+     pakkens pulje, og så er det pakkens (eller tierets) vægte der er de rigtige. */
+  function card(label, d, filter, weights) {
+    return {
+      label: label || '', dist: dist(d),
+      filter: filter || null, weights: weights || null
+    };
   }
 
   /* weights kan overstyres pr. tier. Uden overstyring bruges pakkens egne. */
@@ -427,6 +432,9 @@ window.LB = (function () {
             if (['all', 'exclude', 'only'].indexOf(c.filter.consumables) < 0)
               c.filter.consumables = 'all';
           }
+          // Vægte uden eget filter ville aldrig blive brugt — smid dem væk,
+          // så en gammel opsætning ikke bærer rundt på død konfiguration.
+          if (!c.filter || !c.weights || typeof c.weights !== 'object') c.weights = null;
         });
       });
     });
@@ -888,8 +896,12 @@ window.LB = (function () {
       ? magicPool(magicItems, pm.types, pm.consumables) : [];
 
     var cards = tierObj.cards.map(function (c, idx) {
-      var f = (c.filter && (c.filter.categories.length || c.filter.tags.length)) ? c.filter : pack.filter;
+      var own = !!(c.filter && (c.filter.categories.length || c.filter.tags.length));
+      var f = own ? c.filter : pack.filter;
       var pool = poolFor(items, f, cfg);
+      // Egne vægte hører til et eget filter: kortet trækker fra sin egen pulje,
+      // så det er også dér kategorierne skal kunne vejes mod hinanden.
+      var weights = (own && c.weights) ? c.weights : (tierObj.weights || pack.weights);
       var rarity = weightedPick(c.dist);
       var slot = c.label || ('Kort ' + (idx + 1));
       if (!rarity) return { slot: slot, item: null, rolled: null, actual: null, poolSize: pool.length };
@@ -907,7 +919,7 @@ window.LB = (function () {
         }
       }
 
-      var res = drawOne(pool, rarity, used, cfg, tierObj.weights || pack.weights);
+      var res = drawOne(pool, rarity, used, cfg, weights);
       if (res.item && cfg.noDuplicates) used[res.item.id] = true;
       return {
         slot: slot, item: res.item, rolled: res.rolled, actual: res.actual,

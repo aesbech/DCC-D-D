@@ -1,5 +1,5 @@
 /* Auto-genereret fra magic_items.txt. Kør scripts/import_magic.py igen efter ændringer. */
-window.MAGIC_ITEMS_VERSION = "c2b7eabe9ec8";
+window.MAGIC_ITEMS_VERSION = "a4a495bed111";
 window.MAGIC_ITEMS = [
  {
   "name": "Adamantine Armor",
@@ -56,26 +56,7 @@ window.MAGIC_ITEMS = [
   "rarity": "uncommon"
  },
  {
-  "name": "Ammunition of Slaying",
-  "type": "Weapon",
-  "attunement": false,
-  "consumable": false,
-  "typeLine": "Weapon (any ammunition), very rare",
-  "tags": [
-   "Damage: Force"
-  ],
-  "desc": "This magic ammunition is meant to slay creatures of a particular type, which the DM chooses or determines randomly by rolling on the table below. If a creature of that type takes damage from the ammunition, the creature makes a DC 17 Constitution saving throw, taking an extra 6d10 Force damage on a failed save or half as much extra damage on a successful one.",
-  "source": "Dungeon Master's Guide",
-  "baseFilter": {
-   "subcategories": [
-    "Ammunition"
-   ],
-   "excludeNames": []
-  },
-  "rarity": "very_rare"
- },
- {
-  "name": "Ammunition, +1",
+  "name": "Ammunition +1",
   "type": "Weapon",
   "attunement": false,
   "consumable": false,
@@ -95,7 +76,7 @@ window.MAGIC_ITEMS = [
   "rarity": "uncommon"
  },
  {
-  "name": "Ammunition, +2",
+  "name": "Ammunition +2",
   "type": "Weapon",
   "attunement": false,
   "consumable": false,
@@ -115,7 +96,7 @@ window.MAGIC_ITEMS = [
   "rarity": "rare"
  },
  {
-  "name": "Ammunition, +3",
+  "name": "Ammunition +3",
   "type": "Weapon",
   "attunement": false,
   "consumable": false,
@@ -125,6 +106,25 @@ window.MAGIC_ITEMS = [
    "Bonus: Magic"
   ],
   "desc": "You have a +3 bonus to attack and damage rolls made with this piece of magic ammunition. Once it hits a target, the ammunition is no longer magical.",
+  "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Ammunition"
+   ],
+   "excludeNames": []
+  },
+  "rarity": "very_rare"
+ },
+ {
+  "name": "Ammunition of Slaying",
+  "type": "Weapon",
+  "attunement": false,
+  "consumable": false,
+  "typeLine": "Weapon (any ammunition), very rare",
+  "tags": [
+   "Damage: Force"
+  ],
+  "desc": "This magic ammunition is meant to slay creatures of a particular type, which the DM chooses or determines randomly by rolling on the table below. If a creature of that type takes damage from the ammunition, the creature makes a DC 17 Constitution saving throw, taking an extra 6d10 Force damage on a failed save or half as much extra damage on a successful one.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -203,6 +203,75 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This item first appears to be a sealed iron barrel weighing 500 pounds. The barrel has a hidden catch, which can be found with a successful DC 20 Intelligence (Investigation) check. Releasing the catch unlocks a hatch at one end of the barrel, allowing two Medium or smaller creatures to crawl inside. Ten levers are set in a row at the far end, each in a neutral position, able to move up or down. When certain levers are used, the apparatus transforms to resemble a giant lobster.",
   "source": "Dungeon Master's Guide",
+  "rarity": "legendary"
+ },
+ {
+  "name": "Armor +1",
+  "type": "Armor",
+  "attunement": false,
+  "consumable": false,
+  "typeLine": "Armor (light, medium, or heavy), rare",
+  "tags": [
+   "Combat",
+   "Warding",
+   "Bonus: Armor Class"
+  ],
+  "desc": "You have a +1 bonus to AC while wearing this armor.",
+  "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Light Armor",
+    "Medium Armor",
+    "Heavy Armor"
+   ],
+   "excludeNames": []
+  },
+  "rarity": "rare"
+ },
+ {
+  "name": "Armor +2",
+  "type": "Armor",
+  "attunement": false,
+  "consumable": false,
+  "typeLine": "Armor (light, medium, or heavy), very rare",
+  "tags": [
+   "Combat",
+   "Warding",
+   "Bonus: Armor Class"
+  ],
+  "desc": "You have a +2 bonus to AC while wearing this armor.",
+  "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Light Armor",
+    "Medium Armor",
+    "Heavy Armor"
+   ],
+   "excludeNames": []
+  },
+  "rarity": "very_rare"
+ },
+ {
+  "name": "Armor +3",
+  "type": "Armor",
+  "attunement": false,
+  "consumable": false,
+  "typeLine": "Armor (light, medium, or heavy), legendary",
+  "tags": [
+   "Combat",
+   "Warding",
+   "Bonus: Armor Class"
+  ],
+  "desc": "You have a +3 bonus to AC while wearing this armor.",
+  "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Light Armor",
+    "Medium Armor",
+    "Heavy Armor"
+   ],
+   "excludeNames": []
+  },
   "rarity": "legendary"
  },
  {
@@ -308,75 +377,6 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "rare"
- },
- {
-  "name": "Armor, +1",
-  "type": "Armor",
-  "attunement": false,
-  "consumable": false,
-  "typeLine": "Armor (light, medium, or heavy), rare",
-  "tags": [
-   "Combat",
-   "Warding",
-   "Bonus: Armor Class"
-  ],
-  "desc": "You have a +1 bonus to AC while wearing this armor.",
-  "source": "Dungeon Master's Guide",
-  "baseFilter": {
-   "subcategories": [
-    "Light Armor",
-    "Medium Armor",
-    "Heavy Armor"
-   ],
-   "excludeNames": []
-  },
-  "rarity": "rare"
- },
- {
-  "name": "Armor, +2",
-  "type": "Armor",
-  "attunement": false,
-  "consumable": false,
-  "typeLine": "Armor (light, medium, or heavy), very rare",
-  "tags": [
-   "Combat",
-   "Warding",
-   "Bonus: Armor Class"
-  ],
-  "desc": "You have a +2 bonus to AC while wearing this armor.",
-  "source": "Dungeon Master's Guide",
-  "baseFilter": {
-   "subcategories": [
-    "Light Armor",
-    "Medium Armor",
-    "Heavy Armor"
-   ],
-   "excludeNames": []
-  },
-  "rarity": "very_rare"
- },
- {
-  "name": "Armor, +3",
-  "type": "Armor",
-  "attunement": false,
-  "consumable": false,
-  "typeLine": "Armor (light, medium, or heavy), legendary",
-  "tags": [
-   "Combat",
-   "Warding",
-   "Bonus: Armor Class"
-  ],
-  "desc": "You have a +3 bonus to AC while wearing this armor.",
-  "source": "Dungeon Master's Guide",
-  "baseFilter": {
-   "subcategories": [
-    "Light Armor",
-    "Medium Armor",
-    "Heavy Armor"
-   ],
-   "excludeNames": []
-  },
-  "rarity": "legendary"
  },
  {
   "name": "Arrow-Catching Shield",
@@ -716,7 +716,7 @@ window.MAGIC_ITEMS = [
   "rarity": "artifact"
  },
  {
-  "name": "Boomerang, +1",
+  "name": "Boomerang +1",
   "type": "Weapon",
   "attunement": false,
   "consumable": false,
@@ -732,7 +732,7 @@ window.MAGIC_ITEMS = [
   "rarity": "uncommon"
  },
  {
-  "name": "Boomerang, +2",
+  "name": "Boomerang +2",
   "type": "Weapon",
   "attunement": false,
   "consumable": false,
@@ -748,7 +748,7 @@ window.MAGIC_ITEMS = [
   "rarity": "rare"
  },
  {
-  "name": "Boomerang, +3",
+  "name": "Boomerang +3",
   "type": "Weapon",
   "attunement": false,
   "consumable": false,
@@ -5219,6 +5219,69 @@ window.MAGIC_ITEMS = [
   "rarity": "uncommon"
  },
  {
+  "name": "Shield +1",
+  "type": "Armor",
+  "attunement": false,
+  "consumable": false,
+  "typeLine": "Armor (shield), uncommon",
+  "tags": [
+   "Combat",
+   "Warding",
+   "Bonus: Armor Class"
+  ],
+  "desc": "While holding this Shield, you have a bonus to Armor Class determined by the Shield's rarity, in addition to the Shield's normal bonus to AC.",
+  "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Shield"
+   ],
+   "excludeNames": []
+  },
+  "rarity": "uncommon"
+ },
+ {
+  "name": "Shield +2",
+  "type": "Armor",
+  "attunement": false,
+  "consumable": false,
+  "typeLine": "Armor (shield), rare",
+  "tags": [
+   "Combat",
+   "Warding",
+   "Bonus: Armor Class"
+  ],
+  "desc": "While holding this Shield, you have a bonus to Armor Class determined by the Shield's rarity, in addition to the Shield's normal bonus to AC.",
+  "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Shield"
+   ],
+   "excludeNames": []
+  },
+  "rarity": "rare"
+ },
+ {
+  "name": "Shield +3",
+  "type": "Armor",
+  "attunement": false,
+  "consumable": false,
+  "typeLine": "Armor (shield), very rare",
+  "tags": [
+   "Combat",
+   "Warding",
+   "Bonus: Armor Class"
+  ],
+  "desc": "While holding this Shield, you have a bonus to Armor Class determined by the Shield's rarity, in addition to the Shield's normal bonus to AC.",
+  "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Shield"
+   ],
+   "excludeNames": []
+  },
+  "rarity": "very_rare"
+ },
+ {
   "name": "Shield of Expression",
   "type": "Armor",
   "attunement": false,
@@ -5269,69 +5332,6 @@ window.MAGIC_ITEMS = [
    "Bonus: Armor Class"
   ],
   "desc": "Protective Field. As a Reaction, when you or an ally you can see within 5 feet of you is targeted by an attack or makes a saving throw against an area of effect, you can use the Shield to create an immobile 5-foot Emanation originating from you. When the Emanation appears, any creatures or objects not fully contained within it are pushed into the nearest unoccupied spaces outside it. The attack or area of effect that triggered the Reaction has no effect on creatures and objects inside the Emanation, which lasts as long as you maintain Concentration, up to 1 minute. Nothing can pass into or out of the Emanation. A creature or object inside the Emanation can't be damaged by attacks or effects originating from outside, nor can a creature inside the Emanation damage anything outside it. Once this property is used, it can't be used again until the next dawn.",
-  "source": "Dungeon Master's Guide",
-  "baseFilter": {
-   "subcategories": [
-    "Shield"
-   ],
-   "excludeNames": []
-  },
-  "rarity": "very_rare"
- },
- {
-  "name": "Shield, +1",
-  "type": "Armor",
-  "attunement": false,
-  "consumable": false,
-  "typeLine": "Armor (shield), uncommon",
-  "tags": [
-   "Combat",
-   "Warding",
-   "Bonus: Armor Class"
-  ],
-  "desc": "While holding this Shield, you have a bonus to Armor Class determined by the Shield's rarity, in addition to the Shield's normal bonus to AC.",
-  "source": "Dungeon Master's Guide",
-  "baseFilter": {
-   "subcategories": [
-    "Shield"
-   ],
-   "excludeNames": []
-  },
-  "rarity": "uncommon"
- },
- {
-  "name": "Shield, +2",
-  "type": "Armor",
-  "attunement": false,
-  "consumable": false,
-  "typeLine": "Armor (shield), rare",
-  "tags": [
-   "Combat",
-   "Warding",
-   "Bonus: Armor Class"
-  ],
-  "desc": "While holding this Shield, you have a bonus to Armor Class determined by the Shield's rarity, in addition to the Shield's normal bonus to AC.",
-  "source": "Dungeon Master's Guide",
-  "baseFilter": {
-   "subcategories": [
-    "Shield"
-   ],
-   "excludeNames": []
-  },
-  "rarity": "rare"
- },
- {
-  "name": "Shield, +3",
-  "type": "Armor",
-  "attunement": false,
-  "consumable": false,
-  "typeLine": "Armor (shield), very rare",
-  "tags": [
-   "Combat",
-   "Warding",
-   "Bonus: Armor Class"
-  ],
-  "desc": "While holding this Shield, you have a bonus to Armor Class determined by the Shield's rarity, in addition to the Shield's normal bonus to AC.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -6738,29 +6738,7 @@ window.MAGIC_ITEMS = [
   "rarity": "artifact"
  },
  {
-  "name": "Weapon of Warning",
-  "type": "Weapon",
-  "attunement": true,
-  "consumable": false,
-  "typeLine": "Weapon (any simple or martial), uncommon (requires attunement)",
-  "tags": [
-   "Advantage: Initiative"
-  ],
-  "desc": "Alarm. The weapon magically awakens each subject who is sleeping naturally when combat begins. This benefit doesn't wake a subject from magically induced sleep.",
-  "source": "Dungeon Master's Guide",
-  "baseFilter": {
-   "subcategories": [
-    "Simple Melee Weapon",
-    "Martial Melee Weapon",
-    "Simple Ranged Weapon",
-    "Martial Ranged Weapon"
-   ],
-   "excludeNames": []
-  },
-  "rarity": "uncommon"
- },
- {
-  "name": "Weapon, +1",
+  "name": "Weapon +1",
   "type": "Weapon",
   "attunement": false,
   "consumable": false,
@@ -6784,7 +6762,7 @@ window.MAGIC_ITEMS = [
   "rarity": "uncommon"
  },
  {
-  "name": "Weapon, +2",
+  "name": "Weapon +2",
   "type": "Weapon",
   "attunement": false,
   "consumable": false,
@@ -6808,7 +6786,7 @@ window.MAGIC_ITEMS = [
   "rarity": "rare"
  },
  {
-  "name": "Weapon, +3",
+  "name": "Weapon +3",
   "type": "Weapon",
   "attunement": false,
   "consumable": false,
@@ -6830,6 +6808,28 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "very_rare"
+ },
+ {
+  "name": "Weapon of Warning",
+  "type": "Weapon",
+  "attunement": true,
+  "consumable": false,
+  "typeLine": "Weapon (any simple or martial), uncommon (requires attunement)",
+  "tags": [
+   "Advantage: Initiative"
+  ],
+  "desc": "Alarm. The weapon magically awakens each subject who is sleeping naturally when combat begins. This benefit doesn't wake a subject from magically induced sleep.",
+  "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Simple Melee Weapon",
+    "Martial Melee Weapon",
+    "Simple Ranged Weapon",
+    "Martial Ranged Weapon"
+   ],
+   "excludeNames": []
+  },
+  "rarity": "uncommon"
  },
  {
   "name": "Well of Many Worlds",
@@ -6905,7 +6905,7 @@ window.MAGIC_ITEMS = [
   "rarity": "rare"
  },
  {
-  "name": "Wraps of Unarmed Power, +1",
+  "name": "Wraps of Unarmed Power +1",
   "type": "Wondrous Item",
   "attunement": false,
   "consumable": false,
@@ -6920,7 +6920,7 @@ window.MAGIC_ITEMS = [
   "variantOf": "Wraps of Unarmed Power"
  },
  {
-  "name": "Wraps of Unarmed Power, +2",
+  "name": "Wraps of Unarmed Power +2",
   "type": "Wondrous Item",
   "attunement": false,
   "consumable": false,
@@ -6935,7 +6935,7 @@ window.MAGIC_ITEMS = [
   "variantOf": "Wraps of Unarmed Power"
  },
  {
-  "name": "Wraps of Unarmed Power, +3",
+  "name": "Wraps of Unarmed Power +3",
   "type": "Wondrous Item",
   "attunement": false,
   "consumable": false,
