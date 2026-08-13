@@ -1,5 +1,5 @@
 /* Auto-genereret fra dnd_items.xlsx. Redigér regnearket og kør scripts/import_xlsx.py igen. */
-window.DND_ITEMS_VERSION = "57f009f2eb34";
+window.DND_ITEMS_VERSION = "282b5ffac2cd";
 window.DND_ITEMS = [
  {
   "name": "Candle",
@@ -1630,7 +1630,7 @@ window.DND_ITEMS = [
   "weight": 55
  },
  {
-  "name": "Splint",
+  "name": "Splint Armor",
   "category": "Rustning",
   "subcategory": "Heavy Armor",
   "price": 200,
@@ -1649,7 +1649,7 @@ window.DND_ITEMS = [
   "weight": 60
  },
  {
-  "name": "Plate",
+  "name": "Plate Armor",
   "category": "Rustning",
   "subcategory": "Heavy Armor",
   "price": 1500,
@@ -1714,7 +1714,7 @@ window.DND_ITEMS = [
   "desc": "A Holy Symbol takes one of the forms in the Holy Symbol table and is bejeweled or painted to channel divine magic. A Cleric or Paladin can use a Holy Symbol as a Spellcasting Focus. The table indicates whether a Holy Symbol needs to be held, worn, or borne on fabric (such as a tabard or banner) or a Shield. Holy Symbols Symbol Weight Cost Amulet (worn or held) 1 lb. 5 GP Emblem (borne on fabric or a Shield) — 5 GP Reliquary (held) 2 lb. 5 GP"
  },
  {
-  "name": "Padded",
+  "name": "Padded Armor",
   "category": "Rustning",
   "subcategory": "Light Armor",
   "price": 5,
@@ -1732,7 +1732,7 @@ window.DND_ITEMS = [
   "weight": 8
  },
  {
-  "name": "Leather",
+  "name": "Leather Armor",
   "category": "Rustning",
   "subcategory": "Light Armor",
   "price": 10,
@@ -1749,7 +1749,7 @@ window.DND_ITEMS = [
   "weight": 10
  },
  {
-  "name": "Studded Leather",
+  "name": "Studded Leather Armor",
   "category": "Rustning",
   "subcategory": "Light Armor",
   "price": 45,
@@ -2253,7 +2253,7 @@ window.DND_ITEMS = [
   "weight": 10
  },
  {
-  "name": "Hide",
+  "name": "Hide Armor",
   "category": "Rustning",
   "subcategory": "Medium Armor",
   "price": 10,
@@ -2341,7 +2341,7 @@ window.DND_ITEMS = [
   "weight": 20
  },
  {
-  "name": "Half Plate",
+  "name": "Half Plate Armor",
   "category": "Rustning",
   "subcategory": "Medium Armor",
   "price": 750,

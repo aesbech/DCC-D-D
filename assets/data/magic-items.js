@@ -1,5 +1,5 @@
 /* Auto-genereret fra magic_items.txt. Kør scripts/import_magic.py igen efter ændringer. */
-window.MAGIC_ITEMS_VERSION = "bd9a7a86ad27";
+window.MAGIC_ITEMS_VERSION = "c2b7eabe9ec8";
 window.MAGIC_ITEMS = [
  {
   "name": "Adamantine Armor",
@@ -239,6 +239,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Plate consists of shaped, interlocking metal plates to cover the entire body. A suit of plate includes gauntlets, heavy leather boots, a visored helmet, and thick layers of padding underneath the armor. Buckles and straps distribute the weight over the body.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Plate Armor"
+   ]
+  },
   "rarity": "legendary"
  },
  {
@@ -317,6 +322,14 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "You have a +1 bonus to AC while wearing this armor.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Light Armor",
+    "Medium Armor",
+    "Heavy Armor"
+   ],
+   "excludeNames": []
+  },
   "rarity": "rare"
  },
  {
@@ -332,6 +345,14 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "You have a +2 bonus to AC while wearing this armor.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Light Armor",
+    "Medium Armor",
+    "Heavy Armor"
+   ],
+   "excludeNames": []
+  },
   "rarity": "very_rare"
  },
  {
@@ -347,6 +368,14 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "You have a +3 bonus to AC while wearing this armor.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Light Armor",
+    "Medium Armor",
+    "Heavy Armor"
+   ],
+   "excludeNames": []
+  },
   "rarity": "legendary"
  },
  {
@@ -622,6 +651,12 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "While berserk, you regard the creature nearest to you that you can see or hear as your enemy. If there are multiple possible creatures, choose one at random. On each of your turns, you must move as close to the creature as possible and take the Attack action, targeting the creature. If you're unable to get close enough to the creature to attack it with the weapon, your turn ends after you've used up all your available movement. If the creature dies or can no longer be seen or heard by you, the next nearest creature that you can see or hear becomes your new target.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Greataxe",
+    "Halberd"
+   ]
+  },
   "rarity": "rare"
  },
  {
@@ -641,6 +676,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Personality. Blackrazor speaks with an imperious tone, as though accustomed to being obeyed.The sword's purpose is to consume souls. It doesn't care whose souls it eats, including the wielder's. The sword believes that all matter and energy sprang from a void of negative energy and will one day return to it. Blackrazor is meant to hurry that process along.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Greatsword"
+   ]
+  },
   "rarity": "artifact"
  },
  {
@@ -966,6 +1006,14 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "You can doff this armor as a Magic action.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Light Armor",
+    "Medium Armor",
+    "Heavy Armor"
+   ],
+   "excludeNames": []
+  },
   "rarity": "common"
  },
  {
@@ -1306,6 +1354,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "You can take a Bonus Action to magically coat the blade with poison. The poison remains for 1 minute or until an attack using this weapon hits a creature. That creature must succeed on a DC 15 Constitution saving throw or take 2d10 Poison damage and have the Poisoned condition for 1 minute. The weapon can't be used this way again until the next dawn.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Dagger"
+   ]
+  },
   "rarity": "rare"
  },
  {
@@ -1320,6 +1373,15 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "After the hovering weapon attacks for the fourth time, it flies back to you and tries to return to your hand. If you have no hand free, the weapon falls to the ground in your space. If the weapon has no unobstructed path to you, it moves as close to you as it can and then falls to the ground. It also ceases to hover if you grasp it or are more than 30 feet away from it.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Greatsword",
+    "Longsword",
+    "Rapier",
+    "Scimitar",
+    "Shortsword"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -1452,6 +1514,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "While wearing this armor, you gain a +1 bonus to Armor Class, you have Advantage on saving throws against the breath weapons of Dragons, and you have Resistance to one damage type determined by the kind of dragon that provided the scales (see the accompanying table).",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Scale Mail"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -1547,6 +1614,12 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "While wearing this armor, you gain a +2 bonus to Armor Class. In addition, if an effect moves you against your will along the ground, you can take a Reaction to reduce the distance you are moved by up to 10 feet.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Half Plate Armor",
+    "Plate Armor"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -1566,6 +1639,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "You gain a +3 bonus to attack rolls and damage rolls made with this magic weapon. It has the Thrown property with a normal range of 20 feet and a long range of 60 feet. When you hit with a ranged attack using this weapon, it deals an extra 1d8 Force damage, or an extra 2d8 Force damage if the target is a Giant. Immediately after hitting or missing, the weapon flies back to your hand.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Warhammer"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -1603,6 +1681,12 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "While wearing this armor, you gain a +3 bonus to Armor Class, you have Immunity to Fire damage, and you know Primordial. In addition, you can stand on and move across molten rock as if it were solid ground.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Chain Mail",
+    "Chain Shirt"
+   ]
+  },
   "rarity": "legendary"
  },
  {
@@ -1639,6 +1723,12 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "You gain a +1 bonus to Armor Class while you wear this armor. You are considered trained with this armor even if you lack training with Medium or Heavy armor.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Chain Mail",
+    "Chain Shirt"
+   ]
+  },
   "rarity": "rare"
  },
  {
@@ -1664,6 +1754,12 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "You gain a +1 bonus to attack rolls and damage rolls made with this magic weapon, which has no string. Each time you pull your arm back in a firing motion, a magical arrow made of golden energy appears nocked and ready to fire. An arrow produced by this weapon deals Force damage instead of Piercing damage on a hit, and it disappears after it hits or misses its target. Until it disappears, the arrow emits Bright Light in a 20-foot radius and Dim Light for an additional 20 feet.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Longbow",
+    "Shortbow"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -2225,6 +2321,13 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Any Humanoid you hit with the weapon takes an extra 2d6 Slashing damage, and you gain Temporary Hit Points equal to the extra damage dealt.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Greataxe",
+    "Halberd",
+    "Handaxe"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -2438,6 +2541,16 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "When you hit with an attack roll using this magic weapon, the target takes an extra 1d6 Cold damage. In addition, while you hold the weapon, you have Resistance to Fire damage.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Glaive",
+    "Greatsword",
+    "Longsword",
+    "Rapier",
+    "Scimitar",
+    "Shortsword"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -2521,6 +2634,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "While wearing this armor, you gain a +1 bonus to Armor Class. You can also take a Bonus Action to cause the armor to assume the appearance of a normal set of clothing or some other kind of armor. You decide what it looks like—including color, style, and accessories—but the armor retains its normal bulk and weight. The illusory appearance lasts until you use this property again or doff the armor.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Studded Leather Armor"
+   ]
+  },
   "rarity": "rare"
  },
  {
@@ -2602,6 +2720,12 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "If the attack hits, the weapon unleashes a thunderclap audible out to 300 feet. The target and every creature within 30 feet of it other than you must succeed on a DC 17 Constitution saving throw or have the Stunned condition until the end of your next turn. Immediately after hitting or missing, the weapon flies back to your hand. The weapon regains 1d4 + 1 expended charges daily at dawn.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Maul",
+    "Warhammer"
+   ]
+  },
   "rarity": "legendary"
  },
  {
@@ -3151,6 +3275,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Lightning Bolt. When you throw this weapon at a target no farther than 120 feet from you, you can forgo making a ranged attack roll and instead turn the weapon into a bolt of lightning. This bolt forms a 5-foot-wide Line between you and the target. The target and each other creature in the Line (excluding you) makes a DC 13 Dexterity saving throw, taking 4d6 Lightning damage on a failed save or half as much damage on a successful one. Immediately after dealing this damage, the weapon reappears in your hand. This property can't be used again until the next dawn.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Javelin"
+   ]
+  },
   "rarity": "uncommon"
  },
  {
@@ -3200,6 +3329,17 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Luck. If the weapon is on your person, you can call on its luck (no action required) to reroll one failed D20 Test if you don't have the Incapacitated condition. You must use the second roll. Once used, this property can't be used again until the next dawn.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Glaive",
+    "Greatsword",
+    "Longsword",
+    "Rapier",
+    "Scimitar",
+    "Sickle",
+    "Shortsword"
+   ]
+  },
   "rarity": "legendary"
  },
  {
@@ -3215,6 +3355,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Slow. If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn't exceed 10 feet.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Club"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -3231,6 +3376,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "When you hit a Fiend or an Undead with this magic weapon, that creature takes an extra 2d6 Radiant damage. If the target has 25 Hit Points or fewer after taking this damage, it must succeed on a DC 15 Wisdom saving throw or be destroyed. On a successful save, the creature has the Frightened condition until the end of your next turn.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Mace"
+   ]
+  },
   "rarity": "rare"
  },
  {
@@ -3248,6 +3398,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "When you roll a 20 on an attack roll made with this weapon, the target takes an extra 7 Bludgeoning damage, or 14 Bludgeoning damage if it's a Construct. If a Construct has 25 Hit Points or fewer after taking this damage, it is destroyed.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Mace"
+   ]
+  },
   "rarity": "rare"
  },
  {
@@ -3261,6 +3416,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "This magic weapon has 3 charges and regains 1d3 expended charges daily at dawn. While holding the weapon, you can take a Magic action and expend 1 charge to release a wave of terror from it. Each creature of your choice within 30 feet of you must succeed on a DC 15 Wisdom saving throw or have the Frightened condition for 1 minute. While Frightened in this way, a creature must spend its turns trying to move as far away from you as it can, and it can't make Opportunity Attacks. For its action, it can use only the Dash action or try to escape from an effect that prevents it from moving. If it has nowhere it can move, the creature can take the Dodge action. At the end of each of its turns, a creature repeats the save, ending the effect on itself on a success.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Mace"
+   ]
+  },
   "rarity": "rare"
  },
  {
@@ -3407,6 +3567,15 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "If the armor normally imposes disadvantage on Dexterity (Stealth) checks or has a Strength requirement, the mithral version of the armor doesn't.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Medium Armor",
+    "Heavy Armor"
+   ],
+   "excludeNames": [
+    "Hide"
+   ]
+  },
   "rarity": "uncommon"
  },
  {
@@ -3420,6 +3589,16 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "In Darkness, the unsheathed blade of this weapon sheds moonlight, creating Bright Light in a 15-foot radius and Dim Light for an additional 15 feet.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Glaive",
+    "Greatsword",
+    "Longsword",
+    "Rapier",
+    "Scimitar",
+    "Shortsword"
+   ]
+  },
   "rarity": "common"
  },
  {
@@ -3434,6 +3613,15 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Every Moonblade longs for a bearer whose disposition and goals are compatible with its own. If you try to attune to a Moonblade that doesn't want you as its bearer, the weapon not only rejects you but also places a curse on you, causing you to make D20 Tests with Disadvantage for 24 hours or until the curse is ended by a Remove Curse spell or similar magic. If you're accepted by the weapon and try to attune to it, you become attuned to it instantly, and a new rune appears on it. You remain attuned to the weapon until you die or the weapon is destroyed. A Moonblade functions like a nonmagical weapon of its kind for anyone other than its chosen bearer.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Greatsword",
+    "Longsword",
+    "Rapier",
+    "Scimitar",
+    "Shortsword"
+   ]
+  },
   "rarity": "legendary"
  },
  {
@@ -3520,6 +3708,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "This Mace has 6 charges and regains 1d6 expended charges daily at dawn. While holding the Mace, you can expend 1 of its charges to cast Summon Celestial (+9 to hit with spell attacks).",
   "source": "Uni and the Hunt for the Lost Horn",
+  "baseFilter": {
+   "names": [
+    "Mace"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -3535,6 +3728,15 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Life Stealing. The weapon has 1d8 + 1 charges. When you attack a creature that has fewer than 100 Hit Points with this weapon and roll a 20 on the d20 for the attack roll, the creature must succeed on a DC 15 Constitution saving throw or be slain instantly as the sword tears its life force from its body. Constructs and Undead succeed on the save automatically. The weapon loses 1 charge if the creature is slain. When the weapon has no charges remaining, it loses this property.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "subcategories": [
+    "Simple Melee Weapon",
+    "Martial Melee Weapon",
+    "Simple Ranged Weapon",
+    "Martial Ranged Weapon"
+   ],
+   "excludeNames": []
+  },
   "rarity": "very_rare"
  },
  {
@@ -3562,6 +3764,12 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "When you nock an arrow on this bow, it whispers in Elvish, “Swift defeat to my enemies.” When you use this weapon to make a ranged attack, you can utter or sign the following command words: “Swift death to you who have wronged me.” The target of your attack becomes your sworn enemy until it dies or until dawn 7 days later. You can have only one such sworn enemy at a time. When your sworn enemy dies, you can choose a new one after the next dawn.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Longbow",
+    "Shortbow"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -3758,6 +3966,12 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "While you're wearing this armor, you can take a Magic action and use a command word to gain the effect of the Etherealness spell. The spell ends immediately if you remove the armor or take a Magic action to repeat the command word. This property of the armor can't be used again until the next dawn.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Half Plate Armor",
+    "Plate Armor"
+   ]
+  },
   "rarity": "legendary"
  },
  {
@@ -4364,6 +4578,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Attack Deflection (Quarterstaff Form Only). When you are hit by an attack while holding the weapon, you can take a Reaction to twirl the weapon around you, gaining a +5 bonus to your Armor Class against the triggering attack, potentially causing the attack to miss you. You can't use this property again until you finish a Short or Long Rest.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Quarterstaff"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -4934,6 +5153,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Nick. When you make the extra attack of the Light property, you can make it as part of the Attack action instead of as a Bonus Action. You can make this extra attack only once per turn.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Scimitar"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -5716,6 +5940,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Blade of Radiance. While grasping the hilt, you can take a Bonus Action to cause a blade of pure radiance to spring into existence or make the blade disappear. While the blade exists, this magic weapon functions as a Longsword with the Finesse property. If you are proficient with Longswords or Shortswords, you are proficient with the Sun Blade.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Longsword"
+   ]
+  },
   "rarity": "rare"
  },
  {
@@ -5731,6 +5960,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "You gain a +3 bonus to attack rolls and damage rolls made with this sword. In addition, while you hold the sword, you can take a Reaction to make one melee attack with it against any creature in your reach that deals damage to you. You have Advantage on the attack roll, and any damage dealt with this special attack ignores any Immunity or Resistance the target has to that damage.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Longsword"
+   ]
+  },
   "rarity": "legendary"
  },
  {
@@ -5749,6 +5983,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Bloodthirst. The sword thirsts for blood. If the sword doesn't taste blood on its blade within 1 minute of being drawn from its scabbard, its wielder makes a DC 15 Charisma saving throw. On a successful save, the wielder takes 3d6 Psychic damage. On a failed save, the wielder is dominated by the sword, as if by the Dominate Monster spell, and the sword demands blood. The spell effect ends when the sword's demand is met.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Longsword"
+   ]
+  },
   "rarity": "artifact"
  },
  {
@@ -5763,6 +6002,16 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "When you attack a creature with this magic weapon and roll a 20 on the d20 for the attack roll, that target takes an extra 15 Necrotic damage if it isn't a Construct or an Undead, and you gain Temporary Hit Points equal to the amount of Necrotic damage taken.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Glaive",
+    "Greatsword",
+    "Longsword",
+    "Rapier",
+    "Scimitar",
+    "Shortsword"
+   ]
+  },
   "rarity": "rare"
  },
  {
@@ -5776,6 +6025,14 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "When you attack a creature with this weapon and roll a 20 on the d20 for the attack roll, that target takes an extra 14 Slashing damage and gains 1 Exhaustion level.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Glaive",
+    "Greatsword",
+    "Longsword",
+    "Scimitar"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -5792,6 +6049,16 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Curse. This weapon is cursed and possessed by a vengeful spirit. Becoming attuned to it extends the curse to you. As long as you remain cursed, you are unwilling to part with the weapon, keeping it on your person at all times. While attuned to this weapon, you have Disadvantage on attack rolls made with weapons other than this one.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Glaive",
+    "Greatsword",
+    "Longsword",
+    "Rapier",
+    "Scimitar",
+    "Shortsword"
+   ]
+  },
   "rarity": "uncommon"
  },
  {
@@ -5805,6 +6072,16 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "When you hit a creature with an attack using this magic weapon, the target takes an extra 2d6 Necrotic damage and must succeed on a DC 15 Constitution saving throw or be unable to regain Hit Points for 1 hour. The target repeats the save at the end of each of its turns, ending the effect on itself on a success.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Glaive",
+    "Greatsword",
+    "Longsword",
+    "Rapier",
+    "Scimitar",
+    "Shortsword"
+   ]
+  },
   "rarity": "rare"
  },
  {
@@ -5816,6 +6093,16 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "Secret Message. As a Magic action, you can use the weapon to cast Message. Once this property is used, it can't be used again until the next dawn.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Dagger",
+    "Rapier",
+    "Scimitar",
+    "Shortsword",
+    "Sickle",
+    "Spear"
+   ]
+  },
   "rarity": "common"
  },
  {
@@ -5915,6 +6202,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Earthquake. As a Magic action, you can strike the weapon against the ground to create an intense seismic disturbance in a 50-foot-radius circle centered on the point of impact. Structures in contact with the ground in that area take 50 Bludgeoning damage, and each creature on the ground in that area must succeed on a DC 20 Dexterity saving throw or have the Prone condition. If that creature is also concentrating, it must succeed on a DC 20 Constitution saving throw, or its Concentration is broken. In addition, you can cause a 30-foot-deep, 10-foot-wide fissure to open up on the ground anywhere in the area. Any creature on a spot where the fissure opens must make a DC 20 Dexterity saving throw, falling into the fissure on a failed save or moving with the fissure's edge on a successful one. Any structure on a spot where the fissure opens collapses into the fissure. Once you use this property, it can't be used again until the next dawn.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Greatclub"
+   ]
+  },
   "rarity": "very_rare"
  },
  {
@@ -6145,6 +6437,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Topple. If you hit a creature with this weapon, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Trident"
+   ]
+  },
   "rarity": "uncommon"
  },
  {
@@ -6204,6 +6501,14 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "When you use this weapon to attack a creature that has at least one head and roll a 20 on the d20 for the attack roll, you cut off one of the creature's heads. The creature dies if it can't survive without the lost head. A creature is immune to this effect if it has Immunity to Slashing damage, if it doesn't have or need a head, or if the DM decides that the creature is too big for its head to be cut off with this weapon. Such a creature instead takes an extra 30 Slashing damage from the hit. If the creature has Legendary Resistance, it can expend one daily use of that trait to avoid losing its head, taking the extra damage instead.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Glaive",
+    "Greatsword",
+    "Longsword",
+    "Scimitar"
+   ]
+  },
   "rarity": "legendary"
  },
  {
@@ -6425,6 +6730,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Destroying Wave. Wave can be destroyed only on the island of Thunderforge, where it was forged. The weapon must be melted down by a storm giant or someone imbued with a storm giant's strength. Destroying Wave angers a god of the sea, who sends powerful agents to attack the island and punish the destroyers.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Trident"
+   ]
+  },
   "rarity": "artifact"
  },
  {
@@ -6548,6 +6858,11 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Shock Wave. You can take a Magic action to strike the ground with Whelm and send a shock wave out from the point of impact. Each creature of your choice on the ground within 60 feet of that point must succeed on a DC 20 Constitution saving throw or have the Stunned condition for 1 minute. A creature repeats the save at the end of each of its turns, ending the effect on itself on a success. Once used, this property can't be used again until the next dawn.",
   "source": "Dungeon Master's Guide",
+  "baseFilter": {
+   "names": [
+    "Warhammer"
+   ]
+  },
   "rarity": "artifact"
  },
  {

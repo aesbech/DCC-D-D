@@ -60,15 +60,47 @@ ALL_WEAPONS = MELEE + RANGED
 ARMOR_ALL = ["Light Armor", "Medium Armor", "Heavy Armor"]
 
 
-def base_filter(kind, constraint):
+ITEMS_JS = ROOT / "assets" / "data" / "items.js"
+
+
+def load_item_names():
+    """Basisitem-navnene, som import_xlsx.py har skrevet dem. En typelinje kan
+    pege på et bestemt våben — 'Weapon (longsword)' — og så skal navnet kunne
+    slås op, ellers findes der intet at rulle på."""
+    text = ITEMS_JS.read_text(encoding="utf-8")
+    marker = "window.DND_ITEMS ="
+    payload = text[text.index(marker) + len(marker):].strip().rstrip(";")
+    return [i["name"] for i in json.loads(payload)]
+
+
+def norm(value):
+    """'Half-Plate Armor' og 'half plate' skal slå op på det samme."""
+    v = re.sub(r"[^a-z ]", " ", str(value).lower())
+    v = re.sub(r"\s+", " ", v).strip()
+    return re.sub(r"\s+armor$", "", v)
+
+
+def resolve_names(constraint, lookup):
+    """En liste af konkrete items: 'glaive, greatsword, longsword, or scimitar'."""
+    out = []
+    for part in re.split(r",|\bor\b", constraint):
+        key = norm(re.sub(r"^\s*any\b", "", part).replace(" weapon", ""))
+        if key in lookup and lookup[key] not in out:
+            out.append(lookup[key])
+    return out
+
+
+def base_filter(kind, constraint, lookup):
     """Oversætter fx '(any medium or heavy, except hide armor)' til et filter
-    over undertekster i udstyrslisten, så det tredje rul kan vælge et basisitem."""
+    over undertekster i udstyrslisten, så det tredje rul kan vælge et basisitem.
+    Nævner begrænsningen bestemte items i stedet for en gruppe, bliver det en
+    navneliste — 'Weapon (longsword)' ruller altid et Longsword."""
     c = (constraint or "").strip(" ()").lower()
-    if not c or "any" not in c and "shield" not in c:
+    if not c:
         return None
 
     exclude = []
-    m = re.search(r"except ([^)]+)", c)
+    m = re.search(r"(?:except|but not) ([^)]+)", c)
     if m:
         exclude = [w.strip().replace(" armor", "").title() for w in re.split(r",| or ", m.group(1)) if w.strip()]
         c = c[: m.start()]
@@ -79,9 +111,9 @@ def base_filter(kind, constraint):
             subs.append("Ammunition")
         if "melee" in c:
             subs += MELEE
+        elif "ranged" in c:
+            subs += RANGED
         elif "simple or martial" in c or re.search(r"\bany\b\s*$", c) or c.strip() == "any":
-            subs += ALL_WEAPONS
-        if not subs:
             subs += ALL_WEAPONS
     elif kind.lower() == "armor":
         if "shield" in c:
@@ -89,17 +121,17 @@ def base_filter(kind, constraint):
         for word, sub in (("light", "Light Armor"), ("medium", "Medium Armor"), ("heavy", "Heavy Armor")):
             if word in c:
                 subs.append(sub)
-        if not subs:
-            subs += ARMOR_ALL
-    else:
-        return None
 
-    seen, ordered = set(), []
-    for s in subs:
-        if s not in seen:
-            seen.add(s)
-            ordered.append(s)
-    return {"subcategories": ordered, "excludeNames": exclude}
+    if subs:
+        seen, ordered = set(), []
+        for s in subs:
+            if s not in seen:
+                seen.add(s)
+                ordered.append(s)
+        return {"subcategories": ordered, "excludeNames": exclude}
+
+    names = resolve_names(c, lookup)
+    return {"names": names} if names else None
 
 
 # Magiske forbrugsvarer. Kilden mærker kun 19 poster med tagget "Consumable",
@@ -269,6 +301,7 @@ def main():
 
     raw = src.read_text(encoding="utf-8").replace("’", "'")
     lines = [l.rstrip() for l in raw.split("\n") if l.strip()]
+    lookup = {norm(n): n for n in load_item_names()}
 
     items, skipped = [], []
     for rec in split_records(lines):
@@ -297,7 +330,15 @@ def main():
                     desc = line
 
         source = rec[-1] if rec[-1] not in RARITY_WORDS else ""
-        bf = base_filter(kind, constraint) if constraint else None
+        # Uden begrænsning i typelinjen ("Armor, common") siger kilden intet om
+        # hvilket basisitem magien sidder på. For rustning og våben er svaret
+        # altid "hele gruppen", og uden et rul ville kortet stå uden AC og skade.
+        bf = base_filter(kind, constraint, lookup) if constraint else None
+        if not bf and not constraint:
+            if kind.lower() == "armor":
+                bf = {"subcategories": ARMOR_ALL, "excludeNames": []}
+            elif kind.lower() in ("weapon", "ammunition"):
+                bf = {"subcategories": ALL_WEAPONS, "excludeNames": []}
         variants = variant_rows(rec, name)
         tags = read_tags(rec)
 

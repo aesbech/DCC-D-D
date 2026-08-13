@@ -61,8 +61,8 @@ window.LB = (function () {
         // max = øvre grænse (inklusiv). Et item får første rarity hvor pris <= max.
         steps: [
           { r: 'common',    max: 1.99 },
-          { r: 'uncommon',  max: 9.99 },
-          { r: 'rare',      max: 39.99 },
+          { r: 'uncommon',  max: 19.99 },
+          { r: 'rare',      max: 49.99 },
           { r: 'very_rare', max: 249.99 },
           { r: 'legendary', max: null }
         ]
@@ -188,7 +188,7 @@ window.LB = (function () {
         magic: packMagic({ rare: 10, very_rare: 20, legendary: 30 }, [], 'all'),
         // Udstyr er den største gruppe og ville ellers fylde over halvdelen af
         // pakken. Våben og rustning vægtes op, så de falder oftere.
-        weights: { 'Våben': 2, 'Rustning': 6, 'Ammunition': 2 },
+        weights: { 'Våben': 2, 'Rustning': 4, 'Ammunition': 2 },
         tiers: gradedTiers(
           [card('Kort 1', { common: 100 }),
            card('Kort 2', { common: 50, uncommon: 50 }),
@@ -198,56 +198,54 @@ window.LB = (function () {
            card('Kort 3', { uncommon: 60, rare: 35, very_rare: 4, legendary: 1 })],
           [card('Kort 1', { common: 25, uncommon: 50, rare: 25 }),
            card('Kort 2', { uncommon: 75, rare: 25 }),
-           card('Kort 3', { uncommon: 40, rare: 45, very_rare: 12, legendary: 3 })],
-          // Bronze er uden rustning: den eneste Uncommon-rustning er Padded, så
-          // den ville bare gå igen. Sølv og Guld vægter rustning tungere i stedet.
-          {
-            bronze: { 'Våben': 2, 'Rustning': 0, 'Ammunition': 2 },
-            gold: { 'Våben': 2, 'Rustning': 8, 'Ammunition': 2 }
-          }
+           card('Kort 3', { uncommon: 40, rare: 45, very_rare: 12, legendary: 3 })]
         )
       },
-      { id: 'weapons', name: 'Weapons', filter: filt(['Våben', 'Ammunition'], []),
-        note: 'Magic item-kort er begrænset til permanente våben — potions hører til i Consumables.',
+      {
+        id: 'weapons', name: 'Weapons', filter: filt(['Våben', 'Ammunition', 'Udstyr'], []),
+        note: 'Kort 3 er garanteret et våben — de to første trækker bredere, så der også ' +
+              'falder udstyr og ammunition. Magic item-kort er begrænset til permanente ' +
+              'våben; potions hører til i Consumables.',
         magic: packMagic({ rare: 15, very_rare: 25, legendary: 40 }, ['Weapon'], 'exclude'),
-        tiers: standardTiers() },
-      {
-        id: 'armor', name: 'Armor', filter: filt(['Rustning'], []),
-        note: 'Rustning ligger højt på udstyrs-skalaen — billigste er Padded til 5 gp, så der findes ' +
-              'ingen Common. Fordelingerne starter derfor ved Uncommon. Kun 14 items i alt, så ' +
-              'gentagelser er uundgåelige.',
-        magic: packMagic({ rare: 15, very_rare: 25, legendary: 40 }, ['Armor'], 'exclude'),
-        tiers: gradedTiers(
-          // Kun ét Uncommon-item (Padded), så kun kort 1 sigter efter det —
-          // ellers slås dubletfiltret og fordelingen indbyrdes.
-          [card('Kort 1', { uncommon: 100 }),
-           card('Kort 2', { rare: 100 }),
-           card('Kort 3', { rare: 80, very_rare: 20 })],
-          [card('Kort 1', { uncommon: 50, rare: 50 }),
-           card('Kort 2', { rare: 90, very_rare: 10 }),
-           card('Kort 3', { rare: 40, very_rare: 55, legendary: 5 })],
-          [card('Kort 1', { rare: 100 }),
-           card('Kort 2', { rare: 30, very_rare: 70 }),
-           card('Kort 3', { very_rare: 60, legendary: 40 })]
-        )
-      },
-      {
-        id: 'consumables', name: 'Consumables', filter: filt([], [], 'and', 'only'),
-        note: 'Alt der bruges op: gift, fakler, rationer, olie, vievand — og på magisiden ' +
-              'potions, scrolls, dust og lignende. Kun 24 almindelige forbrugsvarer, og de ' +
-              'ni dyreste er alle gift, så de høje trin læner sig på magic item-kortene.',
-        magic: packMagic({ rare: 25, very_rare: 40, legendary: 55 }, [], 'only'),
         tiers: gradedTiers(
           [card('Kort 1', { common: 100 }),
-           card('Kort 2', { common: 90, uncommon: 10 }),
-           card('Kort 3', { common: 50, uncommon: 30, rare: 20 })],
+           card('Kort 2', { common: 85, uncommon: 15 }),
+           card('Kort 3', { common: 10, uncommon: 80, rare: 9, very_rare: 1 }, filt(['Våben'], []))],
           [card('Kort 1', { common: 70, uncommon: 30 }),
-           card('Kort 2', { common: 40, uncommon: 30, rare: 30 }),
-           card('Kort 3', { rare: 60, very_rare: 40 })],
-          [card('Kort 1', { common: 40, uncommon: 30, rare: 30 }),
-           card('Kort 2', { rare: 50, very_rare: 50 }),
-           card('Kort 3', { very_rare: 50, legendary: 50 })]
+           card('Kort 2', { common: 50, uncommon: 50 }),
+           card('Kort 3', { uncommon: 65, rare: 30, very_rare: 5 }, filt(['Våben'], []))],
+          [card('Kort 1', { common: 40, uncommon: 60 }),
+           card('Kort 2', { uncommon: 80, rare: 20 }),
+           card('Kort 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, filt(['Våben'], []))]
         )
+      },
+      {
+        id: 'armor', name: 'Armor', filter: filt(['Rustning', 'Udstyr'], []),
+        note: 'Kort 3 er garanteret en rustning; de to første trækker også udstyr. Rustning ' +
+              'ligger højt på udstyrs-skalaen — billigste er Padded Armor til 5 gp — så de lave ' +
+              'trin lander på udstyr, og Padded Armor er pakkens skraldeitem. Kun 14 rustninger ' +
+              'i alt, så gentagelser er uundgåelige.',
+        magic: packMagic({ rare: 15, very_rare: 25, legendary: 40 }, ['Armor'], 'exclude'),
+        tiers: gradedTiers(
+          [card('Kort 1', { common: 80, uncommon: 20 }),
+           card('Kort 2', { common: 50, uncommon: 50 }),
+           card('Kort 3', { uncommon: 80, rare: 15, very_rare: 4, legendary: 1 }, filt(['Rustning'], []))],
+          [card('Kort 1', { common: 50, uncommon: 30, rare: 20 }),
+           card('Kort 2', { common: 10, uncommon: 40, rare: 40, very_rare: 10 }),
+           card('Kort 3', { uncommon: 40, rare: 40, very_rare: 15, legendary: 5 }, filt(['Rustning'], []))],
+          [card('Kort 1', { uncommon: 50, rare: 50 }),
+           card('Kort 2', { rare: 50, very_rare: 50 }),
+           card('Kort 3', { rare: 50, very_rare: 40, legendary: 10 }, filt(['Rustning'], []))]
+        )
+      },
+      {
+        id: 'consumables', name: 'Consumables',
+        filter: filt(['Gift'], ['Consumable', 'Healing'], 'or'),
+        note: 'Union-filter: hele Gift-gruppen plus alt med tagget Consumable eller Healing. ' +
+              'På magisiden potions og scrolls. De ni dyreste forbrugsvarer er alle gift, så ' +
+              'de høje trin læner sig på magic item-kortene.',
+        magic: packMagic({ rare: 20, very_rare: 30, legendary: 40 }, ['Potion', 'Scroll'], 'only'),
+        tiers: standardTiers()
       },
       {
         id: 'magic', name: 'Magic', filter: filt([], []),
@@ -326,6 +324,11 @@ window.LB = (function () {
   }
 
   function defaultConfig() {
+    // Kun de pakker der faktisk vægter noget skriver weights ud. UI'et
+    // redigerer objektet direkte, så det skal findes på dem alle.
+    var packs = defaultPacks();
+    packs.forEach(function (p) { if (!p.weights) p.weights = {}; });
+
     return {
       version: 4,
       scales: defaultScales(),
@@ -333,7 +336,7 @@ window.LB = (function () {
       fallback: 'nearest',
       excludeFromAll: ['Class'],
       magic: defaultMagic(),
-      packs: defaultPacks()
+      packs: packs
     };
   }
 
@@ -771,21 +774,52 @@ window.LB = (function () {
     return MKEYS[MKEYS.length - 1];
   }
 
-  /* Tredje rul: hvilket basisvåben eller -rustning sidder magien på. */
+  /* Et magic item hedder typisk "Armor, +1" eller "Weapon, +2". Tallet er den
+     bonus basisitemet får, og det er dét man skal kunne læse på kortet. */
+  function magicBonus(magicItem) {
+    var m = /\+(\d+)\b/.exec(magicItem.name || '');
+    return m ? Number(m[1]) : 0;
+  }
+
+  /* Basisitemet beholder sine egne regler — et Padded Armor +1 er stadig et
+     Padded Armor med samme stealth og styrkekrav, bare med bonussen lagt til
+     AC. Tallet står forrest i "11 + Dex modifier", så kun det flyttes. */
+  function applyBonus(item, bonus) {
+    if (!item || !bonus) return item;
+    var out = {};
+    for (var k in item) if (Object.prototype.hasOwnProperty.call(item, k)) out[k] = item[k];
+    if (out.ac) {
+      out.ac = String(out.ac).replace(/^\s*(\d+)/, function (_, n) {
+        return String(Number(n) + bonus);
+      });
+    }
+    if (out.damage && /\d/.test(String(out.damage)))
+      out.damage = String(out.damage) + ' + ' + bonus;
+    out.bonus = bonus;
+    return out;
+  }
+
+  /* Tredje rul: hvilket basisvåben eller -rustning sidder magien på. Filteret
+     peger enten på en gruppe undertekster eller på bestemte items ved navn. */
   function rollBaseItem(magicItem, items) {
     var bf = magicItem.baseFilter;
-    if (!bf || !bf.subcategories || !bf.subcategories.length) return null;
+    if (!bf) return null;
+    var subs = bf.subcategories || [];
+    var names = bf.names || [];
+    if (!subs.length && !names.length) return null;
+
     var cands = items.filter(function (i) {
       // Samme krav som ved en almindelig trækning: items uden rarity er
       // taget ud af spillet og må heller ikke dukke op som basisitem.
       if (!i.rarity) return false;
-      if (bf.subcategories.indexOf(i.subcategory) < 0 &&
-          bf.subcategories.indexOf(i.category) < 0) return false;
+      if (names.length) return names.indexOf(i.name) >= 0;
+      if (subs.indexOf(i.subcategory) < 0 && subs.indexOf(i.category) < 0) return false;
       for (var e = 0; e < (bf.excludeNames || []).length; e++)
         if (i.name.toLowerCase().indexOf(bf.excludeNames[e].toLowerCase()) >= 0) return false;
       return true;
     });
-    return cands.length ? cands[Math.floor(Math.random() * cands.length)] : null;
+    if (!cands.length) return null;
+    return applyBonus(cands[Math.floor(Math.random() * cands.length)], magicBonus(magicItem));
   }
 
   /* Fjerde rul: spell scrolls og tomes bærer ikke en bestemt spell, men et
@@ -929,6 +963,7 @@ window.LB = (function () {
     parseCSV: parseCSV, guessMapping: guessMapping,
     itemsFromRows: itemsFromRows, itemsFromJSON: itemsFromJSON,
     categoriesOf: categoriesOf, tagsOf: tagsOf, poolFor: poolFor, generate: generate,
+    rollBaseItem: rollBaseItem,
     storage: {
       available: available, load: load, save: save,
       K_CFG: K_CFG, K_ITEMS: K_ITEMS, K_SEEDED: K_SEEDED, K_MAGIC: K_MAGIC

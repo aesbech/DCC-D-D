@@ -439,9 +439,13 @@
             el('div', { class: 'card-kind', text: 'Magic item' }),
             el('div', { class: 'card-name', text: composed || m.name })
           ];
+          // Typelinjen: en spell-bærer viser sit niveau, og et magic item med
+          // et udrullet basisitem viser basisitemets egen kategori — en
+          // Padded Armor +1 er stadig Light Armor og spiller efter de regler.
           mk.push(el('div', { class: 'card-sub',
             text: spell ? spellKindLabel(m, roll.castLevel)
-                        : m.type + (m.attunement ? ' · attunement' : '') }));
+                        : ((base && base.subcategory) || m.type) +
+                          (m.attunement ? ' · attunement' : '') }));
           if (spell) {
             // Kortet handler om spellen, så dens tal og tekst fylder pladsen.
             // Bærerens egen regeltekst tages kun med, hvis den er kort nok.
@@ -1443,8 +1447,11 @@
       rarSel.value = m.rarity || '';
       rarSel.className = 'rarity r-' + (m.rarity || '');
 
-      var base = m.baseFilter && m.baseFilter.subcategories.length
-        ? m.baseFilter.subcategories.join(', ') : '—';
+      // Basisrullet peger enten på en gruppe undertekster eller på navngivne items.
+      var bf = m.baseFilter || {};
+      var base = (bf.subcategories && bf.subcategories.length) ? bf.subcategories.join(', ')
+               : (bf.names && bf.names.length) ? bf.names.join(', ')
+               : '—';
 
       tbody.appendChild(el('tr', {}, [
         el('td', {}, [

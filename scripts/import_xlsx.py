@@ -102,6 +102,20 @@ def parse_price(text):
         return None
 
 
+# Regnearket fører de fleste rustninger under materialet alene — "Padded",
+# "Plate", "Hide". Alene på et kort ser det forkert ud, så de får det ord med
+# som Player's Handbook selv sætter på dem. De øvrige (Chain Mail, Breastplate,
+# Chain Shirt, Shield) hedder allerede noget der læses som en rustning.
+ARMOR_SUFFIX = {"Padded", "Leather", "Studded Leather", "Hide",
+                "Splint", "Plate", "Half Plate"}
+
+
+def armor_name(name, group):
+    if group == "Rustning" and name in ARMOR_SUFFIX:
+        return name + " Armor"
+    return name
+
+
 def main():
     src = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_XLSX
     if not src.exists():
@@ -133,7 +147,7 @@ def main():
         tags = [t.strip() for t in clean(row[col["Tags"]]).split(",") if t.strip()]
 
         item = {
-            "name": name,
+            "name": armor_name(name, group),
             "category": group,
             "subcategory": clean(row[col["Kategori"]]),
             "price": price,
