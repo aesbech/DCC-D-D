@@ -295,6 +295,9 @@ window.LB = (function () {
   function defaultMagic() {
     return {
       enabled: true,
+      // Chance i procent for at et scroll bærer en lavere spell, castet på
+      // scrollets eget niveau.
+      upcastChance: 30,
       mapping: {
         common:    magicDist({ common: 100 }),
         uncommon:  magicDist({ common: 90, uncommon: 10 }),
@@ -375,6 +378,8 @@ window.LB = (function () {
     // v2 -> v3: magic item-kort med eget korttrin -> magi-rarity-opslag.
     if (!cfg.magic || typeof cfg.magic !== 'object') cfg.magic = def.magic;
     if (typeof cfg.magic.enabled !== 'boolean') cfg.magic.enabled = true;
+    if (typeof cfg.magic.upcastChance !== 'number')
+      cfg.magic.upcastChance = def.magic.upcastChance;
     if (!cfg.magic.mapping || typeof cfg.magic.mapping !== 'object')
       cfg.magic.mapping = def.magic.mapping;
     RKEYS.forEach(function (k) {
@@ -785,10 +790,28 @@ window.LB = (function () {
 
   /* Fjerde rul: spell scrolls og tomes bærer ikke en bestemt spell, men et
      niveau. Der rulles en spell af netop det niveau. */
-  function rollSpell(magicItem, spells) {
-    if (!spells || magicItem.spellLevel === null || magicItem.spellLevel === undefined) return null;
-    var cands = spells.filter(function (sp) { return sp.level === magicItem.spellLevel; });
-    return cands.length ? cands[Math.floor(Math.random() * cands.length)] : null;
+  function rollSpell(magicItem, spells, cfg) {
+    var lvl = magicItem.spellLevel;
+    if (!spells || lvl === null || lvl === undefined) return null;
+
+    // Et scroll har sit eget niveau, og spellen på det må være lavere —
+    // det er upcasting. Cantrips skalerer med karakterniveau og upcastes
+    // ikke, og et 1.-niveau scroll har intet lavere trin at hente fra.
+    var want = lvl, upcast = false;
+    var chance = (cfg && cfg.magic && typeof cfg.magic.upcastChance === 'number')
+      ? cfg.magic.upcastChance : 0;
+    if (magicItem.upcastable && lvl >= 2 && Math.random() * 100 < chance) {
+      want = 1 + Math.floor(Math.random() * (lvl - 1));
+      upcast = true;
+    }
+
+    var cands = spells.filter(function (sp) { return sp.level === want; });
+    if (!cands.length) return null;
+    return {
+      spell: cands[Math.floor(Math.random() * cands.length)],
+      castLevel: lvl,
+      upcast: upcast
+    };
   }
 
   function drawMagic(pool, tierKey, used, cfg, items, spells) {
@@ -820,7 +843,7 @@ window.LB = (function () {
       magicRolled: wanted,
       magicRarity: actual,
       base: rollBaseItem(hit, items),
-      spell: rollSpell(hit, spells)
+      spell: rollSpell(hit, spells, cfg)
     };
   }
 
@@ -874,6 +897,8 @@ window.LB = (function () {
         consumable: !!o.consumable,
         spellLevel: (typeof o.spellLevel === 'number') ? o.spellLevel : null,
         spellName: o.spellName || '',
+        spellKind: o.spellKind || '',
+        upcastable: !!o.upcastable,
         typeLine: o.typeLine || '',
         tags: Array.isArray(o.tags) ? o.tags : [],
         desc: o.desc || '',

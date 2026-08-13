@@ -236,7 +236,11 @@ def spell_carriers(items):
             continue
         level = SCROLL_LEVEL[m.group(1)]
         item["spellLevel"] = level
-        item["spellName"] = "Spell Scroll of {spell}"
+        item["spellName"] = "Scroll of {spell}"
+        item["spellKind"] = "Spell Scroll"
+        # Kun scrolls kan upcaste: en tome lærer spellen, hvorefter man bruger
+        # sine egne slots, så dens niveau er spellens eget.
+        item["upcastable"] = True
 
         idx = LADDER.index(item["rarity"])
         if idx + 1 >= len(LADDER):
@@ -253,6 +257,7 @@ def spell_carriers(items):
             "rarity": LADDER[idx + 1],
             "spellLevel": level,
             "spellName": "Tome of {spell}",
+            "spellKind": "Spell Tome",
         })
     return tomes
 

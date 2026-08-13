@@ -334,8 +334,10 @@ have dem med, skal de tilføjes manuelt.
 ### Spell scrolls og tomes
 
 En spell scroll bærer ikke en bestemt spell, men et **niveau**. Når kortet trækkes, rulles
-der en spell af netop det niveau, og kortet hedder så `Spell Scroll of Fireball` med
-spellens egne tal og tekst: niveau, skole, casting time, rækkevidde og komponenter.
+der en spell af netop det niveau, og kortet hedder så `Scroll of Fireball` med spellens
+egne tal og tekst: skole, casting time, rækkevidde og komponenter. Dér hvor et almindeligt
+kort skriver sin type — `Tool`, `Medium Armor`, `Simple Weapon` — står i stedet
+`Spell Scroll (3rd level)`.
 
 **Tomes** er den permanente udgave — man læser bogen og lærer spellen for altid. En tome
 ligger derfor **ét rarity-trin over** scrollen med samme spellniveau:
@@ -353,6 +355,23 @@ stærkeste spells kan kun findes som scroll og bruges én gang.
 
 Tomes er homebrew og genereres af `scripts/import_magic.py` ud fra scroll-posterne. De er
 markeret som forbrugsvarer, da bogen bruges op, selvom gevinsten er permanent.
+
+#### Upcasting
+
+Et scroll er skrevet i et bestemt slot, og spellen i det slot behøver ikke være af samme
+niveau — et Magic Missile skrevet som 5.-niveau er *upcastet*. Under fanen **Magic** sætter
+du **chancen for upcast** (standard 30 %). Slår den til, ruller kortet en spell fra et
+tilfældigt lavere niveau, men beholder sit eget:
+
+```
+Scroll of Magic Missile
+Spell Scroll (5th level)
+Evocation · Upcastet fra 1st
+```
+
+To ting upcaster aldrig: **cantrips** (de skalerer med karakterniveau, ikke med slot) og
+**tomes** (bogen lærer dig spellen, hvorefter du bruger dine egne slots — kortets niveau er
+spellens eget). Et scroll på 1. niveau har heller ikke noget lavere trin at hente fra.
 
 Spell-listen kommer fra `data/spells.txt`:
 

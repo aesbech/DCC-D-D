@@ -1,5 +1,5 @@
 /* Auto-genereret fra magic_items.txt. Kør scripts/import_magic.py igen efter ændringer. */
-window.MAGIC_ITEMS_VERSION = "4260beb583c3";
+window.MAGIC_ITEMS_VERSION = "bd9a7a86ad27";
 window.MAGIC_ITEMS = [
  {
   "name": "Adamantine Armor",
@@ -5200,7 +5200,9 @@ window.MAGIC_ITEMS = [
   "rarity": "common",
   "variantOf": "Spell Scroll",
   "spellLevel": 1,
-  "spellName": "Spell Scroll of {spell}"
+  "spellName": "Scroll of {spell}",
+  "spellKind": "Spell Scroll",
+  "upcastable": true
  },
  {
   "name": "Spell Scroll (2nd)",
@@ -5217,7 +5219,9 @@ window.MAGIC_ITEMS = [
   "rarity": "uncommon",
   "variantOf": "Spell Scroll",
   "spellLevel": 2,
-  "spellName": "Spell Scroll of {spell}"
+  "spellName": "Scroll of {spell}",
+  "spellKind": "Spell Scroll",
+  "upcastable": true
  },
  {
   "name": "Spell Scroll (3rd)",
@@ -5234,7 +5238,9 @@ window.MAGIC_ITEMS = [
   "rarity": "uncommon",
   "variantOf": "Spell Scroll",
   "spellLevel": 3,
-  "spellName": "Spell Scroll of {spell}"
+  "spellName": "Scroll of {spell}",
+  "spellKind": "Spell Scroll",
+  "upcastable": true
  },
  {
   "name": "Spell Scroll (4th)",
@@ -5251,7 +5257,9 @@ window.MAGIC_ITEMS = [
   "rarity": "rare",
   "variantOf": "Spell Scroll",
   "spellLevel": 4,
-  "spellName": "Spell Scroll of {spell}"
+  "spellName": "Scroll of {spell}",
+  "spellKind": "Spell Scroll",
+  "upcastable": true
  },
  {
   "name": "Spell Scroll (5th)",
@@ -5268,7 +5276,9 @@ window.MAGIC_ITEMS = [
   "rarity": "rare",
   "variantOf": "Spell Scroll",
   "spellLevel": 5,
-  "spellName": "Spell Scroll of {spell}"
+  "spellName": "Scroll of {spell}",
+  "spellKind": "Spell Scroll",
+  "upcastable": true
  },
  {
   "name": "Spell Scroll (6th)",
@@ -5285,7 +5295,9 @@ window.MAGIC_ITEMS = [
   "rarity": "very_rare",
   "variantOf": "Spell Scroll",
   "spellLevel": 6,
-  "spellName": "Spell Scroll of {spell}"
+  "spellName": "Scroll of {spell}",
+  "spellKind": "Spell Scroll",
+  "upcastable": true
  },
  {
   "name": "Spell Scroll (7th)",
@@ -5302,7 +5314,9 @@ window.MAGIC_ITEMS = [
   "rarity": "very_rare",
   "variantOf": "Spell Scroll",
   "spellLevel": 7,
-  "spellName": "Spell Scroll of {spell}"
+  "spellName": "Scroll of {spell}",
+  "spellKind": "Spell Scroll",
+  "upcastable": true
  },
  {
   "name": "Spell Scroll (8th)",
@@ -5319,7 +5333,9 @@ window.MAGIC_ITEMS = [
   "rarity": "very_rare",
   "variantOf": "Spell Scroll",
   "spellLevel": 8,
-  "spellName": "Spell Scroll of {spell}"
+  "spellName": "Scroll of {spell}",
+  "spellKind": "Spell Scroll",
+  "upcastable": true
  },
  {
   "name": "Spell Scroll (9th)",
@@ -5336,7 +5352,9 @@ window.MAGIC_ITEMS = [
   "rarity": "legendary",
   "variantOf": "Spell Scroll",
   "spellLevel": 9,
-  "spellName": "Spell Scroll of {spell}"
+  "spellName": "Scroll of {spell}",
+  "spellKind": "Spell Scroll",
+  "upcastable": true
  },
  {
   "name": "Spell Scroll (Cantrip)",
@@ -5353,7 +5371,9 @@ window.MAGIC_ITEMS = [
   "rarity": "common",
   "variantOf": "Spell Scroll",
   "spellLevel": 0,
-  "spellName": "Spell Scroll of {spell}"
+  "spellName": "Scroll of {spell}",
+  "spellKind": "Spell Scroll",
+  "upcastable": true
  },
  {
   "name": "Spell Scroll of Fireball",
@@ -5941,7 +5961,8 @@ window.MAGIC_ITEMS = [
   "source": "Homebrew",
   "rarity": "uncommon",
   "spellLevel": 1,
-  "spellName": "Tome of {spell}"
+  "spellName": "Tome of {spell}",
+  "spellKind": "Spell Tome"
  },
  {
   "name": "Tome of Spells (2nd)",
@@ -5957,7 +5978,8 @@ window.MAGIC_ITEMS = [
   "source": "Homebrew",
   "rarity": "rare",
   "spellLevel": 2,
-  "spellName": "Tome of {spell}"
+  "spellName": "Tome of {spell}",
+  "spellKind": "Spell Tome"
  },
  {
   "name": "Tome of Spells (3rd)",
@@ -5973,7 +5995,8 @@ window.MAGIC_ITEMS = [
   "source": "Homebrew",
   "rarity": "rare",
   "spellLevel": 3,
-  "spellName": "Tome of {spell}"
+  "spellName": "Tome of {spell}",
+  "spellKind": "Spell Tome"
  },
  {
   "name": "Tome of Spells (4th)",
@@ -5989,7 +6012,8 @@ window.MAGIC_ITEMS = [
   "source": "Homebrew",
   "rarity": "very_rare",
   "spellLevel": 4,
-  "spellName": "Tome of {spell}"
+  "spellName": "Tome of {spell}",
+  "spellKind": "Spell Tome"
  },
  {
   "name": "Tome of Spells (5th)",
@@ -6005,7 +6029,8 @@ window.MAGIC_ITEMS = [
   "source": "Homebrew",
   "rarity": "very_rare",
   "spellLevel": 5,
-  "spellName": "Tome of {spell}"
+  "spellName": "Tome of {spell}",
+  "spellKind": "Spell Tome"
  },
  {
   "name": "Tome of Spells (6th)",
@@ -6021,7 +6046,8 @@ window.MAGIC_ITEMS = [
   "source": "Homebrew",
   "rarity": "legendary",
   "spellLevel": 6,
-  "spellName": "Tome of {spell}"
+  "spellName": "Tome of {spell}",
+  "spellKind": "Spell Tome"
  },
  {
   "name": "Tome of Spells (7th)",
@@ -6037,7 +6063,8 @@ window.MAGIC_ITEMS = [
   "source": "Homebrew",
   "rarity": "legendary",
   "spellLevel": 7,
-  "spellName": "Tome of {spell}"
+  "spellName": "Tome of {spell}",
+  "spellKind": "Spell Tome"
  },
  {
   "name": "Tome of Spells (8th)",
@@ -6053,7 +6080,8 @@ window.MAGIC_ITEMS = [
   "source": "Homebrew",
   "rarity": "legendary",
   "spellLevel": 8,
-  "spellName": "Tome of {spell}"
+  "spellName": "Tome of {spell}",
+  "spellKind": "Spell Tome"
  },
  {
   "name": "Tome of Spells (Cantrip)",
@@ -6069,7 +6097,8 @@ window.MAGIC_ITEMS = [
   "source": "Homebrew",
   "rarity": "uncommon",
   "spellLevel": 0,
-  "spellName": "Tome of {spell}"
+  "spellName": "Tome of {spell}",
+  "spellKind": "Spell Tome"
  },
  {
   "name": "Tome of Understanding",
