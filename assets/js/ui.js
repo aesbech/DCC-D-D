@@ -721,6 +721,133 @@
   /* Chancen for at et korttrin bliver et magic item-kort, plus hvilke typer
      magic items pakken må trække. Selve korttrin -> magi-rarity-tabellen er
      fælles for alle pakker og ligger under fanen Magic. */
+  /* Tabellen korttrin -> magi-rarity. Bruges både til den fælles under fanen
+     Magic og til en pakkes egen overstyring. */
+  function mappingGrid(mapping) {
+    var wrap = el('div');
+
+    var head = el('div', { class: 'map-row map-head' }, [el('span', { text: 'Korttrin' })]);
+    C.MAGIC_RARITIES.forEach(function (r) {
+      head.appendChild(el('span', {}, [
+        el('i', { class: 'dot', style: 'background:var(--r-' + r.key + ')' }),
+        document.createTextNode(' ' + r.label)
+      ]));
+    });
+    head.appendChild(el('span', { text: 'Sum' }));
+    wrap.appendChild(head);
+
+    C.RARITIES.forEach(function (tierR) {
+      var d = mapping[tierR.key];
+      var sumEl = el('span', { class: 'sum' });
+      function refresh() {
+        var total = 0;
+        C.MKEYS.forEach(function (k) { total += (Number(d[k]) || 0); });
+        sumEl.textContent = (Math.round(total * 100) / 100) + '%';
+        sumEl.className = 'sum ' + (Math.abs(total - 100) < 0.01 ? 'good' : 'bad');
+      }
+      var row = el('div', { class: 'map-row' }, [
+        el('span', { class: 'rarity r-' + tierR.key, text: tierR.label })
+      ]);
+      C.MAGIC_RARITIES.forEach(function (mr) {
+        row.appendChild(el('input', {
+          type: 'number', min: '0', max: '100', step: '0.1', value: d[mr.key] || 0,
+          oninput: function () {
+            d[mr.key] = Math.max(0, Number(this.value) || 0);
+            refresh(); persist();
+          }
+        }));
+      });
+      row.appendChild(sumEl);
+      refresh();
+      wrap.appendChild(row);
+    });
+
+    return wrap;
+  }
+
+  /* En pakke kan overstyre den fælles tabel. Det er nødvendigt når hvert kort
+     i pakken er et magic item: så bruges korttrinnet ikke til andet, og den
+     fælles tabel — som er lavet til pakker hvor magi er sjældent — ville
+     holde resultatet nede uanset hvad man satte trinnene til. */
+  function magicMappingPanel(pack) {
+    var pm = pack.magic;
+    var host = el('div');
+
+    function render() {
+      host.innerHTML = '';
+      host.appendChild(el('label', { class: 'check' }, [
+        el('input', {
+          type: 'checkbox', checked: pm.mapping ? 'checked' : null,
+          onchange: function () {
+            pm.mapping = this.checked
+              ? JSON.parse(JSON.stringify(state.cfg.magic.mapping)) : null;
+            render(); persist();
+          }
+        }),
+        document.createTextNode('Egen korttrin → magi-rarity for denne pakke')
+      ]));
+      host.appendChild(el('p', { class: 'hint',
+        text: pm.mapping
+          ? 'Pakken bruger sin egen tabel. Den fælles under fanen Magic rører den ikke.'
+          : 'Pakken følger den fælles tabel under fanen Magic.' }));
+      if (pm.mapping) host.appendChild(mappingGrid(pm.mapping));
+    }
+
+    render();
+    return host;
+  }
+
+  /* En kortplads kan binde sine egne magic item-typer. Det er sådan en pakke
+     bliver til "en potion, et spell scroll og et frit magic item". Feltet vises
+     kun når pakken faktisk kan give magic item-kort. */
+  function cardMagicTypes(pack, c) {
+    var pm = pack.magic || {};
+    var canRoll = C.RKEYS.some(function (k) { return (Number(pm.chance && pm.chance[k]) || 0) > 0; });
+    if (!canRoll || !state.cfg.magic.enabled) return null;
+
+    var host = el('div', { class: 'tier-weights' });
+
+    function render() {
+      host.innerHTML = '';
+      host.appendChild(el('label', { class: 'check' }, [
+        el('input', {
+          type: 'checkbox', checked: c.magicTypes ? 'checked' : null,
+          onchange: function () {
+            c.magicTypes = this.checked ? (pm.types || []).slice() : null;
+            render(); updateGenHint(); persist();
+          }
+        }),
+        document.createTextNode('Egne magic item-typer for dette kort')
+      ]));
+      if (!c.magicTypes) {
+        host.appendChild(el('p', { class: 'hint',
+          text: 'Kortet bruger pakkens tilladte typer.' }));
+        return;
+      }
+
+      var pool = C.magicPool(state.magic, c.magicTypes, pm.consumables);
+      host.appendChild(el('p', { class: 'hint',
+        text: 'Ingen valgt = alle typer. ' + pool.length + ' magic items i kortets pulje.' }));
+
+      var chips = el('div', { class: 'cats' });
+      C.magicTypesOf(state.magic).forEach(function (t) {
+        var on = c.magicTypes.indexOf(t) >= 0;
+        chips.appendChild(el('button', {
+          class: 'chip' + (on ? ' on' : ''), text: t,
+          onclick: function () {
+            var i = c.magicTypes.indexOf(t);
+            if (i >= 0) c.magicTypes.splice(i, 1); else c.magicTypes.push(t);
+            render(); updateGenHint(); persist();
+          }
+        }));
+      });
+      host.appendChild(chips);
+    }
+
+    render();
+    return host;
+  }
+
   function magicPanel(pack) {
     var pm = pack.magic;
     var pool = C.magicPool(state.magic, pm.types, pm.consumables);
@@ -759,9 +886,10 @@
       el('h3', { text: 'Magic item-kort' }),
       el('p', { class: 'hint',
         text: 'Chance i procent for at et kort med det pågældende korttrin bliver et magic item ' +
-              'i stedet for et almindeligt item. Hvilken magi-rarity man så får, styres af ' +
-              'tabellen under fanen Magic.' }),
+              'i stedet for et almindeligt item.' }),
       chances,
+      el('h3', { text: 'Korttrin → magi-rarity', style: 'margin-top:14px' }),
+      magicMappingPanel(pack),
       el('h3', { text: 'Forbrugsvarer', style: 'margin-top:14px' }),
       el('p', { class: 'hint',
         text: 'Potions, scrolls, dust, oil og andet der bruges op, kan holdes adskilt fra ' +
@@ -1140,12 +1268,15 @@
         }));
         catHost.appendChild(cardWeights(pack, c));
       }
+      var mt = cardMagicTypes(pack, c);
+      if (mt) catHost.appendChild(mt);
     }
     renderOverride();
 
     var node = el('div', { class: 'card-row' }, [
       el('div', { class: 'card-row-head' }, [
         el('span', { class: 'card-no', text: '#' + (ci + 1) }),
+
         el('input', {
           type: 'text', value: c.label, placeholder: 'Kortnavn',
           oninput: function () { c.label = this.value; persist(); }
@@ -1542,42 +1673,7 @@
 
     var host = $('#magicMapping');
     host.innerHTML = '';
-
-    var head = el('div', { class: 'map-row map-head' }, [el('span', { text: 'Korttrin' })]);
-    C.MAGIC_RARITIES.forEach(function (r) {
-      head.appendChild(el('span', {}, [
-        el('i', { class: 'dot', style: 'background:var(--r-' + r.key + ')' }),
-        document.createTextNode(' ' + r.label)
-      ]));
-    });
-    head.appendChild(el('span', { text: 'Sum' }));
-    host.appendChild(head);
-
-    C.RARITIES.forEach(function (tierR) {
-      var d = state.cfg.magic.mapping[tierR.key];
-      var sumEl = el('span', { class: 'sum' });
-      function refresh() {
-        var total = 0;
-        C.MKEYS.forEach(function (k) { total += (Number(d[k]) || 0); });
-        sumEl.textContent = (Math.round(total * 100) / 100) + '%';
-        sumEl.className = 'sum ' + (Math.abs(total - 100) < 0.01 ? 'good' : 'bad');
-      }
-      var row = el('div', { class: 'map-row' }, [
-        el('span', { class: 'rarity r-' + tierR.key, text: tierR.label })
-      ]);
-      C.MAGIC_RARITIES.forEach(function (mr) {
-        row.appendChild(el('input', {
-          type: 'number', min: '0', max: '100', step: '0.1', value: d[mr.key] || 0,
-          oninput: function () {
-            d[mr.key] = Math.max(0, Number(this.value) || 0);
-            refresh(); persist();
-          }
-        }));
-      });
-      row.appendChild(sumEl);
-      refresh();
-      host.appendChild(row);
-    });
+    host.appendChild(mappingGrid(state.cfg.magic.mapping));
   }
 
   $('#magicEnabled').addEventListener('change', function () {
