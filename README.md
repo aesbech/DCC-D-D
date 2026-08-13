@@ -14,7 +14,7 @@ Ren statisk HTML/CSS/JS. Ingen build, ingen dependencies, intet backend.
 mappe `/ (root)`), eller **GitHub Actions** — så bruges workflowen i
 `.github/workflows/pages.yml`, der deployer ved hvert push til `main`.
 
-Første gang siden åbnes, indlæses de 215 items fra regnearket, 140 Class-kort og 441 magic items automatisk.
+Første gang siden åbnes, indlæses de 215 items fra regnearket, 140 Class-kort og 450 magic items automatisk.
 
 ## Data
 
@@ -41,14 +41,15 @@ Dit regneark bruger to helt forskellige prisskalaer, og begge er lagt ind i appe
 | Rarity | Udstyr (til og med) | Magic Items (til og med) |
 |--------|--------------------|--------------------------|
 | Common | 2 gp | 100 gp |
-| Uncommon | 10 gp | 400 gp |
-| Rare | 40 gp | 4.000 gp |
+| Uncommon | 20 gp | 400 gp |
+| Rare | 50 gp | 4.000 gp |
 | Very Rare | 250 gp | 40.000 gp |
 | Legendary | derover | derover |
 
-Udstyrs-skalaen er verificeret mod arket: den reproducerer rarity for alle 210 items med
-en pris, uden en eneste afvigelse. Magic-skalaen ligger klar til når du får dine magic items
-ind — vælg blot **Magic Items** som prisskala under importen.
+Udstyrs-skalaen startede som regnearkets egen (10 og 40 gp), som blev verificeret mod arket
+uden en eneste afvigelse. Grænserne er siden rykket til 20 og 50 gp, så mellemfeltet bliver
+bredere — puljen står nu på 49 Common, 40 Uncommon, 62 Rare, 28 Very Rare og 23 Legendary.
+Vil du tilbage til arkets tal, kan de rettes under Indstillinger.
 
 ### Items uden pris
 
@@ -65,6 +66,15 @@ filtrér på **Uden rarity** og brug bulk-vælgeren over tabellen til at sætte 
 Prisen læses desuden fra tekstkolonnen når `Pris (GP)` er tom — det er tilfældet for de
 store skibe, som derfor nu får deres rigtige pris (Keelboat 3.000 gp, Galley 30.000 gp)
 og dermed Legendary.
+
+### Rustninger får ordet "Armor" med
+
+Arket fører de fleste rustninger under materialet alene — `Padded`, `Plate`, `Hide`. Alene
+på et kort ser det forkert ud, så importen sætter det ord på som Player's Handbook selv
+bruger: **Padded Armor, Leather Armor, Studded Leather Armor, Hide Armor, Splint Armor,
+Plate Armor, Half Plate Armor**. Ring Mail, Chain Mail, Chain Shirt, Scale Mail,
+Breastplate, Spiked Armor og Shield hedder allerede noget der læses som en rustning og
+røres ikke. Rettelsen sker i `scripts/import_xlsx.py`, så regnearket kan blive som det er.
 
 ### Når regnearket ændrer sig
 
@@ -111,10 +121,25 @@ tages ud af egenskabslisten og får sin egen etiket, så den ikke står to gange
 
 **Generiske magic items navngives efter det basisitem de blev rullet på.** `Weapon, +1`
 bliver til `Shortsword, +1` med kortsværdets 1d6 Piercing, `Armor of Resistance` bliver til
-`Chain Mail of Resistance`, og `Walloping Ammunition` bliver til `Walloping Sling Bullets`.
-47 af de 52 magic items med basisrul har et generisk ord at erstatte. De sidste fem —
-Flame Tongue, Holy Avenger, Defender, Dragon Slayer og Giant Slayer — har et egennavn uden
-generisk ord, så de beholder navnet og viser basisitemet på sin egen linje.
+`Padded Armor of Resistance`, og `Walloping Ammunition` bliver til `Walloping Sling Bullets`.
+Magic items med et egennavn uden generisk ord — Flame Tongue, Holy Avenger, Dragon Slayer —
+beholder navnet og viser basisitemet på sin egen linje.
+
+**Basisitemet tager sine egne regler med.** Et `Padded Armor, +1` er stadig et Padded Armor:
+det spiller som Light Armor, har samme stealth-ulempe og samme styrkekrav, og kun AC'en
+flytter sig. Kortet viser basisitemets kategori dér hvor et almindeligt kort viser sin
+— `Light Armor`, ikke bare `Armor` — og lægger bonussen oveni tallene:
+
+| Kort | Typelinje | Tal |
+|------|-----------|-----|
+| `Padded Armor, +1` | Light Armor | AC **12** + Dex modifier · Stealth: Disadvantage |
+| `Chain Mail, +2` | Heavy Armor | AC **18** · Styrke 13 · Stealth: Disadvantage |
+| `Shield, +1` | Shield | AC **+3** |
+| `Maul, +1` | Martial Melee Weapon | 2d6 **+ 1** Bludgeoning |
+
+Bonussen læses ud af navnet (`+1`, `+2`, `+3`) og lægges til det første tal i AC eller
+skade. Magic items uden et tal i navnet — `Adamantine Splint Armor`, `Sun Blade` — viser
+basisitemets tal uændret.
 
 Kortnummer (`Kort 1/2/3`) og pakkeoprindelse er arbejdsdata og udelades ved print.
 
@@ -151,10 +176,10 @@ eksport/import af hele opsætningen som JSON.
 | Pakke | Filter | Pulje | Tiers |
 |-------|--------|-------|-------|
 | Adventurer | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 166 | Bronze / Sølv / Guld |
-| Weapons | Våben + Ammunition | 48 | Bronze / Sølv / Guld |
-| Armor | Rustning | 14 | Bronze / Sølv / Guld |
-| Consumables | alle forbrugsvarer | 24 + 75 magiske | Bronze / Sølv / Guld |
-| Magic | alle magic items | 441 | Bronze / Sølv / Guld |
+| Weapons | Våben, Ammunition, Udstyr | 104 | Bronze / Sølv / Guld |
+| Armor | Rustning, Udstyr | 78 | Bronze / Sølv / Guld |
+| Consumables | Gift **eller** tagget Consumable/Healing | 22 + 49 magiske | Bronze / Sølv / Guld |
+| Magic | alle magic items | 450 | Bronze / Sølv / Guld |
 | Classes | Class | 140 | Standard (ikke gradueret) |
 
 ### Adventurer
@@ -171,7 +196,8 @@ hører ikke hjemme i en almindelig pakke.
 Verificeret over 20.000 simulerede pakker pr. tier: alle ni fordelinger rammer inden for
 0,4 procentpoint, og der er hverken fallback, tomme kort eller dubletter.
 
-Øvrige pakketyper er startgæt, tænkt til at blive tunet i UI'et.
+Weapons og Armor har deres egne tunede fordelinger — se afsnittet om det garanterede kort.
+Consumables og Magic er stadig startgæt, tænkt til at blive tunet i UI'et.
 
 ### Vægtning pr. kategori
 
@@ -182,25 +208,56 @@ Hver pakke kan derfor vægte sine kategorier. En vægt på 2 gør hvert item i k
 dobbelt så sandsynligt som et uvægtet item af samme rarity; 1 er neutralt, og 0 slår
 kategorien fra uden at fjerne den fra filteret.
 
-Vægtene kan **overstyres pr. tier**, så en pakke kan opføre sig forskelligt i Bronze og
-Guld. Adventurer bruger det til rustning:
+Vægtene kan også **overstyres pr. tier**, så en pakke kan opføre sig forskelligt i Bronze
+og Guld. Adventurer bruger det ikke længere — den kører ét vægtsæt hele vejen igennem:
+Våben 2, Rustning 4, Ammunition 2, resten 1.
 
-| Tier | Rustningsvægt | Resultat |
-|------|---------------|----------|
-| Bronze | 0 | **0 %** rustning |
-| Sølv | 6 (pakkens egen) | **14 %** |
-| Guld | 8 | **21 %** |
+Fordelingen det giver, målt over 15.000 pakker pr. tier:
 
-Bronze er bevidst uden rustning: den eneste Uncommon-rustning er Padded, så den ville bare
-gå igen og igen. Til gengæld vægter Sølv og Guld den tungt.
+| Tier | Våben | Udstyr | Rustning | Værktøj | Ammunition | Magic |
+|------|-------|--------|----------|---------|------------|-------|
+| Bronze | 32 % | 44 % | 4 % | 15 % | 5 % | 0 % |
+| Sølv | 34 % | 33 % | 10 % | 17 % | 4 % | 2 % |
+| Guld | 33 % | 28 % | 13 % | 18 % | 3 % | 4 % |
 
-Resten af fordelingen, målt over 15.000 pakker pr. tier:
+Rustning stiger med trinnet af sig selv: de dyre rustninger ligger på de høje rarities,
+så et Guld-kort rammer dem oftere end et Bronze-kort gør.
 
-| Tier | Våben | Udstyr | Værktøj |
-|------|-------|--------|---------|
-| Bronze | 34 % | 45 % | 15 % |
-| Sølv | 32 % | 32 % | 16 % |
-| Guld | 30 % | 26 % | 16 % |
+### Ét garanteret kort i Weapons og Armor
+
+Weapons og Armor har hver **et kortfilter på kort 3**, så den plads altid trækker fra
+netop den kategori pakken hedder. De to første kort trækker bredere — deres filter er
+pakkens eget, som også rummer Udstyr — så en våbenpakke ikke bliver tre våben og intet
+andet.
+
+| Pakke | Kort 1–2 | Kort 3 |
+|-------|----------|--------|
+| Weapons | Våben, Ammunition, Udstyr | **kun Våben** |
+| Armor | Rustning, Udstyr | **kun Rustning** |
+
+**Weapons**
+
+| Kort | Bronze | Sølv | Guld |
+|------|--------|------|------|
+| Kort 1 | 100 % C | 70 % C, 30 % U | 40 % C, 60 % U |
+| Kort 2 | 85 % C, 15 % U | 50 % C, 50 % U | 80 % U, 20 % R |
+| Kort 3 | 10 % C, 80 % U, 9 % R, 1 % VR | 65 % U, 30 % R, 5 % VR | 30 % U, 50 % R, 17 % VR, 3 % L |
+
+**Armor**
+
+| Kort | Bronze | Sølv | Guld |
+|------|--------|------|------|
+| Kort 1 | 80 % C, 20 % U | 50 % C, 30 % U, 20 % R | 50 % U, 50 % R |
+| Kort 2 | 50 % C, 50 % U | 10 % C, 40 % U, 40 % R, 10 % VR | 50 % R, 50 % VR |
+| Kort 3 | 80 % U, 15 % R, 4 % VR, 1 % L | 40 % U, 40 % R, 15 % VR, 5 % L | 50 % R, 40 % VR, 10 % L |
+
+Prisen for garantien er gentagelser i bunden. Armor Bronze kort 3 sigter efter Uncommon,
+og der findes præcis én Uncommon-rustning, så resultatet er **78 % Padded Armor** — det er
+pakkens skraldeitem. Guld kort 3 ligger på Rare og opefter og rammer hele hylden.
+
+Målt over 3.000 pakker pr. tier er der ingen tomme kort og ingen fallback nogen steder,
+og kort 3 er 100 % på den rigtige kategori — de magic item-kort der falder der, er
+Weapon-typer i Weapons og Armor-typer i Armor.
 
 ### Forbrugsvarer
 
@@ -210,12 +267,13 @@ poisons — en dosis bruges op), plus fakler, olie, vievand, rationer, papir, pe
 blæk, parfume, lys, foder og healer's kit. `Ink Pen` og `Poisoner's Kit` er undtaget, da
 de er værktøj der kan bruges igen.
 
-På magisiden er **75 af de 441** forbrugsvarer — se afsnittet om magic items.
+På magisiden er **84 af de 450** forbrugsvarer — se afsnittet om magic items.
 
-Consumables-pakken bruger nu markeringen frem for et kategori- og tagfilter, så den fanger
-alt uanset hvor det står i regnearket. Puljen er tynd i midten (kun to uncommon), og de ni
-dyreste er alle gift, så pakkens høje trin læner sig bevidst på magic item-kortene: Guld
-er 29 % magiske, mod 2 % i Bronze.
+Consumables-pakken bruger et **union-filter**: hele Gift-gruppen plus alt med tagget
+`Consumable` eller `Healing`. Det giver 22 udstyrsting, fordelt 5 Common, 3 Uncommon,
+1 Rare, 4 Very Rare og 9 Legendary. Puljen er altså tynd i midten, og de ni dyreste er
+alle gift, så pakkens høje trin læner sig bevidst på magic item-kortene: Guld kort 3 er
+16 % magisk, mod 2 % på Bronze.
 
 Adventurer, Weapons og Armor står på **både forbrugsvarer og varigt udstyr**. Vil du have
 poisons, fakler og rationer helt ud af Adventurer, er det én dropdown under Pakker —
@@ -236,14 +294,14 @@ korttrin de lander på følger af deres magi-rarity:
 Det falder ud som ønsket uden særregler: de mindste kommer helt ned på Rare-kort, de
 største kræver de høje trin.
 
-### To pakker der kræver din opmærksomhed
+### Armor er en tynd hylde
 
-**Armor** har kun 14 items, og ingen af dem er Common — den billigste er Padded til 5 gp,
-hvilket er Uncommon på udstyrs-skalaen. Pakkens fordelinger starter derfor ved Uncommon,
-og Bronze kort 1 er den eneste der sigter efter Uncommon, fordi der kun findes ét sådant
-item. Gentagelser på tværs af pakker er uundgåelige med så lille en pulje.
+Der findes kun **14 rustninger**, og ingen af dem er Common — den billigste er Padded Armor
+til 5 gp, hvilket er Uncommon på udstyrs-skalaen. Derfor er Udstyr med i Armor-pakkens
+filter: de lave trin har ellers intet at trække. Gentagelser er uundgåelige med så lille en
+pulje, og på Bronze kort 3 er det Padded Armor der går igen.
 
-**Magic** trækker nu fra de 441 magic items — se afsnittet om magic items nedenfor.
+**Magic** trækker fra alle 450 magic items — se afsnittet om magic items nedenfor.
 
 ## Magic items
 
@@ -270,8 +328,25 @@ De to er bevidst afkoblet: et **Rare kort** giver som regel et **Common magic it
    fordeling over magi-rarity.
 3. **Hvilket basisitem eller hvilken spell?** Er magic itemet generisk — `Weapon, +1`,
    `Armor of Resistance`, `Shield, +2` — rulles der hvilket konkret våben eller rustning det
-   sidder på. 52 af magic itemsne har sådan et rul. Er det en spell scroll eller en tome,
-   rulles der i stedet en spell af kortets niveau blandt de 202 spells.
+   sidder på. **99 af magic itemsne har sådan et rul.** Er det en spell scroll eller en
+   tome, rulles der i stedet en spell af kortets niveau blandt de 202 spells.
+
+Basisrullet peger enten på en **gruppe** eller på **bestemte items**. Typelinjen i kilden
+afgør hvilket:
+
+| Typelinje | Bliver til |
+|-----------|------------|
+| `Armor (light, medium, or heavy)` | alle 13 rustninger |
+| `Armor (any medium or heavy, except hide armor)` | Medium + Heavy, minus Hide Armor |
+| `Weapon (any simple or martial)` | alle våben |
+| `Weapon (longsword)` | altid Longsword |
+| `Weapon (glaive, greatsword, longsword, or scimitar)` | ét af de fire |
+
+41 af de 99 er navnelister. Nævner typelinjen intet — kilden skriver bare `Armor, common`
+— falder rullet tilbage på hele gruppen, så kortet aldrig står uden AC eller skade.
+Fire poster har ingen basis at rulle på, fordi udstyrsarket mangler våbnet:
+`Axe of the Dwarvish Lords` (battleaxe) og `Boomerang, +1/+2/+3`. Tilføj Battleaxe og
+Boomerang til regnearket, så ordner de sig selv.
 
 Standardtabellen for rul 2:
 
@@ -292,7 +367,7 @@ En potion er ikke det samme som et permanent magic item, så hvert magic item er
 som enten **forbrugsvare** eller **permanent**, og hver pakke vælger hvad den må trække:
 begge dele, kun permanente, eller kun forbrugsvarer.
 
-75 af de 441 er forbrugsvarer. Markeringen kommer fra tre kilder i prioriteret rækkefølge:
+84 af de 450 er forbrugsvarer. Markeringen kommer fra tre kilder i prioriteret rækkefølge:
 typen `Potion` eller `Scroll`, kildens eget `Consumable`-tag (kun 19 poster har det), og
 til sidst navnemønstre som `Dust of…`, `Oil of…`, `Philter…`, `Elemental Gem`,
 `Necklace of Fireballs` og `Tome of…`. `Tome of the Stilled Tongue` er undtaget, da den er
@@ -302,16 +377,14 @@ permanent. Alt kan rettes i tabellen på Magic-fanen, også som bulk-handling p�
 
 | Pakke | Rare | Very Rare | Legendary | Typer | Forbrugsvarer |
 |-------|------|-----------|-----------|-------|---------------|
-| Adventurer | 10 % | 20 % | 30 % | alle | kun permanente |
+| Adventurer | 10 % | 20 % | 30 % | alle | begge dele |
 | Weapons | 15 % | 25 % | 40 % | Weapon | kun permanente |
 | Armor | 15 % | 25 % | 40 % | Armor | kun permanente |
-| Consumables | 25 % | 40 % | 55 % | alle | **kun forbrugsvarer** |
+| Consumables | 20 % | 30 % | 40 % | Potion, Scroll | **kun forbrugsvarer** |
 | Magic | 100 % | 100 % | 100 % | alle | begge dele |
 | Classes | — | — | — | — | — |
 
-Typefiltret sikrer, at en Weapons-pakke ikke deler ringe ud. Consumables-pakken bruger
-ikke længere et typefilter — den tager alle forbrugsvarer, så den også fanger `Dust of
-Disappearance` og andre wondrous items der bruges op. Magic-pakken har 100 % på alle trin,
+Typefiltret sikrer, at en Weapons-pakke ikke deler ringe ud. Magic-pakken har 100 % på alle trin,
 så hvert kort er et magic item; dens korttrin ligger til gengæld højt, fordi trinnet nu
 kun bruges som opslag i tabellen ovenfor.
 
@@ -321,10 +394,14 @@ kun bruges som opslag i tabellen ovenfor.
 `assets/data/magic-items.js`:
 
 ```bash
+python3 scripts/import_xlsx.py    # først — magic-importen slår basisitems op i denne
 python3 scripts/import_magic.py
 ```
 
-441 magic items, hvoraf 92 er foldet ud fra varianttabeller — `Potion of Healing`
+Rækkefølgen betyder noget: `import_magic.py` læser navnene fra `assets/data/items.js` for
+at kunne oversætte `Weapon (longsword)` til et rul på det rigtige våben.
+
+450 magic items, hvoraf 92 er foldet ud fra varianttabeller — `Potion of Healing`
 bliver til fire poster, `Ioun Stone` til fjorten, `Belt of Giant Strength` til seks.
 
 Tre poster kunne ikke tages med, fordi kilden ikke angiver deres varianters rarity:
