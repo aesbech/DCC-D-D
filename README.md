@@ -14,14 +14,14 @@ Ren statisk HTML/CSS/JS. Ingen build, ingen dependencies, intet backend.
 mappe `/ (root)`), eller **GitHub Actions** — så bruges workflowen i
 `.github/workflows/pages.yml`, der deployer ved hvert push til `main`.
 
-Første gang siden åbnes, indlæses de 217 udstyrsitems, 140 Class-kort og 450 magic items automatisk.
+Første gang siden åbnes, indlæses de 216 udstyrsitems, 140 Class-kort og 450 magic items automatisk.
 
 ## Data
 
 | Fil | Indhold |
 |-----|---------|
 | `data/dnd_items.xlsx` | Dit originale regneark — kilden til alt udstyr |
-| `assets/data/items.js` | 217 items: 215 fra arket `Alle items` plus to ammunitionsrækker arket mangler |
+| `assets/data/items.js` | 216 items: 214 fra arket `Alle items` plus to ammunitionsrækker arket mangler |
 | `assets/data/class-cards.js` | 140 Class-kort i fem typer (Class, Stat, Feat, Skill, Perk) |
 | `assets/data/magic-items.js` | 450 magic items, heraf 9 tomes vi selv genererer |
 | `assets/data/spells.js` | 202 spells fra D&D Beyond, fordelt på niveau 0–9 |
@@ -93,6 +93,13 @@ Importen springer dem over hvis arket selv får rækkerne, så navnene aldrig st
 Begge er Common til 1 gp, og de gør `Ammunition +1/+2/+3` til et rigtigt rul: fem
 basisitems i stedet for tre.
 
+### Rækker der ikke skal med
+
+Arket rummer `Net (Legacy)` — 2014-udgaven af nettets regler, side om side med den
+gældende `Net`. To kort med samme navn og forskellige regler hjælper ingen, så den er
+taget ud i `DROP_ROWS` i `scripts/import_xlsx.py`. Skal andre rækker samme vej, er det
+listen at føje dem til.
+
 ### Når regnearket ændrer sig
 
 Hver datafil indeholder et fingeraftryk af sit eget indhold. Appen arbejder på en kopi i
@@ -100,7 +107,7 @@ browserens localStorage, ikke på filen, så en kopi der er blevet gammel betyde
 kort: gamle navne, manglende items, manglende skade.
 
 Derfor **opdateres kopien automatisk** når fingeraftrykket ikke passer. Du får en besked om
-hvad der skete — `357 items og 450 magic items (før 356 items)` — og den gamle kopi lægges
+hvad der skete — `356 items og 450 magic items (før 357 items)` — og den gamle kopi lægges
 til side, så en opdatering kan fortrydes med ét klik:
 
 | Knap | Gør |
@@ -194,6 +201,18 @@ Bonussen læses ud af navnet (`+1`, `+2`, `+3`) og lægges til det første tal i
 skade. Magic items uden et tal i navnet — `Adamantine Splint Armor`, `Sun Blade` — viser
 basisitemets tal uændret.
 
+**Lange beskrivelser skæres af med en kildehenvisning.** Der er plads til omkring 950 tegn
+brødtekst på et 63 × 88 mm kort, og alt derover blev bare klippet af — sætningen sluttede
+midt i et ord uden at man kunne se at der manglede noget. Nu skæres teksten ved sidste hele
+sætning inden for 700 tegn, og kortet slutter med `Se Player's Handbook.` efter itemets
+egen kilde. Er der ingen sætningsgrænse langt nok inde, klippes der ved et ord med `…`.
+
+Budgettet deles med mastery-reglen, så et våben med en lang mastery får skåret sin
+beskrivelse tilsvarende mere. Målt over 1.200 kort på tværs af alle pakker og tiers bliver
+ingen tekst længere klippet af usynligt, og intet indhold falder uden for kortet. Kun 11
+items er lange nok til at blive skåret — `Oil`, `Hunting Trap`, `Manacles` og et par
+magic items.
+
 Kortnummer (`Kort 1/2/3`) og pakkeoprindelse er arbejdsdata og udelades ved print.
 
 Under kontrollerne står puljens størrelse — og en rød advarsel hvis en fordeling peger på
@@ -229,8 +248,8 @@ eksport/import af hele opsætningen som JSON.
 
 | Pakke | Filter | Pulje | Tiers |
 |-------|--------|-------|-------|
-| Adventurer | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 168 | Bronze / Sølv / Guld |
-| Weapons | Våben, Ammunition, Udstyr | 106 | Bronze / Sølv / Guld |
+| Adventurer | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 167 | Bronze / Sølv / Guld |
+| Weapons | Våben, Ammunition, Udstyr | 105 | Bronze / Sølv / Guld |
 | Armor | Rustning, Udstyr | 78 | Bronze / Sølv / Guld |
 | Consumables | Gift **eller** tagget Consumable/Healing | 22 + 49 magiske | Bronze / Sølv / Guld |
 | Magic | alle magic items | 450 | Bronze / Sølv / Guld |
@@ -365,7 +384,7 @@ Weapon-typer i Weapons og Armor-typer i Armor.
 ### Forbrugsvarer
 
 Forbrugsvare er en markering på både udstyr og magic items, så alt der bruges op kan
-holdes samlet ét sted. **24 af de 217 udstyrsting** er markeret: hele Gift-gruppen (13
+holdes samlet ét sted. **24 af de 216 udstyrsting** er markeret: hele Gift-gruppen (13
 poisons — en dosis bruges op), plus fakler, olie, vievand, rationer, papir, pergament,
 blæk, parfume, lys, foder og healer's kit. `Ink Pen` og `Poisoner's Kit` er undtaget, da
 de er værktøj der kan bruges igen.
@@ -380,7 +399,7 @@ alle gift, så pakkens høje trin læner sig bevidst på magic item-kortene: Gul
 
 Adventurer, Weapons og Armor står på **både forbrugsvarer og varigt udstyr**. Vil du have
 poisons, fakler og rationer helt ud af Adventurer, er det én dropdown under Pakker —
-puljen går så fra 168 til 144, og legendary-items fra 16 til 7, fordi ni af dem er gift.
+puljen går så fra 167 til 143, og legendary-items fra 16 til 7, fordi ni af dem er gift.
 
 Det samme gælder på magisiden: Adventurer trækker både permanente magic items og magiske
 forbrugsvarer, så en healing potion eller et spell scroll kan falde som loot. Hvilket

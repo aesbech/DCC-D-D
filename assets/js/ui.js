@@ -428,6 +428,32 @@
     ]);
   }
 
+  /* Der er plads til omkring 950 tegn brødtekst på et 63 × 88 mm kort. Alt
+     derover blev klippet af uden at man kunne se det — sætningen sluttede bare
+     midt i et ord. Nu skæres teksten ved en sætningsgrænse, med god margen, og
+     henviser til kilden i stedet. */
+  var TEXT_BUDGET = 700;
+
+  function trimDesc(text, source, budget) {
+    text = String(text || '');
+    if (!text) return '';
+    if (budget === undefined) budget = TEXT_BUDGET;
+    if (text.length <= budget) return text;
+
+    var cut = text.slice(0, budget);
+    var stop = Math.max(cut.lastIndexOf('. '), cut.lastIndexOf('! '), cut.lastIndexOf('? '));
+    // Kun hvis der er en sætningsgrænse langt nok inde — ellers ville kortet
+    // miste det meste af teksten for at slutte pænt.
+    cut = (stop > budget * 0.4) ? cut.slice(0, stop + 1)
+                                : cut.slice(0, cut.lastIndexOf(' ')) + '…';
+    return cut + ' Se ' + (source || 'D&D Beyond') + '.';
+  }
+
+  function descLine(text, source, budget) {
+    var trimmed = trimDesc(text, source, budget);
+    return trimmed ? el('div', { class: 'card-desc', text: trimmed }) : null;
+  }
+
   /* Generiske magic items navngives efter det basisitem de blev rullet på,
      så "Weapon, +1" bliver til "Shortsword, +1". Har navnet intet generisk
      ord — Flame Tongue, Holy Avenger — beholdes det, og basisitemet vises
@@ -528,8 +554,11 @@
           }
           if (spell && !isSpellCard)
             mk.push(el('div', { class: 'card-spell', text: boundSpellLine(m, roll) }));
-          if (isSpellCard && spell.desc) mk.push(el('div', { class: 'card-desc', text: spell.desc }));
-          else if (m.desc) mk.push(el('div', { class: 'card-desc', text: m.desc }));
+          // Spellens tekst hentes i spelllisten, itemets i dets egen kilde.
+          var body = (isSpellCard && spell.desc)
+            ? descLine(spell.desc, 'D&D Beyond')
+            : descLine(m.desc, m.source);
+          if (body) mk.push(body);
           if (c.magic.magicRolled !== c.magic.magicRarity)
             mk.push(el('div', { class: 'fallback-note',
               text: 'Slog ' + C.magicRarityLabel(c.magic.magicRolled) + ' — puljen var tom' }));
@@ -559,9 +588,13 @@
           var sl = statLine(it); if (sl) kids.push(sl);
           var pl = propLine(it); if (pl) kids.push(pl);
         }
-        if (it && it.desc)
-          kids.push(el('div', { class: 'card-desc', text: it.desc }));
-        if (it) { var ml = masteryLine(it); if (ml) kids.push(ml); }
+        if (it) {
+          // Mastery-reglen står under beskrivelsen og deler pladsen med den.
+          var used = it.masteryText ? String(it.masteryText).length + 16 : 0;
+          var dl = descLine(it.desc, it.source, TEXT_BUDGET - used);
+          if (dl) kids.push(dl);
+          var ml = masteryLine(it); if (ml) kids.push(ml);
+        }
         if (c.actual && c.rolled && c.actual !== c.rolled)
           kids.push(el('div', { class: 'fallback-note', text: 'Trak ' + C.rarityLabel(c.rolled) + ' — puljen var tom' }));
         if (c.duplicate)
