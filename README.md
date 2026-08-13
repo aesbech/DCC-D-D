@@ -133,6 +133,16 @@ underkategori, beskrivelse, rarity og pris. Resultatet kan printes eller kopiere
 Magic- og Pokémon-kort. Ni kort pr. A4-side i et 3 × 3-gitter, hvor kortene støder op til
 hinanden, så ét snit deler to kort.
 
+**Hver række er én pakke, og margenen siger hvilken.** Ud for hver række står en lodret
+etiket — `ADVENTURER · GULD · PAKKE 1` — så en printet stak kan sorteres uden at læse
+kortene. Etiketkolonnen er 8 mm bred, og 8 + 3 × 63 = 197 mm går lige akkurat op i A4
+minus margenerne. En pakke bliver aldrig delt af et sideskift.
+
+Knappen **+ Tilføj** lægger nye pakker oveni i stedet for at erstatte, så flere pakketyper
+kan komme med i samme print. Det er dér etiketten tjener sig hjem: tre rækker, tre
+forskellige bokse, hver med sit navn i margenen. **Generér** erstatter som før, og **Ryd**
+tømmer.
+
 Kortene sættes op til papir frem for skærm: hvid bund og sort tekst. Rarity vises som
 **1–5 stjerner** i en lille pille — Common er én stjerne, Legendary er fem. På magic items
 står stjernerne i guld og viser magic itemets **egen** rarity, ikke korttrinnet.
@@ -213,7 +223,8 @@ ingen tekst længere klippet af usynligt, og intet indhold falder uden for korte
 items er lange nok til at blive skåret — `Oil`, `Hunting Trap`, `Manacles` og et par
 magic items.
 
-Kortnummer (`Kort 1/2/3`) og pakkeoprindelse er arbejdsdata og udelades ved print.
+Kortnummeret (`Kort 1/2/3`) er arbejdsdata og udelades ved print — pakkens navn står i
+margenen i stedet for på hvert enkelt kort.
 
 Under kontrollerne står puljens størrelse — og en rød advarsel hvis en fordeling peger på
 en rarity der ikke findes items af.

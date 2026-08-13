@@ -163,6 +163,8 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 /* ---------- results ---------- */
 .results{display:flex;flex-direction:column;gap:16px}
 .box{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
+/* Etiketten hører til printet — på skærmen står pakkenavnet allerede i box-head. */
+.box-label{display:none}
 .box-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .box-title{font-weight:600}
 .box-sub{color:var(--muted);font-size:13px}
@@ -215,7 +217,6 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 .stars.is-gold{color:var(--accent)}
 
 /* Oprindelseslinjen bruges kun ved print, hvor pakkeoverskrifterne er væk. */
-.card-origin{display:none}
 
 /* ---------- items table ---------- */
 .table-wrap{overflow-x:auto;margin-top:12px}
@@ -319,16 +320,27 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
   .view{display:none!important}
   .view.is-active{display:block!important}
 
-  /* Alle kort samles i ét gitter på tværs af pakkerne, så der ikke spildes
-     halve rækker mellem dem. */
-  .results{
+  /* Hver pakke får sin egen række med en lodret etiket i margenen, så en
+     printet stak kan sorteres uden at læse kortene. 8 mm + 3 × 63 mm = 197 mm
+     og går lige akkurat op i A4 minus margenerne. */
+  .results{display:block;margin:0;padding:0}
+  .box{
     display:grid;
-    grid-template-columns:repeat(3,63mm);
-    justify-content:center;
+    grid-template-columns:8mm repeat(3,63mm);
     gap:0;margin:0;padding:0;
+    background:#fff;border:0;border-radius:0;
+    break-inside:avoid;page-break-inside:avoid;
   }
-  .box,.cards{display:contents}
+  .cards{display:contents}
   .box-head{display:none}
+  .box-label{
+    grid-row:1 / -1;
+    writing-mode:vertical-rl;transform:rotate(180deg);
+    display:flex;align-items:center;justify-content:center;
+    font-size:7pt;font-weight:700;color:#333;
+    letter-spacing:.04em;text-transform:uppercase;
+    padding:2mm 0;overflow:hidden;
+  }
 
   .card{
     width:63mm;height:88mm;min-height:0;
@@ -348,7 +360,7 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
   .card.is-empty{opacity:1}
 
   /* Kortnummer og pakkeoprindelse er arbejdsdata, ikke spilinformation. */
-  .card-slot,.card-origin,.meta-tier,.fallback-note{display:none!important}
+  .card-slot,.meta-tier,.fallback-note{display:none!important}
   .card-kind{
     font-size:6pt;letter-spacing:.1em;color:#000;font-weight:700;
     text-transform:uppercase;
@@ -380,10 +392,6 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
   .card-meta{
     font-size:7pt;color:#333;
     border-top:0.2mm solid #ccc;padding-top:1.2mm;margin-top:0;
-  }
-  .card-origin{
-    display:block;font-size:5.5pt;color:#888;
-    margin-top:.8mm;letter-spacing:.02em;
   }
   .rarity{color:#000!important}
 }
