@@ -276,7 +276,8 @@
 
     var count = Math.max(1, Math.min(50, parseInt($('#genCount').value, 10) || 1));
     var out = [];
-    for (var i = 0; i < count; i++) out.push(C.generate(pack, tierObj, state.items, state.cfg, state.magic));
+    for (var i = 0; i < count; i++)
+      out.push(C.generate(pack, tierObj, state.items, state.cfg, state.magic, window.SPELLS));
     state.results = out;
     renderResults();
   });
@@ -413,20 +414,35 @@
         if (c.magic) {
           var m = c.magic.item;
           var base = c.magic.base;
+          var spell = c.magic.spell;
           var composed = base ? composeMagicName(m.name, base.name) : null;
+          if (spell && m.spellName) composed = m.spellName.replace('{spell}', spell.name);
           var mk = [
             el('div', { class: 'card-slot', text: c.slot }),
             el('div', { class: 'card-kind', text: 'Magic item' }),
             el('div', { class: 'card-name', text: composed || m.name })
           ];
           mk.push(el('div', { class: 'card-sub', text: m.type + (m.attunement ? ' · attunement' : '') }));
+          if (spell) {
+            // Kortet handler om spellen, så dens tal og tekst fylder pladsen.
+            // Bærerens egen regeltekst tages kun med, hvis den er kort nok.
+            mk.push(el('div', { class: 'card-stats',
+              text: (spell.level ? spell.level + '. niveau' : 'Cantrip') +
+                    (spell.school ? ' · ' + spell.school : '') }));
+            var sp = [spell.castingTime, spell.range, spell.components]
+              .filter(Boolean).join(' · ');
+            if (sp) mk.push(el('div', { class: 'card-props', text: sp }));
+            if (m.desc && m.desc.length <= 120)
+              mk.push(el('div', { class: 'card-base', text: m.desc }));
+          }
           if (base) {
             // Navnet rummer allerede basisitemet når det kunne sættes sammen.
             if (!composed) mk.push(el('div', { class: 'card-base', text: 'Basis: ' + base.name }));
             var bs = statLine(base); if (bs) mk.push(bs);
             var bp = propLine(base); if (bp) mk.push(bp);
           }
-          if (m.desc) mk.push(el('div', { class: 'card-desc', text: m.desc }));
+          if (spell && spell.desc) mk.push(el('div', { class: 'card-desc', text: spell.desc }));
+          else if (m.desc) mk.push(el('div', { class: 'card-desc', text: m.desc }));
           if (c.magic.magicRolled !== c.magic.magicRarity)
             mk.push(el('div', { class: 'fallback-note',
               text: 'Slog ' + C.magicRarityLabel(c.magic.magicRolled) + ' — puljen var tom' }));
@@ -651,28 +667,37 @@
 
   /* Uden vægte er alle items i en rarity lige sandsynlige, så den største
      kategori dominerer. Vægten ganges på hvert item i kategorien. */
-  function weightPanel(pack) {
-    var pool = C.poolFor(state.items, pack.filter, state.cfg);
+  function poolCategories(pack) {
     var counts = {};
-    pool.forEach(function (i) { counts[i.category] = (counts[i.category] || 0) + 1; });
-    var cats = Object.keys(counts).sort();
+    C.poolFor(state.items, pack.filter, state.cfg)
+      .forEach(function (i) { counts[i.category] = (counts[i.category] || 0) + 1; });
+    return counts;
+  }
 
+  function weightRows(weights, counts) {
     var rows = el('div', { class: 'dist' });
-    cats.forEach(function (cat) {
+    Object.keys(counts).sort().forEach(function (cat) {
       rows.appendChild(el('label', { class: 'field' }, [
         el('span', { text: cat + ' (' + counts[cat] + ')' }),
         el('input', {
           type: 'number', min: '0', step: '0.5',
-          value: pack.weights[cat] === undefined ? 1 : pack.weights[cat],
+          value: weights[cat] === undefined ? 1 : weights[cat],
           oninput: function () {
             var v = Number(this.value);
             if (!isFinite(v) || v < 0) v = 0;
-            if (v === 1) delete pack.weights[cat]; else pack.weights[cat] = v;
+            if (v === 1) delete weights[cat]; else weights[cat] = v;
             persist();
           }
         })
       ]));
     });
+    return rows;
+  }
+
+  function weightPanel(pack) {
+    var counts = poolCategories(pack);
+    var cats = Object.keys(counts);
+    var rows = weightRows(pack.weights, counts);
 
     return el('div', { class: 'panel' }, [
       el('h3', { text: 'Vægtning pr. kategori' }),
@@ -682,6 +707,29 @@
               'uden at fjerne den fra filteret. Tallet i parentes er antal items i puljen.' }),
       cats.length ? rows : el('p', { class: 'hint', text: 'Ingen kategorier i puljen.' })
     ]);
+  }
+
+  /* Et tier kan overstyre pakkens vægte — fx så Bronze slet ikke giver
+     rustning, mens Guld vægter den tungt. */
+  function tierWeights(pack, t) {
+    var host = el('div', { class: 'tier-weights' });
+
+    function render() {
+      host.innerHTML = '';
+      host.appendChild(el('label', { class: 'check' }, [
+        el('input', {
+          type: 'checkbox', checked: t.weights ? 'checked' : null,
+          onchange: function () {
+            t.weights = this.checked ? JSON.parse(JSON.stringify(pack.weights || {})) : null;
+            render(); persist();
+          }
+        }),
+        document.createTextNode('Egne vægte for dette tier')
+      ]));
+      if (t.weights) host.appendChild(weightRows(t.weights, poolCategories(pack)));
+    }
+    render();
+    return host;
   }
 
   function renderPackDetail() {
@@ -753,6 +801,7 @@
 
   function renderTier(pack, t, ti) {
     var body = el('div', { class: 'tier-body' });
+    body.appendChild(tierWeights(pack, t));
     t.cards.forEach(function (c, ci) { body.appendChild(renderCard(pack, t, c, ci)); });
 
     body.appendChild(el('div', { class: 'row' }, [

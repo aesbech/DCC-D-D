@@ -370,3 +370,9 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
   }
   .rarity{color:#000!important}
 }
+.tier-weights{
+  border-bottom:1px solid var(--line-soft);
+  padding-bottom:10px;margin-bottom:12px;
+}
+.tier-weights .check{margin-bottom:0}
+.tier-weights .dist{margin-top:10px}

@@ -216,6 +216,47 @@ def variant_rows(rec, parent):
     return out
 
 
+# Spell scrolls ruller en spell af deres eget niveau. Tomes er den permanente
+# udgave og ligger ét rarity-trin højere, hvilket samtidig betyder at der ikke
+# findes tomes til 9.-niveau spells — der er intet trin over Legendary.
+SCROLL_LEVEL = {"Cantrip": 0, "1st": 1, "2nd": 2, "3rd": 3, "4th": 4,
+                "5th": 5, "6th": 6, "7th": 7, "8th": 8, "9th": 9}
+LADDER = ["common", "uncommon", "rare", "very_rare", "legendary"]
+LEVEL_LABEL = {0: "Cantrip", 1: "1st", 2: "2nd", 3: "3rd", 4: "4th",
+               5: "5th", 6: "6th", 7: "7th", 8: "8th", 9: "9th"}
+
+
+def spell_carriers(items):
+    """Sætter spellLevel på de generiske spell scrolls og bygger en tome til
+    hvert niveau, hvis der findes et rarity-trin over scrollens."""
+    tomes = []
+    for item in items:
+        m = re.match(r"^Spell Scroll \((Cantrip|\dth|\dst|\dnd|\drd)\)$", item["name"])
+        if not m:
+            continue
+        level = SCROLL_LEVEL[m.group(1)]
+        item["spellLevel"] = level
+        item["spellName"] = "Spell Scroll of {spell}"
+
+        idx = LADDER.index(item["rarity"])
+        if idx + 1 >= len(LADDER):
+            continue  # 9.-niveau: intet trin over Legendary, så ingen tome
+        tomes.append({
+            "name": "Tome of Spells (%s)" % LEVEL_LABEL[level],
+            "type": "Wondrous Item",
+            "attunement": False,
+            "consumable": True,
+            "typeLine": "Wondrous Item, %s" % LADDER[idx + 1].replace("_", " "),
+            "tags": ["Consumable", "Spellcaster"],
+            "desc": "Study this tome to learn the spell permanently. It then crumbles to dust.",
+            "source": "Homebrew",
+            "rarity": LADDER[idx + 1],
+            "spellLevel": level,
+            "spellName": "Tome of {spell}",
+        })
+    return tomes
+
+
 def main():
     src = Path(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_SRC
     if not src.exists():
@@ -283,6 +324,7 @@ def main():
             base["rarity"] = RARITIES[rarity_word.lower()]
             items.append(base)
 
+    items += spell_carriers(items)
     items.sort(key=lambda i: i["name"])
     payload = json.dumps(items, ensure_ascii=False, indent=1)
     version = hashlib.sha1(payload.encode("utf-8")).hexdigest()[:12]
