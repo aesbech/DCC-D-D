@@ -351,6 +351,9 @@ window.LB = (function () {
   var K_ITEMS = 'dccdd.items.v1';
   var K_SEEDED = 'dccdd.seeded.v1';
   var K_MAGIC = 'dccdd.magic.v1';
+  // Kopi af items og magic items fra før en automatisk dataopdatering, så
+  // opdateringen kan fortrydes uden at man mister sine egne rettelser.
+  var K_BACKUP = 'dccdd.backup.v1';
 
   function available() {
     try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); return true; }
@@ -993,7 +996,8 @@ window.LB = (function () {
     rollBaseItem: rollBaseItem,
     storage: {
       available: available, load: load, save: save,
-      K_CFG: K_CFG, K_ITEMS: K_ITEMS, K_SEEDED: K_SEEDED, K_MAGIC: K_MAGIC
+      K_CFG: K_CFG, K_ITEMS: K_ITEMS, K_SEEDED: K_SEEDED, K_MAGIC: K_MAGIC,
+      K_BACKUP: K_BACKUP
     }
   };
 })();

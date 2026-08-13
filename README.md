@@ -95,15 +95,26 @@ basisitems i stedet for tre.
 
 ### Når regnearket ændrer sig
 
-`items.js` indeholder et fingeraftryk af sit eget indhold. Har du kørt importen igen og
-deployet, opdager appen at dens datafiler er nyere end det browseren har gemt, og viser
-et banner: **Genindlæs data** eller **Ikke nu**.
+Hver datafil indeholder et fingeraftryk af sit eget indhold. Appen arbejder på en kopi i
+browserens localStorage, ikke på filen, så en kopi der er blevet gammel betyder forkerte
+kort: gamle navne, manglende items, manglende skade.
 
-Appen læser fra din browsers kopi, ikke fra filen — indtil du genindlæser, trækker du
-altså stadig fra den gamle udgave, med de gamle navne og priser. Derfor er "Ikke nu" kun
-for den her fane: banneret vender tilbage næste gang du åbner siden, indtil du har taget
-stilling. Genindlæser du kun én datafil ad gangen med knapperne under **Items**, følger
-netop den fils versionsstempel med.
+Derfor **opdateres kopien automatisk** når fingeraftrykket ikke passer. Du får en besked om
+hvad der skete — `357 items og 450 magic items (før 356 items)` — og den gamle kopi lægges
+til side, så en opdatering kan fortrydes med ét klik:
+
+| Knap | Gør |
+|------|-----|
+| **Fortryd — hent min gamle kopi** | ruller tilbage til det du havde, og bliver ved det |
+| **Fint** | lukker beskeden |
+
+Fortryder du, bliver versionsstemplet stående på den nye udgave, så din kopi ikke bare
+bliver skiftet ud igen ved næste indlæsning. Vil du senere hente den friske udgave, ligger
+**Genindlæs D&amp;D-items** og **Genindlæs Class-kort** under fanen Items.
+
+Tidligere skulle opdateringen bekræftes manuelt, og et enkelt klik på "Behold mine" gjorde
+valget permanent. Det var sådan `Padded` overlevede omdøbningen til `Padded Armor`, og
+sådan våben endte med at blive printet uden skade.
 
 ## Fanerne
 
