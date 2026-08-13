@@ -127,36 +127,54 @@
   /* Datafilerne i repoet kan være nyere end det, browseren har gemt — fx efter
      at regnearket er blevet rettet. Tilbyd en genindlæsning frem for at
      overskrive brugerens egne rettelser i det stille. */
+  function dataIsStale() {
+    var stored = C.storage.load(C.storage.K_SEEDED, null);
+    return typeof stored === 'string' && stored !== bundledVersion();
+  }
+
+  function reloadBundledData() {
+    state.items = seedItems();
+    state.magic = C.magicFromJSON(window.MAGIC_ITEMS || []);
+    state.page = 0;
+    state.magicPage = 0;
+    C.storage.save(C.storage.K_SEEDED, bundledVersion());
+    renderAll(); persist();
+  }
+
+  /* "Ikke nu" gemmer banneret for denne fane, ikke for altid. Et gammelt
+     datasæt bliver ved med at være forkert — items kan have skiftet navn —
+     så spørgsmålet skal vende tilbage indtil man har taget stilling. */
+  function snoozed() {
+    try { return sessionStorage.getItem('dccdd.notice.snooze') === bundledVersion(); }
+    catch (e) { return false; }
+  }
+
   function renderDataNotice() {
     var host = $('#dataNotice');
-    var stored = C.storage.load(C.storage.K_SEEDED, null);
     host.innerHTML = '';
-    if (typeof stored !== 'string' || stored === bundledVersion()) {
+    if (!dataIsStale() || snoozed()) {
       host.className = 'hidden';
       return;
     }
     host.className = 'notice';
     host.appendChild(el('span', {
-      text: 'Datafilerne i appen er opdateret siden du hentede dem. ' +
-            'Dine egne rettelser til de medfølgende items går tabt ved en genindlæsning.'
+      text: 'Datafilerne i appen er opdateret siden du hentede dem — items kan have ' +
+            'skiftet navn, pris eller rarity, og indtil du genindlæser trækker du fra ' +
+            'den gamle udgave. Dine egne rettelser til de medfølgende items går tabt ' +
+            'ved en genindlæsning.'
     }));
     host.appendChild(el('button', {
       class: 'btn btn-sm btn-primary', text: 'Genindlæs data',
       onclick: function () {
         if (!confirm('Erstat alle ' + state.items.length + ' items med de opdaterede datafiler?')) return;
-        state.items = seedItems();
-        state.magic = C.magicFromJSON(window.MAGIC_ITEMS || []);
-        state.page = 0;
-        state.magicPage = 0;
-        C.storage.save(C.storage.K_SEEDED, bundledVersion());
-        renderAll(); persist();
+        reloadBundledData();
         toast('Data genindlæst');
       }
     }));
     host.appendChild(el('button', {
-      class: 'btn btn-sm', text: 'Behold mine',
+      class: 'btn btn-sm', text: 'Ikke nu',
       onclick: function () {
-        C.storage.save(C.storage.K_SEEDED, bundledVersion());
+        try { sessionStorage.setItem('dccdd.notice.snooze', bundledVersion()); } catch (e) {}
         renderDataNotice();
       }
     }));
@@ -690,16 +708,53 @@
   }
 
   /* Uden vægte er alle items i en rarity lige sandsynlige, så den største
-     kategori dominerer. Vægten ganges på hvert item i kategorien. */
-  function filterCategories(filter) {
-    var counts = {};
-    C.poolFor(state.items, filter, state.cfg)
-      .forEach(function (i) { counts[i.category] = (counts[i.category] || 0) + 1; });
-    return counts;
+     kategori dominerer. Vægten ganges på hvert item i kategorien.
+
+     Vægte findes på tre niveauer — pakke, tier, kort — og det mest specifikke
+     vinder. Vægtlisten skal derfor kun vise de kategorier som de kort, niveauet
+     faktisk styrer, kan trække: har alle kort i et tier deres eget filter, er
+     pakkens vægte uden virkning, og et kort der kun trækker rustning har intet
+     at veje mod. Reglen for hvad ét kort trækker er den samme som i generate(). */
+  function hasFilter(f) { return !!(f && (f.categories.length || f.tags.length)); }
+
+  function effectiveFilter(pack, c) {
+    return hasFilter(c.filter) ? c.filter : pack.filter;
   }
 
-  function poolCategories(pack) {
-    return filterCategories(pack.filter);
+  /* Et kort der altid bliver til et magic item trækker aldrig fra udstyrspuljen,
+     og så er kategorivægte uden betydning for det. */
+  function drawsEquipment(pack, c) {
+    if (!state.cfg.magic || !state.cfg.magic.enabled) return true;
+    var chance = (pack.magic && pack.magic.chance) || {};
+    return C.RKEYS.some(function (k) {
+      return (Number(c.dist[k]) || 0) > 0 && (Number(chance[k]) || 0) < 100;
+    });
+  }
+
+  /* Kortene som et givet vægtniveau er det mest specifikke for. */
+  function cardsGovernedBy(pack, level, tierObj) {
+    var out = [];
+    (level === 'pack' ? (pack.tiers || []) : [tierObj]).forEach(function (t) {
+      if (!t) return;
+      if (level === 'pack' && t.weights) return;
+      (t.cards || []).forEach(function (c) {
+        if (hasFilter(c.filter) && c.weights) return;
+        out.push(c);
+      });
+    });
+    return out;
+  }
+
+  function categoriesOfCards(pack, cards) {
+    var seen = {}, counts = {};
+    cards.forEach(function (c) {
+      C.poolFor(state.items, effectiveFilter(pack, c), state.cfg).forEach(function (i) {
+        if (seen[i.id]) return;
+        seen[i.id] = true;
+        counts[i.category] = (counts[i.category] || 0) + 1;
+      });
+    });
+    return counts;
   }
 
   function weightRows(weights, counts) {
@@ -722,18 +777,41 @@
     return rows;
   }
 
+  /* Fælles bundlinje under alle tre vægtlister: hvad listen dækker, og hvornår
+     den ikke gør nogen forskel. */
+  function weightNote(pack, governed, cats, what) {
+    if (!governed.length)
+      return 'Alle ' + what + ' har deres egne vægte, så disse bruges ikke.';
+    if (!governed.some(function (c) { return drawsEquipment(pack, c); }))
+      return (governed.length === 1 ? 'Kortet bliver' : 'Kortene bliver') +
+             ' altid til magic item-kort, så kategorivægte bruges ikke.';
+    if (!cats.length) return 'Ingen kategorier i puljen.';
+    if (cats.length === 1) return 'Puljen rummer kun ' + cats[0] + ', så vægten gør ingen forskel.';
+    return '';
+  }
+
+  /* Kun kort der faktisk kan trække et almindeligt item tæller med i listen. */
+  function weightScope(pack, governed) {
+    var drawing = governed.filter(function (c) { return drawsEquipment(pack, c); });
+    var counts = categoriesOfCards(pack, drawing);
+    return { counts: counts, cats: Object.keys(counts) };
+  }
+
   function weightPanel(pack) {
-    var counts = poolCategories(pack);
-    var cats = Object.keys(counts);
-    var rows = weightRows(pack.weights, counts);
+    var governed = cardsGovernedBy(pack, 'pack');
+    var scope = weightScope(pack, governed);
+    var counts = scope.counts, cats = scope.cats;
+    var note = weightNote(pack, governed, cats, 'kort og tiers');
 
     return el('div', { class: 'panel' }, [
       el('h3', { text: 'Vægtning pr. kategori' }),
       el('p', { class: 'hint',
         text: '1 er neutralt. En vægt på 2 gør hvert item i kategorien dobbelt så ' +
               'sandsynligt som et uvægtet item af samme rarity. 0 slår kategorien fra ' +
-              'uden at fjerne den fra filteret. Tallet i parentes er antal items i puljen.' }),
-      cats.length ? rows : el('p', { class: 'hint', text: 'Ingen kategorier i puljen.' })
+              'uden at fjerne den fra filteret. Tallet i parentes er antal items i puljen. ' +
+              'Listen viser kun de kategorier de kort, der bruger pakkens vægte, kan trække.' }),
+      cats.length ? weightRows(pack.weights, counts) : el('span'),
+      note ? el('p', { class: 'hint', text: note }) : el('span')
     ]);
   }
 
@@ -741,32 +819,39 @@
      50/50 mellem udstyr og rustning på én plads, eller bare oftere ammunition
      i et våbenkort, uden at gøre det til en garanti. Uden eget filter trækker
      kortet fra pakkens pulje, og så gælder pakkens vægte. */
-  function cardWeights(c) {
+  function cardWeights(pack, c) {
     var host = el('div', { class: 'tier-weights' });
 
     function render() {
       host.innerHTML = '';
+      // Et tomt filter overstyrer ingenting — generate() falder tilbage på
+      // pakkens pulje, og så er det pakkens vægte der gælder.
+      if (!hasFilter(c.filter)) {
+        c.weights = null;
+        host.appendChild(el('p', { class: 'hint',
+          text: 'Vælg en kategori eller et tag ovenfor, hvis kortet skal have egne vægte.' }));
+        return;
+      }
+
       host.appendChild(el('label', { class: 'check' }, [
         el('input', {
           type: 'checkbox', checked: c.weights ? 'checked' : null,
           onchange: function () {
             c.weights = this.checked ? {} : null;
-            render(); persist();
+            persist(); refreshPackDetail();
           }
         }),
         document.createTextNode('Egne vægte for dette kort')
       ]));
       if (!c.weights) return;
 
-      var counts = filterCategories(c.filter);
-      var cats = Object.keys(counts);
+      var scope = weightScope(pack, [c]);
       host.appendChild(el('p', { class: 'hint',
         text: 'Vægter kortets egne kategorier mod hinanden. 2 gør hvert item i kategorien ' +
-              'dobbelt så sandsynligt som et uvægtet item af samme rarity; 0 slår den fra.' +
-              (cats.length > 1 ? ''
-                : ' Filteret ovenfor rammer kun én kategori, så vægten gør ingen forskel ' +
-                  'endnu — tilføj en kategori mere for at fordele kortet mellem dem.') }));
-      if (cats.length) host.appendChild(weightRows(c.weights, counts));
+              'dobbelt så sandsynligt som et uvægtet item af samme rarity; 0 slår den fra.' }));
+      if (scope.cats.length) host.appendChild(weightRows(c.weights, scope.counts));
+      var note = weightNote(pack, [c], scope.cats, 'dette kort');
+      if (note) host.appendChild(el('p', { class: 'hint', text: note }));
     }
 
     render();
@@ -785,15 +870,30 @@
           type: 'checkbox', checked: t.weights ? 'checked' : null,
           onchange: function () {
             t.weights = this.checked ? JSON.parse(JSON.stringify(pack.weights || {})) : null;
-            render(); persist();
+            persist(); refreshPackDetail();
           }
         }),
         document.createTextNode('Egne vægte for dette tier')
       ]));
-      if (t.weights) host.appendChild(weightRows(t.weights, poolCategories(pack)));
+      if (!t.weights) return;
+
+      var governed = cardsGovernedBy(pack, 'tier', t);
+      var scope = weightScope(pack, governed);
+      if (scope.cats.length) host.appendChild(weightRows(t.weights, scope.counts));
+      var note = weightNote(pack, governed, scope.cats, 'kort i dette tier');
+      if (note) host.appendChild(el('p', { class: 'hint', text: note }));
     }
     render();
     return host;
+  }
+
+  /* Ændrer man et korts filter eller vægte, skifter også hvad pakkens og
+     tierets vægtlister dækker. Hele panelet tegnes derfor om — scrollpositionen
+     holdes fast, så man ikke mister stedet midt i en tuning. */
+  function refreshPackDetail() {
+    var y = window.scrollY;
+    renderPackDetail();
+    window.scrollTo(0, y);
   }
 
   function renderPackDetail() {
@@ -950,16 +1050,16 @@
           onchange: function () {
             c.filter = this.checked ? C.emptyFilter() : null;
             if (!c.filter) c.weights = null;
-            renderOverride(); updateGenHint(); persist();
+            persist(); updateGenHint(); refreshPackDetail();
           }
         }),
         document.createTextNode('Eget filter for dette kort (overstyrer pakkens)')
       ]));
       if (on) {
         catHost.appendChild(filterEditor(c.filter, function () {
-          renderOverride(); updateGenHint(); persist();
+          persist(); updateGenHint(); refreshPackDetail();
         }));
-        catHost.appendChild(cardWeights(c));
+        catHost.appendChild(cardWeights(pack, c));
       }
     }
     renderOverride();
@@ -1118,16 +1218,32 @@
     toast(items.length + ' items importeret');
     $('#pasteArea').value = '';
     $('#pasteBox').classList.add('hidden');
+    // Kun en fuld erstatning bringer puljen på højde med datafilen.
+    return replace;
+  }
+
+  /* Genindlæser man én datafil ad gangen, skal netop dens del af
+     versionsstemplet følge med — ellers bliver man ved med at få banneret om
+     data man lige har hentet. */
+  function stampSource(prefix) {
+    var stored = C.storage.load(C.storage.K_SEEDED, null);
+    if (typeof stored !== 'string') return;
+    var current = bundledVersion().split('|');
+    C.storage.save(C.storage.K_SEEDED, stored.split('|').map(function (part, i) {
+      return part.indexOf(prefix + ':') === 0 ? current[i] : part;
+    }).join('|'));
   }
 
   $('#btnLoadDnd').addEventListener('click', function () {
     if (!window.DND_ITEMS) { toast('Datafilen mangler'); return; }
-    commitItems(C.itemsFromJSON(window.DND_ITEMS, state.cfg, 'gear'));
+    if (commitItems(C.itemsFromJSON(window.DND_ITEMS, state.cfg, 'gear'))) stampSource('dnd');
+    renderDataNotice();
   });
 
   $('#btnLoadClass').addEventListener('click', function () {
     if (!window.CLASS_CARDS) { toast('Datafilen mangler'); return; }
-    commitItems(C.itemsFromJSON(window.CLASS_CARDS, state.cfg, 'none'));
+    if (commitItems(C.itemsFromJSON(window.CLASS_CARDS, state.cfg, 'none'))) stampSource('class');
+    renderDataNotice();
   });
 
   $('#btnClearItems').addEventListener('click', function () {
