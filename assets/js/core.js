@@ -547,7 +547,7 @@ window.LB = (function () {
 
   /* Felter fra regnearket som hører til på selve kortet: skade, egenskaber,
      AC og den slags. De skal med hele vejen fra items.js til kortvisningen. */
-  var STAT_FIELDS = ['damage', 'damageType', 'properties', 'mastery',
+  var STAT_FIELDS = ['damage', 'damageType', 'properties', 'mastery', 'masteryText',
                      'ac', 'strength', 'stealth', 'weight'];
 
   function copyStats(from, to) {
