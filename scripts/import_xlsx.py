@@ -88,11 +88,13 @@ def split_mastery(desc, mastery):
 # navne. Kan rettes i appen bagefter.
 CONSUMABLE_NAME = re.compile(
     r"^(torch|oil|acid|alchemist|antitoxin|holy water|rations|candle|paper|"
-    r"parchment|ink|perfume|feed|healer's kit|basic poison|poison)\b",
+    r"parchment|ink|perfume|feed|basic poison|poison)\b",
     re.I,
 )
-# Fanget af mønsteret ovenfor, men er værktøj der kan bruges igen.
-NOT_CONSUMABLE = {"Ink Pen", "Poisoner's Kit"}
+# Fanget af mønsteret ovenfor, men er værktøj der kan bruges igen. Healer's Kit
+# og Herbalism Kit hører med her: de har ganske vist et antal brug, men er
+# grej man bærer rundt på, ikke noget man trækker som forbrugsvare.
+NOT_CONSUMABLE = {"Ink Pen", "Poisoner's Kit", "Healer's Kit", "Herbalism Kit"}
 
 
 def is_consumable(name, group, tags):

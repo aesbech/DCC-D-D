@@ -248,10 +248,13 @@ window.LB = (function () {
       },
       {
         id: 'consumables', name: 'Consumables',
-        filter: filt(['Gift'], ['Consumable', 'Healing'], 'or'),
-        note: 'Union-filter: hele Gift-gruppen plus alt med tagget Consumable eller Healing. ' +
-              'På magisiden potions og scrolls. De ni dyreste forbrugsvarer er alle gift, så ' +
-              'de høje trin læner sig på magic item-kortene.',
+        // Healing-tagget rammer kun Healer's Kit og Herbalism Kit på udstyrssiden
+        // — grej, ikke forbrugsvarer. Healing potions er magic items og kommer
+        // ind via typerne nedenfor, så tagget hører ikke til i filteret.
+        filter: filt(['Gift'], ['Consumable'], 'or'),
+        note: 'Union-filter: hele Gift-gruppen plus alt med tagget Consumable. På magisiden ' +
+              'potions og scrolls. De ni dyreste forbrugsvarer er alle gift, så de høje trin ' +
+              'læner sig på magic item-kortene.',
         magic: packMagic({ rare: 20, very_rare: 30, legendary: 40 }, ['Potion', 'Scroll'], 'only'),
         tiers: standardTiers()
       },
@@ -259,33 +262,37 @@ window.LB = (function () {
         id: 'magic', name: 'Magic', filter: filt([], []),
         note: 'En potion, et spell scroll og et frit magic item. Hvert kort er magi, så ' +
               'korttrinnet bruges ikke til andet end at slå magi-rarity op — pakken har ' +
-              'derfor sin egen tabel, hvor trinnet peger næsten direkte på den magi-rarity ' +
-              'man vil have. Vil du have tre frie magic items, så fjern typerne på kort 1 og 2.',
+              'derfor sin egen tabel, hvor trinnet ér magi-rarityen. Fordelingen på kortet ' +
+              'betyder altså præcis hvad den siger. Vil du have tre frie magic items, så ' +
+              'fjern typerne på kort 1 og 2.',
         // Egen tabel: den fælles er lavet til pakker hvor magic er sjældent og
         // et Rare-kort derfor bør give et beskedent magic item. Her er hvert
         // kort magi, og så skal trinnet betyde det det siger.
+        // Trinnet er magi-rarityen, ét til én. Så betyder fordelingen på kortet
+        // præcis det den siger, uden et mellemled der trækker den nedad.
         magic: packMagic(
           { common: 100, uncommon: 100, rare: 100, very_rare: 100, legendary: 100 }, [], 'all',
           {
-            common:    { common: 85, uncommon: 15 },
-            uncommon:  { common: 15, uncommon: 70, rare: 15 },
-            rare:      { uncommon: 15, rare: 70, very_rare: 15 },
-            very_rare: { rare: 15, very_rare: 70, legendary: 15 },
-            legendary: { very_rare: 20, legendary: 80 }
+            common:    { common: 100 },
+            uncommon:  { uncommon: 100 },
+            rare:      { rare: 100 },
+            very_rare: { very_rare: 100 },
+            legendary: { legendary: 100 }
           }
         ),
         // Pakken er bygget som "en potion, et scroll og et frit magic item":
         // hver plads binder sine egne typer, og tieret afgør hvor gode de er.
+        // Alle tre kort deler tierets fordeling.
         tiers: gradedTiers(
-          [card('Potion', { common: 100 }, null, null, ['Potion']),
-           card('Scroll', { common: 70, uncommon: 30 }, null, null, ['Scroll']),
-           card('Magic item', { uncommon: 75, rare: 22, very_rare: 3 })],
-          [card('Potion', { common: 40, uncommon: 60 }, null, null, ['Potion']),
-           card('Scroll', { uncommon: 70, rare: 30 }, null, null, ['Scroll']),
-           card('Magic item', { rare: 70, very_rare: 25, legendary: 5 })],
-          [card('Potion', { uncommon: 40, rare: 60 }, null, null, ['Potion']),
-           card('Scroll', { rare: 70, very_rare: 30 }, null, null, ['Scroll']),
-           card('Magic item', { very_rare: 60, legendary: 40 })]
+          [card('Potion', { common: 75, uncommon: 15, rare: 7, very_rare: 2, legendary: 1 }, null, null, ['Potion']),
+           card('Scroll', { common: 75, uncommon: 15, rare: 7, very_rare: 2, legendary: 1 }, null, null, ['Scroll']),
+           card('Magic item', { common: 75, uncommon: 15, rare: 7, very_rare: 2, legendary: 1 })],
+          [card('Potion', { common: 10, uncommon: 65, rare: 15, very_rare: 8, legendary: 2 }, null, null, ['Potion']),
+           card('Scroll', { common: 10, uncommon: 65, rare: 15, very_rare: 8, legendary: 2 }, null, null, ['Scroll']),
+           card('Magic item', { common: 10, uncommon: 65, rare: 15, very_rare: 8, legendary: 2 })],
+          [card('Potion', { uncommon: 10, rare: 70, very_rare: 15, legendary: 5 }, null, null, ['Potion']),
+           card('Scroll', { uncommon: 10, rare: 70, very_rare: 15, legendary: 5 }, null, null, ['Scroll']),
+           card('Magic item', { uncommon: 10, rare: 70, very_rare: 15, legendary: 5 })]
         )
       },
       {

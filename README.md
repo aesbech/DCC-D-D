@@ -251,7 +251,7 @@ eksport/import af hele opsætningen som JSON.
 | Adventurer | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 167 | Bronze / Sølv / Guld |
 | Weapons | Våben, Ammunition, Udstyr | 105 | Bronze / Sølv / Guld |
 | Armor | Rustning, Udstyr | 78 | Bronze / Sølv / Guld |
-| Consumables | Gift **eller** tagget Consumable/Healing | 22 + 49 magiske | Bronze / Sølv / Guld |
+| Consumables | Gift **eller** tagget Consumable | 20 + 49 magiske | Bronze / Sølv / Guld |
 | Magic | alle magic items — potion, scroll, frit | 450 | Bronze / Sølv / Guld |
 | Classes | Class | 140 | Standard (ikke gradueret) |
 
@@ -385,18 +385,23 @@ Weapon-typer i Weapons og Armor-typer i Armor.
 ### Forbrugsvarer
 
 Forbrugsvare er en markering på både udstyr og magic items, så alt der bruges op kan
-holdes samlet ét sted. **24 af de 216 udstyrsting** er markeret: hele Gift-gruppen (13
+holdes samlet ét sted. **23 af de 216 udstyrsting** er markeret: hele Gift-gruppen (13
 poisons — en dosis bruges op), plus fakler, olie, vievand, rationer, papir, pergament,
-blæk, parfume, lys, foder og healer's kit. `Ink Pen` og `Poisoner's Kit` er undtaget, da
-de er værktøj der kan bruges igen.
+blæk, parfume, lys og foder. `Ink Pen`, `Poisoner's Kit`, `Healer's Kit` og
+`Herbalism Kit` er undtaget, da de er grej der kan bruges igen.
 
 På magisiden er **84 af de 450** forbrugsvarer — se afsnittet om magic items.
 
 Consumables-pakken bruger et **union-filter**: hele Gift-gruppen plus alt med tagget
-`Consumable` eller `Healing`. Det giver 22 udstyrsting, fordelt 5 Common, 3 Uncommon,
-1 Rare, 4 Very Rare og 9 Legendary. Puljen er altså tynd i midten, og de ni dyreste er
-alle gift, så pakkens høje trin læner sig bevidst på magic item-kortene: Guld kort 3 er
-16 % magisk, mod 2 % på Bronze.
+`Consumable`. Det giver 20 udstyrsting, fordelt 5 Common, 1 Uncommon, 1 Rare, 4 Very Rare
+og 9 Legendary. Puljen er altså tynd i midten, og de ni dyreste er alle gift, så pakkens
+høje trin læner sig bevidst på magic item-kortene.
+
+`Healing`-tagget var med i filteret, men rammer kun **Healer's Kit** og **Herbalism Kit**
+på udstyrssiden — grej man bærer rundt på, ikke noget der bruges op. Healing potions er
+magic items og kommer ind via typerne `Potion` og `Scroll`, så tagget hørte ikke til her.
+Begge kits er samtidig taget ud af `CONSUMABLE_NAME` i importen, så de heller ikke
+forsvinder når en pakke står på "kun varigt udstyr".
 
 Adventurer, Weapons og Armor står på **både forbrugsvarer og varigt udstyr**. Vil du have
 poisons, fakler og rationer helt ud af Adventurer, er det én dropdown under Pakker —
@@ -516,14 +521,15 @@ Typefiltret sikrer, at en Weapons-pakke ikke deler ringe ud.
 Typerne kan også sættes **pr. kortplads**, så én pakke kan give forskellige slags magi.
 Det er sådan Magic-pakken er bygget:
 
-| Kort | Typer | Bronze | Sølv | Guld |
-|------|-------|--------|------|------|
-| Potion | `Potion` | 86 % C, 14 % U | 44 % C, 48 % U, 8 % R | 35 % U, 50 % R, 9 % VR |
-| Scroll | `Scroll` | 66 % C, 30 % U, 4 % R | 54 % U, 32 % R, 4 % VR | 55 % R, 31 % VR, 4 % L |
-| Magic item | alle | 54 % U, 28 % R, 6 % VR | 52 % R, 30 % VR, 7 % L | 51 % VR, 41 % L |
+| Kort | Typer |
+|------|-------|
+| Potion | `Potion` |
+| Scroll | `Scroll` |
+| Magic item | alle |
 
-Målt over 3.000 pakker pr. tier. Kort 1 er 100 % potions, kort 2 er 100 % scrolls, og kort 3
-falder frit — 43–55 % wondrous items, resten våben, rustning, staver, ringe og resten.
+Alle tre kort deler tierets fordeling, så pakken giver tre lige gode ting af forskellig
+slags. Kort 1 er 100 % potions, kort 2 er 100 % scrolls, og kort 3 falder frit — ni
+forskellige typer, med wondrous items som den største gruppe.
 
 Feltet **Egne magic item-typer for dette kort** ligger ved hver kortplads under Pakker og
 vises kun når pakken faktisk kan give magic item-kort. Uden det følger kortet pakkens typer.
@@ -536,15 +542,25 @@ Common magic item, fordi selve det at få magi allerede er gevinsten. I Magic-pa
 kort magi, og så holder den tabel resultatet nede uanset hvad trinnene sættes til.
 
 Derfor kan en pakke **overstyre tabellen**. Magic-pakken gør det, med en tabel hvor trinnet
-peger næsten direkte på magi-rarityen:
+er magi-rarityen, ét til én:
 
-| Korttrin | Common | Uncommon | Rare | Very Rare | Legendary |
-|----------|--------|----------|------|-----------|-----------|
-| Common | 85 % | 15 % | | | |
-| Uncommon | 15 % | 70 % | 15 % | | |
-| Rare | | 15 % | 70 % | 15 % | |
-| Very Rare | | | 15 % | 70 % | 15 % |
-| Legendary | | | | 20 % | 80 % |
+| Korttrin | Giver |
+|----------|-------|
+| Common | 100 % Common |
+| Uncommon | 100 % Uncommon |
+| Rare | 100 % Rare |
+| Very Rare | 100 % Very Rare |
+| Legendary | 100 % Legendary |
+
+Fordelingen på kortet betyder dermed præcis hvad den siger. Målt over 4.000 pakker pr. tier:
+
+| Tier | Common | Uncommon | Rare | Very Rare | Legendary |
+|------|--------|----------|------|-----------|-----------|
+| Bronze | 75 % | 15 % | 7 % | 2 % | 1 % |
+| Sølv | 10 % | 65 % | 15 % | 8 % | 2 % |
+| Guld | — | 10 % | 70 % | 14 % | 5 % |
+
+Alle tre rammer inden for 0,5 procentpoint af det der står på kortene.
 
 Overstyringen slås til og fra under Pakker, ved **Korttrin → magi-rarity**, og rører ikke den
 fælles tabel. De øvrige pakker følger som før fanen Magic.
