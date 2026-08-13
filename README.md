@@ -80,7 +80,13 @@ røres ikke. Rettelsen sker i `scripts/import_xlsx.py`, så regnearket kan blive
 
 `items.js` indeholder et fingeraftryk af sit eget indhold. Har du kørt importen igen og
 deployet, opdager appen at dens datafiler er nyere end det browseren har gemt, og viser
-et banner med valget mellem at genindlæse eller beholde sine egne rettelser.
+et banner: **Genindlæs data** eller **Ikke nu**.
+
+Appen læser fra din browsers kopi, ikke fra filen — indtil du genindlæser, trækker du
+altså stadig fra den gamle udgave, med de gamle navne og priser. Derfor er "Ikke nu" kun
+for den her fane: banneret vender tilbage næste gang du åbner siden, indtil du har taget
+stilling. Genindlæser du kun én datafil ad gangen med knapperne under **Items**, følger
+netop den fils versionsstempel med.
 
 ## Fanerne
 
@@ -255,6 +261,30 @@ den — målt over 4.000 pakker på Guld kort 3:
 | \+ Ammunition, vægt 0 | 86 % | 0 % | 14 % |
 
 Standardopsætningen bruger ikke kortvægte — de er der til at tune med.
+
+### Vægtlisterne viser kun det niveauet faktisk rammer
+
+Et vægtsæt kan kun påvirke de kort det er det mest specifikke for, og et kort kan kun
+trække fra sit eget filter. Listen på hvert niveau følger derfor nøjagtig samme regel som
+trækningen, og skjuler resten:
+
+| Niveau | Viser |
+|--------|-------|
+| Pakke | kategorierne fra de kort der hverken har tier- eller kortvægte |
+| Tier | kategorierne fra tierets kort uden egne kortvægte |
+| Kort | kortets eget filter |
+
+Det betyder fx at **Classes** viser `Class (31)` og ikke alle 140 kort — pakkens tre
+kortpladser filtrerer på Class, Perk og Stat, og det er kun de 31 der kan falde. **Armor**
+viser Rustning og Udstyr, ikke hele listen. Og et kort der kun trækker rustning viser kun
+rustning, hvilket gør det tydeligt at vægtningen er overflødig dér.
+
+Tre situationer får en note i stedet for tal:
+
+- alle kort på niveauet har deres egne vægte → sættet bruges ikke
+- kortene bliver altid til magic item-kort (fx **Magic**-pakken, som er 100 % magi på alle
+  trin) → kategorivægte bruges ikke
+- puljen rummer kun én kategori → vægten gør ingen forskel
 
 ### Ét garanteret kort i Weapons og Armor
 
