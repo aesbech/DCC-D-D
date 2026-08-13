@@ -175,6 +175,11 @@ ARMOR_SUFFIX = {"Padded", "Leather", "Studded Leather", "Hide",
                 "Splint", "Plate", "Half Plate"}
 
 
+# Rækker arket fører, men som ikke skal kunne trækkes. "(Legacy)" er den
+# gamle udgave af en regel, der allerede findes i sin nye form.
+DROP_ROWS = {"Net (Legacy)"}
+
+
 def armor_name(name, group):
     if group == "Rustning" and name in ARMOR_SUFFIX:
         return name + " Armor"
@@ -194,7 +199,7 @@ def main():
     items = []
     for row in rows[1:]:
         name = clean(row[col["Navn"]])
-        if not name:
+        if not name or name in DROP_ROWS:
             continue
 
         price_text = clean(row[col["Pris"]])

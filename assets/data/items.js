@@ -1,5 +1,5 @@
 /* Auto-genereret fra dnd_items.xlsx. Redigér regnearket og kør scripts/import_xlsx.py igen. */
-window.DND_ITEMS_VERSION = "a03434500982";
+window.DND_ITEMS_VERSION = "3dbb55069d22";
 window.DND_ITEMS = [
  {
   "name": "Candle",
@@ -2150,26 +2150,6 @@ window.DND_ITEMS = [
   "mastery": "Graze",
   "weight": 6,
   "masteryText": "If your attack roll with this weapon misses a creature, you can deal damage to that creature equal to the ability modifier you used to make the attack roll. This damage is the same type dealt by the weapon, and the damage can be increased only by increasing the ability modifier."
- },
- {
-  "name": "Net (Legacy)",
-  "category": "Våben",
-  "subcategory": "Martial Ranged Weapon",
-  "price": 1,
-  "priceText": "1 GP",
-  "rarity": "common",
-  "scale": "gear",
-  "consumable": false,
-  "source": "D&D Beyond Basic Rules",
-  "tags": [
-   "Control",
-   "Combat"
-  ],
-  "desc": "A Large or smaller creature hit by a net is restrained until it is freed. A net has no effect on creatures that are formless, or creatures that are Huge or larger. A creature can use its action to make a DC 10 Strength check, freeing itself or another creature within its reach on a success. Dealing 5 slashing damage to the net (AC 10) also frees the creature without harming it, ending the effect and destroying the net. When you use an action, bonus action, or reaction to attack with a net, you can make only one attack regardless of the number of attacks you can normally make.",
-  "damage": "0",
-  "damageType": "Bludgeoning",
-  "properties": "Special, Thrown (range 5/15)",
-  "weight": 3
  },
  {
   "name": "Crossbow, Heavy",
