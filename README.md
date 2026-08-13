@@ -119,23 +119,30 @@ AC, styrkekrav og stealth-ulempe — står fremhævet. Egenskaber som Finesse og
 mastery står i en mindre linje under, da det er regeltekst og ikke tal. Mastery-egenskaben
 tages ud af egenskabslisten og får sin egen etiket, så den ikke står to gange.
 
-**Generiske magic items navngives efter det basisitem de blev rullet på.** `Weapon, +1`
-bliver til `Shortsword, +1` med kortsværdets 1d6 Piercing, `Armor of Resistance` bliver til
+**Generiske magic items navngives efter det basisitem de blev rullet på.** `Weapon +1`
+bliver til `Shortsword +1` med kortsværdets 1d6 Piercing, `Armor of Resistance` bliver til
 `Padded Armor of Resistance`, og `Walloping Ammunition` bliver til `Walloping Sling Bullets`.
 Magic items med et egennavn uden generisk ord — Flame Tongue, Holy Avenger, Dragon Slayer —
 beholder navnet og viser basisitemet på sin egen linje.
 
-**Basisitemet tager sine egne regler med.** Et `Padded Armor, +1` er stadig et Padded Armor:
+Kilden skriver `Armor, +1` med komma. Sammensat med basisitemet ville det blive
+`Padded Armor, +1`, så kommaet fjernes ved importen — kortet hedder **`Padded Armor +1`**.
+
+**Basisitemet tager sine egne regler med.** Et `Padded Armor +1` er stadig et Padded Armor:
 det spiller som Light Armor, har samme stealth-ulempe og samme styrkekrav, og kun AC'en
-flytter sig. Kortet viser basisitemets kategori dér hvor et almindeligt kort viser sin
-— `Light Armor`, ikke bare `Armor` — og lægger bonussen oveni tallene:
+flytter sig. Kortet viser basisitemets kategori dér hvor et almindeligt kort viser sin, med
+**Magic** foran — det er en magisk Light Armor, ikke bare en Light Armor — og lægger
+bonussen oveni tallene:
 
 | Kort | Typelinje | Tal |
 |------|-----------|-----|
-| `Padded Armor, +1` | Light Armor | AC **12** + Dex modifier · Stealth: Disadvantage |
-| `Chain Mail, +2` | Heavy Armor | AC **18** · Styrke 13 · Stealth: Disadvantage |
-| `Shield, +1` | Shield | AC **+3** |
-| `Maul, +1` | Martial Melee Weapon | 2d6 **+ 1** Bludgeoning |
+| `Padded Armor +1` | Magic Light Armor | AC **12** + Dex modifier · Stealth: Disadvantage |
+| `Chain Mail +2` | Magic Heavy Armor | AC **18** · Styrke 13 · Stealth: Disadvantage |
+| `Shield +1` | Magic Shield | AC **+3** |
+| `Maul +1` | Magic Martial Melee Weapon | 2d6 **+ 1** Bludgeoning |
+
+Magic items uden basisrul — `Ring of Protection`, `Cloak of Elvenkind` — beholder deres
+egen type på linjen (`Ring`, `Wondrous Item`), for den siger allerede at det er magi.
 
 Bonussen læses ud af navnet (`+1`, `+2`, `+3`) og lægges til det første tal i AC eller
 skade. Magic items uden et tal i navnet — `Adamantine Splint Armor`, `Sun Blade` — viser
@@ -156,7 +163,8 @@ Filteret kan kombineres på to måder: *begge skal passe* (kategori **og** tag) 
 forbrugsvarer med, udenom, eller kun dem.
 
 Et enkelt kort kan overstyre pakkens filter — fx hvis kort 3 i en Adventurer-pakke kun
-skal trække magiske ting.
+skal trække magiske ting. Har kortet sit eget filter, kan det også få sine **egne vægte**;
+se afsnittet om vægtning pr. kort.
 
 ### Items
 Importér CSV (komma, semikolon eller tab) eller JSON, via fil eller indsat tekst.
@@ -222,6 +230,31 @@ Fordelingen det giver, målt over 15.000 pakker pr. tier:
 
 Rustning stiger med trinnet af sig selv: de dyre rustninger ligger på de høje rarities,
 så et Guld-kort rammer dem oftere end et Bronze-kort gør.
+
+### Vægtning pr. kort
+
+Vægte findes på tre niveauer: **pakke → tier → kort**, hvor det mest specifikke vinder.
+Kortvægte er kun tilgængelige når kortet har fået **sit eget filter** — uden det trækker
+kortet fra pakkens pulje, og så er det pakkens vægte der er de rigtige. Slår du kortets
+filter fra igen, ryger vægtene med.
+
+Det giver to ting man ikke kunne før:
+
+**En fordeling på én plads.** Sæt kortets filter til Rustning + Udstyr og vægt dem, så
+pladsen bliver 50/50 i stedet for enten en garanti eller hele pakkens blanding.
+
+**Et skub uden en garanti.** Weapons kort 3 er `kun Våben`. Tilføjer du Ammunition til
+kortets filter og vægter den, dukker den op oftere uden at nogen plads er reserveret til
+den — målt over 4.000 pakker på Guld kort 3:
+
+| Opsætning | Våben | Ammunition | Magic |
+|-----------|-------|------------|-------|
+| Kun Våben (standard) | 87 % | — | 13 % |
+| \+ Ammunition, ingen vægte | 84 % | 3 % | 13 % |
+| \+ Ammunition, vægt 5 | 75 % | **11 %** | 14 % |
+| \+ Ammunition, vægt 0 | 86 % | 0 % | 14 % |
+
+Standardopsætningen bruger ikke kortvægte — de er der til at tune med.
 
 ### Ét garanteret kort i Weapons og Armor
 
@@ -326,8 +359,8 @@ De to er bevidst afkoblet: et **Rare kort** giver som regel et **Common magic it
    for et almindeligt item. Sættes pr. pakke under fanen Pakker.
 2. **Hvilken magi-rarity?** Tabellen under fanen Magic oversætter korttrinnet til en
    fordeling over magi-rarity.
-3. **Hvilket basisitem eller hvilken spell?** Er magic itemet generisk — `Weapon, +1`,
-   `Armor of Resistance`, `Shield, +2` — rulles der hvilket konkret våben eller rustning det
+3. **Hvilket basisitem eller hvilken spell?** Er magic itemet generisk — `Weapon +1`,
+   `Armor of Resistance`, `Shield +2` — rulles der hvilket konkret våben eller rustning det
    sidder på. **99 af magic itemsne har sådan et rul.** Er det en spell scroll eller en
    tome, rulles der i stedet en spell af kortets niveau blandt de 202 spells.
 
@@ -345,7 +378,7 @@ afgør hvilket:
 41 af de 99 er navnelister. Nævner typelinjen intet — kilden skriver bare `Armor, common`
 — falder rullet tilbage på hele gruppen, så kortet aldrig står uden AC eller skade.
 Fire poster har ingen basis at rulle på, fordi udstyrsarket mangler våbnet:
-`Axe of the Dwarvish Lords` (battleaxe) og `Boomerang, +1/+2/+3`. Tilføj Battleaxe og
+`Axe of the Dwarvish Lords` (battleaxe) og `Boomerang +1/+2/+3`. Tilføj Battleaxe og
 Boomerang til regnearket, så ordner de sig selv.
 
 Standardtabellen for rul 2:

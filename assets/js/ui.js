@@ -441,10 +441,10 @@
           ];
           // Typelinjen: en spell-bærer viser sit niveau, og et magic item med
           // et udrullet basisitem viser basisitemets egen kategori — en
-          // Padded Armor +1 er stadig Light Armor og spiller efter de regler.
+          // Padded Armor +1 spiller som Light Armor, bare magisk.
           mk.push(el('div', { class: 'card-sub',
             text: spell ? spellKindLabel(m, roll.castLevel)
-                        : ((base && base.subcategory) || m.type) +
+                        : (base && base.subcategory ? 'Magic ' + base.subcategory : m.type) +
                           (m.attunement ? ' · attunement' : '') }));
           if (spell) {
             // Kortet handler om spellen, så dens tal og tekst fylder pladsen.
@@ -691,11 +691,15 @@
 
   /* Uden vægte er alle items i en rarity lige sandsynlige, så den største
      kategori dominerer. Vægten ganges på hvert item i kategorien. */
-  function poolCategories(pack) {
+  function filterCategories(filter) {
     var counts = {};
-    C.poolFor(state.items, pack.filter, state.cfg)
+    C.poolFor(state.items, filter, state.cfg)
       .forEach(function (i) { counts[i.category] = (counts[i.category] || 0) + 1; });
     return counts;
+  }
+
+  function poolCategories(pack) {
+    return filterCategories(pack.filter);
   }
 
   function weightRows(weights, counts) {
@@ -731,6 +735,42 @@
               'uden at fjerne den fra filteret. Tallet i parentes er antal items i puljen.' }),
       cats.length ? rows : el('p', { class: 'hint', text: 'Ingen kategorier i puljen.' })
     ]);
+  }
+
+  /* Et kort med eget filter kan veje sin egen pulje. Det er sådan man får
+     50/50 mellem udstyr og rustning på én plads, eller bare oftere ammunition
+     i et våbenkort, uden at gøre det til en garanti. Uden eget filter trækker
+     kortet fra pakkens pulje, og så gælder pakkens vægte. */
+  function cardWeights(c) {
+    var host = el('div', { class: 'tier-weights' });
+
+    function render() {
+      host.innerHTML = '';
+      host.appendChild(el('label', { class: 'check' }, [
+        el('input', {
+          type: 'checkbox', checked: c.weights ? 'checked' : null,
+          onchange: function () {
+            c.weights = this.checked ? {} : null;
+            render(); persist();
+          }
+        }),
+        document.createTextNode('Egne vægte for dette kort')
+      ]));
+      if (!c.weights) return;
+
+      var counts = filterCategories(c.filter);
+      var cats = Object.keys(counts);
+      host.appendChild(el('p', { class: 'hint',
+        text: 'Vægter kortets egne kategorier mod hinanden. 2 gør hvert item i kategorien ' +
+              'dobbelt så sandsynligt som et uvægtet item af samme rarity; 0 slår den fra.' +
+              (cats.length > 1 ? ''
+                : ' Filteret ovenfor rammer kun én kategori, så vægten gør ingen forskel ' +
+                  'endnu — tilføj en kategori mere for at fordele kortet mellem dem.') }));
+      if (cats.length) host.appendChild(weightRows(c.weights, counts));
+    }
+
+    render();
+    return host;
   }
 
   /* Et tier kan overstyre pakkens vægte — fx så Bronze slet ikke giver
@@ -909,6 +949,7 @@
           type: 'checkbox', checked: on ? 'checked' : null,
           onchange: function () {
             c.filter = this.checked ? C.emptyFilter() : null;
+            if (!c.filter) c.weights = null;
             renderOverride(); updateGenHint(); persist();
           }
         }),
@@ -918,6 +959,7 @@
         catHost.appendChild(filterEditor(c.filter, function () {
           renderOverride(); updateGenHint(); persist();
         }));
+        catHost.appendChild(cardWeights(c));
       }
     }
     renderOverride();

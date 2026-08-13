@@ -371,6 +371,15 @@ def main():
             items.append(base)
 
     items += spell_carriers(items)
+
+    # Kilden skriver "Armor, +1". Sammensat med basisitemet bliver det
+    # "Padded Armor, +1", og kommaet står i vejen for det navn man siger
+    # højt. Det sker til allersidst, så alt navneopslag ovenfor er upåvirket.
+    for item in items:
+        item["name"] = re.sub(r",\s*\+", " +", item["name"])
+        if item.get("variantOf"):
+            item["variantOf"] = re.sub(r",\s*\+", " +", item["variantOf"])
+
     items.sort(key=lambda i: i["name"])
     payload = json.dumps(items, ensure_ascii=False, indent=1)
     version = hashlib.sha1(payload.encode("utf-8")).hexdigest()[:12]
