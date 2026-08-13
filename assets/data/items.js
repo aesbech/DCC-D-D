@@ -1,5 +1,5 @@
 /* Auto-genereret fra dnd_items.xlsx. Redigér regnearket og kør scripts/import_xlsx.py igen. */
-window.DND_ITEMS_VERSION = "3dbb55069d22";
+window.DND_ITEMS_VERSION = "4eba91dc9580";
 window.DND_ITEMS = [
  {
   "name": "Candle",
@@ -697,7 +697,7 @@ window.DND_ITEMS = [
   "priceText": "5 GP",
   "rarity": "uncommon",
   "scale": "gear",
-  "consumable": true,
+  "consumable": false,
   "source": "Player's Handbook",
   "tags": [
    "Healing",
