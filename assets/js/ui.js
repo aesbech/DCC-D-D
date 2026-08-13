@@ -430,6 +430,19 @@
       : kind + ' (Cantrip)';
   }
 
+  /* Den spell der er ladt i et Enspelled-item. Navnet står allerede i
+     korttitlen, så linjen her er tallene man skal bruge ved bordet. */
+  function boundSpellLine(magicItem, roll) {
+    var parts = [];
+    var level = roll.castLevel
+      ? levelLabel(roll.castLevel) + ' level ' + (roll.spell.school || 'spell')
+      : 'Cantrip' + (roll.spell.school ? ' ' + roll.spell.school : '');
+    parts.push(level);
+    if (magicItem.spellSaveDC) parts.push('Save DC ' + magicItem.spellSaveDC);
+    if (magicItem.spellAttack) parts.push(magicItem.spellAttack + ' to hit');
+    return parts.join(' · ');
+  }
+
   function composeMagicName(magicName, baseName) {
     if (!baseName || !GENERIC_WORD.test(magicName)) return null;
     return magicName.replace(GENERIC_WORD, baseName);
@@ -450,21 +463,29 @@
           var base = c.magic.base;
           var roll = c.magic.spell;
           var spell = roll ? roll.spell : null;
+          // To slags spell-bærere: et scroll eller en tome *er* spellen, mens
+          // et Enspelled-item bare har en spell ladt i sig og ellers spiller
+          // som det våben eller den rustning det er.
+          var isSpellCard = !!(spell && m.spellKind);
+
           var composed = base ? composeMagicName(m.name, base.name) : null;
-          if (spell && m.spellName) composed = m.spellName.replace('{spell}', spell.name);
+          if (spell && m.spellName) {
+            var named = m.spellName.replace('{spell}', spell.name);
+            composed = (base && composeMagicName(named, base.name)) || named;
+          }
           var mk = [
             el('div', { class: 'card-slot', text: c.slot }),
             el('div', { class: 'card-kind', text: 'Magic item' }),
             el('div', { class: 'card-name', text: composed || m.name })
           ];
-          // Typelinjen: en spell-bærer viser sit niveau, og et magic item med
-          // et udrullet basisitem viser basisitemets egen kategori — en
-          // Padded Armor +1 spiller som Light Armor, bare magisk.
+          // Typelinjen: et scroll viser sit niveau, og alt andet viser
+          // basisitemets egen kategori — en Padded Armor +1 spiller som
+          // Light Armor, bare magisk.
           mk.push(el('div', { class: 'card-sub',
-            text: spell ? spellKindLabel(m, roll.castLevel)
-                        : (base && base.subcategory ? 'Magic ' + base.subcategory : m.type) +
-                          (m.attunement ? ' · attunement' : '') }));
-          if (spell) {
+            text: isSpellCard ? spellKindLabel(m, roll.castLevel)
+                              : (base && base.subcategory ? 'Magic ' + base.subcategory : m.type) +
+                                (m.attunement ? ' · attunement' : '') }));
+          if (isSpellCard) {
             // Kortet handler om spellen, så dens tal og tekst fylder pladsen.
             // Bærerens egen regeltekst tages kun med, hvis den er kort nok.
             var head = spell.school || '';
@@ -483,7 +504,9 @@
             var bs = statLine(base); if (bs) mk.push(bs);
             var bp = propLine(base); if (bp) mk.push(bp);
           }
-          if (spell && spell.desc) mk.push(el('div', { class: 'card-desc', text: spell.desc }));
+          if (spell && !isSpellCard)
+            mk.push(el('div', { class: 'card-spell', text: boundSpellLine(m, roll) }));
+          if (isSpellCard && spell.desc) mk.push(el('div', { class: 'card-desc', text: spell.desc }));
           else if (m.desc) mk.push(el('div', { class: 'card-desc', text: m.desc }));
           if (c.magic.magicRolled !== c.magic.magicRarity)
             mk.push(el('div', { class: 'fallback-note',

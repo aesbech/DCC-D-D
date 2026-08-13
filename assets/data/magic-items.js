@@ -1,5 +1,5 @@
 /* Auto-genereret fra magic_items.txt. Kør scripts/import_magic.py igen efter ændringer. */
-window.MAGIC_ITEMS_VERSION = "a4a495bed111";
+window.MAGIC_ITEMS_VERSION = "472c50e7b31c";
 window.MAGIC_ITEMS = [
  {
   "name": "Adamantine Armor",
@@ -1769,7 +1769,7 @@ window.MAGIC_ITEMS = [
   "consumable": false,
   "typeLine": "Armor (any light, medium, or heavy), varies (requires attunement)",
   "tags": [],
-  "desc": "Bound into this armor is a spell of level 8 or lower. The spell is determined when the armor is created and must belong to the Abjuration or Illusion school of magic. The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
+  "desc": "The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -1780,7 +1780,15 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "uncommon",
-  "variantOf": "Enspelled Armor"
+  "variantOf": "Enspelled Armor",
+  "spellLevel": 1,
+  "spellName": "Enspelled Armor ({spell})",
+  "spellSchools": [
+   "Abjuration",
+   "Illusion"
+  ],
+  "spellSaveDC": "13",
+  "spellAttack": "+5"
  },
  {
   "name": "Enspelled Armor (2)",
@@ -1789,7 +1797,7 @@ window.MAGIC_ITEMS = [
   "consumable": false,
   "typeLine": "Armor (any light, medium, or heavy), varies (requires attunement)",
   "tags": [],
-  "desc": "Bound into this armor is a spell of level 8 or lower. The spell is determined when the armor is created and must belong to the Abjuration or Illusion school of magic. The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
+  "desc": "The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -1800,7 +1808,15 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "rare",
-  "variantOf": "Enspelled Armor"
+  "variantOf": "Enspelled Armor",
+  "spellLevel": 2,
+  "spellName": "Enspelled Armor ({spell})",
+  "spellSchools": [
+   "Abjuration",
+   "Illusion"
+  ],
+  "spellSaveDC": "13",
+  "spellAttack": "+5"
  },
  {
   "name": "Enspelled Armor (3)",
@@ -1809,7 +1825,7 @@ window.MAGIC_ITEMS = [
   "consumable": false,
   "typeLine": "Armor (any light, medium, or heavy), varies (requires attunement)",
   "tags": [],
-  "desc": "Bound into this armor is a spell of level 8 or lower. The spell is determined when the armor is created and must belong to the Abjuration or Illusion school of magic. The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
+  "desc": "The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -1820,7 +1836,15 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "rare",
-  "variantOf": "Enspelled Armor"
+  "variantOf": "Enspelled Armor",
+  "spellLevel": 3,
+  "spellName": "Enspelled Armor ({spell})",
+  "spellSchools": [
+   "Abjuration",
+   "Illusion"
+  ],
+  "spellSaveDC": "15",
+  "spellAttack": "+7"
  },
  {
   "name": "Enspelled Armor (4)",
@@ -1829,7 +1853,7 @@ window.MAGIC_ITEMS = [
   "consumable": false,
   "typeLine": "Armor (any light, medium, or heavy), varies (requires attunement)",
   "tags": [],
-  "desc": "Bound into this armor is a spell of level 8 or lower. The spell is determined when the armor is created and must belong to the Abjuration or Illusion school of magic. The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
+  "desc": "The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -1840,7 +1864,15 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "very_rare",
-  "variantOf": "Enspelled Armor"
+  "variantOf": "Enspelled Armor",
+  "spellLevel": 4,
+  "spellName": "Enspelled Armor ({spell})",
+  "spellSchools": [
+   "Abjuration",
+   "Illusion"
+  ],
+  "spellSaveDC": "15",
+  "spellAttack": "+7"
  },
  {
   "name": "Enspelled Armor (5)",
@@ -1849,7 +1881,7 @@ window.MAGIC_ITEMS = [
   "consumable": false,
   "typeLine": "Armor (any light, medium, or heavy), varies (requires attunement)",
   "tags": [],
-  "desc": "Bound into this armor is a spell of level 8 or lower. The spell is determined when the armor is created and must belong to the Abjuration or Illusion school of magic. The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
+  "desc": "The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -1860,7 +1892,15 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "very_rare",
-  "variantOf": "Enspelled Armor"
+  "variantOf": "Enspelled Armor",
+  "spellLevel": 5,
+  "spellName": "Enspelled Armor ({spell})",
+  "spellSchools": [
+   "Abjuration",
+   "Illusion"
+  ],
+  "spellSaveDC": "17",
+  "spellAttack": "+9"
  },
  {
   "name": "Enspelled Armor (6)",
@@ -1869,7 +1909,7 @@ window.MAGIC_ITEMS = [
   "consumable": false,
   "typeLine": "Armor (any light, medium, or heavy), varies (requires attunement)",
   "tags": [],
-  "desc": "Bound into this armor is a spell of level 8 or lower. The spell is determined when the armor is created and must belong to the Abjuration or Illusion school of magic. The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
+  "desc": "The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -1880,7 +1920,15 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "legendary",
-  "variantOf": "Enspelled Armor"
+  "variantOf": "Enspelled Armor",
+  "spellLevel": 6,
+  "spellName": "Enspelled Armor ({spell})",
+  "spellSchools": [
+   "Abjuration",
+   "Illusion"
+  ],
+  "spellSaveDC": "17",
+  "spellAttack": "+9"
  },
  {
   "name": "Enspelled Armor (7)",
@@ -1889,7 +1937,7 @@ window.MAGIC_ITEMS = [
   "consumable": false,
   "typeLine": "Armor (any light, medium, or heavy), varies (requires attunement)",
   "tags": [],
-  "desc": "Bound into this armor is a spell of level 8 or lower. The spell is determined when the armor is created and must belong to the Abjuration or Illusion school of magic. The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
+  "desc": "The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -1900,7 +1948,15 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "legendary",
-  "variantOf": "Enspelled Armor"
+  "variantOf": "Enspelled Armor",
+  "spellLevel": 7,
+  "spellName": "Enspelled Armor ({spell})",
+  "spellSchools": [
+   "Abjuration",
+   "Illusion"
+  ],
+  "spellSaveDC": "18",
+  "spellAttack": "+10"
  },
  {
   "name": "Enspelled Armor (8)",
@@ -1909,7 +1965,7 @@ window.MAGIC_ITEMS = [
   "consumable": false,
   "typeLine": "Armor (any light, medium, or heavy), varies (requires attunement)",
   "tags": [],
-  "desc": "Bound into this armor is a spell of level 8 or lower. The spell is determined when the armor is created and must belong to the Abjuration or Illusion school of magic. The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
+  "desc": "The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -1920,7 +1976,15 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "legendary",
-  "variantOf": "Enspelled Armor"
+  "variantOf": "Enspelled Armor",
+  "spellLevel": 8,
+  "spellName": "Enspelled Armor ({spell})",
+  "spellSchools": [
+   "Abjuration",
+   "Illusion"
+  ],
+  "spellSaveDC": "18",
+  "spellAttack": "+10"
  },
  {
   "name": "Enspelled Armor (Cantrip)",
@@ -1929,7 +1993,7 @@ window.MAGIC_ITEMS = [
   "consumable": false,
   "typeLine": "Armor (any light, medium, or heavy), varies (requires attunement)",
   "tags": [],
-  "desc": "Bound into this armor is a spell of level 8 or lower. The spell is determined when the armor is created and must belong to the Abjuration or Illusion school of magic. The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
+  "desc": "The armor has 6 charges and regains 1d6 expended charges daily at dawn. While wearing the armor, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -1940,7 +2004,15 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "uncommon",
-  "variantOf": "Enspelled Armor"
+  "variantOf": "Enspelled Armor",
+  "spellLevel": 0,
+  "spellName": "Enspelled Armor ({spell})",
+  "spellSchools": [
+   "Abjuration",
+   "Illusion"
+  ],
+  "spellSaveDC": "13",
+  "spellAttack": "+5"
  },
  {
   "name": "Enspelled Staff (1)",
@@ -1951,10 +2023,14 @@ window.MAGIC_ITEMS = [
   "tags": [
    "Spellcaster"
   ],
-  "desc": "Bound into this staff is a spell of level 8 or lower. The spell is determined when the staff is created and can be of any school of magic. The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff 's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
+  "desc": "The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
   "source": "Dungeon Master's Guide",
   "rarity": "uncommon",
-  "variantOf": "Enspelled Staff"
+  "variantOf": "Enspelled Staff",
+  "spellLevel": 1,
+  "spellName": "Enspelled Staff ({spell})",
+  "spellSaveDC": "13",
+  "spellAttack": "+5"
  },
  {
   "name": "Enspelled Staff (2)",
@@ -1965,10 +2041,14 @@ window.MAGIC_ITEMS = [
   "tags": [
    "Spellcaster"
   ],
-  "desc": "Bound into this staff is a spell of level 8 or lower. The spell is determined when the staff is created and can be of any school of magic. The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff 's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
+  "desc": "The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
   "source": "Dungeon Master's Guide",
   "rarity": "rare",
-  "variantOf": "Enspelled Staff"
+  "variantOf": "Enspelled Staff",
+  "spellLevel": 2,
+  "spellName": "Enspelled Staff ({spell})",
+  "spellSaveDC": "13",
+  "spellAttack": "+5"
  },
  {
   "name": "Enspelled Staff (3)",
@@ -1979,10 +2059,14 @@ window.MAGIC_ITEMS = [
   "tags": [
    "Spellcaster"
   ],
-  "desc": "Bound into this staff is a spell of level 8 or lower. The spell is determined when the staff is created and can be of any school of magic. The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff 's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
+  "desc": "The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
   "source": "Dungeon Master's Guide",
   "rarity": "rare",
-  "variantOf": "Enspelled Staff"
+  "variantOf": "Enspelled Staff",
+  "spellLevel": 3,
+  "spellName": "Enspelled Staff ({spell})",
+  "spellSaveDC": "15",
+  "spellAttack": "+7"
  },
  {
   "name": "Enspelled Staff (4)",
@@ -1993,10 +2077,14 @@ window.MAGIC_ITEMS = [
   "tags": [
    "Spellcaster"
   ],
-  "desc": "Bound into this staff is a spell of level 8 or lower. The spell is determined when the staff is created and can be of any school of magic. The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff 's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
+  "desc": "The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
   "source": "Dungeon Master's Guide",
   "rarity": "very_rare",
-  "variantOf": "Enspelled Staff"
+  "variantOf": "Enspelled Staff",
+  "spellLevel": 4,
+  "spellName": "Enspelled Staff ({spell})",
+  "spellSaveDC": "15",
+  "spellAttack": "+7"
  },
  {
   "name": "Enspelled Staff (5)",
@@ -2007,10 +2095,14 @@ window.MAGIC_ITEMS = [
   "tags": [
    "Spellcaster"
   ],
-  "desc": "Bound into this staff is a spell of level 8 or lower. The spell is determined when the staff is created and can be of any school of magic. The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff 's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
+  "desc": "The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
   "source": "Dungeon Master's Guide",
   "rarity": "very_rare",
-  "variantOf": "Enspelled Staff"
+  "variantOf": "Enspelled Staff",
+  "spellLevel": 5,
+  "spellName": "Enspelled Staff ({spell})",
+  "spellSaveDC": "17",
+  "spellAttack": "+9"
  },
  {
   "name": "Enspelled Staff (6)",
@@ -2021,10 +2113,14 @@ window.MAGIC_ITEMS = [
   "tags": [
    "Spellcaster"
   ],
-  "desc": "Bound into this staff is a spell of level 8 or lower. The spell is determined when the staff is created and can be of any school of magic. The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff 's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
+  "desc": "The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
   "source": "Dungeon Master's Guide",
   "rarity": "legendary",
-  "variantOf": "Enspelled Staff"
+  "variantOf": "Enspelled Staff",
+  "spellLevel": 6,
+  "spellName": "Enspelled Staff ({spell})",
+  "spellSaveDC": "17",
+  "spellAttack": "+9"
  },
  {
   "name": "Enspelled Staff (7)",
@@ -2035,10 +2131,14 @@ window.MAGIC_ITEMS = [
   "tags": [
    "Spellcaster"
   ],
-  "desc": "Bound into this staff is a spell of level 8 or lower. The spell is determined when the staff is created and can be of any school of magic. The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff 's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
+  "desc": "The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
   "source": "Dungeon Master's Guide",
   "rarity": "legendary",
-  "variantOf": "Enspelled Staff"
+  "variantOf": "Enspelled Staff",
+  "spellLevel": 7,
+  "spellName": "Enspelled Staff ({spell})",
+  "spellSaveDC": "18",
+  "spellAttack": "+10"
  },
  {
   "name": "Enspelled Staff (8)",
@@ -2049,10 +2149,14 @@ window.MAGIC_ITEMS = [
   "tags": [
    "Spellcaster"
   ],
-  "desc": "Bound into this staff is a spell of level 8 or lower. The spell is determined when the staff is created and can be of any school of magic. The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff 's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
+  "desc": "The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
   "source": "Dungeon Master's Guide",
   "rarity": "legendary",
-  "variantOf": "Enspelled Staff"
+  "variantOf": "Enspelled Staff",
+  "spellLevel": 8,
+  "spellName": "Enspelled Staff ({spell})",
+  "spellSaveDC": "18",
+  "spellAttack": "+10"
  },
  {
   "name": "Enspelled Staff (Cantrip)",
@@ -2063,10 +2167,14 @@ window.MAGIC_ITEMS = [
   "tags": [
    "Spellcaster"
   ],
-  "desc": "Bound into this staff is a spell of level 8 or lower. The spell is determined when the staff is created and can be of any school of magic. The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff 's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
+  "desc": "The staff has 6 charges and regains 1d6 expended charges daily at dawn. While holding the staff, you can expend 1 charge to cast its spell. If you expend the staff's last charge, roll 1d20. On a 1, the staff loses its properties and becomes a nonmagical Quarterstaff.",
   "source": "Dungeon Master's Guide",
   "rarity": "uncommon",
-  "variantOf": "Enspelled Staff"
+  "variantOf": "Enspelled Staff",
+  "spellLevel": 0,
+  "spellName": "Enspelled Staff ({spell})",
+  "spellSaveDC": "13",
+  "spellAttack": "+5"
  },
  {
   "name": "Enspelled Weapon (1)",
@@ -2078,7 +2186,7 @@ window.MAGIC_ITEMS = [
    "Versatile",
    "Topple"
   ],
-  "desc": "Bound into this weapon is a spell of level 8 or lower. The spell is determined when the weapon is created and must belong to the Conjuration, Divination, Evocation, Necromancy, or Transmutation school of magic. The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
+  "desc": "The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -2090,7 +2198,18 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "uncommon",
-  "variantOf": "Enspelled Weapon"
+  "variantOf": "Enspelled Weapon",
+  "spellLevel": 1,
+  "spellName": "Enspelled Weapon ({spell})",
+  "spellSchools": [
+   "Conjuration",
+   "Divination",
+   "Evocation",
+   "Necromancy",
+   "Transmutation"
+  ],
+  "spellSaveDC": "13",
+  "spellAttack": "+5"
  },
  {
   "name": "Enspelled Weapon (2)",
@@ -2102,7 +2221,7 @@ window.MAGIC_ITEMS = [
    "Versatile",
    "Topple"
   ],
-  "desc": "Bound into this weapon is a spell of level 8 or lower. The spell is determined when the weapon is created and must belong to the Conjuration, Divination, Evocation, Necromancy, or Transmutation school of magic. The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
+  "desc": "The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -2114,7 +2233,18 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "rare",
-  "variantOf": "Enspelled Weapon"
+  "variantOf": "Enspelled Weapon",
+  "spellLevel": 2,
+  "spellName": "Enspelled Weapon ({spell})",
+  "spellSchools": [
+   "Conjuration",
+   "Divination",
+   "Evocation",
+   "Necromancy",
+   "Transmutation"
+  ],
+  "spellSaveDC": "13",
+  "spellAttack": "+5"
  },
  {
   "name": "Enspelled Weapon (3)",
@@ -2126,7 +2256,7 @@ window.MAGIC_ITEMS = [
    "Versatile",
    "Topple"
   ],
-  "desc": "Bound into this weapon is a spell of level 8 or lower. The spell is determined when the weapon is created and must belong to the Conjuration, Divination, Evocation, Necromancy, or Transmutation school of magic. The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
+  "desc": "The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -2138,7 +2268,18 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "rare",
-  "variantOf": "Enspelled Weapon"
+  "variantOf": "Enspelled Weapon",
+  "spellLevel": 3,
+  "spellName": "Enspelled Weapon ({spell})",
+  "spellSchools": [
+   "Conjuration",
+   "Divination",
+   "Evocation",
+   "Necromancy",
+   "Transmutation"
+  ],
+  "spellSaveDC": "15",
+  "spellAttack": "+7"
  },
  {
   "name": "Enspelled Weapon (4)",
@@ -2150,7 +2291,7 @@ window.MAGIC_ITEMS = [
    "Versatile",
    "Topple"
   ],
-  "desc": "Bound into this weapon is a spell of level 8 or lower. The spell is determined when the weapon is created and must belong to the Conjuration, Divination, Evocation, Necromancy, or Transmutation school of magic. The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
+  "desc": "The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -2162,7 +2303,18 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "very_rare",
-  "variantOf": "Enspelled Weapon"
+  "variantOf": "Enspelled Weapon",
+  "spellLevel": 4,
+  "spellName": "Enspelled Weapon ({spell})",
+  "spellSchools": [
+   "Conjuration",
+   "Divination",
+   "Evocation",
+   "Necromancy",
+   "Transmutation"
+  ],
+  "spellSaveDC": "15",
+  "spellAttack": "+7"
  },
  {
   "name": "Enspelled Weapon (5)",
@@ -2174,7 +2326,7 @@ window.MAGIC_ITEMS = [
    "Versatile",
    "Topple"
   ],
-  "desc": "Bound into this weapon is a spell of level 8 or lower. The spell is determined when the weapon is created and must belong to the Conjuration, Divination, Evocation, Necromancy, or Transmutation school of magic. The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
+  "desc": "The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -2186,7 +2338,18 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "very_rare",
-  "variantOf": "Enspelled Weapon"
+  "variantOf": "Enspelled Weapon",
+  "spellLevel": 5,
+  "spellName": "Enspelled Weapon ({spell})",
+  "spellSchools": [
+   "Conjuration",
+   "Divination",
+   "Evocation",
+   "Necromancy",
+   "Transmutation"
+  ],
+  "spellSaveDC": "17",
+  "spellAttack": "+9"
  },
  {
   "name": "Enspelled Weapon (6)",
@@ -2198,7 +2361,7 @@ window.MAGIC_ITEMS = [
    "Versatile",
    "Topple"
   ],
-  "desc": "Bound into this weapon is a spell of level 8 or lower. The spell is determined when the weapon is created and must belong to the Conjuration, Divination, Evocation, Necromancy, or Transmutation school of magic. The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
+  "desc": "The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -2210,7 +2373,18 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "legendary",
-  "variantOf": "Enspelled Weapon"
+  "variantOf": "Enspelled Weapon",
+  "spellLevel": 6,
+  "spellName": "Enspelled Weapon ({spell})",
+  "spellSchools": [
+   "Conjuration",
+   "Divination",
+   "Evocation",
+   "Necromancy",
+   "Transmutation"
+  ],
+  "spellSaveDC": "17",
+  "spellAttack": "+9"
  },
  {
   "name": "Enspelled Weapon (7)",
@@ -2222,7 +2396,7 @@ window.MAGIC_ITEMS = [
    "Versatile",
    "Topple"
   ],
-  "desc": "Bound into this weapon is a spell of level 8 or lower. The spell is determined when the weapon is created and must belong to the Conjuration, Divination, Evocation, Necromancy, or Transmutation school of magic. The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
+  "desc": "The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -2234,7 +2408,18 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "legendary",
-  "variantOf": "Enspelled Weapon"
+  "variantOf": "Enspelled Weapon",
+  "spellLevel": 7,
+  "spellName": "Enspelled Weapon ({spell})",
+  "spellSchools": [
+   "Conjuration",
+   "Divination",
+   "Evocation",
+   "Necromancy",
+   "Transmutation"
+  ],
+  "spellSaveDC": "18",
+  "spellAttack": "+10"
  },
  {
   "name": "Enspelled Weapon (8)",
@@ -2246,7 +2431,7 @@ window.MAGIC_ITEMS = [
    "Versatile",
    "Topple"
   ],
-  "desc": "Bound into this weapon is a spell of level 8 or lower. The spell is determined when the weapon is created and must belong to the Conjuration, Divination, Evocation, Necromancy, or Transmutation school of magic. The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
+  "desc": "The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -2258,7 +2443,18 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "legendary",
-  "variantOf": "Enspelled Weapon"
+  "variantOf": "Enspelled Weapon",
+  "spellLevel": 8,
+  "spellName": "Enspelled Weapon ({spell})",
+  "spellSchools": [
+   "Conjuration",
+   "Divination",
+   "Evocation",
+   "Necromancy",
+   "Transmutation"
+  ],
+  "spellSaveDC": "18",
+  "spellAttack": "+10"
  },
  {
   "name": "Enspelled Weapon (Cantrip)",
@@ -2270,7 +2466,7 @@ window.MAGIC_ITEMS = [
    "Versatile",
    "Topple"
   ],
-  "desc": "Bound into this weapon is a spell of level 8 or lower. The spell is determined when the weapon is created and must belong to the Conjuration, Divination, Evocation, Necromancy, or Transmutation school of magic. The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
+  "desc": "The weapon has 6 charges and regains 1d6 expended charges daily at dawn. While holding the weapon, you can expend 1 charge to cast its spell.",
   "source": "Dungeon Master's Guide",
   "baseFilter": {
    "subcategories": [
@@ -2282,7 +2478,18 @@ window.MAGIC_ITEMS = [
    "excludeNames": []
   },
   "rarity": "uncommon",
-  "variantOf": "Enspelled Weapon"
+  "variantOf": "Enspelled Weapon",
+  "spellLevel": 0,
+  "spellName": "Enspelled Weapon ({spell})",
+  "spellSchools": [
+   "Conjuration",
+   "Divination",
+   "Evocation",
+   "Necromancy",
+   "Transmutation"
+  ],
+  "spellSaveDC": "13",
+  "spellAttack": "+5"
  },
  {
   "name": "Ersatz Eye",

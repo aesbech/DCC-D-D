@@ -399,17 +399,19 @@ Ordet "rarity" dækker over to forskellige ting, og det er værd at holde adskil
 
 De to er bevidst afkoblet: et **Rare kort** giver som regel et **Common magic item**.
 
-### De tre rul
+### De fire rul
 
 1. **Bliver kortet magisk?** Kortpladsen har allerede slået sit korttrin. Pakkens
    magic item-chance for netop det trin afgør, om kortet bliver et magic item i stedet
    for et almindeligt item. Sættes pr. pakke under fanen Pakker.
 2. **Hvilken magi-rarity?** Tabellen under fanen Magic oversætter korttrinnet til en
    fordeling over magi-rarity.
-3. **Hvilket basisitem eller hvilken spell?** Er magic itemet generisk — `Weapon +1`,
-   `Armor of Resistance`, `Shield +2` — rulles der hvilket konkret våben eller rustning det
-   sidder på. **99 af magic itemsne har sådan et rul.** Er det en spell scroll eller en
-   tome, rulles der i stedet en spell af kortets niveau blandt de 202 spells.
+3. **Hvilket basisitem?** Er magic itemet generisk — `Weapon +1`, `Armor of Resistance`,
+   `Shield +2` — rulles der hvilket konkret våben eller rustning det sidder på.
+   **99 af magic itemsne har sådan et rul.**
+4. **Hvilken spell?** Bærer itemet en spell, rulles den blandt de 202 spells på kortets
+   eget niveau. Det gælder spell scrolls og tomes, hvor spellen *er* kortet, og de 27
+   Enspelled-poster, hvor den er ladt i et våben, en rustning eller en stav.
 
 Basisrullet peger enten på en **gruppe** eller på **bestemte items**. Typelinjen i kilden
 afgør hvilket:
@@ -529,6 +531,38 @@ Evocation · Upcastet fra 1st
 To ting upcaster aldrig: **cantrips** (de skalerer med karakterniveau, ikke med slot) og
 **tomes** (bogen lærer dig spellen, hvorefter du bruger dine egne slots — kortets niveau er
 spellens eget). Et scroll på 1. niveau har heller ikke noget lavere trin at hente fra.
+
+### Enspelled Armor, Staff og Weapon
+
+Kilden fører dem som `Enspelled Weapon (1)` … `(8)` plus `(Cantrip)`. Tallet er
+**spellniveauet**, ikke et løbenummer, og det er også det der bestemmer rarity, save DC og
+attack bonus. Kortet ruller derfor sin egen spell, og navnet bærer den i stedet for tallet:
+
+```
+Enspelled Morningstar (Speak with Dead)
+Magic Martial Melee Weapon · attunement
+1d8 Piercing
+Mastery: Sap
+3rd level Necromancy · Save DC 15 · +7 to hit
+The weapon has 6 charges and regains 1d6 expended charges daily at dawn …
+```
+
+Modsat et scroll er kortet ikke *spellen* — det er stadig et våben man slår med, så
+basisitemets skade, egenskaber og mastery bliver stående. Den ladte spell får sin egen
+linje med niveau, skole, save DC og attack bonus.
+
+Hver familie binder kun spells fra bestemte skoler, og begrænsningen læses ud af kildens
+egen tekst:
+
+| Item | Skoler | Basisitem |
+|------|--------|-----------|
+| Enspelled Armor | Abjuration, Illusion | ruller en rustning |
+| Enspelled Weapon | Conjuration, Divination, Evocation, Necromancy, Transmutation | ruller et våben |
+| Enspelled Staff | alle | — |
+
+Beskrivelsen trimmes: kildens *"Bound into this weapon is a spell … must belong to the …
+school of magic"* er netop det kortet nu selv svarer på, så kun ladningsreglerne står
+tilbage.
 
 Spell-listen kommer fra `data/spells.txt`:
 

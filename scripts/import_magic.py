@@ -207,6 +207,7 @@ def variant_rows(rec, parent):
     out, seen = [], set()
 
     rarity_col = name_col = width = None
+    headers = []
     for line in rec:
         if "\t" not in line:
             continue
@@ -216,6 +217,7 @@ def variant_rows(rec, parent):
                 continue
             rarity_col = next(i for i, c in enumerate(cells) if c.lower() == "rarity")
             width = len(cells)
+            headers = cells
             # Navnet står i første kolonne der hverken er terningkolonnen
             # (fx "1d100") eller rarity-kolonnen.
             name_col = next(
@@ -232,7 +234,12 @@ def variant_rows(rec, parent):
         name = compose_name(parent, cells[name_col])
         if name not in seen:
             seen.add(name)
-            out.append({"name": name, "rarity": RARITIES[word]})
+            # Tabellens øvrige kolonner tages med — Enspelled-posterne har fx
+            # Save DC og Attack Bonus, som hører til på kortet.
+            columns = {headers[i]: cells[i] for i in range(width)
+                       if i not in (rarity_col, name_col) and headers[i]}
+            out.append({"name": name, "rarity": RARITIES[word],
+                        "columns": columns, "variantValue": cells[name_col]})
 
     if out:
         return out
@@ -256,6 +263,48 @@ SCROLL_LEVEL = {"Cantrip": 0, "1st": 1, "2nd": 2, "3rd": 3, "4th": 4,
 LADDER = ["common", "uncommon", "rare", "very_rare", "legendary"]
 LEVEL_LABEL = {0: "Cantrip", 1: "1st", 2: "2nd", 3: "3rd", 4: "4th",
                5: "5th", 6: "6th", 7: "7th", 8: "8th", 9: "9th"}
+
+
+SCHOOLS = ["Abjuration", "Conjuration", "Divination", "Enchantment",
+           "Evocation", "Illusion", "Necromancy", "Transmutation"]
+
+
+def spell_schools(desc):
+    """Enspelled-posterne begrænser hvilken skole spellen må være fra:
+    våben tager Conjuration, Divination, Evocation, Necromancy og
+    Transmutation, rustning Abjuration og Illusion, staven hvad som helst."""
+    m = re.search(r"must belong to the (.+?) school", desc or "")
+    if not m:
+        return []
+    return [s for s in SCHOOLS if re.search(r"\b%s\b" % s, m.group(1))]
+
+
+def apply_enspelled(item, variant, desc):
+    """Et Enspelled-item findes i én udgave pr. spellniveau, og kildens "(1)"
+    er netop det niveau — ikke et løbenummer. Kortet skal derfor rulle en spell
+    af niveauet, og navnet bærer spellen i stedet for tallet."""
+    if not item["name"].startswith("Enspelled "):
+        return
+    raw = (variant.get("variantValue") or "").strip()
+    if raw.lower() == "cantrip":
+        level = 0
+    elif raw.isdigit():
+        level = int(raw)
+    else:
+        return
+
+    columns = variant.get("columns") or {}
+    item["spellLevel"] = level
+    item["spellName"] = re.sub(r"\([^)]*\)$", "({spell})", item["name"])
+    # "Bound into this weapon is a spell … must belong to the X school of
+    # magic." svarer kortet nu selv på. Tilbage står ladningsreglerne.
+    item["desc"] = re.sub(r"^.*?school of magic\.\s*", "", item.get("desc", ""))
+    schools = spell_schools(desc)
+    if schools:
+        item["spellSchools"] = schools
+    for header, key in (("Save DC", "spellSaveDC"), ("Attack Bonus", "spellAttack")):
+        if columns.get(header):
+            item[key] = columns[header]
 
 
 def spell_carriers(items):
@@ -299,7 +348,8 @@ def main():
     if not src.exists():
         sys.exit(f"Fandt ikke {src}")
 
-    raw = src.read_text(encoding="utf-8").replace("’", "'")
+    # Kilden har enkelte steder et mellemrum foran ejestedsformen ("staff 's").
+    raw = re.sub(r" 's\b", "'s", src.read_text(encoding="utf-8").replace("’", "'"))
     lines = [l.rstrip() for l in raw.split("\n") if l.strip()]
     lookup = {norm(n): n for n in load_item_names()}
 
@@ -365,6 +415,7 @@ def main():
                 item["rarity"] = v["rarity"]
                 item["consumable"] = is_consumable(v["name"], kind, tags) or base["consumable"]
                 item["variantOf"] = name
+                apply_enspelled(item, v, desc)
                 items.append(item)
         else:
             base["rarity"] = RARITIES[rarity_word.lower()]
