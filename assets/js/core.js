@@ -847,7 +847,19 @@ window.LB = (function () {
       upcast = true;
     }
 
-    var cands = spells.filter(function (sp) { return sp.level === want; });
+    // Enspelled-items binder kun spells fra bestemte skoler. Findes der ingen
+    // på niveauet, slækkes kravet frem for at give et kort uden spell.
+    var schools = magicItem.spellSchools;
+    function ofLevel(strict) {
+      return spells.filter(function (sp) {
+        if (sp.level !== want) return false;
+        if (strict && schools && schools.length && schools.indexOf(sp.school) < 0) return false;
+        return true;
+      });
+    }
+
+    var cands = ofLevel(true);
+    if (!cands.length) cands = ofLevel(false);
     if (!cands.length) return null;
     return {
       spell: cands[Math.floor(Math.random() * cands.length)],
@@ -944,6 +956,9 @@ window.LB = (function () {
         spellLevel: (typeof o.spellLevel === 'number') ? o.spellLevel : null,
         spellName: o.spellName || '',
         spellKind: o.spellKind || '',
+        spellSchools: Array.isArray(o.spellSchools) ? o.spellSchools : null,
+        spellSaveDC: o.spellSaveDC || '',
+        spellAttack: o.spellAttack || '',
         upcastable: !!o.upcastable,
         typeLine: o.typeLine || '',
         tags: Array.isArray(o.tags) ? o.tags : [],
