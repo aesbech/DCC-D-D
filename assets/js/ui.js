@@ -396,6 +396,22 @@
      på sin egen linje i stedet. */
   var GENERIC_WORD = /\b(Weapon|Armor|Ammunition|Shield)\b/;
 
+  var LEVEL_LABELS = ['Cantrip', '1st', '2nd', '3rd', '4th',
+                      '5th', '6th', '7th', '8th', '9th'];
+
+  function levelLabel(level) {
+    return LEVEL_LABELS[level] || String(level);
+  }
+
+  /* Typelinjen på et spell-kort: "Spell Scroll (3rd level)". Niveauet er
+     kortets eget, ikke nødvendigvis spellens — de er forskellige ved upcast. */
+  function spellKindLabel(magicItem, castLevel) {
+    var kind = magicItem.spellKind || magicItem.type;
+    return castLevel
+      ? kind + ' (' + levelLabel(castLevel) + ' level)'
+      : kind + ' (Cantrip)';
+  }
+
   function composeMagicName(magicName, baseName) {
     if (!baseName || !GENERIC_WORD.test(magicName)) return null;
     return magicName.replace(GENERIC_WORD, baseName);
@@ -414,7 +430,8 @@
         if (c.magic) {
           var m = c.magic.item;
           var base = c.magic.base;
-          var spell = c.magic.spell;
+          var roll = c.magic.spell;
+          var spell = roll ? roll.spell : null;
           var composed = base ? composeMagicName(m.name, base.name) : null;
           if (spell && m.spellName) composed = m.spellName.replace('{spell}', spell.name);
           var mk = [
@@ -422,13 +439,16 @@
             el('div', { class: 'card-kind', text: 'Magic item' }),
             el('div', { class: 'card-name', text: composed || m.name })
           ];
-          mk.push(el('div', { class: 'card-sub', text: m.type + (m.attunement ? ' · attunement' : '') }));
+          mk.push(el('div', { class: 'card-sub',
+            text: spell ? spellKindLabel(m, roll.castLevel)
+                        : m.type + (m.attunement ? ' · attunement' : '') }));
           if (spell) {
             // Kortet handler om spellen, så dens tal og tekst fylder pladsen.
             // Bærerens egen regeltekst tages kun med, hvis den er kort nok.
-            mk.push(el('div', { class: 'card-stats',
-              text: (spell.level ? spell.level + '. niveau' : 'Cantrip') +
-                    (spell.school ? ' · ' + spell.school : '') }));
+            var head = spell.school || '';
+            if (roll.upcast)
+              head += (head ? ' · ' : '') + 'Upcastet fra ' + levelLabel(spell.level);
+            if (head) mk.push(el('div', { class: 'card-stats', text: head }));
             var sp = [spell.castingTime, spell.range, spell.components]
               .filter(Boolean).join(' · ');
             if (sp) mk.push(el('div', { class: 'card-props', text: sp }));
@@ -1287,6 +1307,7 @@
 
   function renderMagicSettings() {
     $('#magicEnabled').checked = !!state.cfg.magic.enabled;
+    $('#magicUpcast').value = state.cfg.magic.upcastChance;
 
     var host = $('#magicMapping');
     host.innerHTML = '';
@@ -1331,6 +1352,11 @@
   $('#magicEnabled').addEventListener('change', function () {
     state.cfg.magic.enabled = this.checked;
     updateGenHint(); persist();
+  });
+
+  $('#magicUpcast').addEventListener('input', function () {
+    state.cfg.magic.upcastChance = Math.min(100, Math.max(0, Number(this.value) || 0));
+    persist();
   });
 
   function filteredMagic() {

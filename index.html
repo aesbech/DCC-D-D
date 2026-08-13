@@ -150,6 +150,18 @@
   </div>
 
   <div class="panel">
+    <h2>Spell scrolls og tomes</h2>
+    <p class="hint">Et scroll ruller en spell af sit eget niveau. Et scroll p&aring; 2. niveau eller
+       derover kan dog v&aelig;re <i>upcastet</i> &mdash; en lavere spell brugt i et h&oslash;jere slot,
+       fx Magic Missile skrevet som 5.-niveau. Tomes l&aelig;rer spellen permanent og upcaster ikke,
+       for der bruger man bagefter sine egne slots.</p>
+    <label class="field field-sm">
+      <span>Chance for upcast (%)</span>
+      <input type="number" id="magicUpcast" min="0" max="100" step="1">
+    </label>
+  </div>
+
+  <div class="panel">
     <div class="row">
       <input type="search" id="magicSearch" placeholder="Søg efter navn&hellip;">
       <select id="magicTypeFilter"><option value="">Alle typer</option></select>
