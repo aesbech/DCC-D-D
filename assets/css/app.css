@@ -76,6 +76,10 @@ main{max-width:1180px;margin:0 auto;padding:20px}
 .spacer{flex:1}
 .hidden{display:none}
 .hint{color:var(--muted);font-size:13px;margin:8px 0 0}
+.print-help{margin-top:12px;font-size:13px}
+.print-help summary{color:var(--accent-2);cursor:pointer;width:max-content}
+.print-help ul{margin:8px 0 0;padding-left:20px}
+.print-help li{margin-bottom:6px}
 
 /* ---------- form ---------- */
 .field{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted)}
@@ -163,8 +167,9 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 /* ---------- results ---------- */
 .results{display:flex;flex-direction:column;gap:16px}
 .box{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
-/* Etiketten hører til printet — på skærmen står pakkenavnet allerede i box-head. */
-.box-label{display:none}
+/* Etiketten og målestregen hører til printet — på skærmen står pakkenavnet
+   allerede i box-head, og en lineal på en skærm siger ingenting. */
+.box-label,.print-check{display:none}
 .box-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .box-title{font-weight:600}
 .box-sub{color:var(--muted);font-size:13px}
@@ -215,8 +220,6 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 }
 .stars svg{width:8px;height:8px;fill:currentColor;display:block}
 .stars.is-gold{color:var(--accent)}
-
-/* Oprindelseslinjen bruges kun ved print, hvor pakkeoverskrifterne er væk. */
 
 /* ---------- items table ---------- */
 .table-wrap{overflow-x:auto;margin-top:12px}
@@ -324,6 +327,19 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
      printet stak kan sorteres uden at læse kortene. 8 mm + 3 × 63 mm = 197 mm
      og går lige akkurat op i A4 minus margenerne. */
   .results{display:block;margin:0;padding:0}
+
+  /* Målestreg til at afsløre skalering. Står i den ledige plads under de tre
+     rækker (3 × 88 = 264 mm af de 285 mm), så den ikke skubber noget. */
+  .print-check{
+    display:flex;align-items:flex-end;gap:3mm;
+    margin:0 0 2mm 8mm;
+    font-size:6.5pt;line-height:1.2;color:#333;
+  }
+  .print-ruler{
+    flex:0 0 50mm;width:50mm;height:2.5mm;
+    border:0.3mm solid #000;border-top:0;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
   .box{
     display:grid;
     grid-template-columns:8mm repeat(3,63mm);
