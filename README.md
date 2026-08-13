@@ -14,14 +14,14 @@ Ren statisk HTML/CSS/JS. Ingen build, ingen dependencies, intet backend.
 mappe `/ (root)`), eller **GitHub Actions** — så bruges workflowen i
 `.github/workflows/pages.yml`, der deployer ved hvert push til `main`.
 
-Første gang siden åbnes, indlæses de 215 items fra regnearket, 140 Class-kort og 450 magic items automatisk.
+Første gang siden åbnes, indlæses de 217 udstyrsitems, 140 Class-kort og 450 magic items automatisk.
 
 ## Data
 
 | Fil | Indhold |
 |-----|---------|
 | `data/dnd_items.xlsx` | Dit originale regneark — kilden til alt udstyr |
-| `assets/data/items.js` | 215 items genereret fra arket `Alle items` |
+| `assets/data/items.js` | 217 items: 215 fra arket `Alle items` plus to ammunitionsrækker arket mangler |
 | `assets/data/class-cards.js` | 140 Class-kort i fem typer (Class, Stat, Feat, Skill, Perk) |
 | `assets/data/magic-items.js` | 450 magic items, heraf 9 tomes vi selv genererer |
 | `assets/data/spells.js` | 202 spells fra D&D Beyond, fordelt på niveau 0–9 |
@@ -75,6 +75,23 @@ bruger: **Padded Armor, Leather Armor, Studded Leather Armor, Hide Armor, Splint
 Plate Armor, Half Plate Armor**. Ring Mail, Chain Mail, Chain Shirt, Scale Mail,
 Breastplate, Spiked Armor og Shield hedder allerede noget der læses som en rustning og
 røres ikke. Rettelsen sker i `scripts/import_xlsx.py`, så regnearket kan blive som det er.
+
+### To rækker arket mangler
+
+Player's Handbooks ammunitionstabel har fire rækker, men regnearket har kun to af dem:
+
+| Item | Pris | Vægt | Status |
+|------|------|------|--------|
+| Arrows (20) | 1 gp | 1 lb. | **tilføjet af importen** |
+| Blowgun needles (50) | 1 gp | 1 lb. | i arket som `Needles` |
+| Crossbow bolts (20) | 1 gp | 1½ lb. | **tilføjet af importen** |
+| Sling bullets (20) | 4 cp | 1½ lb. | i arket som `Sling Bullets` |
+
+`Arrows` og `Crossbow Bolts` ligger derfor i `MISSING_ROWS` i `scripts/import_xlsx.py` og
+lægges oveni ved importen — arket kan blive som det er, og ændringen kan ses i git.
+Importen springer dem over hvis arket selv får rækkerne, så navnene aldrig står to steder.
+Begge er Common til 1 gp, og de gør `Ammunition +1/+2/+3` til et rigtigt rul: fem
+basisitems i stedet for tre.
 
 ### Når regnearket ændrer sig
 
@@ -189,8 +206,8 @@ eksport/import af hele opsætningen som JSON.
 
 | Pakke | Filter | Pulje | Tiers |
 |-------|--------|-------|-------|
-| Adventurer | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 166 | Bronze / Sølv / Guld |
-| Weapons | Våben, Ammunition, Udstyr | 104 | Bronze / Sølv / Guld |
+| Adventurer | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 168 | Bronze / Sølv / Guld |
+| Weapons | Våben, Ammunition, Udstyr | 106 | Bronze / Sølv / Guld |
 | Armor | Rustning, Udstyr | 78 | Bronze / Sølv / Guld |
 | Consumables | Gift **eller** tagget Consumable/Healing | 22 + 49 magiske | Bronze / Sølv / Guld |
 | Magic | alle magic items | 450 | Bronze / Sølv / Guld |
@@ -257,8 +274,8 @@ den — målt over 4.000 pakker på Guld kort 3:
 |-----------|-------|------------|-------|
 | Kun Våben (standard) | 87 % | — | 13 % |
 | \+ Ammunition, ingen vægte | 84 % | 3 % | 13 % |
-| \+ Ammunition, vægt 5 | 75 % | **11 %** | 14 % |
-| \+ Ammunition, vægt 0 | 86 % | 0 % | 14 % |
+| \+ Ammunition, vægt 5 | 76 % | **12 %** | 13 % |
+| \+ Ammunition, vægt 0 | 87 % | 0 % | 13 % |
 
 Standardopsætningen bruger ikke kortvægte — de er der til at tune med.
 
@@ -325,7 +342,7 @@ Weapon-typer i Weapons og Armor-typer i Armor.
 ### Forbrugsvarer
 
 Forbrugsvare er en markering på både udstyr og magic items, så alt der bruges op kan
-holdes samlet ét sted. **24 af de 215 udstyrsting** er markeret: hele Gift-gruppen (13
+holdes samlet ét sted. **24 af de 217 udstyrsting** er markeret: hele Gift-gruppen (13
 poisons — en dosis bruges op), plus fakler, olie, vievand, rationer, papir, pergament,
 blæk, parfume, lys, foder og healer's kit. `Ink Pen` og `Poisoner's Kit` er undtaget, da
 de er værktøj der kan bruges igen.
@@ -340,7 +357,7 @@ alle gift, så pakkens høje trin læner sig bevidst på magic item-kortene: Gul
 
 Adventurer, Weapons og Armor står på **både forbrugsvarer og varigt udstyr**. Vil du have
 poisons, fakler og rationer helt ud af Adventurer, er det én dropdown under Pakker —
-puljen går så fra 166 til 142, og legendary-items fra 16 til 7, fordi ni af dem er gift.
+puljen går så fra 168 til 144, og legendary-items fra 16 til 7, fordi ni af dem er gift.
 
 Det samme gælder på magisiden: Adventurer trækker både permanente magic items og magiske
 forbrugsvarer, så en healing potion eller et spell scroll kan falde som loot. Hvilket

@@ -1,5 +1,5 @@
 /* Auto-genereret fra dnd_items.xlsx. Redigér regnearket og kør scripts/import_xlsx.py igen. */
-window.DND_ITEMS_VERSION = "282b5ffac2cd";
+window.DND_ITEMS_VERSION = "52a925bdfecf";
 window.DND_ITEMS = [
  {
   "name": "Candle",
@@ -3732,5 +3732,39 @@ window.DND_ITEMS = [
   ],
   "desc": "Galleys have the following statistics: AC 15 HP 500 Speed 4 mph Damage Threshold 20 Crew 80 Passengers — Cargo (Tons) 150",
   "properties": 30000
+ },
+ {
+  "name": "Arrows",
+  "category": "Ammunition",
+  "subcategory": "Ammunition",
+  "price": 1.0,
+  "priceText": "1 GP",
+  "rarity": "common",
+  "scale": "gear",
+  "consumable": false,
+  "source": "Player's Handbook",
+  "tags": [
+   "Damage",
+   "Combat"
+  ],
+  "desc": "Arrows are used with a weapon that has the ammunition property to make a ranged attack. Each time you attack with the weapon, you expend one piece of ammunition. Drawing the ammunition from a quiver, case, or other container is part of the attack (you need a free hand to load a one-handed weapon). At the end of the battle, you can recover half your expended ammunition by taking a minute to search the battlefield. Sold in bundles of 20.",
+  "weight": 1
+ },
+ {
+  "name": "Crossbow Bolts",
+  "category": "Ammunition",
+  "subcategory": "Ammunition",
+  "price": 1.0,
+  "priceText": "1 GP",
+  "rarity": "common",
+  "scale": "gear",
+  "consumable": false,
+  "source": "Player's Handbook",
+  "tags": [
+   "Damage",
+   "Combat"
+  ],
+  "desc": "Crossbow bolts are used with a weapon that has the ammunition property to make a ranged attack. Each time you attack with the weapon, you expend one piece of ammunition. Drawing the ammunition from a quiver, case, or other container is part of the attack (you need a free hand to load a one-handed weapon). At the end of the battle, you can recover half your expended ammunition by taking a minute to search the battlefield. Sold in bundles of 20.",
+  "weight": 1.5
  }
 ];
