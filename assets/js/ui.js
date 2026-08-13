@@ -117,6 +117,19 @@
            '|magic:' + (window.MAGIC_ITEMS_VERSION || '?');
   }
 
+  function dataIsStale() {
+    var stored = C.storage.load(C.storage.K_SEEDED, null);
+    return typeof stored === 'string' && stored !== bundledVersion();
+  }
+
+  function loadBundled() {
+    state.items = seedItems();
+    state.magic = C.magicFromJSON(window.MAGIC_ITEMS || []);
+    state.page = 0;
+    state.magicPage = 0;
+    C.storage.save(C.storage.K_SEEDED, bundledVersion());
+  }
+
   if (!Array.isArray(state.items)) {
     state.items = seedItems();
     C.storage.save(C.storage.K_SEEDED, bundledVersion());
@@ -124,59 +137,57 @@
   if (!Array.isArray(state.magic)) state.magic = C.magicFromJSON(window.MAGIC_ITEMS || []);
   if (state.cfg.packs.length) state.packId = state.cfg.packs[0].id;
 
-  /* Datafilerne i repoet kan være nyere end det, browseren har gemt — fx efter
-     at regnearket er blevet rettet. Tilbyd en genindlæsning frem for at
-     overskrive brugerens egne rettelser i det stille. */
-  function dataIsStale() {
-    var stored = C.storage.load(C.storage.K_SEEDED, null);
-    return typeof stored === 'string' && stored !== bundledVersion();
-  }
+  /* Datafilerne i repoet kan være rettet siden browseren gemte sin kopi — nye
+     items, nye navne, skade der manglede. Appen læser fra kopien, så indtil
+     den fornys trækker man fra den gamle udgave, og forkerte kort ender med at
+     blive printet. Derfor opdateres den automatisk. Den gamle kopi lægges til
+     side, så en opdatering kan fortrydes med ét klik. */
+  var autoSynced = null;
 
-  function reloadBundledData() {
-    state.items = seedItems();
-    state.magic = C.magicFromJSON(window.MAGIC_ITEMS || []);
-    state.page = 0;
-    state.magicPage = 0;
-    C.storage.save(C.storage.K_SEEDED, bundledVersion());
-    renderAll(); persist();
-  }
-
-  /* "Ikke nu" gemmer banneret for denne fane, ikke for altid. Et gammelt
-     datasæt bliver ved med at være forkert — items kan have skiftet navn —
-     så spørgsmålet skal vende tilbage indtil man har taget stilling. */
-  function snoozed() {
-    try { return sessionStorage.getItem('dccdd.notice.snooze') === bundledVersion(); }
-    catch (e) { return false; }
+  if (dataIsStale()) {
+    C.storage.save(C.storage.K_BACKUP, {
+      items: state.items, magic: state.magic,
+      version: C.storage.load(C.storage.K_SEEDED, null)
+    });
+    var before = state.items.length;
+    loadBundled();
+    autoSynced = { before: before, after: state.items.length, magic: state.magic.length };
   }
 
   function renderDataNotice() {
     var host = $('#dataNotice');
     host.innerHTML = '';
-    if (!dataIsStale() || snoozed()) {
+    if (!autoSynced) {
       host.className = 'hidden';
       return;
     }
     host.className = 'notice';
     host.appendChild(el('span', {
-      text: 'Datafilerne i appen er opdateret siden du hentede dem — items kan have ' +
-            'skiftet navn, pris eller rarity, og indtil du genindlæser trækker du fra ' +
-            'den gamle udgave. Dine egne rettelser til de medfølgende items går tabt ' +
-            'ved en genindlæsning.'
+      text: 'Datafilerne var nyere end din gemte kopi, så de er indlæst automatisk: ' +
+            autoSynced.after + ' items og ' + autoSynced.magic + ' magic items' +
+            (autoSynced.before !== autoSynced.after
+              ? ' (før ' + autoSynced.before + ' items).' : '.') +
+            ' Havde du selv rettet i de medfølgende items, ligger den gamle kopi klar.'
     }));
     host.appendChild(el('button', {
-      class: 'btn btn-sm btn-primary', text: 'Genindlæs data',
+      class: 'btn btn-sm', text: 'Fortryd — hent min gamle kopi',
       onclick: function () {
-        if (!confirm('Erstat alle ' + state.items.length + ' items med de opdaterede datafiler?')) return;
-        reloadBundledData();
-        toast('Data genindlæst');
+        var backup = C.storage.load(C.storage.K_BACKUP, null);
+        if (!backup || !Array.isArray(backup.items)) { toast('Ingen kopi at hente'); return; }
+        state.items = backup.items;
+        state.magic = Array.isArray(backup.magic) ? backup.magic : state.magic;
+        state.page = 0;
+        state.magicPage = 0;
+        // Stemplet bliver stående på den nye version, så den gamle kopi ikke
+        // bare bliver skiftet ud igen ved næste indlæsning.
+        autoSynced = null;
+        renderAll(); persist();
+        toast('Din gamle kopi er hentet tilbage');
       }
     }));
     host.appendChild(el('button', {
-      class: 'btn btn-sm', text: 'Ikke nu',
-      onclick: function () {
-        try { sessionStorage.setItem('dccdd.notice.snooze', bundledVersion()); } catch (e) {}
-        renderDataNotice();
-      }
+      class: 'btn btn-sm btn-primary', text: 'Fint',
+      onclick: function () { autoSynced = null; renderDataNotice(); }
     }));
   }
 
@@ -1245,28 +1256,18 @@
     return replace;
   }
 
-  /* Genindlæser man én datafil ad gangen, skal netop dens del af
-     versionsstemplet følge med — ellers bliver man ved med at få banneret om
-     data man lige har hentet. */
-  function stampSource(prefix) {
-    var stored = C.storage.load(C.storage.K_SEEDED, null);
-    if (typeof stored !== 'string') return;
-    var current = bundledVersion().split('|');
-    C.storage.save(C.storage.K_SEEDED, stored.split('|').map(function (part, i) {
-      return part.indexOf(prefix + ':') === 0 ? current[i] : part;
-    }).join('|'));
-  }
-
+  /* Datafilerne synkroniseres allerede automatisk ved indlæsning. Knapperne
+     her er til at hente en enkelt fil frisk igen — fx efter en fortrydelse,
+     eller for at kaste egne rettelser væk. Versionsstemplet er i forvejen
+     opdateret, så det skal ikke røres. */
   $('#btnLoadDnd').addEventListener('click', function () {
     if (!window.DND_ITEMS) { toast('Datafilen mangler'); return; }
-    if (commitItems(C.itemsFromJSON(window.DND_ITEMS, state.cfg, 'gear'))) stampSource('dnd');
-    renderDataNotice();
+    commitItems(C.itemsFromJSON(window.DND_ITEMS, state.cfg, 'gear'));
   });
 
   $('#btnLoadClass').addEventListener('click', function () {
     if (!window.CLASS_CARDS) { toast('Datafilen mangler'); return; }
-    if (commitItems(C.itemsFromJSON(window.CLASS_CARDS, state.cfg, 'none'))) stampSource('class');
-    renderDataNotice();
+    commitItems(C.itemsFromJSON(window.CLASS_CARDS, state.cfg, 'none'));
   });
 
   $('#btnClearItems').addEventListener('click', function () {
