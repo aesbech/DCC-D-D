@@ -47,6 +47,42 @@ def clean(value):
     return re.sub(r"\s+", " ", str(value)).strip()
 
 
+# Våbenbeskrivelserne i arket er næsten kun kedeltekst: en sætning om
+# proficiency, dernæst "This weapon has the following mastery property. To use
+# this property …" og til allersidst selve mastery-reglen. Kortet skriver i
+# forvejen "Mastery: Sap", så kedelteksten skæres væk og regelteksten flyttes
+# over på sin egen linje, hvor den hører til.
+PROFICIENCY = re.compile(
+    r"^(?:Proficiency with .{0,40}?allows you to add your proficiency bonus to the "
+    r"attack roll for any attack you make with it\."
+    r"|It.s up to you to decide whether a character has proficiency with a firearm\."
+    r".*?mastering their use\.)\s*"
+)
+MASTERY_MARK = re.compile(
+    r"\s*This weapon has the following mastery property\..*?lets you use it\.\s*"
+)
+NOTES_TAIL = re.compile(r"\s*Notes:\s*(.+)$")
+
+
+def split_mastery(desc, mastery):
+    """Deler våbenteksten i (beskrivelse, mastery-regel)."""
+    parts = MASTERY_MARK.split(desc, 1)
+    before = PROFICIENCY.sub("", parts[0]).strip()
+    if len(parts) < 2:
+        return before, ""
+
+    rule = parts[1].strip()
+    # "Notes: Reload (6 shots)" siger noget om våbnet, ikke om mastery.
+    note = NOTES_TAIL.search(rule)
+    if note:
+        before = (before + " " + note.group(1).strip()).strip()
+        rule = rule[: note.start()].strip()
+    # Reglen indledes med masterens eget navn: "Sap. If you hit …".
+    if mastery:
+        rule = re.sub(r"^%s\.\s*" % re.escape(str(mastery)), "", rule).strip()
+    return before, rule
+
+
 # Forbrugsvarer i udstyrslisten. Hele Gift-gruppen tæller med — en dosis gift
 # bruges op — og desuden alt med regnearkets Consumable-tag samt de oplagte
 # navne. Kan rettes i appen bagefter.
@@ -196,6 +232,11 @@ def main():
             if value in (None, ""):
                 continue
             item[key] = value if isinstance(value, (int, float)) else clean(value)
+
+        if group == "Våben":
+            item["desc"], rule = split_mastery(item["desc"], item.get("mastery"))
+            if rule:
+                item["masteryText"] = rule
 
         items.append(item)
 

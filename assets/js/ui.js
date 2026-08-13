@@ -407,16 +407,25 @@
     return parts.length ? el('div', { class: 'card-stats', text: parts.join(' · ') }) : null;
   }
 
-  /* Mastery-egenskaben står typisk også i egenskabslisten. Den tages ud dér
-     og vises med sin egen etiket, så den ikke står to gange. */
-  function propLine(it) {
+  /* Mastery-egenskaben står typisk også i egenskabslisten. Den tages ud dér,
+     så den ikke står to gange. Kender vi selve regelteksten, får den sin egen
+     linje med etiketten på — ellers nævnes navnet her. */
+  function propLine(it, keepMastery) {
     var props = String(it.properties || '').split(',')
       .map(function (x) { return x.trim(); })
       .filter(function (x) { return x && x !== it.mastery; });
     var parts = [];
     if (props.length) parts.push(props.join(', '));
-    if (it.mastery) parts.push('Mastery: ' + it.mastery);
+    if (it.mastery && (keepMastery || !it.masteryText)) parts.push('Mastery: ' + it.mastery);
     return parts.length ? el('div', { class: 'card-props', text: parts.join(' · ') }) : null;
+  }
+
+  function masteryLine(it) {
+    if (!it.masteryText) return null;
+    return el('div', { class: 'card-desc' }, [
+      el('b', { text: 'Mastery: ' + (it.mastery || '') + '. ' }),
+      document.createTextNode(it.masteryText)
+    ]);
   }
 
   /* Generiske magic items navngives efter det basisitem de blev rullet på,
@@ -513,7 +522,9 @@
             // Navnet rummer allerede basisitemet når det kunne sættes sammen.
             if (!composed) mk.push(el('div', { class: 'card-base', text: 'Basis: ' + base.name }));
             var bs = statLine(base); if (bs) mk.push(bs);
-            var bp = propLine(base); if (bp) mk.push(bp);
+            // Magic itemets egen regeltekst fylder pladsen, så basisvåbnets
+            // mastery nævnes kun ved navn her.
+            var bp = propLine(base, true); if (bp) mk.push(bp);
           }
           if (spell && !isSpellCard)
             mk.push(el('div', { class: 'card-spell', text: boundSpellLine(m, roll) }));
@@ -550,6 +561,7 @@
         }
         if (it && it.desc)
           kids.push(el('div', { class: 'card-desc', text: it.desc }));
+        if (it) { var ml = masteryLine(it); if (ml) kids.push(ml); }
         if (c.actual && c.rolled && c.actual !== c.rolled)
           kids.push(el('div', { class: 'fallback-note', text: 'Trak ' + C.rarityLabel(c.rolled) + ' — puljen var tom' }));
         if (c.duplicate)

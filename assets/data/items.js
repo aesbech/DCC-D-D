@@ -1,5 +1,5 @@
 /* Auto-genereret fra dnd_items.xlsx. Redigér regnearket og kør scripts/import_xlsx.py igen. */
-window.DND_ITEMS_VERSION = "52a925bdfecf";
+window.DND_ITEMS_VERSION = "a03434500982";
 window.DND_ITEMS = [
  {
   "name": "Candle",
@@ -1462,12 +1462,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "It’s up to you to decide whether a character has proficiency with a firearm. Characters in most D&D worlds wouldn’t have such proficiency. During their downtime, characters can use the training rules in the Player’s Handbook to acquire proficiency, assuming that they have enough ammunition to keep the weapons working while mastering their use. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Vex. If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn. Notes: Reload (50 shots)",
+  "desc": "Reload (50 shots)",
   "damage": "3d6",
   "damageType": "Radiant",
   "properties": "Ammunition (Firearms), (Range 40/120), Reload, Vex",
   "mastery": "Vex",
-  "weight": 2
+  "weight": 2,
+  "masteryText": "If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn."
  },
  {
   "name": "Laser Rifle",
@@ -1483,12 +1484,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "It’s up to you to decide whether a character has proficiency with a firearm. Characters in most D&D worlds wouldn’t have such proficiency. During their downtime, characters can use the training rules in the Player’s Handbook to acquire proficiency, assuming that they have enough ammunition to keep the weapons working while mastering their use. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Slow. If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet. Notes: Reload (30 shots)",
+  "desc": "Reload (30 shots)",
   "damage": "3d8",
   "damageType": "Radiant",
   "properties": "Ammunition (Firearms), (Range 100/300), Reload, Two-Handed, Slow",
   "mastery": "Slow",
-  "weight": 7
+  "weight": 7,
+  "masteryText": "If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet."
  },
  {
   "name": "Revolver",
@@ -1504,12 +1506,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "It’s up to you to decide whether a character has proficiency with a firearm. Characters in most D&D worlds wouldn’t have such proficiency. During their downtime, characters can use the training rules in the Player’s Handbook to acquire proficiency, assuming that they have enough ammunition to keep the weapons working while mastering their use. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Sap. If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn. Notes: Reload (6 shots)",
+  "desc": "Reload (6 shots)",
   "damage": "2d8",
   "damageType": "Piercing",
   "properties": "Ammunition (Firearms), (Range 40/120), Reload, Sap",
   "mastery": "Sap",
-  "weight": 3
+  "weight": 3,
+  "masteryText": "If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn."
  },
  {
   "name": "Rifle, Automatic",
@@ -1525,12 +1528,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "It’s up to you to decide whether a character has proficiency with a firearm. Characters in most D&D worlds wouldn’t have such proficiency. During their downtime, characters can use the training rules in the Player’s Handbook to acquire proficiency, assuming that they have enough ammunition to keep the weapons working while mastering their use. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Slow. If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet. Notes: Reload (30 shots)",
+  "desc": "Reload (30 shots)",
   "damage": "2d8",
   "damageType": "Piercing",
   "properties": "Ammunition (Firearms), (Range 80/240), Reload, Two-Handed, Burst Fire, Slow",
   "mastery": "Slow",
-  "weight": 8
+  "weight": 8,
+  "masteryText": "If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet."
  },
  {
   "name": "Rifle, Hunting",
@@ -1546,12 +1550,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "It’s up to you to decide whether a character has proficiency with a firearm. Characters in most D&D worlds wouldn’t have such proficiency. During their downtime, characters can use the training rules in the Player’s Handbook to acquire proficiency, assuming that they have enough ammunition to keep the weapons working while mastering their use. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Slow. If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet. Notes: Reload (5 shots)",
+  "desc": "Reload (5 shots)",
   "damage": "2d10",
   "damageType": "Piercing",
   "properties": "Ammunition (Firearms), (Range 80/240), Reload, Two-Handed, Slow",
   "mastery": "Slow",
-  "weight": 8
+  "weight": 8,
+  "masteryText": "If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet."
  },
  {
   "name": "Semiautomatic Pistol",
@@ -1564,12 +1569,13 @@ window.DND_ITEMS = [
   "consumable": false,
   "source": "Dungeon Master's Guide",
   "tags": [],
-  "desc": "It’s up to you to decide whether a character has proficiency with a firearm. Characters in most D&D worlds wouldn’t have such proficiency. During their downtime, characters can use the training rules in the Player’s Handbook to acquire proficiency, assuming that they have enough ammunition to keep the weapons working while mastering their use. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Vex. If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn.",
+  "desc": "",
   "damage": "2d6",
   "damageType": "Piercing",
   "properties": "Ammunition (Firearms), (Range 50/150), Reload, Vex",
   "mastery": "Vex",
-  "weight": 3
+  "weight": 3,
+  "masteryText": "If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn."
  },
  {
   "name": "Shotgun",
@@ -1585,12 +1591,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "It’s up to you to decide whether a character has proficiency with a firearm. Characters in most D&D worlds wouldn’t have such proficiency. During their downtime, characters can use the training rules in the Player’s Handbook to acquire proficiency, assuming that they have enough ammunition to keep the weapons working while mastering their use. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Push. If you hit a creature with this weapon, you can push the creature up to 10 feet straight away from yourself if it is Large or smaller. Notes: Reload (2 shots)",
+  "desc": "Reload (2 shots)",
   "damage": "2d8",
   "damageType": "Piercing",
   "properties": "Ammunition (Firearms), (Range 30/90), Reload, Two-Handed, Push",
   "mastery": "Push",
-  "weight": 7
+  "weight": 7,
+  "masteryText": "If you hit a creature with this weapon, you can push the creature up to 10 feet straight away from yourself if it is Large or smaller."
  },
  {
   "name": "Ring Mail",
@@ -1780,12 +1787,13 @@ window.DND_ITEMS = [
    "Control",
    "Combat"
   ],
-  "desc": "Proficiency with a Whip allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Slow. If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet.",
+  "desc": "",
   "damage": "1d4",
   "damageType": "Slashing",
   "properties": "Finesse, Reach, Slow",
   "mastery": "Slow",
-  "weight": 3
+  "weight": 3,
+  "masteryText": "If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet."
  },
  {
   "name": "Pike",
@@ -1802,12 +1810,13 @@ window.DND_ITEMS = [
    "Control",
    "Combat"
   ],
-  "desc": "Proficiency with a Pike allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Push. If you hit a creature with this weapon, you can push the creature up to 10 feet straight away from yourself if it is Large or smaller.",
+  "desc": "",
   "damage": "1d10",
   "damageType": "Piercing",
   "properties": "Heavy, Reach, Two-Handed, Push",
   "mastery": "Push",
-  "weight": 18
+  "weight": 18,
+  "masteryText": "If you hit a creature with this weapon, you can push the creature up to 10 feet straight away from yourself if it is Large or smaller."
  },
  {
   "name": "Trident",
@@ -1823,12 +1832,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Trident allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Topple. If you hit a creature with this weapon, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition.",
+  "desc": "",
   "damage": "1d8",
   "damageType": "Piercing",
   "properties": "Thrown (range 20/60), Versatile (1d10), Topple",
   "mastery": "Topple",
-  "weight": 4
+  "weight": 4,
+  "masteryText": "If you hit a creature with this weapon, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition."
  },
  {
   "name": "War Pick",
@@ -1844,12 +1854,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a War Pick allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Sap. If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn.",
+  "desc": "",
   "damage": "1d8",
   "damageType": "Piercing",
   "properties": "Sap, Versatile (1d10)",
   "mastery": "Sap",
-  "weight": 2
+  "weight": 2,
+  "masteryText": "If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn."
  },
  {
   "name": "Flail",
@@ -1865,12 +1876,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Flail allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Sap. If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn.",
+  "desc": "",
   "damage": "1d8",
   "damageType": "Bludgeoning",
   "properties": "Sap",
   "mastery": "Sap",
-  "weight": 2
+  "weight": 2,
+  "masteryText": "If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn."
  },
  {
   "name": "Lance",
@@ -1887,12 +1899,13 @@ window.DND_ITEMS = [
    "Control",
    "Combat"
   ],
-  "desc": "Proficiency with a Lance allows you to add your proficiency bonus to the attack roll for any attack you make with it. A Lance requires two hands to wield when you aren't mounted. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Topple. If you hit a creature with this weapon, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition.",
+  "desc": "A Lance requires two hands to wield when you aren't mounted.",
   "damage": "1d10",
   "damageType": "Piercing",
   "properties": "Reach, Topple, Heavy, Two-Handed",
   "mastery": "Topple",
-  "weight": 6
+  "weight": 6,
+  "masteryText": "If you hit a creature with this weapon, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition."
  },
  {
   "name": "Maul",
@@ -1908,12 +1921,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Maul allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Topple. If you hit a creature with this weapon, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition.",
+  "desc": "",
   "damage": "2d6",
   "damageType": "Bludgeoning",
   "properties": "Heavy, Two-Handed, Topple",
   "mastery": "Topple",
-  "weight": 10
+  "weight": 10,
+  "masteryText": "If you hit a creature with this weapon, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition."
  },
  {
   "name": "Shortsword",
@@ -1929,12 +1943,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Shortsword allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Vex. If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn.",
+  "desc": "",
   "damage": "1d6",
   "damageType": "Piercing",
   "properties": "Finesse, Light, Vex",
   "mastery": "Vex",
-  "weight": 2
+  "weight": 2,
+  "masteryText": "If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn."
  },
  {
   "name": "Longsword",
@@ -1950,12 +1965,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Longsword allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Sap. If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn.",
+  "desc": "",
   "damage": "1d8",
   "damageType": "Slashing",
   "properties": "Versatile (1d10), Sap",
   "mastery": "Sap",
-  "weight": 3
+  "weight": 3,
+  "masteryText": "If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn."
  },
  {
   "name": "Morningstar",
@@ -1971,12 +1987,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Morningstar allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Sap. If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn.",
+  "desc": "",
   "damage": "1d8",
   "damageType": "Piercing",
   "properties": "Sap",
   "mastery": "Sap",
-  "weight": 4
+  "weight": 4,
+  "masteryText": "If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn."
  },
  {
   "name": "Warhammer",
@@ -1992,12 +2009,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Warhammer allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Push. If you hit a creature with this weapon, you can push the creature up to 10 feet straight away from yourself if it is Large or smaller.",
+  "desc": "",
   "damage": "1d8",
   "damageType": "Bludgeoning",
   "properties": "Versatile (1d10), Push",
   "mastery": "Push",
-  "weight": 5
+  "weight": 5,
+  "masteryText": "If you hit a creature with this weapon, you can push the creature up to 10 feet straight away from yourself if it is Large or smaller."
  },
  {
   "name": "Glaive",
@@ -2014,12 +2032,13 @@ window.DND_ITEMS = [
    "Control",
    "Combat"
   ],
-  "desc": "Proficiency with a Glaive allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Graze. If your attack roll with this weapon misses a creature, you can deal damage to that creature equal to the ability modifier you used to make the attack roll. This damage is the same type dealt by the weapon, and the damage can be increased only by increasing the ability modifier.",
+  "desc": "",
   "damage": "1d10",
   "damageType": "Slashing",
   "properties": "Heavy, Reach, Two-Handed, Graze",
   "mastery": "Graze",
-  "weight": 6
+  "weight": 6,
+  "masteryText": "If your attack roll with this weapon misses a creature, you can deal damage to that creature equal to the ability modifier you used to make the attack roll. This damage is the same type dealt by the weapon, and the damage can be increased only by increasing the ability modifier."
  },
  {
   "name": "Halberd",
@@ -2036,12 +2055,13 @@ window.DND_ITEMS = [
    "Control",
    "Combat"
   ],
-  "desc": "Proficiency with a Halberd allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Cleave. If you hit a creature with a melee attack roll using this weapon, you can make a melee attack roll with the weapon against a second creature within 5 feet of the first that is also within your reach. On a hit, the second creature takes the weapon’s damage, but don’t add your ability modifier to that damage unless that modifier is negative. You can make this extra attack only once per turn.",
+  "desc": "",
   "damage": "1d10",
   "damageType": "Slashing",
   "properties": "Heavy, Reach, Two-Handed, Cleave",
   "mastery": "Cleave",
-  "weight": 6
+  "weight": 6,
+  "masteryText": "If you hit a creature with a melee attack roll using this weapon, you can make a melee attack roll with the weapon against a second creature within 5 feet of the first that is also within your reach. On a hit, the second creature takes the weapon’s damage, but don’t add your ability modifier to that damage unless that modifier is negative. You can make this extra attack only once per turn."
  },
  {
   "name": "Rapier",
@@ -2057,12 +2077,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Rapier allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Vex. If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn.",
+  "desc": "",
   "damage": "1d8",
   "damageType": "Piercing",
   "properties": "Finesse, Vex",
   "mastery": "Vex",
-  "weight": 2
+  "weight": 2,
+  "masteryText": "If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn."
  },
  {
   "name": "Scimitar",
@@ -2078,12 +2099,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Scimitar allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Nick. When you make the extra attack of the Light property, you can make it as part of the Attack action instead of as a Bonus Action. You can make this extra attack only once per turn.",
+  "desc": "",
   "damage": "1d6",
   "damageType": "Slashing",
   "properties": "Finesse, Light, Nick",
   "mastery": "Nick",
-  "weight": 3
+  "weight": 3,
+  "masteryText": "When you make the extra attack of the Light property, you can make it as part of the Attack action instead of as a Bonus Action. You can make this extra attack only once per turn."
  },
  {
   "name": "Greataxe",
@@ -2099,12 +2121,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Greataxe allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Cleave. If you hit a creature with a melee attack roll using this weapon, you can make a melee attack roll with the weapon against a second creature within 5 feet of the first that is also within your reach. On a hit, the second creature takes the weapon’s damage, but don’t add your ability modifier to that damage unless that modifier is negative. You can make this extra attack only once per turn.",
+  "desc": "",
   "damage": "1d12",
   "damageType": "Slashing",
   "properties": "Heavy, Two-Handed, Cleave",
   "mastery": "Cleave",
-  "weight": 7
+  "weight": 7,
+  "masteryText": "If you hit a creature with a melee attack roll using this weapon, you can make a melee attack roll with the weapon against a second creature within 5 feet of the first that is also within your reach. On a hit, the second creature takes the weapon’s damage, but don’t add your ability modifier to that damage unless that modifier is negative. You can make this extra attack only once per turn."
  },
  {
   "name": "Greatsword",
@@ -2120,12 +2143,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Greatsword allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Graze. If your attack roll with this weapon misses a creature, you can deal damage to that creature equal to the ability modifier you used to make the attack roll. This damage is the same type dealt by the weapon, and the damage can be increased only by increasing the ability modifier.",
+  "desc": "",
   "damage": "2d6",
   "damageType": "Slashing",
   "properties": "Heavy, Two-Handed, Graze",
   "mastery": "Graze",
-  "weight": 6
+  "weight": 6,
+  "masteryText": "If your attack roll with this weapon misses a creature, you can deal damage to that creature equal to the ability modifier you used to make the attack roll. This damage is the same type dealt by the weapon, and the damage can be increased only by increasing the ability modifier."
  },
  {
   "name": "Net (Legacy)",
@@ -2141,7 +2165,7 @@ window.DND_ITEMS = [
    "Control",
    "Combat"
   ],
-  "desc": "Proficiency with a net allows you to add your proficiency bonus to the attack roll for any attack you make with it. A Large or smaller creature hit by a net is restrained until it is freed. A net has no effect on creatures that are formless, or creatures that are Huge or larger. A creature can use its action to make a DC 10 Strength check, freeing itself or another creature within its reach on a success. Dealing 5 slashing damage to the net (AC 10) also frees the creature without harming it, ending the effect and destroying the net. When you use an action, bonus action, or reaction to attack with a net, you can make only one attack regardless of the number of attacks you can normally make.",
+  "desc": "A Large or smaller creature hit by a net is restrained until it is freed. A net has no effect on creatures that are formless, or creatures that are Huge or larger. A creature can use its action to make a DC 10 Strength check, freeing itself or another creature within its reach on a success. Dealing 5 slashing damage to the net (AC 10) also frees the creature without harming it, ending the effect and destroying the net. When you use an action, bonus action, or reaction to attack with a net, you can make only one attack regardless of the number of attacks you can normally make.",
   "damage": "0",
   "damageType": "Bludgeoning",
   "properties": "Special, Thrown (range 5/15)",
@@ -2161,12 +2185,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Heavy Crossbow allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Push. If you hit a creature with this weapon, you can push the creature up to 10 feet straight away from yourself if it is Large or smaller.",
+  "desc": "",
   "damage": "1d10",
   "damageType": "Piercing",
   "properties": "Ammunition, Heavy, Loading, (Range 100/400), Two-Handed, Push",
   "mastery": "Push",
-  "weight": 18
+  "weight": 18,
+  "masteryText": "If you hit a creature with this weapon, you can push the creature up to 10 feet straight away from yourself if it is Large or smaller."
  },
  {
   "name": "Longbow",
@@ -2182,12 +2207,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Longbow allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Slow. If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet.",
+  "desc": "",
   "damage": "1d8",
   "damageType": "Piercing",
   "properties": "Ammunition, Heavy, (Range 150/600), Two-Handed, Slow",
   "mastery": "Slow",
-  "weight": 2
+  "weight": 2,
+  "masteryText": "If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet."
  },
  {
   "name": "Crossbow, Hand",
@@ -2203,12 +2229,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Hand Crossbow allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Vex. If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn.",
+  "desc": "",
   "damage": "1d6",
   "damageType": "Piercing",
   "properties": "Ammunition, Light, Loading, (Range 30/120), Vex",
   "mastery": "Vex",
-  "weight": 3
+  "weight": 3,
+  "masteryText": "If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn."
  },
  {
   "name": "Pistol",
@@ -2224,12 +2251,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Pistol allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Vex. If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn.",
+  "desc": "",
   "damage": "1d10",
   "damageType": "Piercing",
   "properties": "Ammunition (Firearms), (Range 30/90), Loading, Vex",
   "mastery": "Vex",
-  "weight": 3
+  "weight": 3,
+  "masteryText": "If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn."
  },
  {
   "name": "Musket",
@@ -2245,12 +2273,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Musket allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Slow. If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet.",
+  "desc": "",
   "damage": "1d12",
   "damageType": "Piercing",
   "properties": "Ammunition (Firearms), (Range 40/120), Loading, Two-Handed, Slow",
   "mastery": "Slow",
-  "weight": 10
+  "weight": 10,
+  "masteryText": "If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet."
  },
  {
   "name": "Hide Armor",
@@ -2694,12 +2723,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Club allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Slow. If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet.",
+  "desc": "",
   "damage": "1d4",
   "damageType": "Bludgeoning",
   "properties": "Light, Slow",
   "mastery": "Slow",
-  "weight": 2
+  "weight": 2,
+  "masteryText": "If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet."
  },
  {
   "name": "Greatclub",
@@ -2715,12 +2745,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Greatclub allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Push. If you hit a creature with this weapon, you can push the creature up to 10 feet straight away from yourself if it is Large or smaller.",
+  "desc": "",
   "damage": "1d8",
   "damageType": "Bludgeoning",
   "properties": "Two-Handed, Push",
   "mastery": "Push",
-  "weight": 10
+  "weight": 10,
+  "masteryText": "If you hit a creature with this weapon, you can push the creature up to 10 feet straight away from yourself if it is Large or smaller."
  },
  {
   "name": "Quarterstaff",
@@ -2736,12 +2767,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Quarterstaff allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Topple. If you hit a creature with this weapon, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition.",
+  "desc": "",
   "damage": "1d6",
   "damageType": "Bludgeoning",
   "properties": "Versatile (1d8), Topple",
   "mastery": "Topple",
-  "weight": 4
+  "weight": 4,
+  "masteryText": "If you hit a creature with this weapon, you can force the creature to make a Constitution saving throw (DC 8 plus the ability modifier used to make the attack roll and your Proficiency Bonus). On a failed save, the creature has the Prone condition."
  },
  {
   "name": "Javelin",
@@ -2757,12 +2789,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Javelin allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Slow. If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet.",
+  "desc": "",
   "damage": "1d6",
   "damageType": "Piercing",
   "properties": "Thrown (range 30/120), Slow",
   "mastery": "Slow",
-  "weight": 2
+  "weight": 2,
+  "masteryText": "If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet."
  },
  {
   "name": "Sickle",
@@ -2778,12 +2811,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Sickle allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Nick. When you make the extra attack of the Light property, you can make it as part of the Attack action instead of as a Bonus Action. You can make this extra attack only once per turn.",
+  "desc": "",
   "damage": "1d4",
   "damageType": "Slashing",
   "properties": "Light, Nick",
   "mastery": "Nick",
-  "weight": 2
+  "weight": 2,
+  "masteryText": "When you make the extra attack of the Light property, you can make it as part of the Attack action instead of as a Bonus Action. You can make this extra attack only once per turn."
  },
  {
   "name": "Spear",
@@ -2799,12 +2833,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Spear allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Sap. If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn.",
+  "desc": "",
   "damage": "1d6",
   "damageType": "Piercing",
   "properties": "Thrown (range 20/60), Versatile (1d8), Sap",
   "mastery": "Sap",
-  "weight": 3
+  "weight": 3,
+  "masteryText": "If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn."
  },
  {
   "name": "Dagger",
@@ -2820,12 +2855,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Dagger allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Nick. When you make the extra attack of the Light property, you can make it as part of the Attack action instead of as a Bonus Action. You can make this extra attack only once per turn.",
+  "desc": "",
   "damage": "1d4",
   "damageType": "Piercing",
   "properties": "Finesse, Light, Thrown (range 20/60), Nick",
   "mastery": "Nick",
-  "weight": 1
+  "weight": 1,
+  "masteryText": "When you make the extra attack of the Light property, you can make it as part of the Attack action instead of as a Bonus Action. You can make this extra attack only once per turn."
  },
  {
   "name": "Light Hammer",
@@ -2841,12 +2877,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Light Hammer allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Nick. When you make the extra attack of the Light property, you can make it as part of the Attack action instead of as a Bonus Action. You can make this extra attack only once per turn.",
+  "desc": "",
   "damage": "1d4",
   "damageType": "Bludgeoning",
   "properties": "Light, Thrown (range 20/60), Nick",
   "mastery": "Nick",
-  "weight": 2
+  "weight": 2,
+  "masteryText": "When you make the extra attack of the Light property, you can make it as part of the Attack action instead of as a Bonus Action. You can make this extra attack only once per turn."
  },
  {
   "name": "Handaxe",
@@ -2862,12 +2899,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Handaxe allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Vex. If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn.",
+  "desc": "",
   "damage": "1d6",
   "damageType": "Slashing",
   "properties": "Light, Thrown (range 20/60), Vex",
   "mastery": "Vex",
-  "weight": 2
+  "weight": 2,
+  "masteryText": "If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn."
  },
  {
   "name": "Mace",
@@ -2883,12 +2921,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Mace allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Sap. If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn.",
+  "desc": "",
   "damage": "1d6",
   "damageType": "Bludgeoning",
   "properties": "Sap",
   "mastery": "Sap",
-  "weight": 4
+  "weight": 4,
+  "masteryText": "If you hit a creature with this weapon, that creature has Disadvantage on its next attack roll before the start of your next turn."
  },
  {
   "name": "Dart",
@@ -2904,12 +2943,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Dart allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Vex. If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn.",
+  "desc": "",
   "damage": "1d4",
   "damageType": "Piercing",
   "properties": "Finesse, Thrown (range 20/60), Vex",
   "mastery": "Vex",
-  "weight": 0.25
+  "weight": 0.25,
+  "masteryText": "If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn."
  },
  {
   "name": "Sling",
@@ -2925,11 +2965,12 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Sling allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Slow. If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet.",
+  "desc": "",
   "damage": "1d4",
   "damageType": "Bludgeoning",
   "properties": "Ammunition, (Range 30/120), Slow",
-  "mastery": "Slow"
+  "mastery": "Slow",
+  "masteryText": "If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet."
  },
  {
   "name": "Crossbow, Light",
@@ -2945,12 +2986,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Light Crossbow allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Slow. If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet.",
+  "desc": "",
   "damage": "1d8",
   "damageType": "Piercing",
   "properties": "Ammunition, Loading, (Range 80/320), Two-Handed, Slow",
   "mastery": "Slow",
-  "weight": 5
+  "weight": 5,
+  "masteryText": "If you hit a creature with this weapon and deal damage to it, you can reduce its Speed by 10 feet until the start of your next turn. If the creature is hit more than once by weapons that have this property, the Speed reduction doesn’t exceed 10 feet."
  },
  {
   "name": "Shortbow",
@@ -2966,12 +3008,13 @@ window.DND_ITEMS = [
    "Damage",
    "Combat"
   ],
-  "desc": "Proficiency with a Shortbow allows you to add your proficiency bonus to the attack roll for any attack you make with it. This weapon has the following mastery property. To use this property, you must have a feature that lets you use it. Vex. If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn.",
+  "desc": "",
   "damage": "1d6",
   "damageType": "Piercing",
   "properties": "Ammunition, (Range 80/320), Two-Handed, Vex",
   "mastery": "Vex",
-  "weight": 2
+  "weight": 2,
+  "masteryText": "If you hit a creature with this weapon and deal damage to the creature, you have Advantage on your next attack roll against that creature before the end of your next turn."
  },
  {
   "name": "Dice",

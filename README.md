@@ -149,9 +149,21 @@ Magic items følger deres egen type, så et magisk sværd får samme røde kant 
 almindeligt.
 
 Våben og rustning tager deres spilmekanik med. Tallene man slår med — skade og skadetype,
-AC, styrkekrav og stealth-ulempe — står fremhævet. Egenskaber som Finesse og Thrown samt
-mastery står i en mindre linje under, da det er regeltekst og ikke tal. Mastery-egenskaben
-tages ud af egenskabslisten og får sin egen etiket, så den ikke står to gange.
+AC, styrkekrav og stealth-ulempe — står fremhævet. Egenskaber som Finesse og Thrown står i
+en mindre linje under, da det er regeltekst og ikke tal.
+
+**Mastery står med sin egen regel.** Arkets våbenbeskrivelser er næsten kun kedeltekst —
+en sætning om proficiency, så *"This weapon has the following mastery property. To use this
+property, you must have a feature that lets you use it."*, og først derefter selve reglen.
+Importen skærer kedelteksten væk og løfter reglen ud, så kortet skriver:
+
+> **Mastery: Sap.** If you hit a creature with this weapon, that creature has Disadvantage
+> on its next attack roll before the start of your next turn.
+
+Mastery-egenskaben tages samtidig ud af egenskabslisten, så den ikke står to gange. Er der
+noget tilbage i beskrivelsen ud over kedelteksten, bliver det stående — Lancens
+tohåndsregel og skydevåbnenes `Reload (6 shots)`. På et magic item-kort fylder itemets egen
+regeltekst pladsen, så basisvåbnets mastery nævnes dér kun ved navn.
 
 **Generiske magic items navngives efter det basisitem de blev rullet på.** `Weapon +1`
 bliver til `Shortsword +1` med kortsværdets 1d6 Piercing, `Armor of Resistance` bliver til
