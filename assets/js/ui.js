@@ -296,7 +296,9 @@
   });
   $('#genTier').addEventListener('change', updateGenHint);
 
-  $('#btnGenerate').addEventListener('click', function () {
+  /* append = læg oveni. Det er sådan flere pakketyper kommer med i samme print,
+     hvor etiketten i margenen så fortæller hvilken række der er hvad. */
+  function generatePacks(append) {
     var pack = findPack($('#genPack').value);
     if (!pack) return;
     var tierObj = currentTier(pack, $('#genTier').value);
@@ -307,9 +309,13 @@
     var out = [];
     for (var i = 0; i < count; i++)
       out.push(C.generate(pack, tierObj, state.items, state.cfg, state.magic, window.SPELLS));
-    state.results = out;
+    state.results = append ? state.results.concat(out) : out;
     renderResults();
-  });
+    if (append) toast(count + ' pakker lagt til — ' + state.results.length + ' i alt');
+  }
+
+  $('#btnGenerate').addEventListener('click', function () { generatePacks(false); });
+  $('#btnAppend').addEventListener('click', function () { generatePacks(true); });
 
   $('#btnClearResults').addEventListener('click', function () {
     state.results = [];
@@ -499,7 +505,7 @@
     wrap.innerHTML = '';
     state.results.forEach(function (box, idx) {
       var cards = el('div', { class: 'cards' });
-      // Vises kun ved print, hvor pakkeoverskrifterne er væk.
+      // Etiketten i printets venstremargen, hvor overskrifterne er væk.
       var origin = box.pack + ' · ' + box.tier + ' · pakke ' + (idx + 1);
       box.cards.forEach(function (c) {
         // Magic item-kort: viser magic itemet, dets magi-rarity og et
@@ -570,7 +576,6 @@
             ]),
             el('span', { class: 'meta-tier', text: C.rarityLabel(c.rolled) + '-kort' })
           ]));
-          mk.push(el('div', { class: 'card-origin', text: origin }));
           cards.appendChild(el('div', {
             class: 'card is-magic r-' + c.magic.magicRarity + typeClass(m.type)
           }, mk));
@@ -611,7 +616,6 @@
           ]),
           el('span', { text: it ? priceLabel(it) : '' })
         ]));
-        kids.push(el('div', { class: 'card-origin', text: origin }));
         cards.appendChild(el('div', {
           class: 'card' + (it ? ' r-' + c.actual + typeClass(it.category) : ' is-empty')
         }, kids));
@@ -622,6 +626,9 @@
           el('span', { class: 'box-title', text: box.pack + ' — ' + box.tier }),
           el('span', { class: 'box-sub', text: '#' + (idx + 1) })
         ]),
+        // Vises kun ved print, som en lodret etiket i venstremargenen ud for
+        // pakkens række, så en printet stak kan sorteres uden at læse kortene.
+        el('div', { class: 'box-label', text: origin }),
         cards
       ]));
     });
