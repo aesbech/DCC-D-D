@@ -152,7 +152,24 @@ andet, som ikke passer i kortlommer. Mål efter med en lineal, før du bruger en
 gør det til 271 mm, og der er 285 mm at tage af, så der er stadig ni kort på siden.
 
 Under **Printindstillinger** på Generator-fanen står resten: skalering 100 %, standard­marginer
-(ikke uden kant), papirtype tykt papir, og at arkene skal tørre før de stables.
+(ikke uden kant), papirtype tykt papir, og at arkene skal tørre før de stables. På Linux er
+der to skaleringstrin at passe på — browserens og PDF-fremviserens (Evince og Okular har
+*shrink to fit* slået til som standard) — og målestregen fanger begge.
+
+#### Skæremærker
+
+Ud for hver rækkes over- og underkant står en kort streg i **begge margener**. De vandrette
+snit er dem der forsvinder under klemmen på en skæremaskine; mærkerne stikker ud til siden,
+hvor de stadig kan ses, og to mærker over for hinanden afslører samtidig et skævt ark. De
+lodrette snit følger kortenes egne rammer, som løber hele arkets højde.
+
+Rammen om hvert kort er derfor gjort mørkere (0,25 mm i grå frem for lysegrå): den er selve
+skærelinjen. Farvekanten efter type er samtidig sat ned fra 3 mm til 1,5 mm — den kan stadig
+kendes på afstand, men bruger det halve blæk, og det er langt det meste af farven på arket.
+Browseren afrunder kanter til hele pixels, så den lander i praksis på ca. 1,3 mm.
+
+Layoutet er 6 mm etiketkolonne + 3 × 63 mm + 3 mm til højre = 198 mm, altså hele den
+brugbare bredde på A4 med 6 mm margen.
 
 Kortene bruger **ingen baggrundsfarver** — den farvede typekant er en ramme og stjernerne
 er streger. Det betyder to ting: printet er uafhængigt af driverens "udskriv baggrunds­grafik",
