@@ -169,7 +169,7 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 .box{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
 /* Etiketten og målestregen hører til printet — på skærmen står pakkenavnet
    allerede i box-head, og en lineal på en skærm siger ingenting. */
-.box-label,.print-check{display:none}
+.box-label,.print-check,.cut-right{display:none}
 .box-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .box-title{font-weight:600}
 .box-sub{color:var(--muted);font-size:13px}
@@ -324,15 +324,14 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
   .view.is-active{display:block!important}
 
   /* Hver pakke får sin egen række med en lodret etiket i margenen, så en
-     printet stak kan sorteres uden at læse kortene. 8 mm + 3 × 63 mm = 197 mm
-     og går lige akkurat op i A4 minus margenerne. */
+     printet stak kan sorteres uden at læse kortene. */
   .results{display:block;margin:0;padding:0}
 
   /* Målestreg til at afsløre skalering. Står i den ledige plads under de tre
      rækker (3 × 88 = 264 mm af de 285 mm), så den ikke skubber noget. */
   .print-check{
     display:flex;align-items:flex-end;gap:3mm;
-    margin:0 0 2mm 8mm;
+    margin:0 0 2mm 6mm;
     font-size:6.5pt;line-height:1.2;color:#333;
   }
   .print-ruler{
@@ -341,12 +340,32 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
     -webkit-print-color-adjust:exact;print-color-adjust:exact;
   }
   .box{
+    position:relative;
     display:grid;
-    grid-template-columns:8mm repeat(3,63mm);
+    /* 6 mm etiket + 3 × 63 mm = 195 mm, og de sidste 3 mm af de 198 er
+       plads til sigtemærker i højre side. */
+    grid-template-columns:6mm repeat(3,63mm);
     gap:0;margin:0;padding:0;
     background:#fff;border:0;border-radius:0;
     break-inside:avoid;page-break-inside:avoid;
   }
+  /* Sigtemærker til de vandrette snit, i begge margener. Kortenes egne rammer
+     er selve skærelinjen, men de forsvinder under klemmen på en skæremaskine —
+     mærkerne stikker ud til siden, hvor man stadig kan se dem, og to mærker
+     over for hinanden afslører samtidig et skævt ark. */
+  .cut-right{
+    position:absolute;right:0.5mm;top:0;bottom:0;width:2.5mm;
+    display:block;
+  }
+  .box::before,.box::after,
+  .cut-right::before,.cut-right::after{
+    content:'';position:absolute;
+    left:0;right:0;height:0;
+    border-top:0.3mm solid #000;
+  }
+  .box::before,.box::after{left:0.5mm;right:auto;width:4.5mm}
+  .box::before,.cut-right::before{top:0}
+  .box::after,.cut-right::after{bottom:0}
   .cards{display:contents}
   .box-head{display:none}
   .box-label{
@@ -363,15 +382,18 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
     box-sizing:border-box;
     margin:0;padding:3.5mm 3mm 2.5mm;
     gap:1.1mm;
-    border:0.2mm solid #9a9a9a;
+    /* Rammen er selve skærelinjen, så den skal kunne ses — men den bliver
+       også kortets kant, så den skal være tynd. */
+    border:0.25mm solid #555;
     border-radius:0;
     background:#fff;color:#000;
     overflow:hidden;
     break-inside:avoid;page-break-inside:avoid;
     -webkit-print-color-adjust:exact;print-color-adjust:exact;
   }
-  /* Rarity vises med stjerner; venstrekanten farves efter type. */
-  .card{border-left-width:3mm}
+  /* Rarity vises med stjerner; venstrekanten farves efter type. 1,5 mm er
+     nok til at kunne kendes på afstand og koster det halve blæk af 3 mm. */
+  .card{border-left-width:1.5mm}
   .card.is-magic{background:#fff}
   .card.is-empty{opacity:1}
 

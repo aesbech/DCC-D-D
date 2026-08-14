@@ -643,6 +643,9 @@
         // Vises kun ved print, som en lodret etiket i venstremargenen ud for
         // pakkens række, så en printet stak kan sorteres uden at læse kortene.
         el('div', { class: 'box-label', text: origin }),
+        // Sigtemærkerne i højre margen. De kan ikke hænge på box-label, som er
+        // roteret og derfor selv bliver holdepunkt for sine pseudoelementer.
+        el('div', { class: 'cut-right' }),
         cards
       ]));
     });
