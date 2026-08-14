@@ -6,6 +6,10 @@ og gemmes automatisk fra session til session.
 
 Ren statisk HTML/CSS/JS. Ingen build, ingen dependencies, intet backend.
 
+**Spillet selv** er beskrevet i [`docs/ideen.md`](docs/ideen.md), og de 150 bedrifter der
+udløser pakkerne ligger i [`docs/achievements.md`](docs/achievements.md). Denne fil handler
+kun om generatoren.
+
 ## Sådan kommer du i gang
 
 **Lokalt:** åbn `index.html` direkte i en browser. Det virker også fra `file://`.
