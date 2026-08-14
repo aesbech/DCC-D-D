@@ -272,12 +272,20 @@
     var pm = pack.magic;
     if (state.cfg.magic.enabled && pm) {
       var on = C.RKEYS.filter(function (k) { return (pm.chance[k] || 0) > 0; });
-      if (on.length) {
+      // Har kort deres egen chance, er pakkens kun det de andre falder tilbage
+      // på — så det skal fremgå, ellers læser man tallet som hele sandheden.
+      var nCards = 0, ownChance = 0;
+      (pack.tiers || []).forEach(function (t) {
+        (t.cards || []).forEach(function (c) { nCards++; if (c.magicChance) ownChance++; });
+      });
+      var allOwn = nCards > 0 && ownChance === nCards;
+      if (on.length || ownChance) {
         hint.appendChild(el('br'));
         hint.appendChild(el('span', {
-          text: 'Magic item-chance: ' + on.map(function (k) {
+          text: 'Magic item-chance: ' + (allOwn ? 'sat pr. kort' : (on.length ? on.map(function (k) {
             return C.rarityLabel(k) + ' ' + pm.chance[k] + '%';
-          }).join(', ') +
+          }).join(', ') : 'ingen')) +
+          (ownChance && !allOwn ? ' (' + ownChance + ' kort har deres egen)' : '') +
           ' · ' + C.magicPool(state.magic, pm.types, pm.consumables).length + ' magic items i puljen' +
           (pm.consumables === 'only' ? ' (kun forbrugsvarer)'
             : pm.consumables === 'exclude' ? ' (kun permanente)' : '')
@@ -821,12 +829,90 @@
     return host;
   }
 
+  /* Chancen for at et kort bliver magi findes to steder — på pakken og på
+     kortet — og det mest specifikke vinder, ligesom med vægte. Reglen står ét
+     sted her, så UI'et og generate() er enige. */
+  function chanceOf(pack, c) {
+    return (c && c.magicChance) || (pack.magic && pack.magic.chance) || {};
+  }
+
+  /* Et kort kan sætte sin egen chance for at blive et magic item. Det er dét
+     der gør én plads garanteret magisk mens resten af pakken kun har en lille
+     chance — sådan er Magic-pakken bygget. */
+  function cardMagicChance(pack, c) {
+    if (!state.cfg.magic.enabled) return null;
+    var host = el('div', { class: 'tier-weights' });
+
+    function render() {
+      host.innerHTML = '';
+      host.appendChild(el('label', { class: 'check' }, [
+        el('input', {
+          type: 'checkbox', checked: c.magicChance ? 'checked' : null,
+          onchange: function () {
+            var pm = pack.magic || {};
+            c.magicChance = this.checked ? C.magicChanceObj(pm.chance) : null;
+            render(); updateGenHint(); persist(); refreshPackDetail();
+          }
+        }),
+        document.createTextNode('Egen magic item-chance for dette kort')
+      ]));
+      if (!c.magicChance) {
+        host.appendChild(el('p', { class: 'hint',
+          text: 'Kortet bruger pakkens chance.' }));
+        return;
+      }
+
+      var rows = el('div', { class: 'dist' });
+      C.RARITIES.forEach(function (r) {
+        rows.appendChild(el('label', { class: 'field' }, [
+          el('span', {}, [
+            el('i', { class: 'dot', style: 'background:var(--r-' + r.key + ')' }),
+            document.createTextNode(r.label)
+          ]),
+          el('input', {
+            type: 'number', min: '0', max: '100', step: '0.1', value: c.magicChance[r.key] || 0,
+            oninput: function () {
+              c.magicChance[r.key] = Math.max(0, Math.min(100, Number(this.value) || 0));
+              updateGenHint(); persist();
+            }
+          })
+        ]));
+      });
+      host.appendChild(rows);
+
+      var quick = el('div', { class: 'row' }, [
+        el('button', {
+          class: 'btn btn-sm', text: 'Altid magi',
+          onclick: function () {
+            c.magicChance = C.magicChanceObj(100);
+            render(); updateGenHint(); persist(); refreshPackDetail();
+          }
+        }),
+        el('button', {
+          class: 'btn btn-sm', text: 'Aldrig magi',
+          onclick: function () {
+            c.magicChance = C.magicChanceObj(0);
+            render(); updateGenHint(); persist(); refreshPackDetail();
+          }
+        })
+      ]);
+      host.appendChild(quick);
+      host.appendChild(el('p', { class: 'hint',
+        text: 'Chance i procent pr. korttrin. 100 på alle trin gør kortet til et ' +
+              'garanteret magic item; 0 holder det på udstyr.' }));
+    }
+
+    render();
+    return host;
+  }
+
   /* En kortplads kan binde sine egne magic item-typer. Det er sådan en pakke
      bliver til "en potion, et spell scroll og et frit magic item". Feltet vises
-     kun når pakken faktisk kan give magic item-kort. */
+     kun når kortet faktisk kan give magic item-kort. */
   function cardMagicTypes(pack, c) {
     var pm = pack.magic || {};
-    var canRoll = C.RKEYS.some(function (k) { return (Number(pm.chance && pm.chance[k]) || 0) > 0; });
+    var chance = chanceOf(pack, c);
+    var canRoll = C.RKEYS.some(function (k) { return (Number(chance[k]) || 0) > 0; });
     if (!canRoll || !state.cfg.magic.enabled) return null;
 
     var host = el('div', { class: 'tier-weights' });
@@ -910,7 +996,8 @@
       el('h3', { text: 'Magic item-kort' }),
       el('p', { class: 'hint',
         text: 'Chance i procent for at et kort med det pågældende korttrin bliver et magic item ' +
-              'i stedet for et almindeligt item.' }),
+              'i stedet for et almindeligt item. Et enkelt kort kan sætte sin egen chance — ' +
+              'den vinder over pakkens.' }),
       chances,
       el('h3', { text: 'Korttrin → magi-rarity', style: 'margin-top:14px' }),
       magicMappingPanel(pack),
@@ -956,7 +1043,7 @@
      og så er kategorivægte uden betydning for det. */
   function drawsEquipment(pack, c) {
     if (!state.cfg.magic || !state.cfg.magic.enabled) return true;
-    var chance = (pack.magic && pack.magic.chance) || {};
+    var chance = chanceOf(pack, c);
     return C.RKEYS.some(function (k) {
       return (Number(c.dist[k]) || 0) > 0 && (Number(chance[k]) || 0) < 100;
     });
@@ -1203,7 +1290,10 @@
       el('button', {
         class: 'btn btn-sm', text: '+ Tilføj kort',
         onclick: function () {
-          t.cards.push({ label: 'Kort ' + (t.cards.length + 1), dist: C.emptyDist(), filter: null });
+          t.cards.push({
+            label: 'Kort ' + (t.cards.length + 1), dist: C.emptyDist(),
+            filter: null, weights: null, magicTypes: null, magicChance: null
+          });
           renderPackDetail(); updateGenHint(); persist();
         }
       }),
@@ -1292,6 +1382,8 @@
         }));
         catHost.appendChild(cardWeights(pack, c));
       }
+      var mc = cardMagicChance(pack, c);
+      if (mc) catHost.appendChild(mc);
       var mt = cardMagicTypes(pack, c);
       if (mt) catHost.appendChild(mt);
     }

@@ -302,7 +302,7 @@ eksport/import af hele opsætningen som JSON.
 | Weapons | Våben, Ammunition, Udstyr | 105 | Bronze / Sølv / Guld |
 | Armor | Rustning, Udstyr | 78 | Bronze / Sølv / Guld |
 | Consumables | Gift **eller** tagget Consumable | 20 + 49 magiske | Bronze / Sølv / Guld |
-| Magic | alle magic items — potion, scroll, frit | 450 | Bronze / Sølv / Guld |
+| Magic | udstyr + alle magic items — kort 3 garanteret magisk | 167 + 450 magiske | Bronze / Sølv / Guld |
 | Classes | Class | 140 | Standard (ikke gradueret) |
 
 ### Adventurer
@@ -319,8 +319,9 @@ hører ikke hjemme i en almindelig pakke.
 Verificeret over 20.000 simulerede pakker pr. tier: alle ni fordelinger rammer inden for
 0,4 procentpoint, og der er hverken fallback, tomme kort eller dubletter.
 
-Weapons og Armor har deres egne tunede fordelinger — se afsnittet om det garanterede kort.
-Magic-pakken har sin egen korttrin-tabel og typer pr. kort — se afsnittet om magic items.
+Weapons, Armor og Magic har deres egne tunede fordelinger — se afsnittet om det
+garanterede kort. Magic-pakken har desuden sin egen korttrin-tabel og sin egen
+magic item-chance pr. kort — se afsnittet om magic items.
 Consumables er stadig et startgæt, tænkt til at blive tunet i UI'et.
 
 ### Vægtning pr. kategori
@@ -392,21 +393,21 @@ rustning, hvilket gør det tydeligt at vægtningen er overflødig dér.
 Tre situationer får en note i stedet for tal:
 
 - alle kort på niveauet har deres egne vægte → sættet bruges ikke
-- kortene bliver altid til magic item-kort (fx **Magic**-pakken, som er 100 % magi på alle
-  trin) → kategorivægte bruges ikke
+- kortene bliver altid til magic item-kort (fx **Magic**-pakkens kort 3, og hele Guld-tieret,
+  som er 100 % magi på alle trin) → kategorivægte bruges ikke
 - puljen rummer kun én kategori → vægten gør ingen forskel
 
-### Ét garanteret kort i Weapons og Armor
+### Ét garanteret kort i Weapons, Armor og Magic
 
-Weapons og Armor har hver **et kortfilter på kort 3**, så den plads altid trækker fra
-netop den kategori pakken hedder. De to første kort trækker bredere — deres filter er
-pakkens eget, som også rummer Udstyr — så en våbenpakke ikke bliver tre våben og intet
-andet.
+Tre pakker garanterer **én ting på kort 3** og lader de to første trække bredere, så en
+våbenpakke ikke bliver tre våben og intet andet. Weapons og Armor gør det med et
+**kortfilter**; Magic gør det samme på magisiden med en **egen magic item-chance**.
 
-| Pakke | Kort 1–2 | Kort 3 |
-|-------|----------|--------|
-| Weapons | Våben, Ammunition, Udstyr | **kun Våben** |
-| Armor | Rustning, Udstyr | **kun Rustning** |
+| Pakke | Kort 1–2 | Kort 3 | Garantien ligger i |
+|-------|----------|--------|--------------------|
+| Weapons | Våben, Ammunition, Udstyr | **kun Våben** | kortfilter |
+| Armor | Rustning, Udstyr | **kun Rustning** | kortfilter |
+| Magic | udstyr, med stigende chance for magi | **altid et magic item** | magic item-chance |
 
 **Weapons**
 
@@ -428,9 +429,21 @@ Prisen for garantien er gentagelser i bunden. Armor Bronze kort 3 sigter efter U
 og der findes præcis én Uncommon-rustning, så resultatet er **78 % Padded Armor** — det er
 pakkens skraldeitem. Guld kort 3 ligger på Rare og opefter og rammer hele hylden.
 
+**Magic**
+
+| Kort | Bronze | Sølv | Guld |
+|------|--------|------|------|
+| Kort 1 | 78,5 % C, 12 % U, 7 % R, 2 % VR, 0,5 % L | 10 % C, 66 % U, 15 % R, 8 % VR, 1 % L | 60 % C, 30 % U, 8 % R, 2 % VR |
+| Kort 2 | 78,5 % C, 12 % U, 7 % R, 2 % VR, 0,5 % L | 10 % C, 66 % U, 15 % R, 8 % VR, 1 % L | 60 % C, 30 % U, 8 % R, 2 % VR |
+| Kort 3 | 78,5 % C, 12 % U, 7 % R, 2 % VR, 0,5 % L | 10 % C, 66 % U, 15 % R, 8 % VR, 1 % L | 5 % U, 45 % R, 35 % VR, 15 % L |
+
+Magic-pakken trækker fra samme udstyrspulje som Adventurer og bruger samme vægte
+(Våben 2, Rustning 4, Ammunition 2), fordi kort 1 og 2 falder tilbage på udstyr i Bronze
+og Sølv. Se afsnittet om chance pr. kort for hvor tit det sker.
+
 Målt over 3.000 pakker pr. tier er der ingen tomme kort og ingen fallback nogen steder,
 og kort 3 er 100 % på den rigtige kategori — de magic item-kort der falder der, er
-Weapon-typer i Weapons og Armor-typer i Armor.
+Weapon-typer i Weapons og Armor-typer i Armor, og i Magic er kort 3 altid magisk.
 
 ### Forbrugsvarer
 
@@ -499,9 +512,10 @@ De to er bevidst afkoblet: et **Rare kort** giver som regel et **Common magic it
 
 ### De fire rul
 
-1. **Bliver kortet magisk?** Kortpladsen har allerede slået sit korttrin. Pakkens
-   magic item-chance for netop det trin afgør, om kortet bliver et magic item i stedet
-   for et almindeligt item. Sættes pr. pakke under fanen Pakker.
+1. **Bliver kortet magisk?** Kortpladsen har allerede slået sit korttrin. Magic
+   item-chancen for netop det trin afgør, om kortet bliver et magic item i stedet for et
+   almindeligt item. Sættes pr. pakke under fanen Pakker — og kan overstyres pr. kort,
+   hvilket er sådan én plads bliver garanteret magisk.
 2. **Hvilken magi-rarity?** Tabellen under fanen Magic oversætter korttrinnet til en
    fordeling over magi-rarity.
 3. **Hvilket basisitem?** Er magic itemet generisk — `Weapon +1`, `Armor of Resistance`,
@@ -561,29 +575,45 @@ permanent. Alt kan rettes i tabellen på Magic-fanen, også som bulk-handling p�
 | Weapons | 15 % | 25 % | 40 % | Weapon | kun permanente |
 | Armor | 15 % | 25 % | 40 % | Armor | kun permanente |
 | Consumables | 20 % | 30 % | 40 % | Potion, Scroll | **kun forbrugsvarer** |
-| Magic | 100 % | 100 % | 100 % | pr. kort | begge dele |
+| Magic | pr. kort | pr. kort | pr. kort | alle | begge dele |
 | Classes | — | — | — | — | — |
 
 Typefiltret sikrer, at en Weapons-pakke ikke deler ringe ud.
 
-### Typer pr. kort
+### Chance og typer pr. kort
 
-Typerne kan også sættes **pr. kortplads**, så én pakke kan give forskellige slags magi.
-Det er sådan Magic-pakken er bygget:
+Både chancen og typerne kan sættes **pr. kortplads**, og kortets eget valg vinder over
+pakkens — samme regel som for vægte. Det er de to felter **Egen magic item-chance for dette
+kort** og **Egne magic item-typer for dette kort**, der ligger ved hver kortplads under
+Pakker. Uden dem følger kortet pakken.
 
-| Kort | Typer |
-|------|-------|
-| Potion | `Potion` |
-| Scroll | `Scroll` |
-| Magic item | alle |
+Chancen pr. kort er det der gør **ét garanteret magic item** muligt, på præcis samme måde
+som et eget filter garanterer et våben i Weapons: sæt kortet til 100 % på alle trin, og lad
+resten af pakken have en lavere chance. Knapperne **Altid magi** og **Aldrig magi** sætter
+alle fem trin på én gang.
 
-Alle tre kort deler tierets fordeling, så pakken giver tre lige gode ting af forskellig
-slags. Kort 1 er 100 % potions, kort 2 er 100 % scrolls, og kort 3 falder frit — ni
-forskellige typer, med wondrous items som den største gruppe.
+Sådan er Magic-pakken bygget:
 
-Feltet **Egne magic item-typer for dette kort** ligger ved hver kortplads under Pakker og
-vises kun når pakken faktisk kan give magic item-kort. Uden det følger kortet pakkens typer.
-Vil du have tre frie magic items i stedet, fjernes fluebenet på kort 1 og 2.
+| Tier | Kort 1 og 2 | Kort 3 |
+|------|-------------|--------|
+| Bronze | 5 / 8 / 30 / 60 / 100 % | **100 % på alle trin** |
+| Sølv | 15 / 40 / 65 / 85 / 100 % | **100 % på alle trin** |
+| Guld | 100 % på alle trin | **100 % på alle trin** |
+
+Chancen stiger med korttrinnet, fordi et højt trin ellers spildes: der findes ingen
+legendary rustning at trække, så et Legendary-korttrin skal blive til magi. Målt over
+20.000 pakker pr. tier:
+
+| Tier | Kort 1 og 2 | Kort 3 |
+|------|-------------|--------|
+| Bronze | 8,7 % magi, 91,3 % udstyr | 100 % magi |
+| Sølv | 45,9 % magi, 54,1 % udstyr | 100 % magi |
+| Guld | 100 % magi | 100 % magi |
+
+Typerne er ikke bundet i pakken længere — alle ni typer kan falde på alle tre kort, med
+wondrous items som den største gruppe. Vil du have den gamle opsætning tilbage — en potion,
+et scroll og et frit magic item — sættes kort 1 til typen `Potion`, kort 2 til `Scroll`, og
+begge til **Altid magi**.
 
 ### Egen korttrin → magi-rarity pr. pakke
 
@@ -602,15 +632,18 @@ er magi-rarityen, ét til én:
 | Very Rare | 100 % Very Rare |
 | Legendary | 100 % Legendary |
 
-Fordelingen på kortet betyder dermed præcis hvad den siger. Målt over 4.000 pakker pr. tier:
+Fordelingen på kortet betyder dermed præcis hvad den siger. Magi-rarityen på kort 3, målt
+over 20.000 pakker pr. tier:
 
 | Tier | Common | Uncommon | Rare | Very Rare | Legendary |
 |------|--------|----------|------|-----------|-----------|
-| Bronze | 75 % | 15 % | 7 % | 2 % | 1 % |
-| Sølv | 10 % | 65 % | 15 % | 8 % | 2 % |
-| Guld | — | 10 % | 70 % | 14 % | 5 % |
+| Bronze | 78,7 % | 12,0 % | 6,9 % | 2,0 % | 0,4 % |
+| Sølv | 9,6 % | 66,5 % | 15,1 % | 7,7 % | 1,0 % |
+| Guld | — | 4,9 % | 45,5 % | 34,6 % | **14,9 %** |
 
-Alle tre rammer inden for 0,5 procentpoint af det der står på kortene.
+Alle tre rammer inden for 0,5 procentpoint af det der står på kortene. Guld-tierets kort 3
+er hvor pakken har sin tyngde: kort 1 og 2 er tungt vægtet mod Common (60/30/8/2), så det
+sidste kort er dét man venter på — og der er legendary tredoblet i forhold til før.
 
 Overstyringen slås til og fra under Pakker, ved **Korttrin → magi-rarity**, og rører ikke den
 fælles tabel. De øvrige pakker følger som før fanen Magic.
