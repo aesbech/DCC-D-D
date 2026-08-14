@@ -64,7 +64,9 @@ Det giver spillet en motor som en almindelig loot-tabel ikke har:
 - **Det giver DM'en et håndtag.** Skal holdet have bedre grej, findes der altid en bedrift
   de er tæt på.
 
-Listen ligger i [`achievements.md`](achievements.md).
+Listen ligger i [`achievements.md`](achievements.md). To tredjedele af bedrifterne kræver
+ingen bogføring — se [`bogfoering.md`](bogfoering.md) for de få der gør, og det printbare
+ark der holder styr på dem.
 
 ## Sådan kører det ved bordet
 
@@ -103,3 +105,5 @@ Når det virker, føles en bedrift som at blive grebet i noget — og så få be
 | `README.md` | Generatoren: pakker, fordelinger, kort, print |
 | `docs/ideen.md` | Dette dokument |
 | `docs/achievements.md` | Bedrifterne og deres belønninger |
+| `docs/bogfoering.md` | Hvad der skal tælles undervejs, og hvorfor det ikke er meget |
+| `docs/tallysheet.html` | Printbart tælleark — spillerark og bordark |
