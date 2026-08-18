@@ -177,16 +177,23 @@
   </div>
 
   <div class="panel">
-    <h2>Magic items er items</h2>
-    <p class="hint">
-      Et magic item ligger i den samme liste som alt andet, med kategorien <b>Magic</b> og sin
-      D&amp;D-type som tag &mdash; <i>Potion</i>, <i>Scroll</i>, <i>Weapon</i> og s&aring; videre.
-      Det betyder at en pakke f&aring;r magi ind med et ganske almindeligt filter, og at
-      <b>v&aelig;gten p&aring; kategorien Magic</b> afg&oslash;r hvor tit den falder.
-      <i>Hvor godt</i> magic itemet er, er en anden sag &mdash; se tabellen ovenfor.
-    </p>
-    <p class="hint">Tabellen her er stedet at rette de enkelte items &mdash; rarity, forbrugsvare,
-       og om de overhovedet er med i puljen. Alt andet st&aring;r under Pakker.</p>
+    <h2>S&aring;dan bliver et kort magisk</h2>
+    <p class="hint">Fire trin. De tre f&oslash;rste s&aelig;ttes under <b>Pakker</b>, p&aring; pakken, tieret
+       eller det enkelte kort &mdash; det mest specifikke vinder, og hvert felt arver for sig.</p>
+    <ol class="hint">
+      <li><b>Magic item?</b> &Eacute;t tal, 0&ndash;100 %. Bliver kortet ikke magisk, tr&aelig;kker det
+          et almindeligt item af sit korttrin. Udstyr og magi er to adskilte puljer, s&aring; de
+          konkurrerer ikke &mdash; chancen afg&oslash;r det alene.</li>
+      <li><b>Hvor godt?</b> En fordeling over magi-rarity. Uden en fordeling oversættes
+          korttrinnet af tabellen ovenfor.</li>
+      <li><b>Hvilken slags?</b> En v&aelig;gt pr. type. 1 er neutralt, 0 sl&aring;r typen fra, 2 g&oslash;r
+          den dobbelt s&aring; sandsynlig. Ved siden af hvert felt st&aring;r den andel v&aelig;gten
+          faktisk giver.</li>
+      <li><b>Hvilket konkret item?</b> Sker af sig selv: et generisk item ruller sit
+          basisv&aring;ben eller sin basisrustning, og en spell-b&aelig;rer ruller sin spell.</li>
+    </ol>
+    <p class="hint">Kategorien <b>Magic</b> optr&aelig;der ikke i pakkefiltrene &mdash; filteret er
+       udstyrssiden. Typen ligger som tag p&aring; itemet, s&aring; den kan bruges til at s&oslash;ge her.</p>
     <label class="check"><input type="checkbox" id="magicEnabled"> Magic items m&aring; tr&aelig;kkes</label>
   </div>
 

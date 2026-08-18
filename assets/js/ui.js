@@ -275,16 +275,23 @@
       }
     }
     if (state.cfg.magic.enabled) {
-      var nMagic = C.poolFor(state.items, pack.filter, state.cfg)
-        .filter(function (i) { return i.category === C.MAGIC_CAT; }).length;
-      if (nMagic) {
-        hint.appendChild(el('br'));
-        hint.appendChild(el('span', {
-          text: 'Heraf ' + nMagic + ' magic items · vægt ' +
-                (pack.weights && pack.weights[C.MAGIC_CAT] !== undefined
-                  ? pack.weights[C.MAGIC_CAT] : 1)
-        }));
-      }
+      var chances = [];
+      pack.tiers.forEach(function (t) {
+        t.cards.forEach(function (c) {
+          var v = (c.magicChance !== null && c.magicChance !== undefined) ? c.magicChance
+                : (t.magicChance !== null && t.magicChance !== undefined) ? t.magicChance
+                : (pack.magicChance || 0);
+          if (chances.indexOf(v) < 0) chances.push(v);
+        });
+      });
+      chances.sort(function (a, b) { return a - b; });
+      hint.appendChild(el('br'));
+      hint.appendChild(el('span', {
+        text: 'Magic item-chance pr. kort: ' +
+              (chances.length === 1 ? chances[0] + ' %'
+                                    : chances[0] + '–' + chances[chances.length - 1] + ' %') +
+              ' · ' + C.magicPoolFor(state.items, pack.filter).length + ' magic items i puljen'
+      }));
     }
     if (pack.note) {
       hint.appendChild(el('br'));
@@ -688,7 +695,9 @@
   /* Chip-vælger for kategorier og tags i ét filter-objekt. */
   function filterEditor(filter, onChange) {
     var wrap = el('div');
-    var cats = C.categoriesOf(state.items);
+    // Magi filtreres ikke — den har sin egen pulje og sin egen chance. Ville
+    // kategorien stå her, ville man tro den gjorde noget.
+    var cats = C.categoriesOf(state.items).filter(function (x) { return x !== C.MAGIC_CAT; });
     var tags = C.tagsOf(state.items);
 
     /* Magic items bragte deres egne 189 tags med, så listen er for lang til
@@ -836,15 +845,73 @@
     return wrap;
   }
 
-  /* Magi-rarity er sin egen akse. Når et kort lander på et magic item, skal
-     korttrinnet oversættes til hvor godt itemet er — og dét skal kunne sættes
-     tæt på kortet, ikke kun i en fælles tabel.
+  /* ---------------- magi-panelet ----------------
 
-     Fire niveauer, mest specifikke vinder: kort → tier → pakke → fælles tabel.
-     De tre første bruger den simple form: én fordeling der gælder uanset
-     korttrin. Den fælles tabel har en række pr. trin. */
-  function magicDistEditor(owner, title, note) {
-    var host = el('div', { class: 'tier-weights' });
+     Et kort går gennem fire trin, og de tre første sættes her:
+
+       1. Bliver kortet et magic item?   ét tal, 0-100 %
+       2. Hvor godt er det?              fordeling over magi-rarity
+       3. Hvilken slags?                 vægt pr. type
+       4. Hvilket konkret item?          basis- og spellrul, sker af sig selv
+
+     Panelet findes på pakke, tier og kort. Det mest specifikke vinder, og
+     hvert felt arver for sig — man kan sætte chancen på kortet og lade rarity
+     følge pakken.                                                          */
+
+  function inherited(pack, t, c, field) {
+    if (c && c[field] !== null && c[field] !== undefined) return { level: 'kort', value: c[field] };
+    if (t && t[field] !== null && t[field] !== undefined) return { level: 'tier', value: t[field] };
+    if (pack[field] !== null && pack[field] !== undefined) return { level: 'pakke', value: pack[field] };
+    return { level: null, value: null };
+  }
+
+  /* Trin 1: ét tal. */
+  function chanceField(owner, pack, t, c) {
+    var host = el('div');
+
+    function render() {
+      host.innerHTML = '';
+      var own = owner.magicChance !== null && owner.magicChance !== undefined;
+      host.appendChild(el('label', { class: 'check' }, [
+        el('input', {
+          type: 'checkbox', checked: own ? 'checked' : null,
+          onchange: function () {
+            owner.magicChance = this.checked
+              ? (inherited(pack, t, c, 'magicChance').value || 0) : null;
+            render(); updateGenHint(); persist(); refreshPackDetail();
+          }
+        }),
+        document.createTextNode('Egen chance')
+      ]));
+      if (!own) {
+        var inh = inherited(pack, t, c, 'magicChance');
+        host.appendChild(el('p', { class: 'hint',
+          text: inh.level ? 'Arver ' + inh.value + ' % fra ' + inh.level + '.'
+                          : 'Ingen chance sat — kortet bliver aldrig magisk.' }));
+        return;
+      }
+      host.appendChild(el('label', { class: 'field field-sm' }, [
+        el('span', { text: 'Chance for magic item (%)' }),
+        el('input', {
+          type: 'number', min: '0', max: '100', step: '1', value: owner.magicChance,
+          oninput: function () {
+            owner.magicChance = Math.max(0, Math.min(100, Number(this.value) || 0));
+            updateGenHint(); persist();
+          }
+        })
+      ]));
+      host.appendChild(el('p', { class: 'hint',
+        text: '0 = aldrig magisk, 100 = altid. Bliver kortet ikke magisk, trækker det ' +
+              'et almindeligt item af sit korttrin.' }));
+    }
+
+    render();
+    return host;
+  }
+
+  /* Trin 2: fordeling over magi-rarity. */
+  function rarityField(owner, pack, t, c) {
+    var host = el('div');
 
     function render() {
       host.innerHTML = '';
@@ -856,10 +923,13 @@
             render(); persist(); refreshPackDetail();
           }
         }),
-        document.createTextNode(title)
+        document.createTextNode('Egen magi-rarity')
       ]));
       if (!owner.magicDist) {
-        host.appendChild(el('p', { class: 'hint', text: note }));
+        var inh = inherited(pack, t, c, 'magicDist');
+        host.appendChild(el('p', { class: 'hint',
+          text: inh.level ? 'Arver fordelingen fra ' + inh.level + '.'
+                          : 'Korttrinnet oversættes af den fælles tabel under fanen Magic.' }));
         return;
       }
 
@@ -870,7 +940,6 @@
         sumEl.textContent = 'Sum: ' + (Math.round(total * 100) / 100) + '%';
         sumEl.className = 'sum ' + (Math.abs(total - 100) < 0.01 ? 'good' : 'bad');
       }
-
       var rows = el('div', { class: 'dist' });
       C.MAGIC_RARITIES.forEach(function (r) {
         rows.appendChild(el('label', { class: 'field' }, [
@@ -891,20 +960,104 @@
       refresh();
       host.appendChild(rows);
       host.appendChild(el('p', { class: 'hint',
-        text: 'Gælder uanset hvilket korttrin kortet slår. Artifacts trækkes kun hvis ' +
-              'du giver dem vægt her.' }));
+        text: 'Gælder uanset hvilket korttrin kortet slår.' }));
     }
 
     render();
     return host;
   }
 
-  /* Hvilket niveau der faktisk gælder for én kortplads. */
-  function magicSourceNote(pack, t, c) {
-    if (c.magicDist) return 'Kortets egen fordeling.';
-    if (t && t.magicDist) return 'Tierets fordeling gælder.';
-    if (pack.magicDist) return 'Pakkens fordeling gælder.';
-    return 'Den fælles tabel under fanen Magic gælder — korttrinnet oversættes der.';
+  /* Trin 3: vægt pr. type, med den andel vægten faktisk giver. En vægt er
+     relativ og siger intet i sig selv — procenten ved siden af gør. */
+  function typeField(owner, pack, t, c, filter) {
+    var host = el('div');
+
+    function shares(weights) {
+      var pool = C.magicPoolFor(state.items, filter);
+      var by = {}, total = 0;
+      pool.forEach(function (i) {
+        var w = (weights && weights[i.subcategory] !== undefined) ? weights[i.subcategory] : 1;
+        by[i.subcategory] = (by[i.subcategory] || 0) + w;
+        total += w;
+      });
+      return { by: by, total: total, pool: pool.length };
+    }
+
+    function render() {
+      host.innerHTML = '';
+      var own = !!owner.magicTypes;
+      host.appendChild(el('label', { class: 'check' }, [
+        el('input', {
+          type: 'checkbox', checked: own ? 'checked' : null,
+          onchange: function () {
+            owner.magicTypes = this.checked
+              ? JSON.parse(JSON.stringify(inherited(pack, t, c, 'magicTypes').value || {})) : null;
+            render(); persist(); refreshPackDetail();
+          }
+        }),
+        document.createTextNode('Egne typevægte')
+      ]));
+
+      var eff = own ? owner.magicTypes : inherited(pack, t, c, 'magicTypes').value;
+      if (!own) {
+        var inh = inherited(pack, t, c, 'magicTypes');
+        host.appendChild(el('p', { class: 'hint',
+          text: inh.level ? 'Arver typevægtene fra ' + inh.level + '.'
+                          : 'Alle typer er lige sandsynlige i forhold til hvor mange der findes.' }));
+      }
+
+      var st = shares(eff);
+      var types = C.magicTypesOf(state.items);
+      var rows = el('div', { class: 'dist' });
+      types.forEach(function (ty) {
+        var w = (eff && eff[ty] !== undefined) ? eff[ty] : 1;
+        var pct = st.total > 0 ? (100 * (st.by[ty] || 0) / st.total) : 0;
+        var field = el('label', { class: 'field' }, [
+          el('span', { text: ty + ' · ' + (Math.round(pct * 10) / 10) + ' %' }),
+          el('input', {
+            type: 'number', min: '0', step: '0.5', value: w, disabled: own ? null : 'disabled',
+            oninput: function () {
+              var v = Number(this.value);
+              if (!isFinite(v) || v < 0) v = 0;
+              if (v === 1) delete owner.magicTypes[ty]; else owner.magicTypes[ty] = v;
+              render(); persist();
+            }
+          })
+        ]);
+        rows.appendChild(field);
+      });
+      host.appendChild(rows);
+      host.appendChild(el('p', { class: 'hint',
+        text: '1 er neutralt, 0 slår typen fra. Procenten er den andel vægten faktisk giver ' +
+              'af de ' + st.pool + ' magic items kortet kan trække.' }));
+    }
+
+    render();
+    return host;
+  }
+
+  function magicPanel(owner, pack, t, c, title, lead) {
+    if (!state.cfg.magic.enabled)
+      return el('div', { class: 'panel' }, [
+        el('h3', { text: title }),
+        el('p', { class: 'hint', text: 'Magi er slået fra under fanen Magic.' })
+      ]);
+    var filter = c ? effectiveFilter(pack, c) : pack.filter;
+    return el('div', { class: 'panel magic-panel' }, [
+      el('h3', { text: title }),
+      lead ? el('p', { class: 'hint', text: lead }) : null,
+      el('div', { class: 'magic-steps' }, [
+        el('div', { class: 'magic-step' }, [
+          el('h4', { text: '1 · Magic item?' }), chanceField(owner, pack, t, c)
+        ]),
+        el('div', { class: 'magic-step' }, [
+          el('h4', { text: '2 · Hvor godt?' }), rarityField(owner, pack, t, c)
+        ]),
+        el('div', { class: 'magic-step' }, [
+          el('h4', { text: '3 · Hvilken slags?' }), typeField(owner, pack, t, c, filter)
+        ])
+      ])
+    ]);
   }
 
   /* Uden vægte er alle items i en rarity lige sandsynlige, så den største
@@ -1140,17 +1293,11 @@
 
     host.appendChild(weightPanel(pack));
 
-    host.appendChild(el('div', { class: 'panel' }, [
-      el('h3', { text: 'Magi-rarity' }),
-      el('p', { class: 'hint',
-        text: 'Korttrin og magi-rarity er to akser. Et Rare kort er 20–50 gp på ' +
-              'udstyrssiden, men et Rare magic item er en Flame Tongue — derfor ' +
-              'oversættes trinnet, når kortet lander på magi. Uden en fordeling her ' +
-              'bruges den fælles tabel under fanen Magic. Sæt den pr. kort, hvis kun ' +
-              'én plads skal opføre sig anderledes.' }),
-      magicDistEditor(pack, 'Egen magi-rarity for hele pakken',
-        'Pakken bruger den fælles tabel under fanen Magic.')
-    ]));
+    host.appendChild(magicPanel(pack, pack, null, null, 'Magi',
+      'Hvert kort spørger: bliver dette et magic item? Sig ja med en chance, og sæt ' +
+      'hvor godt og hvilken slags. Filteret ovenfor er udstyrssiden — magi har sin ' +
+      'egen pulje, så de to konkurrerer ikke. Det samme panel findes på hvert tier og ' +
+      'hvert kort, og det mest specifikke vinder.'));
 
     pack.tiers.forEach(function (t, ti) { host.appendChild(renderTier(pack, t, ti)); });
 
@@ -1173,9 +1320,7 @@
   function renderTier(pack, t, ti) {
     var body = el('div', { class: 'tier-body' });
     body.appendChild(tierWeights(pack, t));
-    body.appendChild(magicDistEditor(t, 'Egen magi-rarity for dette tier',
-      pack.magicDist ? 'Tieret bruger pakkens fordeling.'
-                     : 'Tieret bruger den fælles tabel under fanen Magic.'));
+    body.appendChild(magicPanel(t, pack, t, null, 'Magi for dette tier', null));
     t.cards.forEach(function (c, ci) { body.appendChild(renderCard(pack, t, c, ci)); });
 
     body.appendChild(el('div', { class: 'row' }, [
@@ -1276,9 +1421,7 @@
       }
       // Magi-fordelingen hører til kortet uanset om det har eget filter: et
       // kort der trækker fra pakkens pulje kan også lande på magi.
-      if (state.cfg.magic.enabled)
-        catHost.appendChild(magicDistEditor(c, 'Egen magi-rarity for dette kort',
-          magicSourceNote(pack, t, c)));
+      catHost.appendChild(magicPanel(c, pack, t, c, 'Magi for dette kort', null));
     }
     renderOverride();
 
