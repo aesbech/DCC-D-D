@@ -249,8 +249,9 @@
     if (tierObj) parts.push(tierObj.cards.length + ' kort pr. pakke');
     var f = pack.filter;
     if (f.categories.length) parts.push('kategorier: ' + f.categories.join(', '));
-    if (f.tags.length) parts.push('tags: ' + f.tags.join(', '));
-    if (!f.categories.length && !f.tags.length) parts.push('alle kategorier');
+    else parts.push('alle kategorier');
+    if (f.consumables === 'only') parts.push('kun forbrugsvarer');
+    if (f.consumables === 'exclude') parts.push('kun varigt udstyr');
     if (f.consumables === 'only') parts.push('kun forbrugsvarer');
     else if (f.consumables === 'exclude') parts.push('uden forbrugsvarer');
     hint.appendChild(document.createTextNode(parts.join(' · ')));
@@ -695,84 +696,32 @@
   /* Chip-vælger for kategorier og tags i ét filter-objekt. */
   function filterEditor(filter, onChange) {
     var wrap = el('div');
-    // Magi filtreres ikke — den har sin egen pulje og sin egen chance. Ville
-    // kategorien stå her, ville man tro den gjorde noget.
+    // Magi filtreres ikke — den har sin egen pulje og sin egen chance.
     var cats = C.categoriesOf(state.items).filter(function (x) { return x !== C.MAGIC_CAT; });
-    var tags = C.tagsOf(state.items);
 
-    /* Magic items bragte deres egne 189 tags med, så listen er for lang til
-       at ligge fremme. De valgte står altid øverst; resten er foldet sammen bag
-       en søgning, så man kan finde ét tag uden at skulle læse dem alle. */
-    var SHOWN = 24;
-
-    function group(title, all, selected, note) {
-      var box = el('div', { class: 'filter-group' });
-      var open = false, q = '';
-
-      function render() {
-        box.innerHTML = '';
-        box.appendChild(el('h3', { text: title }));
-        if (note) box.appendChild(el('p', { class: 'hint', text: note }));
-        if (!all.length) {
-          box.appendChild(el('span', { class: 'hint', text: 'Ingen fundet — importér items først.' }));
-          return;
-        }
-
-        var needle = q.trim().toLowerCase();
-        var rest = all.filter(function (v) {
-          return selected.indexOf(v) < 0 && (!needle || v.toLowerCase().indexOf(needle) >= 0);
-        });
-        var hidden = 0;
-        if (!open && !needle && rest.length > SHOWN) {
-          hidden = rest.length - SHOWN;
-          rest = rest.slice(0, SHOWN);
-        }
-
-        if (all.length > SHOWN) {
-          box.appendChild(el('input', {
-            type: 'search', class: 'chip-search', value: q,
-            placeholder: 'Søg blandt ' + all.length + ' …',
-            oninput: function () {
-              q = this.value;
-              var pos = this.selectionStart;
-              render();
-              var f = box.querySelector('.chip-search');
-              if (f) { f.focus(); f.setSelectionRange(pos, pos); }
-            }
-          }));
-        }
-
-        var chips = el('div', { class: 'cats' });
-        function chip(v, on) {
-          chips.appendChild(el('button', {
-            class: 'chip' + (on ? ' on' : ''), text: v,
-            onclick: function () {
-              var i = selected.indexOf(v);
-              if (i >= 0) selected.splice(i, 1); else selected.push(v);
-              render(); onChange();
-            }
-          }));
-        }
-        // Valgte først, så man kan se hvad filteret gør uden at lede.
-        selected.forEach(function (v) { chip(v, true); });
-        rest.forEach(function (v) { chip(v, false); });
-        if (hidden) {
-          chips.appendChild(el('button', {
-            class: 'chip chip-more', text: '+ ' + hidden + ' flere',
-            onclick: function () { open = true; render(); }
-          }));
-        }
-        box.appendChild(chips);
-      }
-
-      render();
-      return box;
+    var chips = el('div', { class: 'cats' });
+    if (!cats.length) {
+      chips.appendChild(el('span', { class: 'hint', text: 'Ingen fundet — importér items først.' }));
+    } else {
+      cats.forEach(function (v) {
+        var on = filter.categories.indexOf(v) >= 0;
+        chips.appendChild(el('button', {
+          class: 'chip' + (on ? ' on' : ''), text: v,
+          onclick: function () {
+            var i = filter.categories.indexOf(v);
+            if (i >= 0) filter.categories.splice(i, 1); else filter.categories.push(v);
+            onChange();
+          }
+        }));
+      });
     }
 
-    wrap.appendChild(group('Kategorier', cats, filter.categories,
-      'Ingen valgt = alle kategorier (undtagen de udelukkede under Indstillinger).'));
-    wrap.appendChild(group('Tags', tags, filter.tags,
-      'Ingen valgt = ingen tag-begrænsning. Vælges flere, tæller et item med hvis det har mindst ét af dem.'));
+    wrap.appendChild(el('div', { class: 'filter-group' }, [
+      el('h3', { text: 'Kategorier' }),
+      el('p', { class: 'hint',
+        text: 'Ingen valgt = alle kategorier (undtagen de udelukkede under Indstillinger).' }),
+      chips
+    ]));
 
     wrap.appendChild(el('label', { class: 'field cons-mode' }, [
       el('span', { text: 'Forbrugsvarer (gift, fakler, rationer, olie …)' }),
@@ -786,23 +735,9 @@
     ]));
     wrap.querySelector('.cons-mode select').value = filter.consumables || 'all';
 
-    if (cats.length || tags.length) {
-      wrap.appendChild(el('label', { class: 'field filter-mode' }, [
-        el('span', { text: 'Sådan kombineres kategorier og tags' }),
-        el('select', {
-          onchange: function () { filter.mode = this.value; onChange(); }
-        }, [
-          el('option', { value: 'and', text: 'Begge skal passe (snævrere)' }),
-          el('option', { value: 'or', text: 'Én af delene er nok (bredere)' })
-        ])
-      ]));
-      wrap.querySelector('.filter-mode select').value = filter.mode === 'or' ? 'or' : 'and';
-    }
     return wrap;
   }
 
-  /* Tabellen korttrin -> magi-rarity. Bruges både til den fælles under fanen
-     Magic og til en pakkes egen overstyring. */
   function mappingGrid(mapping) {
     var wrap = el('div');
 
@@ -875,48 +810,29 @@
     return { level: null, value: null };
   }
 
-  /* Spørgsmålet: bliver kortet magisk? */
+  /* Spørgsmålet: bliver kortet magisk? Ét felt — tomt betyder "som niveauet
+     over", så der ikke skal et flueben til for at sige "ikke sat". */
   function chanceField(owner, pack, t, c) {
-    var host = el('div');
-
-    function render() {
-      host.innerHTML = '';
-      var own = owner.magicChance !== null && owner.magicChance !== undefined;
-      var row = el('div', { class: 'row chance-row' }, [
-        el('label', { class: 'check' }, [
-          el('input', {
-            type: 'checkbox', checked: own ? 'checked' : null,
-            onchange: function () {
-              owner.magicChance = this.checked
-                ? (inherited(pack, t, c, 'magicChance').value || 0) : null;
-              render(); updateGenHint(); persist(); refreshPackDetail();
-            }
-          }),
-          document.createTextNode('Egen chance')
-        ])
-      ]);
-      if (own) {
-        row.appendChild(el('label', { class: 'field field-sm' }, [
-          el('input', {
-            type: 'number', min: '0', max: '100', step: '1', value: owner.magicChance,
-            oninput: function () {
-              owner.magicChance = Math.max(0, Math.min(100, Number(this.value) || 0));
-              updateGenHint(); persist(); refreshPackDetail();
-            }
-          })
-        ]));
-        row.appendChild(el('span', { class: 'hint', text: '% chance for at kortet er magisk' }));
-      } else {
-        var inh = inherited(pack, t, c, 'magicChance');
-        row.appendChild(el('span', { class: 'hint',
-          text: inh.level ? 'Arver ' + inh.value + ' % fra ' + inh.level + '.'
-                          : 'Ingen chance sat — kortet bliver aldrig magisk.' }));
+    var inh = inherited(pack, t, c, 'magicChance');
+    var own = owner.magicChance !== null && owner.magicChance !== undefined;
+    var input = el('input', {
+      type: 'number', min: '0', max: '100', step: '1',
+      value: own ? owner.magicChance : '',
+      placeholder: inh.level && !own ? String(inh.value) : '0',
+      oninput: function () {
+        var raw = this.value.trim();
+        owner.magicChance = raw === '' ? null : Math.max(0, Math.min(100, Number(raw) || 0));
+        updateGenHint(); persist(); refreshPackDetail();
       }
-      host.appendChild(row);
-    }
-
-    render();
-    return host;
+    });
+    var note = own
+      ? '% chance for at kortet bliver et magic item'
+      : (inh.level ? 'Tomt felt — arver ' + inh.value + ' % fra ' + inh.level + '.'
+                   : 'Tomt felt og intet sat ovenover — kortet bliver aldrig magisk.');
+    return el('div', { class: 'row chance-row' }, [
+      el('label', { class: 'field field-sm' }, [input]),
+      el('span', { class: 'hint', text: note })
+    ]);
   }
 
   /* Rarity-fordeling. Bruges på begge grene; magisiden har Artifact med. */
@@ -1096,32 +1012,41 @@
       ]));
     }
 
-    var ch = inherited(pack, t, c, 'magicChance');
-    chip('Magi', (ch.value === null ? 0 : ch.value) + ' %',
-         owner.magicChance !== null && owner.magicChance !== undefined);
-
     var magNames = C.magicTypesOf(state.items);
     var catNames = C.categoriesOf(state.items).filter(function (x) { return x !== C.MAGIC_CAT; });
 
-    var md = inherited(pack, t, c, 'magicDist');
-    chip('ja', distText(md.value, C.MKEYS) || 'fælles tabel', !!owner.magicDist);
-    // Typevægte vises kun når de er sat på netop dette niveau. Arvede vægte
-    // står ens på hver eneste række og fylder uden at sige noget nyt — de er
-    // at finde på det niveau der satte dem.
-    if (owner.magicTypes) chip('type', typeText(owner.magicTypes, magNames), true);
+    var ch = inherited(pack, t, c, 'magicChance');
+    var eff = ch.value || 0;
+    var ownChance = owner.magicChance !== null && owner.magicChance !== undefined;
 
-    var gd = inheritedDist(pack, t, c);
-    chip('nej', distText(gd.value, C.RKEYS) || 'ikke sat',
-         !!(owner.dist && C.hasDist(owner.dist)));
-    if (owner.weights) chip('vægt', typeText(owner.weights, catNames), true);
+    // Standard først — men kun når kortet kan lande der.
+    if (eff < 100) {
+      var gd = inheritedDist(pack, t, c);
+      chip('Standard', distText(gd.value, C.RKEYS) || 'ikke sat',
+           !!(owner.dist && C.hasDist(owner.dist)));
+      // Typevægte vises kun når de er sat på netop dette niveau. Arvede vægte
+      // står ens på hver eneste række og fylder uden at sige noget nyt — de er
+      // at finde på det niveau der satte dem.
+      if (owner.weights) chip('vægt', typeText(owner.weights, catNames), true);
+    }
+    // Er chancen nul, er magisiden ikke i spil, og så fylder den heller ikke
+    // i sammenfatningen.
+    if (eff > 0 || ownChance) chip('Magic', eff + ' %', ownChance);
+    if (eff > 0) {
+      var md = inherited(pack, t, c, 'magicDist');
+      chip('rarity', distText(md.value, C.MKEYS) || 'fælles tabel', !!owner.magicDist);
+      if (owner.magicTypes) chip('type', typeText(owner.magicTypes, magNames), true);
+    }
 
     return { node: wrap, own: own };
   }
 
-  function branch(title, sub, steps) {
-    return el('div', { class: 'flow-branch' }, [
-      el('h4', { text: title }),
-      el('p', { class: 'branch-sub', text: sub }),
+  function branch(cls, title, sub, steps) {
+    return el('div', { class: 'flow-branch ' + cls }, [
+      el('div', { class: 'branch-head' }, [
+        el('h4', { text: title }),
+        el('span', { class: 'branch-sub', text: sub })
+      ]),
       el('div', { class: 'flow-step' }, [el('h5', { text: steps[0] }), steps[1]]),
       el('div', { class: 'flow-step' }, [el('h5', { text: steps[2] }), steps[3]])
     ]);
@@ -1153,6 +1078,9 @@
     };
     var magPool = function () { return C.magicPoolFor(state.items, filter); };
 
+    // Den chance der faktisk gælder her — egen eller arvet. Er den nul, har
+    // magigrenen ingenting at sige.
+    var eff = inherited(pack, t, c, 'magicChance').value || 0;
     var sum = flowSummary(owner, pack, t, c);
     // Foldet sammen som standard, så tretten paneler ikke bliver en mur.
     // Åbner man et, huskes det på tværs af gentegninger.
@@ -1172,25 +1100,7 @@
         chanceField(owner, pack, t, c)
       ]),
       el('div', { class: 'flow-branches' }, [
-        branch('Hvis ja', 'Trækker blandt magic items.', [
-          'Hvilken rarity',
-          rarityField({ owner: owner, field: 'magicDist', keys: C.MKEYS, list: C.MAGIC_RARITIES,
-            inheritNote: function () {
-              var inh = inherited(pack, t, c, 'magicDist');
-              return inh.level ? 'Arver fordelingen fra ' + inh.level + '.'
-                               : 'Korttrinnet oversættes af den fælles tabel under fanen Magic.';
-            } }),
-          'Hvilken type',
-          typeField({ owner: owner, field: 'magicTypes', pool: magPool,
-            keyOf: function (i) { return i.subcategory; },
-            inheritedValue: function () { return inherited(pack, t, c, 'magicTypes').value; },
-            inheritNote: function () {
-              var inh = inherited(pack, t, c, 'magicTypes');
-              return inh.level ? 'Arver vægtene fra ' + inh.level + '.'
-                               : 'Alle typer vejer lige.';
-            } })
-        ]),
-        branch('Hvis nej', 'Trækker blandt almindelige items.', [
+        eff < 100 ? branch('is-gear', 'Standard Item', 'Trækker blandt almindelige items.', [
           'Hvilken rarity',
           rarityField({ owner: owner, field: 'dist', keys: C.RKEYS, list: C.RARITIES, bar: true,
             inheritNote: function () {
@@ -1217,7 +1127,28 @@
                    ? 'Arver vægtene fra pakke.' : 'Alle kategorier vejer lige.';
               return 'Alle kategorier vejer lige.';
             } })
-        ])
+        ]) : null,
+        // Grenene vises kun når de er i spil. Er chancen nul, kan kortet
+        // aldrig blive magisk; er den 100, trækker det aldrig almindeligt.
+        // I begge tilfælde er der intet at stille ind på den anden gren.
+        eff > 0 ? branch('is-magic', 'Magic Item', 'Trækker blandt magic items.', [
+          'Hvilken rarity',
+          rarityField({ owner: owner, field: 'magicDist', keys: C.MKEYS, list: C.MAGIC_RARITIES,
+            inheritNote: function () {
+              var inh = inherited(pack, t, c, 'magicDist');
+              return inh.level ? 'Arver fordelingen fra ' + inh.level + '.'
+                               : 'Korttrinnet oversættes af den fælles tabel under fanen Magic.';
+            } }),
+          'Hvilken type',
+          typeField({ owner: owner, field: 'magicTypes', pool: magPool,
+            keyOf: function (i) { return i.subcategory; },
+            inheritedValue: function () { return inherited(pack, t, c, 'magicTypes').value; },
+            inheritNote: function () {
+              var inh = inherited(pack, t, c, 'magicTypes');
+              return inh.level ? 'Arver vægtene fra ' + inh.level + '.'
+                               : 'Alle typer vejer lige.';
+            } })
+        ]) : null
       ])
     ]);
     box.appendChild(inner);
@@ -1229,7 +1160,7 @@
 
   /* Filteret bestemmer puljen; vægtene i flow-panelet bestemmer fordelingen
      inden i den. De to ting er uafhængige. */
-  function hasFilter(f) { return !!(f && (f.categories.length || f.tags.length)); }
+  function hasFilter(f) { return !!(f && f.categories.length); }
 
   function effectiveFilter(pack, c) {
     return hasFilter(c.filter) ? c.filter : pack.filter;
@@ -1624,12 +1555,10 @@
   function filteredItems() {
     var q = $('#itemSearch').value.trim().toLowerCase();
     var cat = $('#itemCatFilter').value;
-    var tag = $('#itemTagFilter').value;
     var rar = $('#itemRarFilter').value;
     return state.items.filter(function (i) {
       if (q && i.name.toLowerCase().indexOf(q) < 0) return false;
       if (cat && i.category !== cat) return false;
-      if (tag && (i.tags || []).indexOf(tag) < 0) return false;
       if (rar === '__none' ? !!i.rarity : (rar && i.rarity !== rar)) return false;
       var cons = $('#itemConsFilter').value;
       if (cons === 'only' && !i.consumable) return false;
@@ -1650,7 +1579,6 @@
 
   function renderItemFilters() {
     fillSelect($('#itemCatFilter'), C.categoriesOf(state.items), 'Alle kategorier');
-    fillSelect($('#itemTagFilter'), C.tagsOf(state.items), 'Alle tags');
     fillSelect($('#itemRarFilter'),
       C.RARITIES.map(function (r) { return { value: r.key, text: r.label }; }),
       'Alle rarities', [{ value: '__none', text: 'Uden rarity' }]);
@@ -1807,7 +1735,7 @@
     }
   }
 
-  ['#itemSearch', '#itemCatFilter', '#itemTagFilter', '#itemRarFilter', '#itemConsFilter'].forEach(function (sel) {
+  ['#itemSearch', '#itemCatFilter', '#itemRarFilter', '#itemConsFilter'].forEach(function (sel) {
     $(sel).addEventListener(sel === '#itemSearch' ? 'input' : 'change', function () {
       state.page = 0; renderItems();
     });

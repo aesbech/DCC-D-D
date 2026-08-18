@@ -205,16 +205,25 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 .flow-q h4{margin:0 0 8px;font-size:13px}
 .chance-row{align-items:center;gap:10px}
 .chance-row .field{margin:0;width:88px}
-.flow-branches{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+/* Grenene ligger som vandrette bånd under hinanden: etiketten i venstre side,
+   felterne flyder ud til højre. Det er lavere end to spalter og lettere at
+   sammenligne på tværs, fordi de to bånd har samme opbygning. */
+.flow-branches{display:flex;flex-direction:column;gap:12px}
 .flow-branch{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg-2)}
+.flow-branch.is-magic{border-left:3px solid var(--accent)}
+.branch-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:8px}
 .flow-branch h4{margin:0;font-size:13px}
-.branch-sub{margin:2px 0 10px;font-size:12px;color:var(--muted)}
-.flow-step{margin-top:12px}
+.branch-sub{font-size:12px;color:var(--muted)}
+.flow-step{display:flex;align-items:flex-start;gap:12px;margin-top:10px}
 .flow-step:first-of-type{margin-top:0}
-.flow-step h5{margin:0 0 6px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
-.flow-step .dist{grid-template-columns:1fr 1fr}
+.flow-step h5{flex:none;width:108px;margin:7px 0 0;font-size:11px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--muted)}
+.flow-step>div{flex:1 1 auto;min-width:0}
+.flow-step .dist{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.flow-step .dist .field{width:112px;margin:0}
+.flow-step .dist .sum{align-self:center}
 .flow-step .field input[disabled]{opacity:.45}
-@media (max-width:900px){.flow-branches{grid-template-columns:1fr}.flow-step .dist{grid-template-columns:1fr}}
+@media (max-width:760px){.flow-step{flex-direction:column;gap:4px}.flow-step h5{width:auto;margin-top:0}}
 
 /* ---------- results ---------- */
 .results{display:flex;flex-direction:column;gap:16px}

@@ -140,7 +140,6 @@
     <div class="row">
       <input type="search" id="itemSearch" placeholder="Søg efter navn&hellip;">
       <select id="itemCatFilter"><option value="">Alle kategorier</option></select>
-      <select id="itemTagFilter"><option value="">Alle tags</option></select>
       <select id="itemRarFilter"><option value="">Alle rarities</option></select>
       <select id="itemConsFilter">
         <option value="">Forbrugsvarer og varigt</option>
@@ -180,25 +179,30 @@
     <h2>S&aring;dan bliver et kort magisk</h2>
     <p class="hint">Et kort stiller &eacute;t sp&oslash;rgsm&aring;l og g&aring;r derefter ned ad &eacute;n af to grene.
        De to grene har pr&aelig;cis de samme to knapper &mdash; kun puljen er forskellig.</p>
-    <pre class="hint flow-diagram">                 Magic item?          &larr; chance i procent
+    <pre class="hint flow-diagram">                 Magic item?          &larr; chance i procent, &eacute;t felt
                 /            \
-              ja              nej
+              nej             ja
                |               |
          Hvilken rarity   Hvilken rarity     &larr; v&aelig;gtet fordeling
          Hvilken type     Hvilken type       &larr; v&aelig;gt pr. type
                |               |
-        450 magic items   udstyrspuljen</pre>
+         Standard Item    Magic Item
+         udstyrspuljen    450 magic items</pre>
     <p class="hint">Det er <b>fem indstillinger</b>, og alle fem findes p&aring; <b>pakke, tier og
        kort</b> i panelet <b>Flowet</b> under Pakker. Hvert felt arver for sig, s&aring; man kan
        s&aelig;tte chancen p&aring; &eacute;t kort og lade resten f&oslash;lge pakken.</p>
-    <p class="hint">Uden en egen fordeling p&aring; ja-grenen oversættes korttrinnet af tabellen
-       ovenfor. Typev&aelig;gtene virker ens p&aring; begge grene: 1 er neutralt, 0 sl&aring;r typen fra,
-       2 g&oslash;r den dobbelt s&aring; sandsynlig &mdash; og procenten ved siden af viser hvad v&aelig;gten
-       faktisk giver.</p>
+    <p class="hint">Chancen er &eacute;t felt: st&aring;r det tomt, arves tallet fra niveauet over.
+       Er chancen 0, skjules Magic-grenen; er den 100, skjules Standard-grenen &mdash; der er
+       intet at stille ind p&aring; en gren kortet aldrig g&aring;r ned ad.</p>
+    <p class="hint">Uden en egen fordeling p&aring; Magic-grenen oversættes korttrinnet af
+       tabellen ovenfor. Typev&aelig;gtene virker ens p&aring; begge grene: 1 er neutralt, 0 sl&aring;r
+       typen fra, 2 g&oslash;r den dobbelt s&aring; sandsynlig &mdash; og procenten ved siden af viser
+       hvad v&aelig;gten faktisk giver.</p>
     <p class="hint">Bagefter sker resten af sig selv: et generisk magic item ruller sit
        basisv&aring;ben eller sin basisrustning, og en spell-b&aelig;rer ruller sin spell.</p>
     <p class="hint">Kategorien <b>Magic</b> optr&aelig;der ikke i pakkefiltrene &mdash; filteret er
-       udstyrssiden. Typen ligger som tag p&aring; itemet, s&aring; den kan bruges til at s&oslash;ge her.</p>
+       udstyrssiden. Tags ligger stadig p&aring; itemsne som metadata, men bruges hverken til at
+       filtrere eller tr&aelig;kke med.</p>
     <label class="check"><input type="checkbox" id="magicEnabled"> Magic items m&aring; tr&aelig;kkes</label>
   </div>
 
