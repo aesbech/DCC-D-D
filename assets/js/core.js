@@ -164,9 +164,47 @@ window.LB = (function () {
 
 
 
-  /* weights kan overstyres pr. tier. Uden overstyring bruges pakkens egne. */
-  function tier(id, name, cards, weights) {
-    return { id: id, name: name, cards: cards, weights: weights || null };
+  /* Alle fem indstillinger findes på tre niveauer — pakke, tier, kort — og det
+     mest specifikke vinder, felt for felt:
+
+       magicChance   chancen for at kortet bliver et magic item
+       magicDist     rarity-fordeling for magic items
+       magicTypes    typevægte for magic items
+       dist          rarity-fordeling for almindelige items
+       weights       kategorivægte for almindelige items
+
+     De to sider af ja/nej-spørgsmålet har altså samme to knapper. Kun puljen
+     og navnet på "type" er forskelligt: magic items har deres D&D-type,
+     almindelige items har deres kategori. */
+  function tier(id, name, cards, weights, dist_) {
+    return {
+      id: id, name: name, cards: cards,
+      weights: weights || null,
+      dist: dist_ ? dist(dist_) : null
+    };
+  }
+
+  /* Er en fordeling tom, betyder den "ikke sat" — så arves der. Et kort med
+     lutter nuller ville ellers give et tomt kort i stedet for at følge tieret. */
+  function hasDist(d) {
+    if (!d) return false;
+    for (var i = 0; i < RKEYS.length; i++) if ((Number(d[RKEYS[i]]) || 0) > 0) return true;
+    return false;
+  }
+
+  function distFor(pack, tierObj, c) {
+    if (c && hasDist(c.dist)) return c.dist;
+    if (tierObj && hasDist(tierObj.dist)) return tierObj.dist;
+    if (hasDist(pack.dist)) return pack.dist;
+    return c ? c.dist : null;
+  }
+
+  /* Vægte arver på samme måde. De hang tidligere sammen med et eget filter;
+     det gør de ikke længere — de to ting er uafhængige. */
+  function weightsFor(pack, tierObj, c) {
+    if (c && c.weights) return c.weights;
+    if (tierObj && tierObj.weights) return tierObj.weights;
+    return pack.weights || null;
   }
 
   /* Class-kort bærer deres type som tag, så en kortplads kan bede om præcis
@@ -559,6 +597,7 @@ window.LB = (function () {
         delete p.magic;
       }
       if (!Array.isArray(p.tiers)) p.tiers = [];
+      p.dist = hasDist(p.dist) ? dist(p.dist) : null;
       p.magicChance = normalizeChance(p.magicChance);
       p.magicTypes = normalizeTypes(p.magicTypes);
       p.magicDist = p.magicDist ? magicDist(p.magicDist) : null;
@@ -570,6 +609,7 @@ window.LB = (function () {
       p.tiers.forEach(function (t) {
         if (t.weights !== null && (!t.weights || typeof t.weights !== 'object')) t.weights = null;
         if (t.weights) delete t.weights[MAGIC_CAT];
+        t.dist = hasDist(t.dist) ? dist(t.dist) : null;
         t.magicChance = normalizeChance(t.magicChance);
         t.magicTypes = normalizeTypes(t.magicTypes);
         t.magicDist = t.magicDist ? magicDist(t.magicDist) : null;
@@ -606,9 +646,7 @@ window.LB = (function () {
             c.filter = null;
             c.weights = null;
           }
-          // Vægte uden eget filter ville aldrig blive brugt — smid dem væk,
-          // så en gammel opsætning ikke bærer rundt på død konfiguration.
-          if (!c.filter || !c.weights || typeof c.weights !== 'object') c.weights = null;
+          if (c.weights && typeof c.weights !== 'object') c.weights = null;
         });
       });
     });
@@ -1185,8 +1223,8 @@ window.LB = (function () {
       // Udstyrssiden: filteret som altid, minus magi. Magi har sin egen pulje,
       // så de to ikke konkurrerer om den samme plads.
       var pool = poolFor(items, f, cfg).filter(function (i) { return i.category !== MAGIC_CAT; });
-      var weights = (own && c.weights) ? c.weights : (tierObj.weights || pack.weights);
-      var rarity = weightedPick(c.dist);
+      var weights = weightsFor(pack, tierObj, c);
+      var rarity = weightedPick(distFor(pack, tierObj, c));
       var slot = c.label || ('Kort ' + (idx + 1));
       if (!rarity) return { slot: slot, item: null, rolled: null, actual: null, poolSize: pool.length };
 
@@ -1294,7 +1332,7 @@ window.LB = (function () {
     emptyMagicDist: function () { return magicDist({}); },
     magicMapping: magicMapping,
     magicTypesOf: magicTypesOf, rollSpell: rollSpell, MAGIC_CAT: MAGIC_CAT,
-    magicPoolFor: magicPoolFor,
+    magicPoolFor: magicPoolFor, distFor: distFor, weightsFor: weightsFor, hasDist: hasDist,
     rarityLabel: rarityLabel, normalizeRarity: normalizeRarity,
     defaultConfig: defaultConfig, defaultScales: defaultScales, findScale: findScale,
     migrateConfig: migrateConfig, emptyDist: function () { return dist({}); },

@@ -269,21 +269,24 @@ Under kontrollerne står puljens størrelse — og en rød advarsel hvis en ford
 en rarity der ikke findes items af.
 
 ### Pakker
-Selve konfigurationen. Hver pakketype har et **filter** (kategorier og/eller tags) og et
-antal **tiers**, som hver har et antal **kort** med sin egen rarity-fordeling i procent.
-Summen vises live og bliver rød hvis den ikke rammer 100.
+Selve konfigurationen. Hver pakketype har et **filter** (kategorier og/eller tags), et
+**flow-panel** med de fem indstillinger, og et antal **tiers** med hver deres **kort** —
+som begge har deres eget flow-panel. Summen af en fordeling vises live og bliver rød hvis
+den ikke rammer 100.
 
 Filteret kan kombineres på to måder: *begge skal passe* (kategori **og** tag) eller
 *én af delene er nok* (kategori **eller** tag). Hver pakke vælger desuden om den vil have
 forbrugsvarer med, udenom, eller kun dem.
 
 Et enkelt kort kan overstyre pakkens filter. Det er sådan en pakke garanterer én ting:
-kort 3 i Weapons filtrerer på våben. Har kortet sit eget filter, kan det også få sine
-**egne vægte**; se afsnittet om vægtning pr. kort.
+kort 3 i Weapons filtrerer på våben.
 
-Filteret er **udstyrssiden**. Magi har sin egen pulje og sit eget panel — se afsnittet om
-magic items. Tag-listen er lang, fordi magic items bragte 189 tags med, så den er foldet
-sammen: valgte tags står øverst, resten bag en søgning og en **+ N flere**-knap.
+Filteret bestemmer **udstyrspuljen**. Hvad der så trækkes af den — og om kortet
+overhovedet bliver et udstyrskort — sættes i panelet **Flowet** lige under. De to ting er
+uafhængige.
+
+Tag-listen er lang, fordi magic items bragte 189 tags med, så den er foldet sammen: valgte
+tags står øverst, resten bag en søgning og en **+ N flere**-knap.
 
 ### Items
 Importér CSV (komma, semikolon eller tab) eller JSON, via fil eller indsat tekst.
@@ -337,77 +340,27 @@ Weapons, Armor, Consumables og Magic har hver et garanteret kort med sit eget fi
 se afsnittet om det. Hvor tit magi falder, og hvad den så bliver, sættes pr. kort under
 Pakker; se afsnittet om magic items.
 
-### Vægtning pr. kategori
+### Vægtning
 
 Uden vægte er alle items i en rarity lige sandsynlige, og så dominerer den største
 kategori. Udstyr fyldte 55 % af en bronzepakke, mens rustning lå på under 2 %.
 
-Hver pakke kan derfor vægte sine kategorier. En vægt på 2 gør hvert item i kategorien
-dobbelt så sandsynligt som et uvægtet item af samme rarity; 1 er neutralt, og 0 slår
-kategorien fra uden at fjerne den fra filteret.
+Vægtene ligger i **Flowet** — nej-grenens *Hvilken type* — og findes på pakke, tier og
+kort. En vægt på 2 gør hvert item i kategorien dobbelt så sandsynligt som et uvægtet item
+af samme rarity; 1 er neutralt, og 0 slår kategorien fra uden at fjerne den fra filteret.
+Ved siden af hvert felt står den andel vægten faktisk giver.
 
-Vægtene kan også **overstyres pr. tier**, så en pakke kan opføre sig forskelligt i Bronze
-og Guld. Adventurer bruger det ikke længere — den kører ét vægtsæt hele vejen igennem:
-Våben 2, Rustning 4, Ammunition 2, resten 1.
-
+Adventurer kører ét sæt hele vejen igennem: Våben 2, Rustning 4, Ammunition 2, resten 1.
 Fordelingen det giver, målt over 15.000 pakker pr. tier:
 
-| Tier | Våben | Udstyr | Rustning | Værktøj | Ammunition | Magic |
-|------|-------|--------|----------|---------|------------|-------|
-| Bronze | 32 % | 44 % | 4 % | 15 % | 5 % | 0 % |
-| Sølv | 34 % | 33 % | 10 % | 17 % | 4 % | 2 % |
-| Guld | 33 % | 28 % | 13 % | 18 % | 3 % | 4 % |
+| Tier | Udstyr | Våben | Værktøj | Rustning | Ammunition |
+|------|--------|-------|---------|----------|------------|
+| Bronze | 43 % | 30 % | 14 % | 4 % | 9 % |
+| Sølv | 33 % | 34 % | 18 % | 11 % | 4 % |
+| Guld | 29 % | 34 % | 18 % | 14 % | 3 % |
 
-Rustning stiger med trinnet af sig selv: de dyre rustninger ligger på de høje rarities,
-så et Guld-kort rammer dem oftere end et Bronze-kort gør.
-
-### Vægtning pr. kort
-
-Vægte findes på tre niveauer: **pakke → tier → kort**, hvor det mest specifikke vinder.
-Kortvægte er kun tilgængelige når kortet har fået **sit eget filter** — uden det trækker
-kortet fra pakkens pulje, og så er det pakkens vægte der er de rigtige. Slår du kortets
-filter fra igen, ryger vægtene med.
-
-Det giver to ting man ikke kunne før:
-
-**En fordeling på én plads.** Sæt kortets filter til Rustning + Udstyr og vægt dem, så
-pladsen bliver 50/50 i stedet for enten en garanti eller hele pakkens blanding.
-
-**Et skub uden en garanti.** Weapons kort 3 er `kun Våben`. Tilføjer du Ammunition til
-kortets filter og vægter den, dukker den op oftere uden at nogen plads er reserveret til
-den — målt over 4.000 pakker på Guld kort 3:
-
-| Opsætning | Våben | Ammunition | Magic |
-|-----------|-------|------------|-------|
-| Kun Våben (standard) | 87 % | — | 13 % |
-| \+ Ammunition, ingen vægte | 84 % | 3 % | 13 % |
-| \+ Ammunition, vægt 5 | 76 % | **12 %** | 13 % |
-| \+ Ammunition, vægt 0 | 87 % | 0 % | 13 % |
-
-Standardopsætningen bruger ikke kortvægte — de er der til at tune med.
-
-### Vægtlisterne viser kun det niveauet faktisk rammer
-
-Et vægtsæt kan kun påvirke de kort det er det mest specifikke for, og et kort kan kun
-trække fra sit eget filter. Listen på hvert niveau følger derfor nøjagtig samme regel som
-trækningen, og skjuler resten:
-
-| Niveau | Viser |
-|--------|-------|
-| Pakke | kategorierne fra de kort der hverken har tier- eller kortvægte |
-| Tier | kategorierne fra tierets kort uden egne kortvægte |
-| Kort | kortets eget filter |
-
-Det betyder fx at **Classes** viser `Class (31)` og ikke alle 140 kort — pakkens tre
-kortpladser filtrerer på Class, Perk og Stat, og det er kun de 31 der kan falde. **Armor**
-viser Rustning og Udstyr, ikke hele listen. Og et kort der kun trækker rustning viser kun
-rustning, hvilket gør det tydeligt at vægtningen er overflødig dér.
-
-Tre situationer får en note i stedet for tal:
-
-- alle kort på niveauet har deres egne vægte → sættet bruges ikke
-- kortet er 100 % magisk (fx **Magic**-pakkens kort 3) → udstyrspuljen bruges aldrig
-- puljen rummer kun én kategori → vægten gør ingen forskel
+Ja-grenen har sit eget sæt, med magic itemets type i stedet for kategorien. Samme greb,
+samme procenter ved siden af.
 
 ### Ét garanteret kort pr. pakke
 
@@ -529,35 +482,45 @@ Det gør dem nemme at finde og redigere ét sted, og det lader typen bruges som 
 Men magi trækkes ikke sammen med udstyret — den har sin egen pulje og sin egen chance,
 sat pr. kort. Kæden nedenfor er hele historien.
 
-### Kæden: fire trin
+### Flowet: ét spørgsmål, to grene
 
-Et kort går gennem fire spørgsmål, i denne rækkefølge. De tre første sættes under
-**Pakker**, i panelet *Magi*, som findes på pakken, hvert tier og hvert kort — det mest
-specifikke vinder, og hvert felt arver for sig, så man kan sætte chancen på kortet og lade
-rarity følge pakken.
+Et kort stiller ét spørgsmål og går derefter ned ad én af to grene. De to grene har
+**præcis de samme to knapper** — kun puljen er forskellig:
 
 ```
-1. Magic item?      ét tal, 0–100 %
-2. Hvor godt?       fordeling over magi-rarity
-3. Hvilken slags?   vægt pr. type
-4. Hvilket item?    basis- og spellrul — sker af sig selv
+                     Magic item?          ← chance i procent
+                    /            \
+                  ja              nej
+                   |               |
+             Hvilken rarity   Hvilken rarity     ← vægtet fordeling
+             Hvilken type     Hvilken type       ← vægt pr. type
+                   |               |
+            450 magic items   udstyrspuljen
 ```
 
-**Trin 1 — bliver kortet magisk?** Ét tal. Bliver det ikke, trækker kortet et almindeligt
-item af sit korttrin. Udstyr og magi er **to adskilte puljer**: magi konkurrerer ikke med
-udstyret om pladsen, chancen afgør det alene. Derfor optræder kategorien `Magic` heller
-ikke i pakkefiltrene — filteret er udstyrssiden.
+Det er **fem indstillinger**, og alle fem findes på **pakke, tier og kort**. Hvert felt
+arver for sig, så man kan sætte chancen på ét kort og lade resten følge pakken:
 
-**Trin 2 — hvor godt?** Her holdes de to rarity-akser adskilt, og det er med vilje:
+| Felt | Hvad det gør | Arver fra |
+|------|--------------|-----------|
+| `magicChance` | Chancen for at kortet bliver magisk, 0–100 % | tier → pakke |
+| `magicDist` | Rarity-fordeling på ja-grenen | tier → pakke → fælles tabel |
+| `magicTypes` | Typevægte på ja-grenen | tier → pakke |
+| `dist` | Rarity-fordeling på nej-grenen | tier → pakke |
+| `weights` | Kategorivægte på nej-grenen | tier → pakke |
 
-| Akse | Hvad det er | Værdier |
-|------|-------------|---------|
-| **Korttrin** | Hvad kortpladsen slår. Styres af fordelingen på kortet. | Common … Legendary |
-| **Magi-rarity** | Magic itemets egen rarity fra D&D. | Common … Artifact |
+Panelet hedder **Flowet** og ligger under Pakker: én gang for pakken, én gang for hvert
+tier, og én gang for hvert kort. Det ser ud som diagrammet — spørgsmålet øverst, de to
+grene ved siden af hinanden nedenunder.
 
-Et Rare kort er 20–50 gp på udstyrssiden — et pænt stykke grej. Et Rare magic item er en
-Flame Tongue. Uden en egen fordeling oversættes korttrinnet derfor af den fælles tabel
-under fanen Magic:
+**Chancen** er ét tal. Bliver kortet ikke magisk, går det ned ad nej-grenen. Udstyr og
+magi er to adskilte puljer, så de konkurrerer ikke om pladsen — chancen afgør det alene.
+Derfor optræder kategorien `Magic` heller ikke i pakkefiltrene: filteret bestemmer
+udstyrspuljen, ikke om der bliver magi.
+
+**Rarity på ja-grenen** holdes adskilt fra nej-grenens, og det er med vilje. Et Rare kort
+er 20–50 gp på udstyrssiden — et pænt stykke grej. Et Rare magic item er en Flame Tongue.
+Uden en egen fordeling oversættes korttrinnet derfor af den fælles tabel under fanen Magic:
 
 | Korttrin | Common | Uncommon | Rare | Very Rare | Legendary |
 |----------|--------|----------|------|-----------|-----------|
@@ -568,19 +531,21 @@ under fanen Magic:
 | Legendary | 10 % | 30 % | 40 % | 17 % | 3 % |
 
 Sætter man en fordeling på kortet, springes tabellen over, og fordelingen gælder uanset
-hvilket korttrin kortet slår. Det er det Magic-pakken gør.
+hvad nej-grenen slår. Det er det Magic-pakken gør. Ja-grenen har **Artifact** med som
+sjette mulighed; den står på 0 overalt, så de 11 artifacts trækkes aldrig af sig selv.
 
-**Trin 3 — hvilken slags?** En vægt pr. type: `Potion`, `Scroll`, `Wand`, `Ring`, `Rod`,
-`Staff`, `Weapon`, `Armor`, `Wondrous Item`. 1 er neutralt, 0 slår typen fra, 2 gør typen
-dobbelt så sandsynlig. Vægten ganges på hvert item i typen — som kategorivægtene — så
-**vægt 2 på Scroll fordobler chancen for et scroll**, målt 2,9 % → 5,6 %. Ved siden af
-hvert felt står den andel vægten faktisk giver, så man kan se resultatet uden at gætte.
+**Typevægte** virker ens på begge grene: 1 er neutralt, 0 slår typen fra, 2 gør den
+dobbelt så sandsynlig. Vægten ganges på hvert item i typen, så **vægt 2 på `Scroll`
+fordobler chancen for et scroll** — målt 2,9 % → 5,6 %. Ved siden af hvert felt står den
+andel vægten faktisk giver, så tallet ikke skal gættes.
 
-Det er sådan Weapons-pakken er låst: alle typer på 0 undtagen `Weapon`. Bliver et kort
-magisk i en våbenpakke, er det et magisk våben — aldrig en ring.
+På ja-grenen er typen magic itemets D&D-type (`Potion`, `Scroll`, `Weapon`, `Armor`,
+`Wand`, `Ring`, `Rod`, `Staff`, `Wondrous Item`). På nej-grenen er det itemets kategori
+(`Våben`, `Rustning`, `Udstyr`, `Værktøj`, `Gift`, `Ammunition`). Samme greb, to
+ordlister.
 
-**Trin 4** sker af sig selv: er magic itemet generisk (`Weapon +1`), rulles basisvåbnet;
-bærer det en spell, rulles spellen. Se nedenfor.
+**Fjerde rul** sker af sig selv: er magic itemet generisk (`Weapon +1`), rulles
+basisvåbnet; bærer det en spell, rulles spellen. Se afsnittet nedenfor.
 
 ### Sådan står pakkerne
 
@@ -809,24 +774,24 @@ filter — så Class-kort ikke lækker ind i Adventurer-pakken. Det er verificer
 }
 ```
 
-En kortplads bærer magi-kædens tre første trin. De samme tre felter findes på tier og
-pakke, og det mest specifikke vinder — hvert felt for sig:
+En kortplads bærer alle fem indstillinger. De samme fem felter findes på tier og pakke,
+og det mest specifikke vinder — hvert felt for sig:
 
 ```json
 {
   "label": "Kort 3",
-  "dist":         { "common": 78.5, "uncommon": 12, "rare": 7, "very_rare": 2, "legendary": 0.5 },
-  "filter":       null,
-  "magicChance":  100,
-  "magicDist":    { "common": 78.5, "uncommon": 12, "rare": 7, "very_rare": 2, "legendary": 0.5 },
-  "magicTypes":   { "Scroll": 2, "Ring": 0 }
+  "filter":      null,
+  "magicChance": 100,
+  "magicDist":   { "common": 78.5, "uncommon": 12, "rare": 7, "very_rare": 2, "legendary": 0.5 },
+  "magicTypes":  { "Scroll": 2, "Ring": 0 },
+  "dist":        { "uncommon": 80, "rare": 15, "very_rare": 4, "legendary": 1 },
+  "weights":     { "Rustning": 4, "Ammunition": 0 }
 }
 ```
 
-`dist` er korttrinnet — hvad kortpladsen slår, og hvad udstyrssiden matcher på.
-`magicChance` er trin 1 (0–100), `magicDist` er trin 2, og `magicTypes` er trin 3, hvor
-kun vægte forskellige fra 1 skrives. `null` på et felt betyder at kortet arver det fra
-tieret, pakken eller den fælles tabel.
+De tre `magic*`-felter er ja-grenen; `dist` og `weights` er nej-grenen. I typevægtene
+skrives kun værdier forskellige fra 1. `null` — eller en fordeling med lutter nuller —
+betyder at feltet arves fra tieret, pakken eller den fælles tabel.
 
 Et magic item er det samme objekt som et almindeligt item, med kategorien `Magic`, typen
 som første tag, og et par felter mere:
