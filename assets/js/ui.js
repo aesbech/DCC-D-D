@@ -792,6 +792,121 @@
     return wrap;
   }
 
+  /* Tabellen korttrin -> magi-rarity. Bruges både til den fælles under fanen
+     Magic og til en pakkes egen overstyring. */
+  function mappingGrid(mapping) {
+    var wrap = el('div');
+
+    var head = el('div', { class: 'map-row map-head' }, [el('span', { text: 'Korttrin' })]);
+    C.MAGIC_RARITIES.forEach(function (r) {
+      head.appendChild(el('span', {}, [
+        el('i', { class: 'dot', style: 'background:var(--r-' + r.key + ')' }),
+        document.createTextNode(' ' + r.label)
+      ]));
+    });
+    head.appendChild(el('span', { text: 'Sum' }));
+    wrap.appendChild(head);
+
+    C.RARITIES.forEach(function (tierR) {
+      var d = mapping[tierR.key];
+      var sumEl = el('span', { class: 'sum' });
+      function refresh() {
+        var total = 0;
+        C.MKEYS.forEach(function (k) { total += (Number(d[k]) || 0); });
+        sumEl.textContent = (Math.round(total * 100) / 100) + '%';
+        sumEl.className = 'sum ' + (Math.abs(total - 100) < 0.01 ? 'good' : 'bad');
+      }
+      var row = el('div', { class: 'map-row' }, [
+        el('span', { class: 'rarity r-' + tierR.key, text: tierR.label })
+      ]);
+      C.MAGIC_RARITIES.forEach(function (mr) {
+        row.appendChild(el('input', {
+          type: 'number', min: '0', max: '100', step: '0.1', value: d[mr.key] || 0,
+          oninput: function () {
+            d[mr.key] = Math.max(0, Number(this.value) || 0);
+            refresh(); persist();
+          }
+        }));
+      });
+      row.appendChild(sumEl);
+      refresh();
+      wrap.appendChild(row);
+    });
+
+    return wrap;
+  }
+
+  /* Magi-rarity er sin egen akse. Når et kort lander på et magic item, skal
+     korttrinnet oversættes til hvor godt itemet er — og dét skal kunne sættes
+     tæt på kortet, ikke kun i en fælles tabel.
+
+     Fire niveauer, mest specifikke vinder: kort → tier → pakke → fælles tabel.
+     De tre første bruger den simple form: én fordeling der gælder uanset
+     korttrin. Den fælles tabel har en række pr. trin. */
+  function magicDistEditor(owner, title, note) {
+    var host = el('div', { class: 'tier-weights' });
+
+    function render() {
+      host.innerHTML = '';
+      host.appendChild(el('label', { class: 'check' }, [
+        el('input', {
+          type: 'checkbox', checked: owner.magicDist ? 'checked' : null,
+          onchange: function () {
+            owner.magicDist = this.checked ? C.emptyMagicDist() : null;
+            render(); persist(); refreshPackDetail();
+          }
+        }),
+        document.createTextNode(title)
+      ]));
+      if (!owner.magicDist) {
+        host.appendChild(el('p', { class: 'hint', text: note }));
+        return;
+      }
+
+      var sumEl = el('span', { class: 'sum' });
+      function refresh() {
+        var total = 0;
+        C.MKEYS.forEach(function (k) { total += (Number(owner.magicDist[k]) || 0); });
+        sumEl.textContent = 'Sum: ' + (Math.round(total * 100) / 100) + '%';
+        sumEl.className = 'sum ' + (Math.abs(total - 100) < 0.01 ? 'good' : 'bad');
+      }
+
+      var rows = el('div', { class: 'dist' });
+      C.MAGIC_RARITIES.forEach(function (r) {
+        rows.appendChild(el('label', { class: 'field' }, [
+          el('span', {}, [
+            el('i', { class: 'dot', style: 'background:var(--r-' + r.key + ')' }),
+            document.createTextNode(r.label)
+          ]),
+          el('input', {
+            type: 'number', min: '0', max: '100', step: '0.1', value: owner.magicDist[r.key] || 0,
+            oninput: function () {
+              owner.magicDist[r.key] = Math.max(0, Number(this.value) || 0);
+              refresh(); persist();
+            }
+          })
+        ]));
+      });
+      rows.appendChild(sumEl);
+      refresh();
+      host.appendChild(rows);
+      host.appendChild(el('p', { class: 'hint',
+        text: 'Gælder uanset hvilket korttrin kortet slår. Artifacts trækkes kun hvis ' +
+              'du giver dem vægt her.' }));
+    }
+
+    render();
+    return host;
+  }
+
+  /* Hvilket niveau der faktisk gælder for én kortplads. */
+  function magicSourceNote(pack, t, c) {
+    if (c.magicDist) return 'Kortets egen fordeling.';
+    if (t && t.magicDist) return 'Tierets fordeling gælder.';
+    if (pack.magicDist) return 'Pakkens fordeling gælder.';
+    return 'Den fælles tabel under fanen Magic gælder — korttrinnet oversættes der.';
+  }
+
   /* Uden vægte er alle items i en rarity lige sandsynlige, så den største
      kategori dominerer. Vægten ganges på hvert item i kategorien.
 
@@ -1025,6 +1140,18 @@
 
     host.appendChild(weightPanel(pack));
 
+    host.appendChild(el('div', { class: 'panel' }, [
+      el('h3', { text: 'Magi-rarity' }),
+      el('p', { class: 'hint',
+        text: 'Korttrin og magi-rarity er to akser. Et Rare kort er 20–50 gp på ' +
+              'udstyrssiden, men et Rare magic item er en Flame Tongue — derfor ' +
+              'oversættes trinnet, når kortet lander på magi. Uden en fordeling her ' +
+              'bruges den fælles tabel under fanen Magic. Sæt den pr. kort, hvis kun ' +
+              'én plads skal opføre sig anderledes.' }),
+      magicDistEditor(pack, 'Egen magi-rarity for hele pakken',
+        'Pakken bruger den fælles tabel under fanen Magic.')
+    ]));
+
     pack.tiers.forEach(function (t, ti) { host.appendChild(renderTier(pack, t, ti)); });
 
     host.appendChild(el('div', { class: 'row' }, [
@@ -1046,6 +1173,9 @@
   function renderTier(pack, t, ti) {
     var body = el('div', { class: 'tier-body' });
     body.appendChild(tierWeights(pack, t));
+    body.appendChild(magicDistEditor(t, 'Egen magi-rarity for dette tier',
+      pack.magicDist ? 'Tieret bruger pakkens fordeling.'
+                     : 'Tieret bruger den fælles tabel under fanen Magic.'));
     t.cards.forEach(function (c, ci) { body.appendChild(renderCard(pack, t, c, ci)); });
 
     body.appendChild(el('div', { class: 'row' }, [
@@ -1144,6 +1274,11 @@
         }));
         catHost.appendChild(cardWeights(pack, c));
       }
+      // Magi-fordelingen hører til kortet uanset om det har eget filter: et
+      // kort der trækker fra pakkens pulje kan også lande på magi.
+      if (state.cfg.magic.enabled)
+        catHost.appendChild(magicDistEditor(c, 'Egen magi-rarity for dette kort',
+          magicSourceNote(pack, t, c)));
     }
     renderOverride();
 
@@ -1545,6 +1680,9 @@
     $('#magicEnabled').checked = !!state.cfg.magic.enabled;
     $('#magicUpcast').value = state.cfg.magic.upcastChance;
 
+    var host = $('#magicMapping');
+    host.innerHTML = '';
+    host.appendChild(mappingGrid(state.cfg.magic.mapping));
   }
 
   $('#magicEnabled').addEventListener('change', function () {

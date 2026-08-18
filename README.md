@@ -294,9 +294,10 @@ via den valgte skala. Statistikfelterne øverst lyser rødt ved nul items i en r
 dér, huller i puljen bliver synlige.
 
 ### Magic
-Tabellen over de 450 magic items: rarity, forbrugsvare, basisitem-rul og om de er med i
-puljen. Plus en afbryder for magi i det hele taget, og chancen for upcast på spell
-scrolls. Alt andet om magi sættes under Pakker, som for alt andet indhold.
+Den fælles tabel **korttrin → magi-rarity**, og tabellen over de 450 magic items: rarity,
+forbrugsvare, basisitem-rul og om de er med i puljen. Plus en afbryder for magi i det hele
+taget og chancen for upcast på spell scrolls. Hvor *tit* magi falder, sættes derimod under
+Pakker som en vægt — det er ikke en magi-indstilling længere.
 
 ### Indstillinger
 Rarity-skalaer, dublet-håndtering, fallback-adfærd, udelukkede kategorier,
@@ -427,7 +428,7 @@ gøre den til en af de andre.
 
 Weapons' og Armors garanterede kort kan lande på et magisk våben eller en magisk rustning
 — det er stadig et våben eller en rustning. Hvor tit det sker, følger magi-vægten for
-tieret: 10 % i Bronze, 21 % i Sølv, 36 % i Guld.
+tieret: ca. 10 % i Bronze, 20 % i Sølv, 36 % i Guld.
 
 **Weapons**
 
@@ -459,7 +460,7 @@ pakkens skraldeitem. Guld kort 3 ligger på Rare og opefter og rammer hele hylde
 
 Magic-pakken trækker fra samme udstyrspulje som Adventurer og bruger samme vægte
 (Våben 2, Rustning 4, Ammunition 2), fordi kort 1 og 2 falder tilbage på udstyr i Bronze
-og Sølv — 11 % af tiden bliver de magiske i Bronze, 42 % i Sølv. I Guld har alle tre kort
+og Sølv — 10 % af tiden bliver de magiske i Bronze, 45 % i Sølv. I Guld har alle tre kort
 kategorifilteret på, så pakken er ren magi, og de to første er tungt vægtet mod Common,
 så tyngden ligger på kort 3.
 
@@ -493,19 +494,19 @@ poisons, fakler og rationer helt ud af Adventurer, er det én dropdown under Pak
 puljen går så fra 167 til 143, og legendary-items fra 16 til 7, fordi ni af dem er gift.
 
 Det samme gælder på magisiden: Adventurer trækker både permanente magic items og magiske
-forbrugsvarer, så en healing potion eller et spell scroll kan falde som loot. Nu hvor der
-kun er én rarity-akse, lander de på deres eget trin:
+forbrugsvarer, så en healing potion eller et spell scroll kan falde som loot. Hvilket
+korttrin de lander på, følger af oversættelsen:
 
-| Item | Rarity | Falder på |
-|------|--------|-----------|
-| Potion of Healing, Spell Scroll (Cantrip / 1st) | Common | Common-kort |
-| Potion of Healing (Greater) | Uncommon | Uncommon-kort |
-| Potion of Healing (Superior), Spell Scroll (5th) | Rare | Rare-kort |
-| Potion of Healing (Supreme) | Very Rare | Very Rare-kort |
-| Spell Scroll (9th) | Legendary | Legendary-kort |
+| Item | Magi-rarity | Kommer typisk på |
+|------|-------------|------------------|
+| Potion of Healing, Spell Scroll (Cantrip / 1st) | Common | allerede et Rare-kort |
+| Potion of Healing (Greater) | Uncommon | Rare og opefter |
+| Potion of Healing (Superior), Spell Scroll (5th) | Rare | Very Rare og opefter |
+| Potion of Healing (Supreme) | Very Rare | Very Rare / Legendary |
+| Spell Scroll (9th) | Legendary | Legendary |
 
-Det er den store forenkling: hvor der før stod en oversættelsestabel imellem, står der nu
-ingenting. Et Legendary-kort giver et Legendary magic item.
+De mindste kommer helt ned på Rare-kort, de største kræver de høje trin — uden særregler,
+fordi oversættelsen gør arbejdet.
 
 ### Armor er en tynd hylde
 
@@ -523,31 +524,71 @@ Et magic item **er et item**. Det ligger i den samme liste som alt andet, med ka
 `Rod`, `Staff`, `Wondrous Item`. Der er ikke noget særligt maskineri: en pakke får magi
 ind med et ganske almindeligt filter, og vægten på kategorien afgør hvor tit den falder.
 
-Sådan var det ikke før. Magic items lå i deres egen liste, en kortplads kunne *blive til*
-et magic item-kort med en chance pr. korttrin, og en tabel oversatte korttrinnet til en
-magi-rarity. Det var fem mekanismer der kun fandtes for magiens skyld — chance pr. pakke,
-chance pr. kort, typer pr. pakke, typer pr. kort og en oversættelsestabel — og de gjorde
-pakkeregler sværere at skrive, ikke lettere. De er alle sammen væk.
+Sådan var det ikke før. Magic items lå i deres egen liste, og en kortplads kunne *blive
+til* et magic item-kort med en chance pr. korttrin. Det var fire mekanismer der kun fandtes
+for magiens skyld — chance pr. pakke, chance pr. kort, typer pr. pakke og typer pr. kort —
+og de gjorde pakkeregler sværere at skrive, ikke lettere. De er væk; filteret og vægten gør
+det samme.
 
-### Én rarity-akse
+Det der **ikke** er væk, er at magi har sin egen rarity-skala. Se nedenfor.
 
-| Før | Nu |
-|-----|-----|
-| **Korttrin** — hvad kortpladsen slår | Samme akse |
-| **Magi-rarity** — magic itemets egen rarity fra D&D | Samme akse |
-| Et Rare *kort* gav som regel et Common *magic item* | Et Rare kort giver et Rare magic item |
+### To akser, med vilje
 
-De to var bevidst afkoblet, fordi den samme kortplads skulle servicere både udstyr og
-magi: at få magi overhovedet var gevinsten, så et Rare-kort skulle ikke give en Flame
-Tongue. Nu hvor hver pakke har et kort der er dedikeret til sin egen kategori, er
-afkoblingen overflødig — den plads har sin egen fordeling, og den betyder hvad den siger.
+Filtrering, vægte og garanterede kort er nu ens for alt indhold. Men **rarity er to
+akser**, og de skal blive ved med at være det:
 
-Magic items får deres plads på aksen fra kilden, ikke fra en pris. Det er samme mekanik
-som Class-kort bruger: `scale` er `none`, og rarityen står direkte på itemet.
+| Akse | Hvad det er | Værdier |
+|------|-------------|---------|
+| **Korttrin** | Hvad en kortplads slår. Styres af fordelingen på kortet. | Common … Legendary |
+| **Magi-rarity** | Magic itemets egen rarity fra D&D. | Common … Artifact |
 
-**Artifacts ligger uden for de fem trin.** De 11 artifacts er i listen, men et kort kan
-kun slå Common … Legendary, så de bliver aldrig trukket — præcis som før, hvor de stod på
-0 % i tabellen. Vil du have dem i spil, giver du dem en af de fem rarities under Items.
+Grunden er at de betyder vidt forskellige ting. Et Rare kort er 20–50 gp på
+udstyrssiden — et pænt stykke grej. Et Rare magic item er en Flame Tongue. Slog man dem
+sammen, ville en almindelig god trækning dele artefakter ud.
+
+Så når et kort lander på et magic item, **oversættes korttrinnet**. Oversættelsen findes
+på fire niveauer, og det mest specifikke vinder — samme regel som for vægte:
+
+| Niveau | Form | Hvor |
+|--------|------|------|
+| **Kort** | én fordeling, gælder uanset korttrin | Pakker → kortpladsen |
+| **Tier** | samme | Pakker → tieret |
+| **Pakke** | samme | Pakker → Magi-rarity |
+| **Fælles tabel** | en række pr. korttrin | fanen Magic |
+
+De tre øverste er den simple form: *lander dette kort på magi, hvor godt er det så*. Det
+er én række med seks tal, og det er den man vil skrue på. Den fælles tabel i bunden har en
+række pr. korttrin, til når oversættelsen skal variere med trinnet:
+
+| Korttrin | Common | Uncommon | Rare | Very Rare | Legendary |
+|----------|--------|----------|------|-----------|-----------|
+| Common | 100 % | | | | |
+| Uncommon | 90 % | 10 % | | | |
+| Rare | 70 % | 25 % | 5 % | | |
+| Very Rare | 40 % | 40 % | 18 % | 2 % | |
+| Legendary | 10 % | 30 % | 40 % | 17 % | 3 % |
+
+Adventurer, Weapons, Armor og Consumables bruger den. Målt over 25.000 pakker giver
+Adventurers Guld kort 3 — det bedste kort i pakken — 58 % Common, 29 % Uncommon, 11 % Rare
+og 2 % Very Rare magic items. Et godt kort, ikke en Holy Avenger.
+
+**Magic-pakken sætter sin egen pr. kort**, fordi det er dér hele pointen ligger:
+
+| Tier | Kort 1 og 2 | Kort 3 |
+|------|-------------|--------|
+| Bronze | 85 / 12 / 3 | 78,5 / 12 / 7 / 2 / 0,5 |
+| Sølv | 25 / 60 / 12 / 3 | 10 / 66 / 15 / 8 / 1 |
+| Guld | 60 / 30 / 8 / 2 | 5 U / 45 R / 35 VR / **15 L** |
+
+Kort 3 rammer sine tal inden for en halv procentpoint, fordi kortet er filtreret til magi
+og derfor altid trækker dér. Kort 1 og 2 i Bronze og Sølv kan også lande på udstyr, og så
+skævvrides deres fordeling en smule mod de store rarity-grupper — der er 54 Common magic
+items mod 123 Rare, så vægten rammer flere items i den store gruppe. Målt: Bronze kort 1
+lander på 76 / 19 / 5 mod de 85 / 12 / 3 der står på kortet. Vil du have tallene præcist,
+filtrerer du kortet til `Magic`, som kort 3 er.
+
+**Artifacts** står på 0 % overalt. De 11 artifacts ligger i listen, men trækkes aldrig,
+før du selv giver dem vægt i en fordeling.
 
 ### Hvor tit falder magi?
 
@@ -558,27 +599,28 @@ Bronze og Guld — derfor er magi-vægten **gradbøjet pr. tier**:
 
 | Pakke | Bronze | Sølv | Guld |
 |-------|--------|------|------|
-| Adventurer | 0,03 | 0,06 | 0,11 |
-| Weapons | 0,09 | 0,19 | 0,33 |
-| Armor | 0,02 | 0,06 | 0,25 |
+| Adventurer | 0,05 | 0,11 | 0,17 |
+| Weapons | 0,21 | 0,44 | 0,94 |
+| Armor | 0,02 | 0,10 | 0,44 |
 | Consumables | 0,39 | 0,35 | 0,26 |
-| Magic | 0,10 | 0,40 | (kortfilter) |
+| Magic | 0,10 | 0,45 | (kortfilter) |
 
-Tallene er regnet baglæns fra hvor tit magi skal falde på det garanterede kort. Målt over
-8.000 pakker pr. tier:
+Tallene er regnet baglæns fra hvor tit magi skal falde på det garanterede kort — og de
+skal regnes om, hvis den fælles oversættelsestabel ændres, fordi den bestemmer hvilken
+rarity-gruppe magic itemsne trækkes fra. Målt over 8.000 pakker pr. tier:
 
 | Pakke | Kort 3, Bronze | Kort 3, Sølv | Kort 3, Guld |
 |-------|----------------|--------------|--------------|
-| Adventurer | 6,3 % magi | 12,0 % | 19,1 % |
-| Weapons | 10,1 % | 21,1 % | 35,7 % |
-| Armor | 12,8 % | 20,1 % | 36,4 % |
+| Adventurer | 6,4 % magi | 12,5 % | 17,7 % |
+| Weapons | 10,4 % | 19,9 % | 37,2 % |
+| Armor | 9,5 % | 19,9 % | 35,1 % |
 | Consumables | 100 % | 100 % | 100 % |
 | Magic | 100 % | 100 % | 100 % |
 
 Consumables og Magic er 100 % fordi deres kort 3 filtrerer på kategorien — se afsnittet om
 det garanterede kort. Skal magi helt væk, er der en enkelt afbryder under fanen Magic.
 
-### De to rul
+### De to efterrul
 
 Trækningen er den samme som for alt andet: kortet slår et trin og henter et item. Men et
 magic item kan have mere i sig, og det afgøres bagefter:
@@ -798,8 +840,24 @@ filter — så Class-kort ikke lækker ind i Adventurer-pakken. Det er verificer
 }
 ```
 
-Et magic item er det samme objekt med kategorien `Magic`, typen som første tag, og et par
-felter mere:
+En kortplads kan bære `magicDist` — kortets egen fordeling over magi-rarity. Det samme
+felt findes på tier og pakke, og det mest specifikke vinder:
+
+```json
+{
+  "label": "Kort 3",
+  "dist":      { "common": 78.5, "uncommon": 12, "rare": 7, "very_rare": 2, "legendary": 0.5 },
+  "filter":    { "categories": ["Magic"], "tags": [], "mode": "and" },
+  "magicDist": { "common": 78.5, "uncommon": 12, "rare": 7, "very_rare": 2, "legendary": 0.5 }
+}
+```
+
+`dist` er korttrinnet — hvad kortpladsen slår, og hvad udstyrssiden matcher på.
+`magicDist` er hvor godt magic itemet er, hvis kortet lander på et. `null` betyder at
+kortet følger tieret, pakken eller den fælles tabel.
+
+Et magic item er det samme objekt som et almindeligt item, med kategorien `Magic`, typen
+som første tag, og et par felter mere:
 
 ```json
 {
@@ -820,9 +878,9 @@ felter mere:
 ```
 
 Rarity-nøgler er `common`, `uncommon`, `rare`, `very_rare`, `legendary` — eller `null`
-for items uden rarity. Magic items kan desuden være `artifact`, som ingen kortplads kan
-slå. `scale` er `gear`, `magic` eller `none`. `enabled: false` tager et item ud af alle
-puljer uden at slette det.
+for items uden rarity. Magic items kan desuden være `artifact`, som kun kan trækkes hvis
+en magi-fordeling giver artifacts vægt. `scale` er `gear`, `magic` eller `none`.
+`enabled: false` tager et item ud af alle puljer uden at slette det.
 
 ## Lagring
 
