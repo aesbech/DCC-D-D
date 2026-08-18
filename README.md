@@ -269,14 +269,14 @@ Under kontrollerne står puljens størrelse — og en rød advarsel hvis en ford
 en rarity der ikke findes items af.
 
 ### Pakker
-Selve konfigurationen. Hver pakketype har et **filter** (kategorier og/eller tags), et
+Selve konfigurationen. Hver pakketype har et **filter** (kategorier og forbrugsvarer), et
 **flow-panel** med de fem indstillinger, og et antal **tiers** med hver deres **kort** —
 som begge har deres eget flow-panel. Summen af en fordeling vises live og bliver rød hvis
 den ikke rammer 100.
 
-Filteret kan kombineres på to måder: *begge skal passe* (kategori **og** tag) eller
-*én af delene er nok* (kategori **eller** tag). Hver pakke vælger desuden om den vil have
-forbrugsvarer med, udenom, eller kun dem.
+Filteret er to ting: hvilke **kategorier** der må trækkes, og om **forbrugsvarer** er med,
+udenom eller alene. Ingen kategorier valgt betyder alle — undtagen dem der er udelukket
+under Indstillinger.
 
 Et enkelt kort kan overstyre pakkens filter. Det er sådan en pakke garanterer én ting:
 kort 3 i Weapons filtrerer på våben.
@@ -285,8 +285,9 @@ Filteret bestemmer **udstyrspuljen**. Hvad der så trækkes af den — og om kor
 overhovedet bliver et udstyrskort — sættes i panelet **Flowet** lige under. De to ting er
 uafhængige.
 
-Tag-listen er lang, fordi magic items bragte 189 tags med, så den er foldet sammen: valgte
-tags står øverst, resten bag en søgning og en **+ N flere**-knap.
+Der er ikke en tag-akse i filteret. Typen ligger i kategorien for alt indhold — også for
+Class-kortene, hvis fem typer er deres kategori — så et tag-filter kunne ikke sige noget
+kategorien ikke allerede siger. Tags ligger stadig på itemsne som metadata.
 
 ### Items
 Importér CSV (komma, semikolon eller tab) eller JSON, via fil eller indsat tekst.
@@ -315,9 +316,9 @@ lokalt gemte kopi, når datafilerne er blevet opdateret.
 | Adventurer | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 167 | 6–18 %, alle typer | — |
 | Weapons | Våben, Ammunition, Udstyr | 105 | 8–32 %, kun Weapon | et våben |
 | Armor | Rustning, Udstyr | 78 | 8–32 %, kun Armor | en rustning |
-| Consumables | Gift **eller** tagget Consumable | 20 | 40–100 %, Potion og Scroll | en magisk forbrugsvare |
+| Consumables | alle kategorier, kun forbrugsvarer | 23 | 40–100 %, Potion og Scroll | en magisk forbrugsvare |
 | Magic | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 167 | 10–100 %, alle typer | et magic item |
-| Classes | Class | 140 | — | (ikke gradueret) |
+| Classes | Class, Stat, Feat, Skill, Perk | 140 | — | (ikke gradueret) |
 
 Alle undtagen Classes har Bronze / Sølv / Guld. Puljetallet er udstyrssiden; magisiden er
 de 450 magic items, som trækkes for sig når chancen siger ja. I alt 806 items.
@@ -432,17 +433,19 @@ blæk, parfume, lys og foder. `Ink Pen`, `Poisoner's Kit`, `Healer's Kit` og
 
 På magisiden er **84 af de 450** forbrugsvarer — se afsnittet om magic items.
 
-Consumables-pakken bruger et **union-filter**: hele Gift-gruppen plus alt med tagget
-`Consumable`. Det giver 20 udstyrsting, fordelt 5 Common, 1 Uncommon, 1 Rare, 4 Very Rare
-og 9 Legendary. Puljen er altså tynd i midten, og de ni dyreste er alle gift, så pakkens
-høje trin læner sig bevidst på magisiden. Kort 3 er derfor filtreret til en magisk
-forbrugsvare, så pakken altid giver mindst én potion eller ét scroll.
+Consumables-pakken vælger **ingen kategorier og "kun forbrugsvarer"**. Det giver alle 23
+markerede udstyrsting — hele Gift-gruppen plus fakler, olie, vievand, rationer og resten.
+Puljen er tynd i midten og tung i toppen, fordi de dyreste alle er gift, så pakkens høje
+trin læner sig bevidst på magisiden. Kort 3 er 100 % magisk, så pakken altid giver mindst
+én potion eller ét scroll.
 
-`Healing`-tagget var med i filteret, men rammer kun **Healer's Kit** og **Herbalism Kit**
-på udstyrssiden — grej man bærer rundt på, ikke noget der bruges op. Healing potions er
-magic items og kommer ind via typerne `Potion` og `Scroll`, så tagget hørte ikke til her.
-Begge kits er samtidig taget ud af `CONSUMABLE_NAME` i importen, så de heller ikke
-forsvinder når en pakke står på "kun varigt udstyr".
+Tidligere brugte pakken et union-filter — Gift-gruppen **eller** tagget `Consumable` — men
+de syv tagged items er en delmængde af de 23 markerede, så forbrugsvare-valget dækker det
+hele og rammer bredere.
+
+**Healer's Kit** og **Herbalism Kit** er taget ud af `CONSUMABLE_NAME` i importen: de er
+grej man bærer rundt på, ikke noget der bruges op, og de skal ikke forsvinde når en pakke
+står på "kun varigt udstyr".
 
 Adventurer, Weapons og Armor står på **både forbrugsvarer og varigt udstyr**. Vil du have
 poisons, fakler og rationer helt ud af Adventurer, er det én dropdown under Pakker —
@@ -488,14 +491,15 @@ Et kort stiller ét spørgsmål og går derefter ned ad én af to grene. De to g
 **præcis de samme to knapper** — kun puljen er forskellig:
 
 ```
-                     Magic item?          ← chance i procent
+                     Magic item?          ← chance i procent, ét felt
                     /            \
-                  ja              nej
+                  nej             ja
                    |               |
              Hvilken rarity   Hvilken rarity     ← vægtet fordeling
              Hvilken type     Hvilken type       ← vægt pr. type
                    |               |
-            450 magic items   udstyrspuljen
+             Standard Item    Magic Item
+             udstyrspuljen    450 magic items
 ```
 
 Det er **fem indstillinger**, og alle fem findes på **pakke, tier og kort**. Hvert felt
@@ -504,10 +508,10 @@ arver for sig, så man kan sætte chancen på ét kort og lade resten følge pak
 | Felt | Hvad det gør | Arver fra |
 |------|--------------|-----------|
 | `magicChance` | Chancen for at kortet bliver magisk, 0–100 % | tier → pakke |
-| `magicDist` | Rarity-fordeling på ja-grenen | tier → pakke → fælles tabel |
-| `magicTypes` | Typevægte på ja-grenen | tier → pakke |
-| `dist` | Rarity-fordeling på nej-grenen | tier → pakke |
-| `weights` | Kategorivægte på nej-grenen | tier → pakke |
+| `magicDist` | Rarity-fordeling på Magic-grenen | tier → pakke → fælles tabel |
+| `magicTypes` | Typevægte på Magic-grenen | tier → pakke |
+| `dist` | Rarity-fordeling på Standard-grenen | tier → pakke |
+| `weights` | Kategorivægte på Standard-grenen | tier → pakke |
 
 Panelet hedder **Flowet** og ligger under Pakker: én gang for pakken, én gang for hvert
 tier, og én gang for hvert kort. Det ser ud som diagrammet — spørgsmålet øverst, de to
@@ -517,7 +521,7 @@ grene ved siden af hinanden nedenunder.
 ingenting, så overskriften bærer sammenfatningen i stedet:
 
 ```
-▸ Flowet for dette kort   [Magi 100 %] [ja 78.5/12/7/2/0.5] [nej 78.5/12/7/2/0.5]   3 egne
+▸ Flowet for dette kort   [Standard 30/50/17/3] [Magic 32 %] [rarity fælles tabel]   1 egen
 ```
 
 Chipsene viser hvad der **gælder**, uanset hvor det kommer fra. En markeret chip er sat på
@@ -529,12 +533,18 @@ skruet på noget uden at åbne noget.
 Tiers kan foldes på samme måde, og der er **Fold alle ud / Fold alle sammen** øverst.
 En gradueret pakke fylder 3.000 px foldet sammen mod 11.700 px foldet ud.
 
-**Chancen** er ét tal. Bliver kortet ikke magisk, går det ned ad nej-grenen. Udstyr og
+**Chancen** er ét felt. Lader man det stå tomt, arves tallet fra niveauet over — der
+skal ikke et flueben til for at sige "ikke sat". Bliver kortet ikke magisk, går det ned ad
+Standard-grenen. Udstyr og
 magi er to adskilte puljer, så de konkurrerer ikke om pladsen — chancen afgør det alene.
 Derfor optræder kategorien `Magic` heller ikke i pakkefiltrene: filteret bestemmer
 udstyrspuljen, ikke om der bliver magi.
 
-**Rarity på ja-grenen** holdes adskilt fra nej-grenens, og det er med vilje. Et Rare kort
+**Grenene vises kun når de er i spil.** Er chancen 0, kan kortet aldrig blive magisk, og
+Magic-grenen skjules; er den 100, trækker kortet aldrig almindeligt, og Standard-grenen
+skjules. Et Classes-kort viser derfor kun én gren, og Magic-pakkens guldkort ligeså.
+
+**Rarity på Magic-grenen** holdes adskilt fra Standard-grenens, og det er med vilje. Et Rare kort
 er 20–50 gp på udstyrssiden — et pænt stykke grej. Et Rare magic item er en Flame Tongue.
 Uden en egen fordeling oversættes korttrinnet derfor af den fælles tabel under fanen Magic:
 
@@ -555,10 +565,10 @@ dobbelt så sandsynlig. Vægten ganges på hvert item i typen, så **vægt 2 på
 fordobler chancen for et scroll** — målt 2,9 % → 5,6 %. Ved siden af hvert felt står den
 andel vægten faktisk giver, så tallet ikke skal gættes.
 
-På ja-grenen er typen magic itemets D&D-type (`Potion`, `Scroll`, `Weapon`, `Armor`,
-`Wand`, `Ring`, `Rod`, `Staff`, `Wondrous Item`). På nej-grenen er det itemets kategori
-(`Våben`, `Rustning`, `Udstyr`, `Værktøj`, `Gift`, `Ammunition`). Samme greb, to
-ordlister.
+På Magic-grenen er typen magic itemets D&D-type (`Potion`, `Scroll`, `Weapon`, `Armor`,
+`Wand`, `Ring`, `Rod`, `Staff`, `Wondrous Item`). På Standard-grenen er det itemets
+kategori (`Våben`, `Rustning`, `Udstyr`, `Værktøj`, `Gift`, `Ammunition`, og Class-kortenes
+`Class`, `Stat`, `Feat`, `Skill`, `Perk`). Samme greb, to ordlister.
 
 **Fjerde rul** sker af sig selv: er magic itemet generisk (`Weapon +1`), rulles
 basisvåbnet; bærer det en spell, rulles spellen. Se afsnittet nedenfor.
@@ -630,16 +640,12 @@ til sidst navnemønstre som `Dust of…`, `Oil of…`, `Philter…`, `Elemental 
 `Necklace of Fireballs` og `Tome of…`. `Tome of the Stilled Tongue` er undtaget, da den er
 permanent. Alt kan rettes i tabellen på Magic-fanen, også som bulk-handling på et filter.
 
-### Typen er et tag
+### Tags er metadata
 
-Ud over kategorien `Magic` bærer hvert magic item sin type som tag. Det er ikke det der
-styrer trækningen — dét gør typevægtene i trin 3 — men det gør typen søgbar under Items og
-Magic, og det lader et pakkefilter bruge den, hvis man vil noget særligt.
-
-Magic items bragte desuden **189 tags** med sig ud over typerne — `Bonus: Armor Class`,
-`Resistance: Fire`, `Jewelry`, `Bard` og så videre. Listen er derfor foldet sammen i
-filtereditoren: de valgte står øverst, resten ligger bag en søgning og en
-**+ N flere**-knap.
+Hvert magic item bærer sin type og et par snese beskrivende tags — `Bonus: Armor Class`,
+`Resistance: Fire`, `Jewelry`, `Bard` og så videre; **189 forskellige** i alt. De bruges
+ikke til at trække med: magi-typen aflæses af `subcategory`, og typevægtene er det man
+skruer på. Tags ligger i data og kommer med i eksporten, men vises ikke i UI'et.
 
 **Forbrugsvarer virker på tværs.** Magiske potions og scrolls bærer selv `Consumable`, og
 pakkens forbrugsvare-valg gælder begge puljer: står en pakke på "kun varigt udstyr",
@@ -748,7 +754,8 @@ python3 scripts/import_spells.py
 ## Classes-pakken
 
 Class-kortene er ikke items, men det der mekanisk sker med spilleren. De er delt i **fem
-korttyper**, som ligger som tag på hvert kort, så en kortplads kan bede om præcis én type:
+korttyper**, som er kortets **kategori** — samme akse som Våben og Rustning — så en
+kortplads kan bede om præcis én type med et almindeligt filter:
 
 | Type | Indhold | Antal | Rarities |
 |------|---------|-------|----------|
@@ -763,7 +770,7 @@ der matcher netop den types rarities, så der hverken bliver fallback eller tomm
 Verificeret over 24.000 kort: nul fejltyper, nul fallback.
 
 **Feat- og Skill-kortene har ingen plads endnu.** De ligger klar med 73 og 36 kort; vil du
-have dem med, så tilføj et kort på tieren og vælg typen som tag.
+have dem med, så tilføj et kort på tieren og vælg kategorien.
 
 Class levels ligger på Very Rare, fordi de er pakkens egentlige gevinst. Rediger frit i
 Items-fanen, eller udskift hele `assets/data/class-cards.js` med dit eget indhold.

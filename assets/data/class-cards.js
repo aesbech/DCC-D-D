@@ -1,7 +1,7 @@
 /* Indhold til Classes-pakken: det der mekanisk sker med spilleren.
 
-   Kortene er delt i fem typer, som ligger som tag på hvert kort, så en
-   kortplads kan bede om præcis én type:
+   Kortene er delt i fem typer, som er kortets kategori, så en kortplads kan
+   bede om præcis én type. Typen ligger også som tag, til søgning:
 
      Class  — et class level (kræver et level up til rådighed)
      Stat   — en attributforhøjelse
@@ -13,14 +13,16 @@
    og kan tunes i Items-fanen. */
 (function () {
   // Hæv denne når indholdet ændres, så appen tilbyder at genindlæse.
-  window.CLASS_CARDS_VERSION = '3';
+  window.CLASS_CARDS_VERSION = '4';
 
   var out = [];
 
   function add(names, type, subcategory, rarity, note) {
     names.forEach(function (n) {
       out.push({
-        name: n, category: 'Class', subcategory: subcategory,
+        // Typen er kategorien. Det er den akse alt andet indhold bruger til
+        // "hvilken slags", så en kortplads beder om den på samme måde.
+        name: n, category: type, subcategory: subcategory,
         price: null, rarity: rarity, rarityLocked: true,
         scale: 'none', source: "Player's Handbook 2024",
         tags: ['Class-kort', type], desc: note || ''

@@ -129,15 +129,14 @@ window.LB = (function () {
     return d;
   }
 
-  /* mode: 'and' = skal matche både kategori- og tag-listen (tomme lister ignoreres).
-           'or'  = tæller med hvis den matcher enten kategori- eller tag-listen.
-     consumables: 'all' | 'exclude' | 'only' — samme tre valg som for magic items,
-     så forbrugsvarer kan holdes ude af eller alene i en pakke. */
-  function filt(categories, tags, mode, consumables) {
+  /* Filteret bestemmer udstyrspuljen: hvilke kategorier der må trækkes, og om
+     forbrugsvarer er med. Typen ligger i kategorien for alt indhold — også
+     Class-kort — så der er ikke brug for en tag-akse ved siden af.
+
+     consumables: 'all' | 'exclude' | 'only'. */
+  function filt(categories, consumables) {
     return {
       categories: categories || [],
-      tags: tags || [],
-      mode: mode === 'or' ? 'or' : 'and',
       consumables: consumables || 'all'
     };
   }
@@ -210,7 +209,7 @@ window.LB = (function () {
   /* Class-kort bærer deres type som tag, så en kortplads kan bede om præcis
      én af dem: Class, Perk, Stat, Feat eller Skill. */
   function classFilter(type) {
-    return filt(['Class'], [type], 'and');
+    return filt([type]);
   }
 
   /* Standardprogression for de graduerede pakker. Tallene for Adventurer Bronze
@@ -280,7 +279,7 @@ window.LB = (function () {
     return [
       {
         id: 'adventurer', name: 'Adventurer',
-        filter: filt(GEAR, []),
+        filter: filt(GEAR),
         note: 'Den almindelige pakke — udstyr, våben, rustning, værktøj, gift og ammunition. ' +
               'Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra. Hvert kort har en ' +
               'chance for at blive et magic item i stedet; hvor godt det er, følger den ' +
@@ -303,7 +302,7 @@ window.LB = (function () {
         )
       },
       {
-        id: 'weapons', name: 'Weapons', filter: filt(['Våben', 'Ammunition', 'Udstyr'], []),
+        id: 'weapons', name: 'Weapons', filter: filt(['Våben', 'Ammunition', 'Udstyr']),
         note: 'Kort 3 er garanteret et våben. De to første trækker bredere, så der også ' +
               'falder udstyr og ammunition. Magisiden er låst til typen Weapon, så pakken ' +
               'ikke deler ringe ud — bliver et kort magisk, er det et magisk våben.',
@@ -313,17 +312,17 @@ window.LB = (function () {
         tiers: gradedTiers(
           [card('Kort 1', { common: 100 }),
            card('Kort 2', { common: 85, uncommon: 15 }),
-           card('Kort 3', { common: 10, uncommon: 80, rare: 9, very_rare: 1 }, filt(['Våben'], []))],
+           card('Kort 3', { common: 10, uncommon: 80, rare: 9, very_rare: 1 }, filt(['Våben']))],
           [card('Kort 1', { common: 70, uncommon: 30 }),
            card('Kort 2', { common: 50, uncommon: 50 }),
-           card('Kort 3', { uncommon: 65, rare: 30, very_rare: 5 }, filt(['Våben'], []))],
+           card('Kort 3', { uncommon: 65, rare: 30, very_rare: 5 }, filt(['Våben']))],
           [card('Kort 1', { common: 40, uncommon: 60 }),
            card('Kort 2', { uncommon: 80, rare: 20 }),
-           card('Kort 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, filt(['Våben'], []))]
+           card('Kort 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, filt(['Våben']))]
         )
       },
       {
-        id: 'armor', name: 'Armor', filter: filt(['Rustning', 'Udstyr'], []),
+        id: 'armor', name: 'Armor', filter: filt(['Rustning', 'Udstyr']),
         note: 'Kort 3 er garanteret en rustning; de to første trækker også udstyr. Magisiden ' +
               'er låst til typen Armor. Rustning ligger højt på udstyrs-skalaen — billigste ' +
               'er Padded Armor til 5 gp — så de lave trin lander på udstyr, og Padded Armor ' +
@@ -334,13 +333,13 @@ window.LB = (function () {
         tiers: gradedTiers(
           [card('Kort 1', { common: 80, uncommon: 20 }),
            card('Kort 2', { common: 50, uncommon: 50 }),
-           card('Kort 3', { uncommon: 80, rare: 15, very_rare: 4, legendary: 1 }, filt(['Rustning'], []))],
+           card('Kort 3', { uncommon: 80, rare: 15, very_rare: 4, legendary: 1 }, filt(['Rustning']))],
           [card('Kort 1', { common: 50, uncommon: 30, rare: 20 }),
            card('Kort 2', { common: 10, uncommon: 40, rare: 40, very_rare: 10 }),
-           card('Kort 3', { uncommon: 40, rare: 40, very_rare: 15, legendary: 5 }, filt(['Rustning'], []))],
+           card('Kort 3', { uncommon: 40, rare: 40, very_rare: 15, legendary: 5 }, filt(['Rustning']))],
           [card('Kort 1', { uncommon: 50, rare: 50 }),
            card('Kort 2', { rare: 50, very_rare: 50 }),
-           card('Kort 3', { rare: 50, very_rare: 40, legendary: 10 }, filt(['Rustning'], []))]
+           card('Kort 3', { rare: 50, very_rare: 40, legendary: 10 }, filt(['Rustning']))]
         )
       },
       {
@@ -348,7 +347,7 @@ window.LB = (function () {
         // Healing-tagget rammer kun Healer's Kit og Herbalism Kit på udstyrssiden
         // — grej, ikke forbrugsvarer. Magiske potions og scrolls kommer ind via
         // magisiden, ikke via filteret.
-        filter: filt(['Gift'], ['Consumable'], 'or'),
+        filter: filt([], 'only'),
         note: 'Union-filter på udstyrssiden: hele Gift-gruppen plus alt med tagget Consumable. ' +
               'Magisiden er låst til Potion og Scroll, og kort 3 er 100 % magisk, så pakken ' +
               'altid giver mindst én potion eller ét scroll.',
@@ -368,7 +367,7 @@ window.LB = (function () {
         )
       },
       {
-        id: 'magic', name: 'Magic', filter: filt(GEAR, []),
+        id: 'magic', name: 'Magic', filter: filt(GEAR),
         note: 'Kort 3 er 100 % magisk. De to første har en chance, som stiger med tieret — ' +
               'i Bronze er de mest udstyr, i Sølv omtrent fifty-fifty, og i Guld er de også ' +
               'altid magi. Hvert kort sætter selv hvor godt magic itemet er, i stedet for at ' +
@@ -402,7 +401,7 @@ window.LB = (function () {
         )
       },
       {
-        id: 'classes', name: 'Classes', filter: filt(['Class'], []),
+        id: 'classes', name: 'Classes', filter: filt(['Class', 'Stat', 'Feat', 'Skill', 'Perk']),
         note: 'Ikke gradueret — ét tier. Hver kortplads beder om sin egen korttype via ' +
               'tags: Class, Perk, Stat, Feat og Skill. Feat- og Skill-kortene findes, men ' +
               'har ingen plads endnu — tilføj et kort, hvis de skal med.',
@@ -457,11 +456,11 @@ window.LB = (function () {
     packs.forEach(function (p) { if (!p.weights) p.weights = {}; });
 
     return {
-      version: 6,
+      version: 7,
       scales: defaultScales(),
       noDuplicates: true,
       fallback: 'nearest',
-      excludeFromAll: ['Class'],
+      excludeFromAll: ['Class', 'Stat', 'Feat', 'Skill', 'Perk'],
       magic: defaultMagic(),
       packs: packs
     };
@@ -503,7 +502,7 @@ window.LB = (function () {
   }
 
   function hasOwnFilter(c) {
-    return !!(c.filter && (c.filter.categories.length || c.filter.tags.length));
+    return !!(c.filter && c.filter.categories.length);
   }
 
   /* Chancen er ét tal nu. En v5-opsætning havde en pr. korttrin; gennemsnittet
@@ -571,10 +570,12 @@ window.LB = (function () {
     cfg.magic.mapping = magicMapping(cfg.magic.mapping);
 
     cfg.packs.forEach(function (p) {
-      if (!p.filter) p.filter = filt(Array.isArray(p.categories) ? p.categories : [], []);
+      if (!p.filter) p.filter = filt(Array.isArray(p.categories) ? p.categories : []);
       if (!Array.isArray(p.filter.categories)) p.filter.categories = [];
-      if (!Array.isArray(p.filter.tags)) p.filter.tags = [];
-      if (p.filter.mode !== 'or') p.filter.mode = 'and';
+      // v7: tag-aksen er væk. Typen ligger i kategorien for alt indhold, så et
+      // tag-filter havde intet at gøre som det ikke allerede kunne.
+      delete p.filter.tags;
+      delete p.filter.mode;
       if (['all', 'exclude', 'only'].indexOf(p.filter.consumables) < 0)
         p.filter.consumables = 'all';
       delete p.categories;
@@ -618,12 +619,12 @@ window.LB = (function () {
         t.cards.forEach(function (c) {
           c.dist = dist(c.dist);
           if (!c.filter && Array.isArray(c.categories) && c.categories.length)
-            c.filter = filt(c.categories, []);
+            c.filter = filt(c.categories);
           delete c.categories;
           if (c.filter) {
             if (!Array.isArray(c.filter.categories)) c.filter.categories = [];
-            if (!Array.isArray(c.filter.tags)) c.filter.tags = [];
-            if (c.filter.mode !== 'or') c.filter.mode = 'and';
+            delete c.filter.tags;
+            delete c.filter.mode;
             if (['all', 'exclude', 'only'].indexOf(c.filter.consumables) < 0)
               c.filter.consumables = 'all';
           }
@@ -640,9 +641,8 @@ window.LB = (function () {
           // Et kort der filtrerede på kategorien Magic mente "altid magi".
           // Magi har sin egen pulje nu, så det skrives om til en chance.
           if (c.filter && c.filter.categories.length === 1 &&
-              c.filter.categories[0] === MAGIC_CAT && c.filter.mode !== 'or') {
+              c.filter.categories[0] === MAGIC_CAT) {
             if (c.magicChance === null) c.magicChance = 100;
-            if (!c.magicTypes && c.filter.tags.length) c.magicTypes = onlyTypes.apply(null, c.filter.tags);
             c.filter = null;
             c.weights = null;
           }
@@ -653,6 +653,26 @@ window.LB = (function () {
     // Classes-pakken fik typede kortpladser i v4. Opgradér kun hvis pakken
     // står urørt — dvs. ingen af dens kort har fået sit eget filter — så
     // egne tilpasninger ikke bliver overskrevet.
+    // v7: Class-kortenes type flyttede fra tag til kategori, så gamle
+    // kortfiltre peger på kategorien Class og et tag der ikke findes mere.
+    if ((cfg.version || 0) < 7) {
+      var CLASS_TYPES = ['Class', 'Stat', 'Feat', 'Skill', 'Perk'];
+      cfg.packs.forEach(function (p) {
+        if (p.id !== 'classes') return;
+        p.filter.categories = CLASS_TYPES.slice();
+        (p.tiers || []).forEach(function (t) {
+          (t.cards || []).forEach(function (c) {
+            if (!c.filter) return;
+            // Kortets label bar typen; ellers gættes den ud fra det gamle filter.
+            var want = CLASS_TYPES.filter(function (x) { return c.label === x; })[0];
+            if (want) c.filter = filt([want]);
+          });
+        });
+      });
+      if (Array.isArray(cfg.excludeFromAll) && cfg.excludeFromAll.indexOf('Class') >= 0)
+        cfg.excludeFromAll = CLASS_TYPES.slice();
+    }
+
     cfg.packs.forEach(function (p) {
       if (p.id !== 'classes' || !p.tiers.length) return;
       var untouched = p.tiers.every(function (t) {
@@ -675,8 +695,7 @@ window.LB = (function () {
         // Et tomt filter betød "alt" og var Magic-pakkens måde at sige "al
         // magi" på. Nu hvor magi er en kategori, ville det slippe ridedyr og
         // køretøjer ind — så den arver standardpakkens filter og vægte.
-        if (!p.filter.categories.length && !p.filter.tags.length &&
-            (dp.filter.categories.length || dp.filter.tags.length)) {
+        if (!p.filter.categories.length && dp.filter.categories.length) {
           p.filter = JSON.parse(JSON.stringify(dp.filter));
           p.weights = JSON.parse(JSON.stringify(dp.weights || {}));
           p.tiers.forEach(function (t, ti) {
@@ -696,7 +715,7 @@ window.LB = (function () {
       });
     }
 
-    cfg.version = 6;
+    cfg.version = 7;
     return cfg;
   }
 
@@ -914,17 +933,9 @@ window.LB = (function () {
     // gå seks pakkefiltre igennem, og pakkerne kan blive stående som de er.
     var noMagic = !!(cfg && cfg.magic && cfg.magic.enabled === false);
     var cats = (filter && filter.categories) || [];
-    var tags = (filter && filter.tags) || [];
-    var or = filter && filter.mode === 'or';
     var cons = (filter && filter.consumables) || 'all';
-    var empty = !cats.length && !tags.length;
+    var empty = !cats.length;
     var exclude = empty ? (cfg.excludeFromAll || []) : [];
-
-    function hasTag(i) {
-      var t = i.tags || [];
-      for (var k = 0; k < tags.length; k++) if (t.indexOf(tags[k]) >= 0) return true;
-      return false;
-    }
 
     return items.filter(function (i) {
       if (!i.rarity) return false;
@@ -935,10 +946,7 @@ window.LB = (function () {
       if (cons === 'exclude' && i.consumable) return false;
       if (cons === 'only' && !i.consumable) return false;
       if (empty) return true;
-      if (or) return (cats.length && cats.indexOf(i.category) >= 0) || (tags.length && hasTag(i));
-      if (cats.length && cats.indexOf(i.category) < 0) return false;
-      if (tags.length && !hasTag(i)) return false;
-      return true;
+      return cats.indexOf(i.category) >= 0;
     });
   }
 
@@ -1218,7 +1226,7 @@ window.LB = (function () {
     var magicOn = !(cfg.magic && cfg.magic.enabled === false);
 
     var cards = tierObj.cards.map(function (c, idx) {
-      var own = !!(c.filter && (c.filter.categories.length || c.filter.tags.length));
+      var own = !!(c.filter && c.filter.categories.length);
       var f = own ? c.filter : pack.filter;
       // Udstyrssiden: filteret som altid, minus magi. Magi har sin egen pulje,
       // så de to ikke konkurrerer om den samme plads.
@@ -1336,7 +1344,7 @@ window.LB = (function () {
     rarityLabel: rarityLabel, normalizeRarity: normalizeRarity,
     defaultConfig: defaultConfig, defaultScales: defaultScales, findScale: findScale,
     migrateConfig: migrateConfig, emptyDist: function () { return dist({}); },
-    emptyFilter: function () { return filt([], []); },
+    emptyFilter: function () { return filt([]); },
     parsePrice: parsePrice, priceToRarity: priceToRarity, recalcRarities: recalcRarities,
     parseCSV: parseCSV, guessMapping: guessMapping,
     itemsFromRows: itemsFromRows, itemsFromJSON: itemsFromJSON,
