@@ -48,8 +48,7 @@
   var saveTimer;
   function persist() {
     var ok = C.storage.save(C.storage.K_CFG, state.cfg) &&
-             C.storage.save(C.storage.K_ITEMS, state.items) &&
-             C.storage.save(C.storage.K_MAGIC, state.magic);
+             C.storage.save(C.storage.K_ITEMS, state.items);
     var s = $('#saveState');
     if (!ok) {
       s.textContent = 'Kunne ikke gemme (lagerplads fuld?)';
@@ -108,11 +107,16 @@
     var seeded = [];
     if (window.DND_ITEMS) seeded = seeded.concat(C.itemsFromJSON(window.DND_ITEMS, state.cfg, 'gear'));
     if (window.CLASS_CARDS) seeded = seeded.concat(C.itemsFromJSON(window.CLASS_CARDS, state.cfg, 'none'));
+    // Magic items er items nu og ligger i den samme liste.
+    if (window.MAGIC_ITEMS) seeded = seeded.concat(C.magicToItems(window.MAGIC_ITEMS));
     return seeded;
   }
 
   function bundledVersion() {
-    return 'dnd:' + (window.DND_ITEMS_VERSION || '?') +
+    // 'skema' bumpes når itemformatet ændrer sig, ikke kun når datafilerne gør.
+    // v6 slog magic items sammen med de andre items, og en gemt kopi fra før
+    // det har dem liggende i en sideliste der ikke bruges længere.
+    return 'skema:6|dnd:' + (window.DND_ITEMS_VERSION || '?') +
            '|class:' + (window.CLASS_CARDS_VERSION || '?') +
            '|magic:' + (window.MAGIC_ITEMS_VERSION || '?');
   }
@@ -124,7 +128,6 @@
 
   function loadBundled() {
     state.items = seedItems();
-    state.magic = C.magicFromJSON(window.MAGIC_ITEMS || []);
     state.page = 0;
     state.magicPage = 0;
     C.storage.save(C.storage.K_SEEDED, bundledVersion());
@@ -134,7 +137,10 @@
     state.items = seedItems();
     C.storage.save(C.storage.K_SEEDED, bundledVersion());
   }
-  if (!Array.isArray(state.magic)) state.magic = C.magicFromJSON(window.MAGIC_ITEMS || []);
+  // Magic items ligger i state.items nu; den gamle sideliste læses ikke.
+  function magicItems() {
+    return state.items.filter(function (i) { return i.category === C.MAGIC_CAT; });
+  }
   if (state.cfg.packs.length) state.packId = state.cfg.packs[0].id;
 
   /* Datafilerne i repoet kan være rettet siden browseren gemte sin kopi — nye
@@ -146,12 +152,12 @@
 
   if (dataIsStale()) {
     C.storage.save(C.storage.K_BACKUP, {
-      items: state.items, magic: state.magic,
+      items: state.items,
       version: C.storage.load(C.storage.K_SEEDED, null)
     });
     var before = state.items.length;
     loadBundled();
-    autoSynced = { before: before, after: state.items.length, magic: state.magic.length };
+    autoSynced = { before: before, after: state.items.length, magic: magicItems().length };
   }
 
   function renderDataNotice() {
@@ -175,7 +181,6 @@
         var backup = C.storage.load(C.storage.K_BACKUP, null);
         if (!backup || !Array.isArray(backup.items)) { toast('Ingen kopi at hente'); return; }
         state.items = backup.items;
-        state.magic = Array.isArray(backup.magic) ? backup.magic : state.magic;
         state.page = 0;
         state.magicPage = 0;
         // Stemplet bliver stående på den nye version, så den gamle kopi ikke
@@ -269,26 +274,15 @@
         }));
       }
     }
-    var pm = pack.magic;
-    if (state.cfg.magic.enabled && pm) {
-      var on = C.RKEYS.filter(function (k) { return (pm.chance[k] || 0) > 0; });
-      // Har kort deres egen chance, er pakkens kun det de andre falder tilbage
-      // på — så det skal fremgå, ellers læser man tallet som hele sandheden.
-      var nCards = 0, ownChance = 0;
-      (pack.tiers || []).forEach(function (t) {
-        (t.cards || []).forEach(function (c) { nCards++; if (c.magicChance) ownChance++; });
-      });
-      var allOwn = nCards > 0 && ownChance === nCards;
-      if (on.length || ownChance) {
+    if (state.cfg.magic.enabled) {
+      var nMagic = C.poolFor(state.items, pack.filter, state.cfg)
+        .filter(function (i) { return i.category === C.MAGIC_CAT; }).length;
+      if (nMagic) {
         hint.appendChild(el('br'));
         hint.appendChild(el('span', {
-          text: 'Magic item-chance: ' + (allOwn ? 'sat pr. kort' : (on.length ? on.map(function (k) {
-            return C.rarityLabel(k) + ' ' + pm.chance[k] + '%';
-          }).join(', ') : 'ingen')) +
-          (ownChance && !allOwn ? ' (' + ownChance + ' kort har deres egen)' : '') +
-          ' · ' + C.magicPool(state.magic, pm.types, pm.consumables).length + ' magic items i puljen' +
-          (pm.consumables === 'only' ? ' (kun forbrugsvarer)'
-            : pm.consumables === 'exclude' ? ' (kun permanente)' : '')
+          text: 'Heraf ' + nMagic + ' magic items · vægt ' +
+                (pack.weights && pack.weights[C.MAGIC_CAT] !== undefined
+                  ? pack.weights[C.MAGIC_CAT] : 1)
         }));
       }
     }
@@ -316,7 +310,7 @@
     var count = Math.max(1, Math.min(50, parseInt($('#genCount').value, 10) || 1));
     var out = [];
     for (var i = 0; i < count; i++)
-      out.push(C.generate(pack, tierObj, state.items, state.cfg, state.magic, window.SPELLS));
+      out.push(C.generate(pack, tierObj, state.items, state.cfg, window.SPELLS));
     state.results = append ? state.results.concat(out) : out;
     renderResults();
     if (append) toast(count + ' pakker lagt til — ' + state.results.length + ' i alt');
@@ -341,10 +335,10 @@
     state.results.forEach(function (box, i) {
       lines.push('=== ' + box.pack + ' — ' + box.tier + ' #' + (i + 1) + ' ===');
       box.cards.forEach(function (c) {
-        if (c.magic) {
-          lines.push('  ' + c.slot + ': [MAGIC] ' + c.magic.item.name +
-            (c.magic.base ? ' (' + c.magic.base.name + ')' : '') +
-            ' [' + C.magicRarityLabel(c.magic.magicRarity) + ' magic item, ' +
+        if (c.item && c.item.category === C.MAGIC_CAT) {
+          lines.push('  ' + c.slot + ': [MAGIC] ' + c.item.name +
+            (c.base ? ' (' + c.base.name + ')' : '') +
+            ' [' + C.magicRarityLabel(c.item.rarity) + ' magic item, ' +
             C.rarityLabel(c.rolled) + '-kort]');
           return;
         }
@@ -484,7 +478,7 @@
   /* Typelinjen på et spell-kort: "Spell Scroll (3rd level)". Niveauet er
      kortets eget, ikke nødvendigvis spellens — de er forskellige ved upcast. */
   function spellKindLabel(magicItem, castLevel) {
-    var kind = magicItem.spellKind || magicItem.type;
+    var kind = magicItem.spellKind || magicItem.subcategory;
     return castLevel
       ? kind + ' (' + levelLabel(castLevel) + ' level)'
       : kind + ' (Cantrip)';
@@ -532,10 +526,14 @@
       box.cards.forEach(function (c) {
         // Magic item-kort: viser magic itemet, dets magi-rarity og et
         // eventuelt udrullet basisitem. Kortets eget trin står nederst.
-        if (c.magic) {
-          var m = c.magic.item;
-          var base = c.magic.base;
-          var roll = c.magic.spell;
+        var it = c.item;
+        // Magic items er items som alt andet, men de har mere at vise: et
+        // udrullet basisitem, en spell, en typelinje. Grenen handler om hvad
+        // kortet skal rumme, ikke om hvor itemet kom fra.
+        if (it && it.category === C.MAGIC_CAT) {
+          var m = it;
+          var base = c.base;
+          var roll = c.spell;
           var spell = roll ? roll.spell : null;
           // To slags spell-bærere: et scroll eller en tome *er* spellen, mens
           // et Enspelled-item bare har en spell ladt i sig og ellers spiller
@@ -557,7 +555,7 @@
           // Light Armor, bare magisk.
           mk.push(el('div', { class: 'card-sub',
             text: isSpellCard ? spellKindLabel(m, roll.castLevel)
-                              : (base && base.subcategory ? 'Magic ' + base.subcategory : m.type) +
+                              : (base && base.subcategory ? 'Magic ' + base.subcategory : m.subcategory) +
                                 (m.attunement ? ' · attunement' : '') }));
           if (isSpellCard) {
             // Kortet handler om spellen, så dens tal og tekst fylder pladsen.
@@ -587,24 +585,24 @@
             ? descLine(spell.desc, 'D&D Beyond')
             : descLine(m.desc, m.source);
           if (body) mk.push(body);
-          if (c.magic.magicRolled !== c.magic.magicRarity)
+          if (c.actual && c.rolled && c.actual !== c.rolled)
             mk.push(el('div', { class: 'fallback-note',
-              text: 'Slog ' + C.magicRarityLabel(c.magic.magicRolled) + ' — puljen var tom' }));
+              text: 'Trak ' + C.rarityLabel(c.rolled) + ' — puljen var tom' }));
+          if (c.duplicate)
+            mk.push(el('div', { class: 'fallback-note', text: 'Dublet (puljen er for lille)' }));
           mk.push(el('div', { class: 'card-meta' }, [
             el('span', { class: 'meta-rarity' }, [
-              starBadge(C.MKEYS, c.magic.magicRarity, true),
-              el('span', { class: 'rarity r-' + c.magic.magicRarity,
-                           text: C.magicRarityLabel(c.magic.magicRarity) })
+              starBadge(C.MKEYS, m.rarity, true),
+              el('span', { class: 'rarity r-' + m.rarity, text: C.magicRarityLabel(m.rarity) })
             ]),
             el('span', { class: 'meta-tier', text: C.rarityLabel(c.rolled) + '-kort' })
           ]));
           cards.appendChild(el('div', {
-            class: 'card is-magic r-' + c.magic.magicRarity + typeClass(m.type)
+            class: 'card is-magic r-' + m.rarity + typeClass(m.subcategory)
           }, mk));
           return;
         }
 
-        var it = c.item;
         var kids = [
           el('div', { class: 'card-slot', text: c.slot }),
           el('div', { class: 'card-name', text: it ? it.name : 'Intet item matcher' })
@@ -693,29 +691,73 @@
     var cats = C.categoriesOf(state.items);
     var tags = C.tagsOf(state.items);
 
+    /* Magic items bragte deres egne 189 tags med, så listen er for lang til
+       at ligge fremme. De valgte står altid øverst; resten er foldet sammen bag
+       en søgning, så man kan finde ét tag uden at skulle læse dem alle. */
+    var SHOWN = 24;
+
     function group(title, all, selected, note) {
-      var chips = el('div', { class: 'cats' });
-      if (!all.length) {
-        chips.appendChild(el('span', { class: 'hint', text: 'Ingen fundet — importér items først.' }));
-      } else {
-        all.forEach(function (v) {
-          var on = selected.indexOf(v) >= 0;
+      var box = el('div', { class: 'filter-group' });
+      var open = false, q = '';
+
+      function render() {
+        box.innerHTML = '';
+        box.appendChild(el('h3', { text: title }));
+        if (note) box.appendChild(el('p', { class: 'hint', text: note }));
+        if (!all.length) {
+          box.appendChild(el('span', { class: 'hint', text: 'Ingen fundet — importér items først.' }));
+          return;
+        }
+
+        var needle = q.trim().toLowerCase();
+        var rest = all.filter(function (v) {
+          return selected.indexOf(v) < 0 && (!needle || v.toLowerCase().indexOf(needle) >= 0);
+        });
+        var hidden = 0;
+        if (!open && !needle && rest.length > SHOWN) {
+          hidden = rest.length - SHOWN;
+          rest = rest.slice(0, SHOWN);
+        }
+
+        if (all.length > SHOWN) {
+          box.appendChild(el('input', {
+            type: 'search', class: 'chip-search', value: q,
+            placeholder: 'Søg blandt ' + all.length + ' …',
+            oninput: function () {
+              q = this.value;
+              var pos = this.selectionStart;
+              render();
+              var f = box.querySelector('.chip-search');
+              if (f) { f.focus(); f.setSelectionRange(pos, pos); }
+            }
+          }));
+        }
+
+        var chips = el('div', { class: 'cats' });
+        function chip(v, on) {
           chips.appendChild(el('button', {
-            class: 'chip' + (on ? ' on' : ''),
-            text: v,
+            class: 'chip' + (on ? ' on' : ''), text: v,
             onclick: function () {
               var i = selected.indexOf(v);
               if (i >= 0) selected.splice(i, 1); else selected.push(v);
-              onChange();
+              render(); onChange();
             }
           }));
-        });
+        }
+        // Valgte først, så man kan se hvad filteret gør uden at lede.
+        selected.forEach(function (v) { chip(v, true); });
+        rest.forEach(function (v) { chip(v, false); });
+        if (hidden) {
+          chips.appendChild(el('button', {
+            class: 'chip chip-more', text: '+ ' + hidden + ' flere',
+            onclick: function () { open = true; render(); }
+          }));
+        }
+        box.appendChild(chips);
       }
-      return el('div', { class: 'filter-group' }, [
-        el('h3', { text: title }),
-        note ? el('p', { class: 'hint', text: note }) : null,
-        chips
-      ]);
+
+      render();
+      return box;
     }
 
     wrap.appendChild(group('Kategorier', cats, filter.categories,
@@ -750,281 +792,6 @@
     return wrap;
   }
 
-  /* Chancen for at et korttrin bliver et magic item-kort, plus hvilke typer
-     magic items pakken må trække. Selve korttrin -> magi-rarity-tabellen er
-     fælles for alle pakker og ligger under fanen Magic. */
-  /* Tabellen korttrin -> magi-rarity. Bruges både til den fælles under fanen
-     Magic og til en pakkes egen overstyring. */
-  function mappingGrid(mapping) {
-    var wrap = el('div');
-
-    var head = el('div', { class: 'map-row map-head' }, [el('span', { text: 'Korttrin' })]);
-    C.MAGIC_RARITIES.forEach(function (r) {
-      head.appendChild(el('span', {}, [
-        el('i', { class: 'dot', style: 'background:var(--r-' + r.key + ')' }),
-        document.createTextNode(' ' + r.label)
-      ]));
-    });
-    head.appendChild(el('span', { text: 'Sum' }));
-    wrap.appendChild(head);
-
-    C.RARITIES.forEach(function (tierR) {
-      var d = mapping[tierR.key];
-      var sumEl = el('span', { class: 'sum' });
-      function refresh() {
-        var total = 0;
-        C.MKEYS.forEach(function (k) { total += (Number(d[k]) || 0); });
-        sumEl.textContent = (Math.round(total * 100) / 100) + '%';
-        sumEl.className = 'sum ' + (Math.abs(total - 100) < 0.01 ? 'good' : 'bad');
-      }
-      var row = el('div', { class: 'map-row' }, [
-        el('span', { class: 'rarity r-' + tierR.key, text: tierR.label })
-      ]);
-      C.MAGIC_RARITIES.forEach(function (mr) {
-        row.appendChild(el('input', {
-          type: 'number', min: '0', max: '100', step: '0.1', value: d[mr.key] || 0,
-          oninput: function () {
-            d[mr.key] = Math.max(0, Number(this.value) || 0);
-            refresh(); persist();
-          }
-        }));
-      });
-      row.appendChild(sumEl);
-      refresh();
-      wrap.appendChild(row);
-    });
-
-    return wrap;
-  }
-
-  /* En pakke kan overstyre den fælles tabel. Det er nødvendigt når hvert kort
-     i pakken er et magic item: så bruges korttrinnet ikke til andet, og den
-     fælles tabel — som er lavet til pakker hvor magi er sjældent — ville
-     holde resultatet nede uanset hvad man satte trinnene til. */
-  function magicMappingPanel(pack) {
-    var pm = pack.magic;
-    var host = el('div');
-
-    function render() {
-      host.innerHTML = '';
-      host.appendChild(el('label', { class: 'check' }, [
-        el('input', {
-          type: 'checkbox', checked: pm.mapping ? 'checked' : null,
-          onchange: function () {
-            pm.mapping = this.checked
-              ? JSON.parse(JSON.stringify(state.cfg.magic.mapping)) : null;
-            render(); persist();
-          }
-        }),
-        document.createTextNode('Egen korttrin → magi-rarity for denne pakke')
-      ]));
-      host.appendChild(el('p', { class: 'hint',
-        text: pm.mapping
-          ? 'Pakken bruger sin egen tabel. Den fælles under fanen Magic rører den ikke.'
-          : 'Pakken følger den fælles tabel under fanen Magic.' }));
-      if (pm.mapping) host.appendChild(mappingGrid(pm.mapping));
-    }
-
-    render();
-    return host;
-  }
-
-  /* Chancen for at et kort bliver magi findes to steder — på pakken og på
-     kortet — og det mest specifikke vinder, ligesom med vægte. Reglen står ét
-     sted her, så UI'et og generate() er enige. */
-  function chanceOf(pack, c) {
-    return (c && c.magicChance) || (pack.magic && pack.magic.chance) || {};
-  }
-
-  /* Et kort kan sætte sin egen chance for at blive et magic item. Det er dét
-     der gør én plads garanteret magisk mens resten af pakken kun har en lille
-     chance — sådan er Magic-pakken bygget. */
-  function cardMagicChance(pack, c) {
-    if (!state.cfg.magic.enabled) return null;
-    var host = el('div', { class: 'tier-weights' });
-
-    function render() {
-      host.innerHTML = '';
-      host.appendChild(el('label', { class: 'check' }, [
-        el('input', {
-          type: 'checkbox', checked: c.magicChance ? 'checked' : null,
-          onchange: function () {
-            var pm = pack.magic || {};
-            c.magicChance = this.checked ? C.magicChanceObj(pm.chance) : null;
-            render(); updateGenHint(); persist(); refreshPackDetail();
-          }
-        }),
-        document.createTextNode('Egen magic item-chance for dette kort')
-      ]));
-      if (!c.magicChance) {
-        host.appendChild(el('p', { class: 'hint',
-          text: 'Kortet bruger pakkens chance.' }));
-        return;
-      }
-
-      var rows = el('div', { class: 'dist' });
-      C.RARITIES.forEach(function (r) {
-        rows.appendChild(el('label', { class: 'field' }, [
-          el('span', {}, [
-            el('i', { class: 'dot', style: 'background:var(--r-' + r.key + ')' }),
-            document.createTextNode(r.label)
-          ]),
-          el('input', {
-            type: 'number', min: '0', max: '100', step: '0.1', value: c.magicChance[r.key] || 0,
-            oninput: function () {
-              c.magicChance[r.key] = Math.max(0, Math.min(100, Number(this.value) || 0));
-              updateGenHint(); persist();
-            }
-          })
-        ]));
-      });
-      host.appendChild(rows);
-
-      var quick = el('div', { class: 'row' }, [
-        el('button', {
-          class: 'btn btn-sm', text: 'Altid magi',
-          onclick: function () {
-            c.magicChance = C.magicChanceObj(100);
-            render(); updateGenHint(); persist(); refreshPackDetail();
-          }
-        }),
-        el('button', {
-          class: 'btn btn-sm', text: 'Aldrig magi',
-          onclick: function () {
-            c.magicChance = C.magicChanceObj(0);
-            render(); updateGenHint(); persist(); refreshPackDetail();
-          }
-        })
-      ]);
-      host.appendChild(quick);
-      host.appendChild(el('p', { class: 'hint',
-        text: 'Chance i procent pr. korttrin. 100 på alle trin gør kortet til et ' +
-              'garanteret magic item; 0 holder det på udstyr.' }));
-    }
-
-    render();
-    return host;
-  }
-
-  /* En kortplads kan binde sine egne magic item-typer. Det er sådan en pakke
-     bliver til "en potion, et spell scroll og et frit magic item". Feltet vises
-     kun når kortet faktisk kan give magic item-kort. */
-  function cardMagicTypes(pack, c) {
-    var pm = pack.magic || {};
-    var chance = chanceOf(pack, c);
-    var canRoll = C.RKEYS.some(function (k) { return (Number(chance[k]) || 0) > 0; });
-    if (!canRoll || !state.cfg.magic.enabled) return null;
-
-    var host = el('div', { class: 'tier-weights' });
-
-    function render() {
-      host.innerHTML = '';
-      host.appendChild(el('label', { class: 'check' }, [
-        el('input', {
-          type: 'checkbox', checked: c.magicTypes ? 'checked' : null,
-          onchange: function () {
-            c.magicTypes = this.checked ? (pm.types || []).slice() : null;
-            render(); updateGenHint(); persist();
-          }
-        }),
-        document.createTextNode('Egne magic item-typer for dette kort')
-      ]));
-      if (!c.magicTypes) {
-        host.appendChild(el('p', { class: 'hint',
-          text: 'Kortet bruger pakkens tilladte typer.' }));
-        return;
-      }
-
-      var pool = C.magicPool(state.magic, c.magicTypes, pm.consumables);
-      host.appendChild(el('p', { class: 'hint',
-        text: 'Ingen valgt = alle typer. ' + pool.length + ' magic items i kortets pulje.' }));
-
-      var chips = el('div', { class: 'cats' });
-      C.magicTypesOf(state.magic).forEach(function (t) {
-        var on = c.magicTypes.indexOf(t) >= 0;
-        chips.appendChild(el('button', {
-          class: 'chip' + (on ? ' on' : ''), text: t,
-          onclick: function () {
-            var i = c.magicTypes.indexOf(t);
-            if (i >= 0) c.magicTypes.splice(i, 1); else c.magicTypes.push(t);
-            render(); updateGenHint(); persist();
-          }
-        }));
-      });
-      host.appendChild(chips);
-    }
-
-    render();
-    return host;
-  }
-
-  function magicPanel(pack) {
-    var pm = pack.magic;
-    var pool = C.magicPool(state.magic, pm.types, pm.consumables);
-
-    var chances = el('div', { class: 'dist' });
-    C.RARITIES.forEach(function (r) {
-      chances.appendChild(el('label', { class: 'field' }, [
-        el('span', {}, [
-          el('i', { class: 'dot', style: 'background:var(--r-' + r.key + ')' }),
-          document.createTextNode(r.label)
-        ]),
-        el('input', {
-          type: 'number', min: '0', max: '100', step: '0.1', value: pm.chance[r.key] || 0,
-          oninput: function () {
-            pm.chance[r.key] = Math.max(0, Math.min(100, Number(this.value) || 0));
-            updateGenHint(); persist();
-          }
-        })
-      ]));
-    });
-
-    var types = el('div', { class: 'cats' });
-    C.magicTypesOf(state.magic).forEach(function (t) {
-      var on = pm.types.indexOf(t) >= 0;
-      types.appendChild(el('button', {
-        class: 'chip' + (on ? ' on' : ''), text: t,
-        onclick: function () {
-          var i = pm.types.indexOf(t);
-          if (i >= 0) pm.types.splice(i, 1); else pm.types.push(t);
-          renderPackDetail(); updateGenHint(); persist();
-        }
-      }));
-    });
-
-    var panel = el('div', { class: 'panel' }, [
-      el('h3', { text: 'Magic item-kort' }),
-      el('p', { class: 'hint',
-        text: 'Chance i procent for at et kort med det pågældende korttrin bliver et magic item ' +
-              'i stedet for et almindeligt item. Et enkelt kort kan sætte sin egen chance — ' +
-              'den vinder over pakkens.' }),
-      chances,
-      el('h3', { text: 'Korttrin → magi-rarity', style: 'margin-top:14px' }),
-      magicMappingPanel(pack),
-      el('h3', { text: 'Forbrugsvarer', style: 'margin-top:14px' }),
-      el('p', { class: 'hint',
-        text: 'Potions, scrolls, dust, oil og andet der bruges op, kan holdes adskilt fra ' +
-              'de permanente magic items.' }),
-      el('label', { class: 'field cons-mode' }, [
-        el('select', {
-          onchange: function () {
-            pm.consumables = this.value;
-            renderPackDetail(); updateGenHint(); persist();
-          }
-        }, [
-          el('option', { value: 'all', text: 'Både permanente og forbrugsvarer' }),
-          el('option', { value: 'exclude', text: 'Kun permanente magic items' }),
-          el('option', { value: 'only', text: 'Kun forbrugsvarer' })
-        ])
-      ]),
-      el('h3', { text: 'Tilladte typer', style: 'margin-top:14px' }),
-      el('p', { class: 'hint', text: 'Ingen valgt = alle typer. ' + pool.length + ' magic items i puljen.' }),
-      types
-    ]);
-    panel.querySelector('.cons-mode select').value = pm.consumables || 'all';
-    return panel;
-  }
-
   /* Uden vægte er alle items i en rarity lige sandsynlige, så den største
      kategori dominerer. Vægten ganges på hvert item i kategorien.
 
@@ -1039,14 +806,11 @@
     return hasFilter(c.filter) ? c.filter : pack.filter;
   }
 
-  /* Et kort der altid bliver til et magic item trækker aldrig fra udstyrspuljen,
+  /* Et kort der kun trækker magic items har intet at veje kategorier imod,
      og så er kategorivægte uden betydning for det. */
   function drawsEquipment(pack, c) {
-    if (!state.cfg.magic || !state.cfg.magic.enabled) return true;
-    var chance = chanceOf(pack, c);
-    return C.RKEYS.some(function (k) {
-      return (Number(c.dist[k]) || 0) > 0 && (Number(chance[k]) || 0) < 100;
-    });
+    var f = effectiveFilter(pack, c);
+    return !(f.mode !== 'or' && f.categories.length === 1 && f.categories[0] === C.MAGIC_CAT);
   }
 
   /* Kortene som et givet vægtniveau er det mest specifikke for. */
@@ -1101,8 +865,8 @@
     if (!governed.length)
       return 'Alle ' + what + ' har deres egne vægte, så disse bruges ikke.';
     if (!governed.some(function (c) { return drawsEquipment(pack, c); }))
-      return (governed.length === 1 ? 'Kortet bliver' : 'Kortene bliver') +
-             ' altid til magic item-kort, så kategorivægte bruges ikke.';
+      return (governed.length === 1 ? 'Kortet trækker' : 'Kortene trækker') +
+             ' kun magic items, så kategorivægte bruges ikke.';
     if (!cats.length) return 'Ingen kategorier i puljen.';
     if (cats.length === 1) return 'Puljen rummer kun ' + cats[0] + ', så vægten gør ingen forskel.';
     return '';
@@ -1261,8 +1025,6 @@
 
     host.appendChild(weightPanel(pack));
 
-    host.appendChild(magicPanel(pack));
-
     pack.tiers.forEach(function (t, ti) { host.appendChild(renderTier(pack, t, ti)); });
 
     host.appendChild(el('div', { class: 'row' }, [
@@ -1292,7 +1054,7 @@
         onclick: function () {
           t.cards.push({
             label: 'Kort ' + (t.cards.length + 1), dist: C.emptyDist(),
-            filter: null, weights: null, magicTypes: null, magicChance: null
+            filter: null, weights: null
           });
           renderPackDetail(); updateGenHint(); persist();
         }
@@ -1382,10 +1144,6 @@
         }));
         catHost.appendChild(cardWeights(pack, c));
       }
-      var mc = cardMagicChance(pack, c);
-      if (mc) catHost.appendChild(mc);
-      var mt = cardMagicTypes(pack, c);
-      if (mt) catHost.appendChild(mt);
     }
     renderOverride();
 
@@ -1787,9 +1545,6 @@
     $('#magicEnabled').checked = !!state.cfg.magic.enabled;
     $('#magicUpcast').value = state.cfg.magic.upcastChance;
 
-    var host = $('#magicMapping');
-    host.innerHTML = '';
-    host.appendChild(mappingGrid(state.cfg.magic.mapping));
   }
 
   $('#magicEnabled').addEventListener('change', function () {
@@ -1806,9 +1561,9 @@
     var q = $('#magicSearch').value.trim().toLowerCase();
     var type = $('#magicTypeFilter').value;
     var rar = $('#magicRarFilter').value;
-    return state.magic.filter(function (m) {
+    return magicItems().filter(function (m) {
       if (q && m.name.toLowerCase().indexOf(q) < 0) return false;
-      if (type && m.type !== type) return false;
+      if (type && m.subcategory !== type) return false;
       if (rar && m.rarity !== rar) return false;
       var cons = $('#magicConsFilter').value;
       if (cons === 'only' && !m.consumable) return false;
@@ -1818,7 +1573,8 @@
   }
 
   function renderMagicItems() {
-    fillSelect($('#magicTypeFilter'), C.magicTypesOf(state.magic), 'Alle typer');
+    var all = magicItems();
+    fillSelect($('#magicTypeFilter'), C.magicTypesOf(state.items), 'Alle typer');
     fillSelect($('#magicRarFilter'),
       C.MAGIC_RARITIES.map(function (r) { return { value: r.key, text: r.label }; }),
       'Alle magi-rarities');
@@ -1827,7 +1583,7 @@
     stats.innerHTML = '';
     var counts = {};
     C.MKEYS.forEach(function (k) { counts[k] = 0; });
-    state.magic.forEach(function (m) {
+    all.forEach(function (m) {
       if (m.enabled !== false && counts[m.rarity] !== undefined) counts[m.rarity]++;
     });
     C.MAGIC_RARITIES.forEach(function (r) {
@@ -1836,8 +1592,8 @@
         el('span', { text: r.label })
       ]));
     });
-    var nCons = state.magic.filter(function (m) { return m.enabled !== false && m.consumable; }).length;
-    var nPerm = state.magic.filter(function (m) { return m.enabled !== false && !m.consumable; }).length;
+    var nCons = all.filter(function (m) { return m.enabled !== false && m.consumable; }).length;
+    var nPerm = all.filter(function (m) { return m.enabled !== false && !m.consumable; }).length;
     stats.appendChild(el('div', { class: 'stat' }, [
       el('b', { text: String(nPerm) }), el('span', { text: 'permanente' })
     ]));
@@ -1846,7 +1602,7 @@
     ]));
 
     var list = filteredMagic();
-    $('#magicCount').textContent = list.length + ' af ' + state.magic.length + ' magic items';
+    $('#magicCount').textContent = list.length + ' af ' + all.length + ' magic items';
 
     var bulk = $('#magicBulk');
     bulk.innerHTML = '';
@@ -1897,7 +1653,7 @@
           el('div', { text: m.name }),
           m.attunement ? el('div', { class: 'cell-sub', text: 'kræver attunement' }) : null
         ]),
-        el('td', { text: m.type }),
+        el('td', { text: m.subcategory }),
         el('td', {}, [
           el('input', {
             type: 'checkbox', checked: m.consumable ? 'checked' : null,
@@ -2043,7 +1799,7 @@
     loadBundled();
     autoSynced = null;
     renderAll(); persist();
-    toast(state.items.length + ' items og ' + state.magic.length + ' magic items hentet forfra');
+    toast(state.items.length + ' items hentet forfra, heraf ' + magicItems().length + ' magic items');
   });
 
   $('#btnClearStorage').addEventListener('click', function () {

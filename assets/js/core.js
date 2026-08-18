@@ -13,17 +13,21 @@ window.LB = (function () {
   ];
   var RKEYS = RARITIES.map(function (r) { return r.key; });
 
-  /* To slags rarity, som er nemme at forveksle:
+  /* Der er én rarity-akse. Et item får sin plads på den fra en prisskala
+     (udstyr) eller direkte fra kilden (magic items og Class-kort, som ikke
+     har en pris). Et kort slår et trin på samme akse og trækker et item der.
 
-       korttrin    — hvad en kortplads i en pakke slår. Styres af fordelingen
-                     på kortet. Common … Legendary.
-       magi-rarity — magic itemets egen rarity fra D&D. Common … Artifact.
-
-     Et korttrin kan blive til et magic item-kort; derefter afgør tabellen i
-     cfg.magic.mapping hvilken magi-rarity der trækkes på det trin.        */
+     Artifact ligger uden for de fem trin et kort kan slå. De 11 artifacts
+     ligger derfor i listen uden nogensinde at blive trukket, indtil man selv
+     giver dem en af de fem rarities under Items.                          */
 
   var MAGIC_RARITIES = RARITIES.concat([{ key: 'artifact', label: 'Artifact' }]);
   var MKEYS = MAGIC_RARITIES.map(function (r) { return r.key; });
+
+  /* Magic items er items som alt andet — de ligger i samme liste, med denne
+     kategori og deres D&D-type som tag. Navnet står ét sted, så et filter,
+     en vægt og en kortplads alle taler om det samme. */
+  var MAGIC_CAT = 'Magic';
 
   function magicRarityLabel(key) {
     for (var i = 0; i < MAGIC_RARITIES.length; i++)
@@ -133,22 +137,18 @@ window.LB = (function () {
   }
 
   /* weights gælder kun sammen med et eget filter — uden det trækker kortet fra
-     pakkens pulje, og så er det pakkens (eller tierets) vægte der er de rigtige.
-     magicTypes overstyrer pakkens tilladte magic item-typer for netop denne
-     plads, så en pakke kan give en potion, et scroll og et frit magic item.
-     magicChance overstyrer pakkens chance for at kortet bliver magi. Det er
-     dét der gør en plads til et garanteret magic item (100 på alle trin) mens
-     resten af pakken kun har en lille chance — samme greb som et eget filter
-     giver på udstyrssiden. null = pakkens chance gælder. */
-  function card(label, d, filter, weights, magicTypes, magicChance) {
+     pakkens pulje, og så er det pakkens (eller tierets) vægte der er de rigtige. */
+  function card(label, d, filter, weights) {
     return {
       label: label || '', dist: dist(d),
-      filter: filter || null, weights: weights || null,
-      magicTypes: (magicTypes && magicTypes.length) ? magicTypes.slice() : null,
-      magicChance: (magicChance === null || magicChance === undefined)
-        ? null : magicChanceObj(magicChance)
+      filter: filter || null, weights: weights || null
     };
   }
+
+  /* Magic items er items som alt andet: kategori Magic, med typen som tag.
+     Et filter der skal ramme "rigtige våben eller magiske våben" skriver
+     derfor kategorien Våben og tagget Weapon med mode 'or'. */
+  function magicFilter(tags, mode) { return filt(['Magic'], tags || [], mode); }
 
   /* weights kan overstyres pr. tier. Uden overstyring bruges pakkens egne. */
   function tier(id, name, cards, weights) {
@@ -172,6 +172,26 @@ window.LB = (function () {
     ];
   }
 
+  /* Et tier arver pakkens vægte, men kan overstyre dem. Magi er den eneste
+     vægt der reelt skal gradbøjes gennem Bronze/Sølv/Guld, og et helt vægtsæt
+     pr. tier ville skulle gentage de andre kategorier. Denne bygger sættet. */
+  function gradeMagic(pack) {
+    var steps = pack.tierWeights && pack.tierWeights.magic;
+    delete pack.tierWeights;
+    if (!steps) return pack;
+    pack.tiers.forEach(function (t, i) {
+      if (steps[i] === undefined || steps[i] === null) return;
+      // Er trinnet det samme som pakkens, skal tieret arve. Ellers ville
+      // pakkens vægtpanel stå tomt, fordi intet kort længere lyttede til det.
+      if (steps[i] === pack.weights[MAGIC_CAT]) return;
+      var w = {};
+      for (var k in pack.weights) w[k] = pack.weights[k];
+      w[MAGIC_CAT] = steps[i];
+      t.weights = w;
+    });
+    return pack;
+  }
+
   function standardTiers() {
     return gradedTiers(
       [card('Kort 1', { common: 100 }),
@@ -186,23 +206,33 @@ window.LB = (function () {
     );
   }
 
+  /* Den brede udstyrspulje, som de fleste pakker falder tilbage på. Magic er
+     med som kategori, så et kort kan lande på et magic item uden at der skal
+     et særligt maskineri til — hvor tit det sker styres af vægten. */
+  var GEAR = ['Ammunition', 'Gift', 'Rustning', 'Udstyr', 'Våben', 'Værktøj'];
+
   function defaultPacks() {
+    return packs().map(gradeMagic);
+  }
+
+  function packs() {
     return [
       {
         id: 'adventurer', name: 'Adventurer',
-        filter: filt(['Ammunition', 'Gift', 'Rustning', 'Udstyr', 'Våben', 'Værktøj'], []),
-        note: 'Den almindelige pakke — udstyr, våben, rustning, værktøj, gift og ammunition. ' +
-              'Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra. Magic item-kort kan ' +
-              'være både permanente og forbrugsvarer, så healing potions og spell scrolls ' +
-              'kan falde her.',
-        // Både permanente og forbrugsvarer: en healing potion eller et spell
-        // scroll er fin loot i en adventurer-pakke. Hvilket trin de lander på
-        // følger af magi-rarity — de mindste er Common og kan derfor komme
-        // allerede på et Rare-kort, mens Supreme Healing kræver et højere trin.
-        magic: packMagic({ rare: 10, very_rare: 20, legendary: 30 }, [], 'all'),
+        filter: filt(GEAR.concat(['Magic']), []),
+        note: 'Den almindelige pakke — udstyr, våben, rustning, værktøj, gift og ammunition, ' +
+              'plus magic items. Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra. ' +
+              'Den har ingen garanteret kategori; det er den blandede pakke.',
         // Udstyr er den største gruppe og ville ellers fylde over halvdelen af
-        // pakken. Våben og rustning vægtes op, så de falder oftere.
-        weights: { 'Våben': 2, 'Rustning': 4, 'Ammunition': 2 },
+        // pakken. Våben og rustning vægtes op, så de falder oftere. Magic
+        // vægtes langt ned: 450 magic items mod 178 udstyrsting ville ellers
+        // gøre hver pakke magisk.
+        weights: { 'Våben': 2, 'Rustning': 4, 'Ammunition': 2, 'Magic': 0.03 },
+        // Magi-vægten stiger med tieret. Den er relativ, ikke en procentsats:
+        // en Guld-pakke har flere magic items at vælge mellem på de høje trin,
+        // så den samme vægt ville give vidt forskellige andele. Tallene er
+        // regnet baglæns fra hvor tit magi skal falde på det sidste kort.
+        tierWeights: { magic: [0.03, 0.06, 0.11] },
         tiers: gradedTiers(
           [card('Kort 1', { common: 100 }),
            card('Kort 2', { common: 50, uncommon: 50 }),
@@ -216,106 +246,98 @@ window.LB = (function () {
         )
       },
       {
-        id: 'weapons', name: 'Weapons', filter: filt(['Våben', 'Ammunition', 'Udstyr'], []),
-        note: 'Kort 3 er garanteret et våben — de to første trækker bredere, så der også ' +
-              'falder udstyr og ammunition. Magic item-kort er begrænset til permanente ' +
-              'våben; potions hører til i Consumables.',
-        magic: packMagic({ rare: 15, very_rare: 25, legendary: 40 }, ['Weapon'], 'exclude'),
+        id: 'weapons', name: 'Weapons',
+        // 'or': kategorierne ELLER tagget Weapon. Magic items bærer deres type
+        // som tag, så det slipper magiske våben ind uden at åbne for ringe.
+        filter: filt(['Våben', 'Ammunition', 'Udstyr'], ['Weapon'], 'or'),
+        note: 'Kort 3 er garanteret et våben — magisk eller ej. De to første trækker ' +
+              'bredere, så der også falder udstyr og ammunition. Magic items er begrænset ' +
+              'til typen Weapon; potions hører til i Consumables.',
+        weights: { 'Magic': 0.09 },
+        tierWeights: { magic: [0.09, 0.19, 0.33] },
         tiers: gradedTiers(
           [card('Kort 1', { common: 100 }),
            card('Kort 2', { common: 85, uncommon: 15 }),
-           card('Kort 3', { common: 10, uncommon: 80, rare: 9, very_rare: 1 }, filt(['Våben'], []))],
+           card('Kort 3', { common: 10, uncommon: 80, rare: 9, very_rare: 1 }, filt(['Våben'], ['Weapon'], 'or'))],
           [card('Kort 1', { common: 70, uncommon: 30 }),
            card('Kort 2', { common: 50, uncommon: 50 }),
-           card('Kort 3', { uncommon: 65, rare: 30, very_rare: 5 }, filt(['Våben'], []))],
+           card('Kort 3', { uncommon: 65, rare: 30, very_rare: 5 }, filt(['Våben'], ['Weapon'], 'or'))],
           [card('Kort 1', { common: 40, uncommon: 60 }),
            card('Kort 2', { uncommon: 80, rare: 20 }),
-           card('Kort 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, filt(['Våben'], []))]
+           card('Kort 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, filt(['Våben'], ['Weapon'], 'or'))]
         )
       },
       {
-        id: 'armor', name: 'Armor', filter: filt(['Rustning', 'Udstyr'], []),
-        note: 'Kort 3 er garanteret en rustning; de to første trækker også udstyr. Rustning ' +
-              'ligger højt på udstyrs-skalaen — billigste er Padded Armor til 5 gp — så de lave ' +
-              'trin lander på udstyr, og Padded Armor er pakkens skraldeitem. Kun 14 rustninger ' +
-              'i alt, så gentagelser er uundgåelige.',
-        magic: packMagic({ rare: 15, very_rare: 25, legendary: 40 }, ['Armor'], 'exclude'),
+        id: 'armor', name: 'Armor',
+        filter: filt(['Rustning', 'Udstyr'], ['Armor'], 'or'),
+        note: 'Kort 3 er garanteret en rustning — magisk eller ej; de to første trækker også ' +
+              'udstyr. Rustning ligger højt på udstyrs-skalaen — billigste er Padded Armor til ' +
+              '5 gp — så de lave trin lander på udstyr, og Padded Armor er pakkens skraldeitem. ' +
+              'Kun 14 rustninger i alt, så gentagelser er uundgåelige.',
+        weights: { 'Magic': 0.02 },
+        tierWeights: { magic: [0.02, 0.06, 0.25] },
         tiers: gradedTiers(
           [card('Kort 1', { common: 80, uncommon: 20 }),
            card('Kort 2', { common: 50, uncommon: 50 }),
-           card('Kort 3', { uncommon: 80, rare: 15, very_rare: 4, legendary: 1 }, filt(['Rustning'], []))],
+           card('Kort 3', { uncommon: 80, rare: 15, very_rare: 4, legendary: 1 }, filt(['Rustning'], ['Armor'], 'or'))],
           [card('Kort 1', { common: 50, uncommon: 30, rare: 20 }),
            card('Kort 2', { common: 10, uncommon: 40, rare: 40, very_rare: 10 }),
-           card('Kort 3', { uncommon: 40, rare: 40, very_rare: 15, legendary: 5 }, filt(['Rustning'], []))],
+           card('Kort 3', { uncommon: 40, rare: 40, very_rare: 15, legendary: 5 }, filt(['Rustning'], ['Armor'], 'or'))],
           [card('Kort 1', { uncommon: 50, rare: 50 }),
            card('Kort 2', { rare: 50, very_rare: 50 }),
-           card('Kort 3', { rare: 50, very_rare: 40, legendary: 10 }, filt(['Rustning'], []))]
+           card('Kort 3', { rare: 50, very_rare: 40, legendary: 10 }, filt(['Rustning'], ['Armor'], 'or'))]
         )
       },
       {
         id: 'consumables', name: 'Consumables',
-        // Healing-tagget rammer kun Healer's Kit og Herbalism Kit på udstyrssiden
-        // — grej, ikke forbrugsvarer. Healing potions er magic items og kommer
-        // ind via typerne nedenfor, så tagget hører ikke til i filteret.
+        // Magiske potions og scrolls bærer også tagget Consumable, så de
+        // kommer ind af sig selv. Healing-tagget hører ikke til her: det
+        // rammer Healer's Kit og Herbalism Kit, som er grej.
         filter: filt(['Gift'], ['Consumable'], 'or'),
-        note: 'Union-filter: hele Gift-gruppen plus alt med tagget Consumable. På magisiden ' +
-              'potions og scrolls. De ni dyreste forbrugsvarer er alle gift, så de høje trin ' +
-              'læner sig på magic item-kortene.',
-        magic: packMagic({ rare: 20, very_rare: 30, legendary: 40 }, ['Potion', 'Scroll'], 'only'),
-        tiers: standardTiers()
+        note: 'Union-filter: hele Gift-gruppen plus alt med tagget Consumable — både udstyr ' +
+              'og magiske potions og scrolls. Kort 3 er garanteret en magisk forbrugsvare. ' +
+              'De ni dyreste ikke-magiske forbrugsvarer er alle gift, så de høje trin læner ' +
+              'sig på magisiden.',
+        weights: { 'Magic': 0.39 },
+        tierWeights: { magic: [0.39, 0.35, 0.26] },
+        tiers: gradedTiers(
+          [card('Kort 1', { common: 100 }),
+           card('Kort 2', { common: 85, uncommon: 15 }),
+           card('Kort 3', { common: 60, uncommon: 35, rare: 5 }, magicFilter(['Consumable']))],
+          [card('Kort 1', { common: 70, uncommon: 30 }),
+           card('Kort 2', { common: 50, uncommon: 50 }),
+           card('Kort 3', { common: 20, uncommon: 60, rare: 20 }, magicFilter(['Consumable']))],
+          [card('Kort 1', { common: 40, uncommon: 60 }),
+           card('Kort 2', { uncommon: 80, rare: 20 }),
+           card('Kort 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, magicFilter(['Consumable']))]
+        )
       },
       {
         id: 'magic', name: 'Magic',
-        // Kort 1 og 2 kan falde tilbage på udstyr, så pakken skal have en
-        // rigtig udstyrspulje at trække fra — samme udvalg som Adventurer.
-        filter: filt(['Ammunition', 'Gift', 'Rustning', 'Udstyr', 'Våben', 'Værktøj'], []),
-        note: 'Kort 3 er garanteret et magic item — ligesom kort 3 er garanteret et våben i ' +
-              'Weapons. De to første kort har deres egen magic-chance: i Bronze er de mest ' +
-              'udstyr med en lille chance for mere magi, i Sølv er det omtrent fifty-fifty, ' +
-              'og i Guld er de altid magi, men tungt vægtet mod Common. Pakken har sin egen ' +
-              'korttrin-tabel, hvor trinnet ér magi-rarityen, så fordelingen på kortet ' +
-              'betyder præcis det den siger.',
-        // Egen tabel: den fælles er lavet til pakker hvor magic er sjældent og
-        // et Rare-kort derfor bør give et beskedent magic item. Her er magi
-        // hovedretten, og så skal trinnet betyde det det siger.
-        // Trinnet er magi-rarityen, ét til én. Så betyder fordelingen på kortet
-        // præcis det den siger, uden et mellemled der trækker den nedad.
-        // Pakkens egen chance er kun det kortene falder tilbage på — alle tre
-        // kort sætter deres egen, så det er dér tallene reelt står.
-        magic: packMagic(
-          { common: 50, uncommon: 50, rare: 50, very_rare: 50, legendary: 100 }, [], 'all',
-          {
-            common:    { common: 100 },
-            uncommon:  { uncommon: 100 },
-            rare:      { rare: 100 },
-            very_rare: { very_rare: 100 },
-            legendary: { legendary: 100 }
-          }
-        ),
-        // Samme vægte som Adventurer, så udstyrssiden ikke bliver til bare Udstyr.
-        weights: { 'Våben': 2, 'Rustning': 4, 'Ammunition': 2 },
-        // Garantien ligger på kort 3 alene: 100 % magi på alle trin. Kort 1 og 2
-        // bruger deres egen stigende chance, så et højt korttrin ikke spildes på
-        // udstyr der ikke findes — der er ingen legendary rustning at trække.
+        // Kort 1 og 2 kan falde tilbage på udstyr, så pakken har den brede
+        // pulje. Kort 3 filtrerer på kategorien Magic og er dermed garanteret
+        // magisk — samme greb som våbenkortet i Weapons.
+        filter: filt(GEAR.concat(['Magic']), []),
+        note: 'Kort 3 er garanteret et magic item — samme greb som det garanterede våben i ' +
+              'Weapons, bare på kategorien Magic. De to første trækker bredere: i Bronze ' +
+              'mest udstyr, i Sølv omtrent fifty-fifty, og i Guld er de også låst til magi, ' +
+              'men tungt vægtet mod de lave trin.',
+        weights: { 'Våben': 2, 'Rustning': 4, 'Ammunition': 2, 'Magic': 0.1 },
+        // Bronze: en lille chance for mere magi end det garanterede kort.
+        // Sølv: omtrent fifty-fifty. Guld er låst med filter og bruger ikke vægten.
+        tierWeights: { magic: [0.1, 0.4, 0.4] },
         tiers: gradedTiers(
-          [card('Kort 1', { common: 78.5, uncommon: 12, rare: 7, very_rare: 2, legendary: 0.5 },
-                null, null, null, { common: 5, uncommon: 8, rare: 30, very_rare: 60, legendary: 100 }),
-           card('Kort 2', { common: 78.5, uncommon: 12, rare: 7, very_rare: 2, legendary: 0.5 },
-                null, null, null, { common: 5, uncommon: 8, rare: 30, very_rare: 60, legendary: 100 }),
-           card('Kort 3', { common: 78.5, uncommon: 12, rare: 7, very_rare: 2, legendary: 0.5 },
-                null, null, null, 100)],
-          [card('Kort 1', { common: 10, uncommon: 66, rare: 15, very_rare: 8, legendary: 1 },
-                null, null, null, { common: 15, uncommon: 40, rare: 65, very_rare: 85, legendary: 100 }),
-           card('Kort 2', { common: 10, uncommon: 66, rare: 15, very_rare: 8, legendary: 1 },
-                null, null, null, { common: 15, uncommon: 40, rare: 65, very_rare: 85, legendary: 100 }),
-           card('Kort 3', { common: 10, uncommon: 66, rare: 15, very_rare: 8, legendary: 1 },
-                null, null, null, 100)],
-          // Guld: de to første er altid magi, men tungt vægtet mod Common, så
-          // pakkens tyngde ligger på kort 3 — og dér er legendary tredoblet.
-          [card('Kort 1', { common: 60, uncommon: 30, rare: 8, very_rare: 2 }, null, null, null, 100),
-           card('Kort 2', { common: 60, uncommon: 30, rare: 8, very_rare: 2 }, null, null, null, 100),
-           card('Kort 3', { uncommon: 5, rare: 45, very_rare: 35, legendary: 15 },
-                null, null, null, 100)]
+          [card('Kort 1', { common: 78.5, uncommon: 12, rare: 7, very_rare: 2, legendary: 0.5 }),
+           card('Kort 2', { common: 78.5, uncommon: 12, rare: 7, very_rare: 2, legendary: 0.5 }),
+           card('Kort 3', { common: 78.5, uncommon: 12, rare: 7, very_rare: 2, legendary: 0.5 }, magicFilter())],
+          [card('Kort 1', { common: 10, uncommon: 66, rare: 15, very_rare: 8, legendary: 1 }),
+           card('Kort 2', { common: 10, uncommon: 66, rare: 15, very_rare: 8, legendary: 1 }),
+           card('Kort 3', { common: 10, uncommon: 66, rare: 15, very_rare: 8, legendary: 1 }, magicFilter())],
+          // Guld: alle tre kort er magi. De to første er tungt vægtet mod
+          // Common, så pakkens tyngde ligger på kort 3.
+          [card('Kort 1', { common: 60, uncommon: 30, rare: 8, very_rare: 2 }, magicFilter()),
+           card('Kort 2', { common: 60, uncommon: 30, rare: 8, very_rare: 2 }, magicFilter()),
+           card('Kort 3', { uncommon: 5, rare: 45, very_rare: 35, legendary: 15 }, magicFilter())]
         )
       },
       {
@@ -323,7 +345,6 @@ window.LB = (function () {
         note: 'Ikke gradueret — ét tier. Hver kortplads beder om sin egen korttype via ' +
               'tags: Class, Perk, Stat, Feat og Skill. Feat- og Skill-kortene findes, men ' +
               'har ingen plads endnu — tilføj et kort, hvis de skal med.',
-        magic: packMagic({}, []),
         tiers: [tier('standard', 'Standard', [
           // Fordelingerne matcher hver types faktiske rarities, så der hverken
           // bliver fallback eller tomme kort.
@@ -335,64 +356,13 @@ window.LB = (function () {
     ];
   }
 
-  /* Fordeling over magi-rarity for hvert korttrin. Tallene er sat så et
-     Rare-kort overvejende giver et Common magic item, mens et Legendary-kort
-     har sit tyngdepunkt på Rare. Artifacts er slået fra som standard. */
-  function magicDist(o) {
-    var d = {};
-    MKEYS.forEach(function (k) { d[k] = (o && o[k]) || 0; });
-    return d;
-  }
-
   function defaultMagic() {
     return {
       enabled: true,
       // Chance i procent for at et scroll bærer en lavere spell, castet på
       // scrollets eget niveau.
-      upcastChance: 30,
-      mapping: {
-        common:    magicDist({ common: 100 }),
-        uncommon:  magicDist({ common: 90, uncommon: 10 }),
-        rare:      magicDist({ common: 70, uncommon: 25, rare: 5 }),
-        very_rare: magicDist({ common: 40, uncommon: 40, rare: 18, very_rare: 2 }),
-        legendary: magicDist({ common: 10, uncommon: 30, rare: 40, very_rare: 17, legendary: 3 })
-      }
+      upcastChance: 30
     };
-  }
-
-  /* Chance i procent for at et korttrin bliver et magic item-kort i stedet
-     for et almindeligt item. Nøglen er korttrinnet, ikke magi-rarity.
-     Et enkelt tal betyder samme chance på alle trin — det er sådan et kort
-     sættes til at være garanteret magi. */
-  function magicChanceObj(chance) {
-    var d = {};
-    if (typeof chance === 'number') {
-      var v = Math.max(0, Math.min(100, chance));
-      RKEYS.forEach(function (k) { d[k] = v; });
-      return d;
-    }
-    RKEYS.forEach(function (k) { d[k] = (chance && chance[k]) || 0; });
-    return d;
-  }
-
-  /* mapping overstyrer den fælles korttrin -> magi-rarity-tabel for denne ene
-     pakke. null = brug tabellen under fanen Magic. En pakke hvor hvert kort er
-     et magic item har brug for det: dens korttrin bruges ikke til andet, så de
-     skal kunne pege direkte på den magi-rarity man vil have. */
-  function packMagic(chance, types, consumables, mapping) {
-    // types tomt = alle typer magic items kan trækkes i pakken.
-    return {
-      chance: magicChanceObj(chance),
-      types: types || [],
-      consumables: consumables || 'all',
-      mapping: mapping ? magicMapping(mapping) : null
-    };
-  }
-
-  function magicMapping(rows) {
-    var out = {};
-    RKEYS.forEach(function (k) { out[k] = magicDist(rows && rows[k]); });
-    return out;
   }
 
   function defaultConfig() {
@@ -402,7 +372,7 @@ window.LB = (function () {
     packs.forEach(function (p) { if (!p.weights) p.weights = {}; });
 
     return {
-      version: 5,
+      version: 6,
       scales: defaultScales(),
       noDuplicates: true,
       fallback: 'nearest',
@@ -447,6 +417,34 @@ window.LB = (function () {
     });
   }
 
+  function hasOwnFilter(c) {
+    return !!(c.filter && (c.filter.categories.length || c.filter.tags.length));
+  }
+
+  /* En v5-pakke kunne give magi via pack.magic.chance. Det oversættes til det
+     nye sprog: kategorien Magic i filteret, typerne som tags, og en vægt der
+     rammer nogenlunde samme hyppighed. Chancen var en procentsats pr. trin;
+     vægten er relativ, så den kan ikke rammes præcist — gennemsnittet bruges
+     som pejling, og resten tunes i UI'et. */
+  function adoptMagic(p, pm) {
+    var types = Array.isArray(pm.types) ? pm.types : [];
+    if (!p.filter.categories.length && !p.filter.tags.length) return; // tomt filter = alt, magi er med
+    if (types.length) {
+      // Typebegrænsning bliver til tags med 'or', så magiske våben slipper ind
+      // i en våbenpakke uden at ringene gør det.
+      types.forEach(function (t) { if (p.filter.tags.indexOf(t) < 0) p.filter.tags.push(t); });
+      p.filter.mode = 'or';
+    } else if (p.filter.categories.indexOf(MAGIC_CAT) < 0) {
+      p.filter.categories.push(MAGIC_CAT);
+    }
+    var sum = 0, n = 0;
+    RKEYS.forEach(function (k) { sum += Number(pm.chance && pm.chance[k]) || 0; n++; });
+    var avg = n ? sum / n : 0;
+    if (!p.weights) p.weights = {};
+    if (p.weights[MAGIC_CAT] === undefined)
+      p.weights[MAGIC_CAT] = avg >= 100 ? 1 : Math.max(0.02, Math.round(avg / 100 * 50) / 100);
+  }
+
   /* Fylder manglende felter ud, så gammelt gemt data ikke crasher nye versioner. */
   function migrateConfig(cfg) {
     var def = defaultConfig();
@@ -466,11 +464,9 @@ window.LB = (function () {
     if (typeof cfg.magic.enabled !== 'boolean') cfg.magic.enabled = true;
     if (typeof cfg.magic.upcastChance !== 'number')
       cfg.magic.upcastChance = def.magic.upcastChance;
-    if (!cfg.magic.mapping || typeof cfg.magic.mapping !== 'object')
-      cfg.magic.mapping = def.magic.mapping;
-    RKEYS.forEach(function (k) {
-      cfg.magic.mapping[k] = magicDist(cfg.magic.mapping[k]);
-    });
+    // v5 -> v6: den fælles korttrin -> magi-rarity-tabel er væk. Der er én
+    // rarity-akse nu, så trinnet er magic itemets rarity direkte.
+    delete cfg.magic.mapping;
 
     cfg.packs.forEach(function (p) {
       if (!p.filter) p.filter = filt(Array.isArray(p.categories) ? p.categories : [], []);
@@ -486,20 +482,16 @@ window.LB = (function () {
         def.packs.forEach(function (x) { if (x.id === p.id) dw = x.weights; });
         p.weights = dw ? JSON.parse(JSON.stringify(dw)) : {};
       }
-      var dp = null;
-      def.packs.forEach(function (x) { if (x.id === p.id) dp = x; });
-      if (!p.magic || typeof p.magic !== 'object')
-        p.magic = dp ? dp.magic : packMagic({}, []);
-      p.magic.chance = magicChanceObj(p.magic.chance);
-      if (!Array.isArray(p.magic.types)) p.magic.types = [];
-      if (['all', 'exclude', 'only'].indexOf(p.magic.consumables) < 0)
-        p.magic.consumables = dp ? dp.magic.consumables : 'all';
-      // Egen korttrin -> magi-rarity-tabel pr. pakke. Har en gammel opsætning
-      // ingen, arver den standardpakkens — Magic-pakken har brug for sin.
-      if (p.magic.mapping === undefined)
-        p.magic.mapping = (dp && dp.magic.mapping) ? magicMapping(dp.magic.mapping) : null;
-      else if (p.magic.mapping)
-        p.magic.mapping = magicMapping(p.magic.mapping);
+      // v5 -> v6: magic items blev almindelige items, så pakkens eget
+      // magi-maskineri er væk. Kunne pakken give magi, får kategorien Magic
+      // en plads i filteret og en vægt, så den bliver ved med at kunne det.
+      if (p.magic && typeof p.magic === 'object') {
+        var couldMagic = RKEYS.some(function (k) {
+          return (Number(p.magic.chance && p.magic.chance[k]) || 0) > 0;
+        });
+        if (couldMagic) adoptMagic(p, p.magic);
+        delete p.magic;
+      }
       if (!Array.isArray(p.tiers)) p.tiers = [];
       p.tiers.forEach(function (t) {
         if (t.weights !== null && (!t.weights || typeof t.weights !== 'object')) t.weights = null;
@@ -516,14 +508,17 @@ window.LB = (function () {
             if (['all', 'exclude', 'only'].indexOf(c.filter.consumables) < 0)
               c.filter.consumables = 'all';
           }
-          // En tom liste betyder "alle typer" og er stadig en overstyring —
-          // kun null betyder at kortet følger pakken.
-          if (!Array.isArray(c.magicTypes)) c.magicTypes = null;
-          // Egen magic-chance: null = pakkens gælder. Et tal accepteres og
-          // bredes ud over alle trin, så håndskrevne opsætninger kan nøjes
-          // med at skrive 100.
-          c.magicChance = (c.magicChance === null || c.magicChance === undefined)
-            ? null : magicChanceObj(c.magicChance);
+          // Kortets eget magi-maskineri fra v4/v5 er erstattet af filteret:
+          // et kort der altid skulle være magisk filtrerer nu på kategorien.
+          if (c.magicChance || c.magicTypes) {
+            var always = c.magicChance && RKEYS.every(function (k) {
+              return Number(c.magicChance[k]) >= 100;
+            });
+            if (always && !hasOwnFilter(c))
+              c.filter = filt([MAGIC_CAT], Array.isArray(c.magicTypes) ? c.magicTypes : []);
+            delete c.magicChance;
+            delete c.magicTypes;
+          }
           // Vægte uden eget filter ville aldrig blive brugt — smid dem væk,
           // så en gammel opsætning ikke bærer rundt på død konfiguration.
           if (!c.filter || !c.weights || typeof c.weights !== 'object') c.weights = null;
@@ -544,24 +539,39 @@ window.LB = (function () {
       if (dp) { p.tiers = dp.tiers; p.note = dp.note; }
     });
 
-    // Magic-pakken var i v4 "en potion, et scroll og et frit magic item" —
-    // tre garanterede magic items. I v5 garanterer den ét, og de to første
-    // kort har deres egen chance. Kendetegnet på den gamle opsætning er at
-    // ingen kort har egen magic-chance; har man selv sat en, står den fast.
-    if ((cfg.version || 0) < 5) {
+    // Pakkerne fik hver et garanteret kort i deres egen kategori i v6.
+    // Opgradér kun de indbyggede pakker, og kun hvis kortet ikke allerede har
+    // sit eget filter — så egne tilpasninger bliver stående.
+    if ((cfg.version || 0) < 6) {
       cfg.packs.forEach(function (p) {
-        if (p.id !== 'magic' || !p.tiers.length) return;
-        var untouched = p.tiers.every(function (t) {
-          return t.cards.every(function (c) { return !c.magicChance && !c.filter; });
-        });
-        if (!untouched) return;
         var dp = null;
-        def.packs.forEach(function (x) { if (x.id === 'magic') dp = x; });
-        if (dp) { p.tiers = dp.tiers; p.filter = dp.filter; p.weights = dp.weights; p.magic = dp.magic; p.note = dp.note; }
+        def.packs.forEach(function (x) { if (x.id === p.id) dp = x; });
+        if (!dp || !p.tiers.length) return;
+        // Et tomt filter betød "alt" og var Magic-pakkens måde at sige "al
+        // magi" på. Nu hvor magi er en kategori, ville det slippe ridedyr og
+        // køretøjer ind — så den arver standardpakkens filter og vægte.
+        if (!p.filter.categories.length && !p.filter.tags.length &&
+            (dp.filter.categories.length || dp.filter.tags.length)) {
+          p.filter = JSON.parse(JSON.stringify(dp.filter));
+          p.weights = JSON.parse(JSON.stringify(dp.weights || {}));
+          p.tiers.forEach(function (t, ti) {
+            if (dp.tiers[ti]) t.weights = dp.tiers[ti].weights
+              ? JSON.parse(JSON.stringify(dp.tiers[ti].weights)) : null;
+          });
+        }
+        p.tiers.forEach(function (t, ti) {
+          var dt = dp.tiers[ti];
+          if (!dt) return;
+          t.cards.forEach(function (c, ci) {
+            var dc = dt.cards[ci];
+            if (dc && dc.filter && !hasOwnFilter(c)) c.filter = JSON.parse(JSON.stringify(dc.filter));
+          });
+        });
+        if (!p.note || (dp.note && p.note.indexOf('magic item-kort') >= 0)) p.note = dp.note;
       });
     }
 
-    cfg.version = 5;
+    cfg.version = 6;
     return cfg;
   }
 
@@ -775,6 +785,9 @@ window.LB = (function () {
   /* Et tomt filter betyder "alt" — bortset fra kategorier på excludeFromAll,
      så Class-kort ikke lækker ind i Adventurer-pakken. */
   function poolFor(items, filter, cfg) {
+    // Magi kan slås fra i ét greb under Indstillinger. Det er nemmere end at
+    // gå seks pakkefiltre igennem, og pakkerne kan blive stående som de er.
+    var noMagic = !!(cfg && cfg.magic && cfg.magic.enabled === false);
     var cats = (filter && filter.categories) || [];
     var tags = (filter && filter.tags) || [];
     var or = filter && filter.mode === 'or';
@@ -790,6 +803,9 @@ window.LB = (function () {
 
     return items.filter(function (i) {
       if (!i.rarity) return false;
+      // Et item kan tages ud af spillet uden at blive slettet.
+      if (i.enabled === false) return false;
+      if (noMagic && i.category === MAGIC_CAT) return false;
       if (exclude.indexOf(i.category) >= 0) return false;
       if (cons === 'exclude' && i.consumable) return false;
       if (cons === 'only' && !i.consumable) return false;
@@ -856,40 +872,14 @@ window.LB = (function () {
 
   /* ---------------- magic items ----------------
 
-     Tre rul i kæde:
-       1. Korttrinnet er allerede slået. Chancen i pack.magic.chance afgør om
-          kortet bliver et magic item-kort i stedet for et almindeligt item.
-       2. cfg.magic.mapping[korttrin] afgør hvilken magi-rarity der trækkes.
-       3. Er magic itemet generisk ("Weapon, +1"), rulles der til sidst hvilket
-          basisitem det sidder på.                                          */
+     Magic items ligger i den samme itemliste som alt andet, med kategorien
+     Magic og deres D&D-type som tag. En kortplads trækker dem med et helt
+     almindeligt filter, og vægten på kategorien afgør hvor tit det sker.
 
-  /* consumables: 'all' = både forbrugsvarer og permanente magic items,
-                  'exclude' = kun permanente, 'only' = kun forbrugsvarer. */
-  function magicPool(magicItems, types, consumables) {
-    var mode = consumables || 'all';
-    return magicItems.filter(function (m) {
-      if (m.enabled === false) return false;
-      if (!m.rarity) return false;
-      if (types && types.length && types.indexOf(m.type) < 0) return false;
-      if (mode === 'exclude' && m.consumable) return false;
-      if (mode === 'only' && !m.consumable) return false;
-      return true;
-    });
-  }
-
-  function pickMagicWeighted(d) {
-    var total = 0, k;
-    for (k in d) if (d[k] > 0) total += d[k];
-    if (total <= 0) return null;
-    var roll = Math.random() * total;
-    for (var i = 0; i < MKEYS.length; i++) {
-      var w = d[MKEYS[i]] || 0;
-      if (w <= 0) continue;
-      roll -= w;
-      if (roll < 0) return MKEYS[i];
-    }
-    return MKEYS[MKEYS.length - 1];
-  }
+     To rul er tilbage, og de sker efter trækningen:
+       1. Er magic itemet generisk ("Weapon, +1"), rulles hvilket basisitem
+          det sidder på.
+       2. Bærer det en spell, rulles den blandt spells på kortets niveau.  */
 
   /* Et magic item hedder typisk "Armor, +1" eller "Weapon, +2". Tallet er den
      bonus basisitemet får, og det er dét man skal kunne læse på kortet. */
@@ -929,6 +919,9 @@ window.LB = (function () {
       // Samme krav som ved en almindelig trækning: items uden rarity er
       // taget ud af spillet og må heller ikke dukke op som basisitem.
       if (!i.rarity) return false;
+      // Basisitemet er et almindeligt våben eller en almindelig rustning.
+      // Nu hvor magic items ligger i samme liste, skal de holdes ude.
+      if (i.category === MAGIC_CAT) return false;
       if (names.length) return names.indexOf(i.name) >= 0;
       if (subs.indexOf(i.subcategory) < 0 && subs.indexOf(i.category) < 0) return false;
       for (var e = 0; e < (bf.excludeNames || []).length; e++)
@@ -977,58 +970,17 @@ window.LB = (function () {
     };
   }
 
-  function drawMagic(pool, tierKey, used, cfg, items, spells, packMapping) {
-    // Pakkens egen tabel vinder over den fælles, når den er sat.
-    var table = packMapping || (cfg.magic && cfg.magic.mapping) || null;
-    var mapping = (table && table[tierKey]) || null;
-    if (!mapping) return null;
-    var wanted = pickMagicWeighted(mapping);
-    if (!wanted) return null;
-
-    function pick(r, allowUsed) {
-      var c = pool.filter(function (m) {
-        return m.rarity === r && (allowUsed || !used['magic:' + m.id]);
-      });
-      return c.length ? c[Math.floor(Math.random() * c.length)] : null;
-    }
-
-    var hit = pick(wanted, false), actual = wanted;
-    if (!hit) {
-      var order = fallbackOrder(wanted, cfg.fallback === 'none' ? 'nearest' : cfg.fallback);
-      for (var i = 0; i < order.length && !hit; i++) {
-        hit = pick(order[i], false);
-        if (hit) actual = order[i];
-      }
-    }
-    if (!hit) { hit = pick(wanted, true); actual = wanted; }
-    if (!hit) return null;
-
-    return {
-      item: hit,
-      magicRolled: wanted,
-      magicRarity: actual,
-      base: rollBaseItem(hit, items),
-      spell: rollSpell(hit, spells, cfg)
-    };
+  /* Rullene der hører til et magic item, efter det er trukket. De ligger her
+     frem for i drawOne, fordi drawOne også bruges til alt andet. */
+  function magicRolls(item, items, spells, cfg) {
+    if (!item || item.category !== MAGIC_CAT) return null;
+    return { base: rollBaseItem(item, items), spell: rollSpell(item, spells, cfg) };
   }
 
-  function generate(pack, tierObj, items, cfg, magicItems, spells) {
+  function generate(pack, tierObj, items, cfg, spells) {
     var used = {};
-    var pm = pack.magic || { chance: {}, types: [] };
-    var magicOn = !!(cfg.magic && cfg.magic.enabled && magicItems);
-
-    // Et kort kan begrænse magipuljen til sine egne typer. Puljerne genbruges
-    // inden for pakken, så samme typeliste kun filtreres én gang.
-    var pools = {};
-    function poolForTypes(types) {
-      if (!magicOn) return [];
-      var key = (types || []).join('|');
-      if (!pools[key]) pools[key] = magicPool(magicItems, types, pm.consumables);
-      return pools[key];
-    }
 
     var cards = tierObj.cards.map(function (c, idx) {
-      var mPool = poolForTypes(c.magicTypes || pm.types);
       var own = !!(c.filter && (c.filter.categories.length || c.filter.tags.length));
       var f = own ? c.filter : pack.filter;
       var pool = poolFor(items, f, cfg);
@@ -1039,43 +991,56 @@ window.LB = (function () {
       var slot = c.label || ('Kort ' + (idx + 1));
       if (!rarity) return { slot: slot, item: null, rolled: null, actual: null, poolSize: pool.length };
 
-      // Rul 1: bliver kortet et magic item? Kortets egen chance vinder over
-      // pakkens, så én plads kan være garanteret magi mens resten ikke er.
-      var chanceTable = c.magicChance || pm.chance;
-      var chance = (chanceTable && chanceTable[rarity]) || 0;
-      if (mPool.length && chance > 0 && Math.random() * 100 < chance) {
-        var mag = drawMagic(mPool, rarity, used, cfg, items, spells, pm.mapping);
-        if (mag) {
-          if (cfg.noDuplicates) used['magic:' + mag.item.id] = true;
-          return {
-            slot: slot, item: null, magic: mag, rolled: rarity, actual: rarity,
-            poolSize: mPool.length
-          };
-        }
-      }
-
       var res = drawOne(pool, rarity, used, cfg, weights);
       if (res.item && cfg.noDuplicates) used[res.item.id] = true;
+      var m = magicRolls(res.item, items, spells, cfg);
       return {
         slot: slot, item: res.item, rolled: res.rolled, actual: res.actual,
+        base: m ? m.base : null, spell: m ? m.spell : null,
         duplicate: !!res.duplicate, poolSize: pool.length
       };
     });
     return { pack: pack.name, tier: tierObj.name, cards: cards };
   }
 
+  /* Magic items kommer ind som items. Kategorien er Magic, typen bliver et
+     tag, og rarityen står i kilden — der er ingen pris at regne den ud fra,
+     så skalaen er 'none', ligesom for Class-kort.
+
+     De magi-specifikke felter følger med på itemet: basisfilteret, spell-
+     felterne og typelinjen. De bruges kun når kortet skal tegnes, men de hører
+     til på itemet, ikke i en sideliste. */
   var muid = 0;
-  function magicFromJSON(arr) {
+  function magicToItems(arr) {
     if (!Array.isArray(arr)) return [];
     return arr.map(function (o) {
       muid++;
+      var type = String(o.type || '').trim();
+      var tags = Array.isArray(o.tags) ? o.tags.slice() : [];
+      // Typen forrest, så den er nem at få øje på i chip-listen. Attunement
+      // er værd at kunne filtrere på: en pakke til en spiller der ikke har
+      // flere attunement-pladser tilbage kan vælge det fra.
+      if (type && tags.indexOf(type) < 0) tags.unshift(type);
+      if (o.attunement && tags.indexOf('Attunement') < 0) tags.push('Attunement');
       return {
         id: makeId(o.name).replace(/-(\d+)$/, '-m$1') + '-' + muid,
         name: String(o.name || '').trim(),
-        type: String(o.type || '').trim(),
+        category: MAGIC_CAT,
+        subcategory: type,
+        price: null,
+        priceText: '',
         rarity: normalizeRarity(o.rarity),
-        attunement: !!o.attunement,
+        rarityLocked: true,
+        scale: 'none',
         consumable: !!o.consumable,
+        source: o.source || '',
+        tags: tags,
+        desc: o.desc || '',
+        // magi-specifikt
+        attunement: !!o.attunement,
+        typeLine: o.typeLine || '',
+        baseFilter: o.baseFilter || null,
+        variantOf: o.variantOf || null,
         spellLevel: (typeof o.spellLevel === 'number') ? o.spellLevel : null,
         spellName: o.spellName || '',
         spellKind: o.spellKind || '',
@@ -1083,32 +1048,30 @@ window.LB = (function () {
         spellSaveDC: o.spellSaveDC || '',
         spellAttack: o.spellAttack || '',
         upcastable: !!o.upcastable,
-        typeLine: o.typeLine || '',
-        tags: Array.isArray(o.tags) ? o.tags : [],
-        desc: o.desc || '',
-        source: o.source || '',
-        baseFilter: o.baseFilter || null,
-        variantOf: o.variantOf || null,
         enabled: o.enabled !== false
       };
-    });
+    }).filter(function (i) { return i.name && i.rarity; });
   }
 
-  function magicTypesOf(magicItems) {
+  /* Typerne som de findes i puljen — Potion, Scroll, Wand … De er tags nu, så
+     de kommer fra tag-listen, men det er praktisk at kunne spørge om netop
+     dem, fx til en typevælger. */
+  function magicTypesOf(items) {
     var seen = {};
-    magicItems.forEach(function (m) { if (m.type) seen[m.type] = true; });
+    items.forEach(function (i) {
+      if (i.category === MAGIC_CAT && i.subcategory) seen[i.subcategory] = true;
+    });
     return Object.keys(seen).sort();
   }
 
   return {
     RARITIES: RARITIES, RKEYS: RKEYS,
     MAGIC_RARITIES: MAGIC_RARITIES, MKEYS: MKEYS,
-    magicRarityLabel: magicRarityLabel, magicFromJSON: magicFromJSON,
-    magicTypesOf: magicTypesOf, magicPool: magicPool, rollSpell: rollSpell, emptyMagicDist: function () { return magicDist({}); },
+    magicRarityLabel: magicRarityLabel, magicToItems: magicToItems,
+    magicTypesOf: magicTypesOf, rollSpell: rollSpell, MAGIC_CAT: MAGIC_CAT,
     rarityLabel: rarityLabel, normalizeRarity: normalizeRarity,
     defaultConfig: defaultConfig, defaultScales: defaultScales, findScale: findScale,
     migrateConfig: migrateConfig, emptyDist: function () { return dist({}); },
-    magicChanceObj: magicChanceObj,
     emptyFilter: function () { return filt([], []); },
     parsePrice: parsePrice, priceToRarity: priceToRarity, recalcRarities: recalcRarities,
     parseCSV: parseCSV, guessMapping: guessMapping,

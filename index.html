@@ -165,21 +165,17 @@
 <!-- ============ MAGIC ============ -->
 <section class="view" id="view-magic">
   <div class="panel">
-    <h2>To slags rarity</h2>
+    <h2>Magic items er items</h2>
     <p class="hint">
-      <b>Korttrin</b> er hvad en kortplads i en pakke slår &mdash; det styres af fordelingen på kortet.
-      <b>Magi-rarity</b> er magic itemets egen rarity fra D&amp;D. De hedder det samme, men betyder
-      ikke det samme: et Rare <i>kort</i> giver som regel et Common <i>magic item</i>.
+      Et magic item ligger i den samme liste som alt andet, med kategorien <b>Magic</b> og sin
+      D&amp;D-type som tag &mdash; <i>Potion</i>, <i>Scroll</i>, <i>Weapon</i> og s&aring; videre.
+      Det betyder at en pakke f&aring;r magi ind med et ganske almindeligt filter, og at
+      <b>v&aelig;gten p&aring; kategorien Magic</b> afg&oslash;r hvor tit den falder. Der er
+      &eacute;n rarity-akse: et Rare kort giver et Rare magic item.
     </p>
-    <label class="check"><input type="checkbox" id="magicEnabled"> Magic item-kort er slået til</label>
-  </div>
-
-  <div class="panel">
-    <h2>Korttrin &rarr; magi-rarity</h2>
-    <p class="hint">Slår en kortplads et givet korttrin, og bliver kortet til et magic item,
-       afgør denne række hvilken magi-rarity der trækkes. Hvor ofte det sker, sættes pr. pakke
-       under fanen Pakker.</p>
-    <div id="magicMapping"></div>
+    <p class="hint">Tabellen her er stedet at rette de enkelte items &mdash; rarity, forbrugsvare,
+       og om de overhovedet er med i puljen. Alt andet st&aring;r under Pakker.</p>
+    <label class="check"><input type="checkbox" id="magicEnabled"> Magic items m&aring; tr&aelig;kkes</label>
   </div>
 
   <div class="panel">
