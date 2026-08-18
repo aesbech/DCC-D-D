@@ -513,6 +513,22 @@ Panelet hedder **Flowet** og ligger under Pakker: én gang for pakken, én gang 
 tier, og én gang for hvert kort. Det ser ud som diagrammet — spørgsmålet øverst, de to
 grene ved siden af hinanden nedenunder.
 
+**Panelerne er foldet sammen.** En gradueret pakke har tretten af dem, og de fleste rører
+ingenting, så overskriften bærer sammenfatningen i stedet:
+
+```
+▸ Flowet for dette kort   [Magi 100 %] [ja 78.5/12/7/2/0.5] [nej 78.5/12/7/2/0.5]   3 egne
+```
+
+Chipsene viser hvad der **gælder**, uanset hvor det kommer fra. En markeret chip er sat på
+netop dette niveau; de umarkerede er arvet. Typevægte vises kun når de er sat lokalt —
+arvede vægte ville stå ens på hver eneste række uden at sige noget nyt. Badgen til højre
+tæller hvor mange af de fem felter niveauet selv bestemmer, så man kan se hvor der er
+skruet på noget uden at åbne noget.
+
+Tiers kan foldes på samme måde, og der er **Fold alle ud / Fold alle sammen** øverst.
+En gradueret pakke fylder 3.000 px foldet sammen mod 11.700 px foldet ud.
+
 **Chancen** er ét tal. Bliver kortet ikke magisk, går det ned ad nej-grenen. Udstyr og
 magi er to adskilte puljer, så de konkurrerer ikke om pladsen — chancen afgør det alene.
 Derfor optræder kategorien `Magic` heller ikke i pakkefiltrene: filteret bestemmer
