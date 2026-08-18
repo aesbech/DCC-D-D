@@ -170,6 +170,36 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 /* Flow-panelet: spørgsmålet øverst, de to grene ved siden af hinanden nedenunder,
    så det kan læses som det diagram det er. Under 900 px falder grenene under
    hinanden — ja først, fordi det er den gren man tuner. */
+/* Foldede paneler. <summary> får sin egen markør, og listemarkøren fjernes,
+   så pilen står hvor vi vil have den. */
+.flow-panel{padding:0}
+.flow-panel>summary{list-style:none;cursor:pointer;padding:10px 14px;display:flex;
+  align-items:center;gap:10px;flex-wrap:wrap;border-radius:10px}
+.flow-panel>summary::-webkit-details-marker{display:none}
+.flow-panel>summary::before{content:'\25B8';color:var(--muted);font-size:11px;flex:none;
+  transition:transform .12s ease}
+.flow-panel[open]>summary::before{transform:rotate(90deg)}
+.flow-panel>summary:hover{background:var(--bg-2)}
+.flow-title{font-weight:600;font-size:13px;flex:none}
+.flow-body{padding:0 14px 14px}
+.flow-sum{display:flex;gap:6px;flex-wrap:wrap;align-items:center;min-width:0}
+.sum-chip{font-size:11px;color:var(--muted);border:1px solid var(--line);
+  border-radius:999px;padding:1px 8px;white-space:nowrap}
+.sum-chip b{color:var(--muted);font-weight:600}
+/* Prik på det niveauet selv bestemmer — resten er arvet. */
+.sum-chip.is-own{color:var(--fg);border-color:var(--accent)}
+.sum-chip.is-own b{color:var(--accent)}
+.own-badge{margin-left:auto;font-size:11px;color:var(--accent);flex:none}
+.tier>summary{list-style:none;cursor:pointer}
+.tier>summary::-webkit-details-marker{display:none}
+.tier>summary::before{content:'\25B8';color:var(--muted);font-size:11px;margin-right:8px;
+  display:inline-block;transition:transform .12s ease}
+.tier[open]>summary::before{transform:rotate(90deg)}
+.tier-name{font-weight:600}
+.tier-tools .field{margin:0}
+.fold-tools{align-items:center;margin:0 0 4px}
+.fold-tools .hint{margin:0}
+
 .flow-diagram{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.5;white-space:pre;overflow-x:auto;margin:8px 0}
 .flow-q{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg-2);margin-bottom:12px}
 .flow-q h4{margin:0 0 8px;font-size:13px}

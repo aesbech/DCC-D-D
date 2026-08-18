@@ -1049,6 +1049,75 @@
     return host;
   }
 
+  /* ---------------- sammenfatning ----------------
+
+     Panelerne foldes sammen som standard — der er tretten af dem på en
+     gradueret pakke, og de fleste rører ingenting. Sammenfatningen skal derfor
+     kunne læses uden at folde ud: den viser hvad der faktisk sker, og markerer
+     med en prik hvad netop dette niveau selv bestemmer.                    */
+
+  function num(v) {
+    var n = Math.round(Number(v) * 10) / 10;
+    return String(n);
+  }
+
+  function distText(d, keys) {
+    if (!d) return null;
+    var on = keys.filter(function (k) { return (Number(d[k]) || 0) > 0; });
+    if (!on.length) return null;
+    return on.map(function (k) { return num(d[k]); }).join('/');
+  }
+
+  /* Typevægte læses bedst som en sætning: "kun Weapon" siger mere end en
+     række ettaller og nuller. */
+  function typeText(w, names) {
+    if (!w) return null;
+    var off = names.filter(function (n) { return w[n] === 0; });
+    var rest = names.filter(function (n) { return w[n] !== 0; });
+    var tuned = rest.filter(function (n) { return w[n] !== undefined && w[n] !== 1; });
+    var parts = [];
+    if (off.length && rest.length === 1) parts.push('kun ' + rest[0]);
+    else if (off.length && rest.length <= 3) parts.push('kun ' + rest.join(' og '));
+    else if (off.length) parts.push('uden ' + off.join(', '));
+    tuned.forEach(function (n) { parts.push(n + ' ×' + num(w[n])); });
+    return parts.length ? parts.join(', ') : null;
+  }
+
+  /* Én linje pr. gren, med det der gælder — eget eller arvet. */
+  function flowSummary(owner, pack, t, c) {
+    var wrap = el('span', { class: 'flow-sum' });
+    var own = 0;
+
+    function chip(label, text, isOwn) {
+      if (!text) return;
+      if (isOwn) own++;
+      wrap.appendChild(el('span', { class: 'sum-chip' + (isOwn ? ' is-own' : '') }, [
+        el('b', { text: label }), document.createTextNode(' ' + text)
+      ]));
+    }
+
+    var ch = inherited(pack, t, c, 'magicChance');
+    chip('Magi', (ch.value === null ? 0 : ch.value) + ' %',
+         owner.magicChance !== null && owner.magicChance !== undefined);
+
+    var magNames = C.magicTypesOf(state.items);
+    var catNames = C.categoriesOf(state.items).filter(function (x) { return x !== C.MAGIC_CAT; });
+
+    var md = inherited(pack, t, c, 'magicDist');
+    chip('ja', distText(md.value, C.MKEYS) || 'fælles tabel', !!owner.magicDist);
+    // Typevægte vises kun når de er sat på netop dette niveau. Arvede vægte
+    // står ens på hver eneste række og fylder uden at sige noget nyt — de er
+    // at finde på det niveau der satte dem.
+    if (owner.magicTypes) chip('type', typeText(owner.magicTypes, magNames), true);
+
+    var gd = inheritedDist(pack, t, c);
+    chip('nej', distText(gd.value, C.RKEYS) || 'ikke sat',
+         !!(owner.dist && C.hasDist(owner.dist)));
+    if (owner.weights) chip('vægt', typeText(owner.weights, catNames), true);
+
+    return { node: wrap, own: own };
+  }
+
   function branch(title, sub, steps) {
     return el('div', { class: 'flow-branch' }, [
       el('h4', { text: title }),
@@ -1084,8 +1153,20 @@
     };
     var magPool = function () { return C.magicPoolFor(state.items, filter); };
 
-    return el('div', { class: 'panel flow-panel' }, [
-      el('h3', { text: title }),
+    var sum = flowSummary(owner, pack, t, c);
+    // Foldet sammen som standard, så tretten paneler ikke bliver en mur.
+    // Åbner man et, huskes det på tværs af gentegninger.
+    var key = pack.id + '/' + (t ? t.id : '-') + '/' + (c ? c.label + '#' + t.cards.indexOf(c) : '-');
+    var isOpen = openPanels[key];
+    var box = el('details', { class: 'panel flow-panel', open: isOpen ? 'open' : null }, [
+      el('summary', { class: 'flow-head' }, [
+        el('span', { class: 'flow-title', text: title }),
+        sum.node,
+        sum.own ? el('span', { class: 'own-badge',
+                               text: sum.own + (sum.own === 1 ? ' egen' : ' egne') }) : null
+      ])
+    ]);
+    var inner = el('div', { class: 'flow-body' }, [
       el('div', { class: 'flow-q' }, [
         el('h4', { text: 'Magic item?' }),
         chanceField(owner, pack, t, c)
@@ -1139,6 +1220,11 @@
         ])
       ])
     ]);
+    box.appendChild(inner);
+    box.addEventListener('toggle', function () {
+      if (box.open) openPanels[key] = true; else delete openPanels[key];
+    });
+    return box;
   }
 
   /* Filteret bestemmer puljen; vægtene i flow-panelet bestemmer fordelingen
@@ -1151,6 +1237,16 @@
 
   /* Et kort der kun trækker magic items har intet at veje kategorier imod,
      og så er kategorivægte uden betydning for det. */
+  /* Gentegner detaljen uden at flytte siden under fingeren. Foldningen huskes
+     pr. panel, ellers ville hvert klik i et panel lukke det man arbejdede i. */
+  var openPanels = {};
+
+  function refreshPackDetail() {
+    var y = window.scrollY;
+    renderPackDetail();
+    window.scrollTo(0, y);
+  }
+
   function renderPackDetail() {
     var host = $('#packDetail');
     host.innerHTML = '';
@@ -1198,6 +1294,24 @@
 
     host.appendChild(flowPanel(pack, pack, null, null, 'Flowet for hele pakken'));
 
+    host.appendChild(el('div', { class: 'row fold-tools' }, [
+      el('span', { class: 'hint', text: 'Flow-panelerne er foldet sammen. Linjen viser hvad ' +
+                                        'der gælder; en markeret chip er sat på netop det niveau.' }),
+      el('span', { class: 'spacer' }),
+      el('button', {
+        class: 'btn btn-sm', text: 'Fold alle ud',
+        onclick: function () {
+          host.querySelectorAll('details').forEach(function (d) { d.open = true; });
+        }
+      }),
+      el('button', {
+        class: 'btn btn-sm', text: 'Fold alle sammen',
+        onclick: function () {
+          host.querySelectorAll('.flow-panel').forEach(function (d) { d.open = false; });
+        }
+      })
+    ]));
+
     pack.tiers.forEach(function (t, ti) { host.appendChild(renderTier(pack, t, ti)); });
 
     host.appendChild(el('div', { class: 'row' }, [
@@ -1218,6 +1332,29 @@
 
   function renderTier(pack, t, ti) {
     var body = el('div', { class: 'tier-body' });
+    body.appendChild(el('div', { class: 'row tier-tools' }, [
+      el('label', { class: 'field' }, [
+        el('span', { text: 'Navn' }),
+        el('input', {
+          type: 'text', value: t.name,
+          oninput: function () {
+            t.name = this.value;
+            var h = body.parentNode && body.parentNode.querySelector('.tier-name');
+            if (h) h.textContent = this.value;
+            renderTierOptions(); persist();
+          }
+        })
+      ]),
+      el('span', { class: 'spacer' }),
+      el('button', {
+        class: 'btn btn-sm btn-danger', text: 'Slet tier',
+        onclick: function () {
+          if (!confirm('Slet tier "' + t.name + '"?')) return;
+          pack.tiers.splice(ti, 1);
+          renderPackDetail(); renderTierOptions(); persist();
+        }
+      })
+    ]));
     body.appendChild(flowPanel(t, pack, t, null, 'Flowet for dette tier'));
     t.cards.forEach(function (c, ci) { body.appendChild(renderCard(pack, t, c, ci)); });
 
@@ -1244,25 +1381,18 @@
       })
     ]));
 
-    return el('div', { class: 'tier' }, [
-      el('div', { class: 'tier-head' }, [
-        el('input', {
-          type: 'text', value: t.name,
-          oninput: function () { t.name = this.value; renderTierOptions(); persist(); }
-        }),
-        el('span', { class: 'box-sub', text: t.cards.length + ' kort' }),
-        el('span', { class: 'spacer' }),
-        el('button', {
-          class: 'btn btn-sm btn-danger', text: 'Slet tier',
-          onclick: function () {
-            if (!confirm('Slet tier "' + t.name + '"?')) return;
-            pack.tiers.splice(ti, 1);
-            renderPackDetail(); renderTierOptions(); persist();
-          }
-        })
+    var tKey = pack.id + '/tier/' + t.id;
+    var tier = el('details', { class: 'tier', open: openPanels[tKey] === false ? null : 'open' }, [
+      // Kun tekst i overskriften: et klik på en <summary> folder ud, så et
+      // navnefelt eller en sletteknap ville kæmpe med foldningen.
+      el('summary', { class: 'tier-head' }, [
+        el('span', { class: 'tier-name', text: t.name }),
+        el('span', { class: 'box-sub', text: t.cards.length + ' kort' })
       ]),
       body
     ]);
+    tier.addEventListener('toggle', function () { openPanels[tKey] = tier.open; });
+    return tier;
   }
 
   function renderCard(pack, t, c, ci) {
