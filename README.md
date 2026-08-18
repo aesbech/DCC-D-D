@@ -309,6 +309,30 @@ Rarity-skalaer, dublet-håndtering, fallback-adfærd, udelukkede kategorier,
 eksport/import af hele opsætningen som JSON — og to knapper til at komme ud af den
 lokalt gemte kopi, når datafilerne er blevet opdateret.
 
+## Den fysiske farvekode
+
+Pakkerne pakkes i farvet papir og forsegles med voks. **Papiret siger hvilken pakke det er;
+voksen siger hvilket tier.** To kanaler, hver med én betydning, så en pakke kan aflæses på
+tværs af bordet uden at nogen siger noget.
+
+| Pakke | Papir | Segl |
+|-------|-------|------|
+| Adventurer | Orange | bronze / sølv / guld efter tier |
+| Weapons | Rød | bronze / sølv / guld efter tier |
+| Armor | Blå | bronze / sølv / guld efter tier |
+| Consumables | Mørkegrøn | bronze / sølv / guld efter tier |
+| Magic | Lavendel | bronze / sølv / guld efter tier |
+| Classes | Guldgul | **sort** — Classes er ikke gradueret |
+
+De seks papirfarver er valgt så ingen to ligger ved siden af hinanden i kulør: gul → orange
+→ rød → lavendel → blå → grøn. Pastelfarverne er valgt fra, fordi mættet papir læses på
+afstand og føles som indpakning frem for kuvert.
+
+Farven står i hver pakkes beskrivelse under Pakker, så den er ved hånden når der printes.
+
+**Sæt seglet på flappen, ikke hen over kortene.** Varm voks slår igennem tyndt papir, og
+pakken åbnes ved at brække seglet — bruddet skal ikke rive det øverste kort med.
+
 ## Pakkerne som de står nu
 
 | Pakke | Filter (udstyrssiden) | Pulje | Magi | Garanteret kort 3 |

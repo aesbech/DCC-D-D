@@ -271,6 +271,11 @@ window.LB = (function () {
     return out;
   }
 
+  /* Pakkerne har en fysisk farvekode ved bordet: papiret siger hvilken pakke,
+     voksseglet siger hvilket tier. Den står i pakkens beskrivelse, så den er
+     ved hånden når man printer og pakker. */
+  var WAX = 'Forsegles med voks i tierets farve — bronze, sølv eller guld. ';
+
   function defaultPacks() {
     return packs().map(gradeMagic);
   }
@@ -280,7 +285,8 @@ window.LB = (function () {
       {
         id: 'adventurer', name: 'Adventurer',
         filter: filt(GEAR),
-        note: 'Den almindelige pakke — udstyr, våben, rustning, værktøj, gift og ammunition. ' +
+        note: 'Pakkes i orange papir. ' + WAX +
+              'Den almindelige pakke — udstyr, våben, rustning, værktøj, gift og ammunition. ' +
               'Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra. Hvert kort har en ' +
               'chance for at blive et magic item i stedet; hvor godt det er, følger den ' +
               'fælles korttrin-tabel under fanen Magic.',
@@ -303,7 +309,8 @@ window.LB = (function () {
       },
       {
         id: 'weapons', name: 'Weapons', filter: filt(['Våben', 'Ammunition', 'Udstyr']),
-        note: 'Kort 3 er garanteret et våben. De to første trækker bredere, så der også ' +
+        note: 'Pakkes i rødt papir. ' + WAX +
+              'Kort 3 er garanteret et våben. De to første trækker bredere, så der også ' +
               'falder udstyr og ammunition. Magisiden er låst til typen Weapon, så pakken ' +
               'ikke deler ringe ud — bliver et kort magisk, er det et magisk våben.',
         magicChance: 8,
@@ -323,7 +330,8 @@ window.LB = (function () {
       },
       {
         id: 'armor', name: 'Armor', filter: filt(['Rustning', 'Udstyr']),
-        note: 'Kort 3 er garanteret en rustning; de to første trækker også udstyr. Magisiden ' +
+        note: 'Pakkes i blåt papir. ' + WAX +
+              'Kort 3 er garanteret en rustning; de to første trækker også udstyr. Magisiden ' +
               'er låst til typen Armor. Rustning ligger højt på udstyrs-skalaen — billigste ' +
               'er Padded Armor til 5 gp — så de lave trin lander på udstyr, og Padded Armor ' +
               'er pakkens skraldeitem. Kun 14 rustninger i alt, så gentagelser er uundgåelige.',
@@ -348,7 +356,8 @@ window.LB = (function () {
         // — grej, ikke forbrugsvarer. Magiske potions og scrolls kommer ind via
         // magisiden, ikke via filteret.
         filter: filt([], 'only'),
-        note: 'Union-filter på udstyrssiden: hele Gift-gruppen plus alt med tagget Consumable. ' +
+        note: 'Pakkes i mørkegrønt papir. ' + WAX +
+              'Union-filter på udstyrssiden: hele Gift-gruppen plus alt med tagget Consumable. ' +
               'Magisiden er låst til Potion og Scroll, og kort 3 er 100 % magisk, så pakken ' +
               'altid giver mindst én potion eller ét scroll.',
         magicChance: 40,
@@ -368,7 +377,8 @@ window.LB = (function () {
       },
       {
         id: 'magic', name: 'Magic', filter: filt(GEAR),
-        note: 'Kort 3 er 100 % magisk. De to første har en chance, som stiger med tieret — ' +
+        note: 'Pakkes i lavendel papir. ' + WAX +
+              'Kort 3 er 100 % magisk. De to første har en chance, som stiger med tieret — ' +
               'i Bronze er de mest udstyr, i Sølv omtrent fifty-fifty, og i Guld er de også ' +
               'altid magi. Hvert kort sætter selv hvor godt magic itemet er, i stedet for at ' +
               'gå gennem den fælles tabel.',
@@ -402,7 +412,8 @@ window.LB = (function () {
       },
       {
         id: 'classes', name: 'Classes', filter: filt(['Class', 'Stat', 'Feat', 'Skill', 'Perk']),
-        note: 'Ikke gradueret — ét tier. Hver kortplads beder om sin egen korttype via ' +
+        note: 'Pakkes i guldgult papir, forseglet med sort voks — Classes står uden for ' +
+              'bronze/sølv/guld. Ikke gradueret — ét tier. Hver kortplads beder om sin egen korttype via ' +
               'tags: Class, Perk, Stat, Feat og Skill. Feat- og Skill-kortene findes, men ' +
               'har ingen plads endnu — tilføj et kort, hvis de skal med.',
         tiers: [tier('standard', 'Standard', [
@@ -456,7 +467,7 @@ window.LB = (function () {
     packs.forEach(function (p) { if (!p.weights) p.weights = {}; });
 
     return {
-      version: 7,
+      version: 8,
       scales: defaultScales(),
       noDuplicates: true,
       fallback: 'nearest',
@@ -715,7 +726,21 @@ window.LB = (function () {
       });
     }
 
-    cfg.version = 7;
+    // v8: den fysiske farvekode kom med i pakkebeskrivelserne. Sætningen sættes
+    // kun foran hvis noten ikke allerede nævner papir — så en note man selv har
+    // skrevet bliver stående.
+    if ((cfg.version || 0) < 8) {
+      cfg.packs.forEach(function (p) {
+        if (!p.note || p.note.indexOf('papir') >= 0) return;
+        var dp = null;
+        def.packs.forEach(function (x) { if (x.id === p.id) dp = x; });
+        if (!dp) return;
+        var head = dp.note.split('. ').slice(0, p.id === 'classes' ? 2 : 2).join('. ') + '. ';
+        p.note = head + p.note;
+      });
+    }
+
+    cfg.version = 8;
     return cfg;
   }
 
