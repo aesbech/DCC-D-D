@@ -39,6 +39,14 @@ Alt indhold er **printede kort i 63 × 88 mm**, samme mål som Magic- og Pokémo
 kan ligge i lommer og sleeves. Det er hele pointen med generatoren i dette repo: den ruller
 pakkerne og sætter dem op til print, ni kort pr. A4-ark.
 
+Pakkerne selv er **farvet papir lukket med et vokssegl**. Papiret siger hvilken slags
+pakke det er — orange for Adventurer, rød for Weapons, blå for Armor, mørkegrøn for
+Consumables, lavendel for Magic, guldgul for Classes — og voksen siger hvilket tier:
+bronze, sølv eller guld. Classes får sort voks, fordi den ikke er gradueret.
+
+Det er seglet der gør det til en loot box. En kuvert er en kuvert; et brudt segl er et
+øjeblik. Der skal være noget fysisk at ødelægge foran de andre.
+
 Et kort er en genstand man **har**. Det ligger på bordet foran spilleren. Bruger man en
 potion, ryger kortet i kassen. Mister man sin rustning, giver man kortet fra sig. Der er
 ingen karakterark der skal rettes — inventaret er en bunke kort.
