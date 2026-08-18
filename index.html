@@ -165,21 +165,29 @@
 <!-- ============ MAGIC ============ -->
 <section class="view" id="view-magic">
   <div class="panel">
-    <h2>To slags rarity</h2>
-    <p class="hint">
-      <b>Korttrin</b> er hvad en kortplads i en pakke slår &mdash; det styres af fordelingen på kortet.
-      <b>Magi-rarity</b> er magic itemets egen rarity fra D&amp;D. De hedder det samme, men betyder
-      ikke det samme: et Rare <i>kort</i> giver som regel et Common <i>magic item</i>.
-    </p>
-    <label class="check"><input type="checkbox" id="magicEnabled"> Magic item-kort er slået til</label>
+    <h2>Korttrin &rarr; magi-rarity</h2>
+    <p class="hint">To akser. <b>Korttrin</b> er hvad kortpladsen sl&aring;r; <b>magi-rarity</b>
+       er magic itemets egen rarity fra D&amp;D. De holdes adskilt med vilje: et Rare kort er
+       20&ndash;50 gp p&aring; udstyrssiden, men et Rare magic item er en Flame Tongue. Lander et
+       kort p&aring; magi, oversætter denne tabel trinnet.</p>
+    <p class="hint">Tabellen her er bunden. Vil du have &eacute;n kortplads til at opf&oslash;re sig
+       anderledes, s&aelig;tter du en fordeling <b>p&aring; kortet</b> under Pakker &mdash; den vinder,
+       ligesom med v&aelig;gte. Rækkef&oslash;lgen er kort, tier, pakke, denne tabel.</p>
+    <div id="magicMapping"></div>
   </div>
 
   <div class="panel">
-    <h2>Korttrin &rarr; magi-rarity</h2>
-    <p class="hint">Slår en kortplads et givet korttrin, og bliver kortet til et magic item,
-       afgør denne række hvilken magi-rarity der trækkes. Hvor ofte det sker, sættes pr. pakke
-       under fanen Pakker.</p>
-    <div id="magicMapping"></div>
+    <h2>Magic items er items</h2>
+    <p class="hint">
+      Et magic item ligger i den samme liste som alt andet, med kategorien <b>Magic</b> og sin
+      D&amp;D-type som tag &mdash; <i>Potion</i>, <i>Scroll</i>, <i>Weapon</i> og s&aring; videre.
+      Det betyder at en pakke f&aring;r magi ind med et ganske almindeligt filter, og at
+      <b>v&aelig;gten p&aring; kategorien Magic</b> afg&oslash;r hvor tit den falder.
+      <i>Hvor godt</i> magic itemet er, er en anden sag &mdash; se tabellen ovenfor.
+    </p>
+    <p class="hint">Tabellen her er stedet at rette de enkelte items &mdash; rarity, forbrugsvare,
+       og om de overhovedet er med i puljen. Alt andet st&aring;r under Pakker.</p>
+    <label class="check"><input type="checkbox" id="magicEnabled"> Magic items m&aring; tr&aelig;kkes</label>
   </div>
 
   <div class="panel">
@@ -254,6 +262,18 @@
       <button class="btn" id="btnExportConfig">Eksportér opsætning</button>
       <label class="btn file-btn">Importér opsætning<input type="file" id="importConfig" accept=".json" hidden></label>
       <button class="btn btn-danger" id="btnResetConfig">Nulstil til standard</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2>Ryd browserens hukommelse</h2>
+    <p class="hint">Sletter alt der er gemt lokalt — pakker, items, magic items og din gamle
+       sikkerhedskopi — og indlæser siden forfra fra datafilerne i repoet. Det er den sikre
+       vej efter en dataopdatering, hvis din gemte kopi hænger fast i noget gammelt.
+       <strong>Eksportér din opsætning først, hvis du vil beholde den.</strong></p>
+    <div class="row">
+      <button class="btn" id="btnReloadData">Hent data forfra (behold pakker)</button>
+      <button class="btn btn-danger" id="btnClearStorage">Ryd alt</button>
     </div>
   </div>
 </section>

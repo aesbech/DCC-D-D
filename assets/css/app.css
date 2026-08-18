@@ -163,6 +163,9 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
   border-radius:999px;padding:4px 10px;font-size:12px;cursor:pointer;
 }
 .chip.on{background:var(--accent);border-color:var(--accent);color:#1a1608;font-weight:600}
+/* "+ N flere" er en handling, ikke et valg — den skal ikke ligne et tag der kan slås til. */
+.chip-more{border-style:dashed;color:var(--muted)}
+.chip-search{width:100%;max-width:320px;margin:0 0 8px}
 
 /* ---------- results ---------- */
 .results{display:flex;flex-direction:column;gap:16px}
