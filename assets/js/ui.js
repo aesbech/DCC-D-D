@@ -2034,6 +2034,28 @@
     toast('Nulstillet');
   });
 
+  /* Den gemte kopi er god til egne rettelser, men står i vejen når datafilerne
+     er blevet opdateret. Her er de to veje ud: hent data forfra og behold
+     pakkerne, eller ryd det hele. */
+  $('#btnReloadData').addEventListener('click', function () {
+    if (!confirm('Kassér din gemte kopi af items og magic items, og hent dem forfra fra ' +
+                 'datafilerne? Dine pakker og indstillinger bevares.')) return;
+    loadBundled();
+    autoSynced = null;
+    renderAll(); persist();
+    toast(state.items.length + ' items og ' + state.magic.length + ' magic items hentet forfra');
+  });
+
+  $('#btnClearStorage').addEventListener('click', function () {
+    if (!confirm('Slet alt der er gemt lokalt — pakker, items, magic items og ' +
+                 'sikkerhedskopien? Siden indlæses forfra bagefter. ' +
+                 'Eksportér din opsætning først, hvis du vil beholde den.')) return;
+    C.storage.clearAll();
+    // Genindlæs frem for at bygge state op i hånden: så er der ingen tvivl om
+    // at det man ser er præcis det en ny browser ville se.
+    location.reload();
+  });
+
   /* ================= opstart ================= */
 
   function renderAll() {

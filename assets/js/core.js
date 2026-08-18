@@ -439,6 +439,14 @@ window.LB = (function () {
     catch (e) { return false; }
   }
 
+  /* Fjerner alt appen har gemt. Kun vores egne nøgler — andre sider på samme
+     domæne (GitHub Pages deler origin) skal ikke rammes af en oprydning her. */
+  function clearAll() {
+    [K_CFG, K_ITEMS, K_SEEDED, K_MAGIC, K_BACKUP].forEach(function (k) {
+      try { localStorage.removeItem(k); } catch (e) { /* ingen adgang, intet at rydde */ }
+    });
+  }
+
   /* Fylder manglende felter ud, så gammelt gemt data ikke crasher nye versioner. */
   function migrateConfig(cfg) {
     var def = defaultConfig();
@@ -1108,7 +1116,7 @@ window.LB = (function () {
     categoriesOf: categoriesOf, tagsOf: tagsOf, poolFor: poolFor, generate: generate,
     rollBaseItem: rollBaseItem,
     storage: {
-      available: available, load: load, save: save,
+      available: available, load: load, save: save, clearAll: clearAll,
       K_CFG: K_CFG, K_ITEMS: K_ITEMS, K_SEEDED: K_SEEDED, K_MAGIC: K_MAGIC,
       K_BACKUP: K_BACKUP
     }
