@@ -365,27 +365,48 @@ Weapons, Armor, Consumables og Magic har hver et garanteret kort med sit eget fi
 se afsnittet om det. Hvor tit magi falder, og hvad den så bliver, sættes pr. kort under
 Pakker; se afsnittet om magic items.
 
-### Vægtning
+### Vægtning: lodder i en hat
 
-Uden vægte er alle items i en rarity lige sandsynlige, og så dominerer den største
-kategori. Udstyr fyldte 55 % af en bronzepakke, mens rustning lå på under 2 %.
+Uden vægte er alle items i en rarity lige sandsynlige, og så dominerer den største gruppe.
+Udstyr fyldte 55 % af en bronzepakke, mens rustning lå på under 2 %.
 
-Vægtene ligger i **Flowet** — nej-grenens *Hvilken type* — og findes på pakke, tier og
-kort. En vægt på 2 gør hvert item i kategorien dobbelt så sandsynligt som et uvægtet item
-af samme rarity; 1 er neutralt, og 0 slår kategorien fra uden at fjerne den fra filteret.
-Ved siden af hvert felt står den andel vægten faktisk giver.
+**Vægten er antal lodder, ikke en faktor pr. kort.** Skriver du
 
-Adventurer kører ét sæt hele vejen igennem: Våben 2, Rustning 4, Ammunition 2, resten 1.
-Fordelingen det giver, målt over 15.000 pakker pr. tier:
+```
+Rustning 2    Våben 1    Udstyr 1
+```
 
-| Tier | Udstyr | Våben | Værktøj | Rustning | Ammunition |
-|------|--------|-------|---------|----------|------------|
-| Bronze | 43 % | 30 % | 14 % | 4 % | 9 % |
-| Sølv | 33 % | 34 % | 18 % | 11 % | 4 % |
-| Guld | 29 % | 34 % | 18 % | 14 % | 3 % |
+er der fire lodder i hatten: to på rustning og ét på hver af de andre. Altså **50 %
+rustning og 25 % til hver af de to** — uanset at der er 67 udstyrsting og kun 14
+rustninger. Tallet du taster ind *er* andelen.
 
-Ja-grenen har sit eget sæt, med magic itemets type i stedet for kategorien. Samme greb,
-samme procenter ved siden af.
+Derfor trækkes der i to trin: først en gruppe efter vægt, så et item inden i gruppen.
+Kun grupper der faktisk har et brugbart item ved den rarity er med i hatten, så lodder
+ikke går til spilde på en tom hylde — beder et kort om Uncommon, og har rustning ingen
+Uncommon-item tilbage, fordeles dens lodder på resten.
+
+1 er neutralt, 0 slår gruppen fra uden at fjerne den fra filteret. Ved siden af hvert felt
+står den andel vægten giver, så tallet kan aflæses direkte.
+
+Vægtene ligger i **Flowet** — *Hvilken type* på begge grene — og findes på pakke, tier og
+kort. Ja-grenen bruger magic itemets type i stedet for kategorien; samme greb, samme
+procenter ved siden af.
+
+Adventurer kører ét sæt hele vejen igennem — elleve lodder, så tallene er andelen direkte:
+
+| Kategori | Lodder | Andel | Målt, Bronze | Målt, Guld |
+|----------|-------:|------:|-------------:|-----------:|
+| Udstyr | 3 | 27 % | 30 % | 26 % |
+| Våben | 3 | 27 % | 30 % | 25 % |
+| Værktøj | 2 | 18 % | 20 % | 17 % |
+| Rustning | 1 | 9 % | 5 % | 8 % |
+| Ammunition | 1 | 9 % | 9 % | 5 % |
+| Gift | 1 | 9 % | 0 % | 0 % |
+
+De målte tal ligger tæt på lodderne, og hvor de afviger er det fordi gruppen mangler items
+ved den rarity kortet beder om: der findes ingen Common-rustning og ingen billig gift, så
+de grupper er slet ikke i hatten på de lave trin. Det er meningen — et lod på en tom hylde
+ville bare give tomme kort.
 
 ### Ét garanteret kort pr. pakke
 
@@ -584,10 +605,10 @@ Sætter man en fordeling på kortet, springes tabellen over, og fordelingen gæl
 hvad nej-grenen slår. Det er det Magic-pakken gør. Ja-grenen har **Artifact** med som
 sjette mulighed; den står på 0 overalt, så de 11 artifacts trækkes aldrig af sig selv.
 
-**Typevægte** virker ens på begge grene: 1 er neutralt, 0 slår typen fra, 2 gør den
-dobbelt så sandsynlig. Vægten ganges på hvert item i typen, så **vægt 2 på `Scroll`
-fordobler chancen for et scroll** — målt 2,9 % → 5,6 %. Ved siden af hvert felt står den
-andel vægten faktisk giver, så tallet ikke skal gættes.
+**Typevægte** virker ens på begge grene og er lodder på samme måde: ni typer med vægt 1
+giver 11 % hver, uanset at der er 228 wondrous items og 13 scrolls. Sætter du `Scroll` til
+2, får scrolls 20 %. 0 slår typen fra. Ved siden af hvert felt står den andel vægten giver,
+så tallet ikke skal gættes.
 
 På Magic-grenen er typen magic itemets D&D-type (`Potion`, `Scroll`, `Weapon`, `Armor`,
 `Wand`, `Ring`, `Rod`, `Staff`, `Wondrous Item`). På Standard-grenen er det itemets
