@@ -280,9 +280,10 @@ window.LB = (function () {
               'Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra. Hvert kort har en ' +
               'chance for at blive et magic item i stedet; hvor godt det er, følger den ' +
               'fælles korttrin-tabel under fanen Magic.',
-        // Udstyr er den største gruppe og ville ellers fylde over halvdelen af
-        // pakken. Våben og rustning vægtes op, så de falder oftere.
-        weights: { 'Våben': 2, 'Rustning': 4, 'Ammunition': 2 },
+        // Lodder pr. kategori: elleve i alt, så tallene er andelen direkte.
+        // Udstyr og våben deler hovedparten; rustning holdes nede, fordi der
+        // kun er fjorten af dem og en hel pakke findes til dem.
+        weights: { 'Udstyr': 3, 'Våben': 3, 'Værktøj': 2, 'Rustning': 1, 'Ammunition': 1, 'Gift': 1 },
         magicChance: 6,
         tierMagic: { chance: [6, 12, 18] },
         tiers: gradedTiers(
@@ -325,6 +326,9 @@ window.LB = (function () {
               'er låst til typen Armor. Rustning ligger højt på udstyrs-skalaen — billigste ' +
               'er Padded Armor til 5 gp — så de lave trin lander på udstyr, og Padded Armor ' +
               'er pakkens skraldeitem. Kun 14 rustninger i alt, så gentagelser er uundgåelige.',
+        // Kort 3 er allerede garanteret en rustning, så de to første må gerne
+        // læne mod udstyr — ellers bliver en fjorten-items-hylde slidt tynd.
+        weights: { 'Udstyr': 3, 'Rustning': 1 },
         magicChance: 8,
         magicTypes: onlyTypes('Armor'),
         tierMagic: { chance: [8, 18, 32] },
@@ -372,7 +376,7 @@ window.LB = (function () {
               'i Bronze er de mest udstyr, i Sølv omtrent fifty-fifty, og i Guld er de også ' +
               'altid magi. Hvert kort sætter selv hvor godt magic itemet er, i stedet for at ' +
               'gå gennem den fælles tabel.',
-        weights: { 'Våben': 2, 'Rustning': 4, 'Ammunition': 2 },
+        weights: { 'Udstyr': 3, 'Våben': 3, 'Værktøj': 2, 'Rustning': 1, 'Ammunition': 1, 'Gift': 1 },
         magicChance: 10,
         tierMagic: { chance: [10, 45, 100] },
         tiers: gradedTiers(
@@ -974,10 +978,7 @@ window.LB = (function () {
     });
   }
 
-  /* Vægtning pr. kategori. Uden vægte er alle items i en rarity lige
-     sandsynlige, hvilket lader den største kategori dominere. En vægt på 3
-     gør hvert item i kategorien tre gange så sandsynligt som et uvægtet. */
-  /* En manglende vægt betyder 1. En vægt på 0 betyder nul — den må ikke
+  /* En manglende vægt betyder 1 lod. En vægt på 0 betyder nul — den må ikke
      forveksles med "ikke sat", hvilket `weights[cat] || 1` ellers gør. */
   function pickMagicWeighted(d) {
     var total = 0, k;
@@ -998,20 +999,44 @@ window.LB = (function () {
     return (typeof w === 'number' && isFinite(w) && w >= 0) ? w : 1;
   }
 
-  function pickWeighted(cands, weights) {
+  /* Vægten er antal lodder i hatten, ikke en faktor pr. kort.
+
+     Rustning 2, Våben 1, Udstyr 1 giver fire lodder: to på rustning og ét på
+     hver af de andre. Altså 50 % rustning og 25 % til hver af de to — uanset
+     at der er 67 udstyrsting og kun 14 rustninger. Tallet man taster ind er
+     andelen, og det er dét man mener når man skriver det.
+
+     Derfor trækkes der i to trin: først en gruppe efter vægt, så et item
+     inden i gruppen. Kun grupper der faktisk har et brugbart item er med i
+     hatten, så lodder ikke går til spilde på en tom hylde. */
+  function pickGrouped(cands, keyOf, weightAt) {
     if (!cands.length) return null;
-    if (!weights) return cands[Math.floor(Math.random() * cands.length)];
-    var total = 0, i;
-    for (i = 0; i < cands.length; i++) total += weightOf(weights, cands[i].category);
-    // Alt i denne rarity er vægtet til nul: behandl den som tom, så
+    var groups = {}, order = [], i, k;
+    for (i = 0; i < cands.length; i++) {
+      k = keyOf(cands[i]);
+      if (!groups[k]) { groups[k] = []; order.push(k); }
+      groups[k].push(cands[i]);
+    }
+    var total = 0;
+    for (i = 0; i < order.length; i++) total += weightAt(order[i]);
+    // Alt der er tilbage er vægtet til nul: behandl det som tomt, så
     // trækningen falder videre til en anden rarity.
     if (total <= 0) return null;
     var roll = Math.random() * total;
-    for (i = 0; i < cands.length; i++) {
-      roll -= weightOf(weights, cands[i].category);
-      if (roll < 0) return cands[i];
+    for (i = 0; i < order.length; i++) {
+      roll -= weightAt(order[i]);
+      if (roll < 0) break;
     }
-    return cands[cands.length - 1];
+    var g = groups[order[Math.min(i, order.length - 1)]];
+    return g[Math.floor(Math.random() * g.length)];
+  }
+
+  function pickWeighted(cands, weights) {
+    if (!cands.length) return null;
+    if (!weights) return cands[Math.floor(Math.random() * cands.length)];
+    return pickGrouped(cands,
+      function (it) { return it.category; },
+      function (cat) { return weightOf(weights, cat); });
   }
 
   function drawOne(pool, rarity, used, cfg, weights) {
@@ -1174,10 +1199,9 @@ window.LB = (function () {
     return row ? pickMagicWeighted(row) : null;
   }
 
-  /* Trin 3. Vægt pr. type, hvor 1 er neutralt og 0 slår typen fra. Vægten
-     ganges på hvert item i typen, som kategorivægtene gør — så vægt 2 på
-     Scroll gør et scroll dobbelt så sandsynligt som ellers, ikke at scrolls
-     fylder to niendedele af puljen. */
+  /* Trin 3. Vægt pr. type: antal lodder, ikke en faktor pr. kort. To typer med
+     vægt 1 og 2 deler hatten en tredjedel/to tredjedele, uanset hvor mange
+     items hver type rummer. 0 slår typen fra. */
   function magicTypeWeight(weights, type) {
     var w = weights ? weights[type] : undefined;
     return (typeof w === 'number' && isFinite(w) && w >= 0) ? w : 1;
@@ -1187,16 +1211,10 @@ window.LB = (function () {
     var cands = pool.filter(function (i) {
       return i.rarity === rarity && (allowUsed || !used[i.id]);
     });
-    if (!cands.length) return null;
-    var total = 0, i;
-    for (i = 0; i < cands.length; i++) total += magicTypeWeight(typeWeights, cands[i].subcategory);
-    if (total <= 0) return null;
-    var roll = Math.random() * total;
-    for (i = 0; i < cands.length; i++) {
-      roll -= magicTypeWeight(typeWeights, cands[i].subcategory);
-      if (roll < 0) return cands[i];
-    }
-    return cands[cands.length - 1];
+    // Samme lodmodel som på udstyrssiden — her er gruppen magic itemets type.
+    return pickGrouped(cands,
+      function (it) { return it.subcategory; },
+      function (ty) { return magicTypeWeight(typeWeights, ty); });
   }
 
   /* Magipuljen for et kort: alle magic items der matcher filterets krav om

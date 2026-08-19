@@ -912,13 +912,15 @@
     var owner = opts.owner, field = opts.field;
     var host = el('div');
 
+    /* Vægten er lodder pr. gruppe, ikke pr. kort — så andelen er gruppens
+       lodder ud af alle lodder, uanset hvor mange items gruppen rummer. */
     function shares(weights) {
       var by = {}, total = 0;
       opts.pool().forEach(function (i) {
         var key = opts.keyOf(i);
-        var w = (weights && weights[key] !== undefined) ? weights[key] : 1;
-        by[key] = (by[key] || 0) + w;
-        total += w;
+        if (by[key] !== undefined) return;
+        by[key] = (weights && weights[key] !== undefined) ? weights[key] : 1;
+        total += by[key];
       });
       return { by: by, total: total };
     }
@@ -969,8 +971,10 @@
       });
       host.appendChild(rows);
       host.appendChild(el('p', { class: 'hint',
-        text: '1 er neutralt, 0 slår typen fra. Procenten er den andel vægten giver af ' +
-              'de ' + pool.length + ' items grenen kan trække.' }));
+        text: 'Tallet er antal lodder i hatten. To grupper med 2 og 1 deler den to ' +
+              'tredjedele mod en tredjedel — uanset hvor mange items hver gruppe rummer. ' +
+              '0 slår gruppen fra. Procenten ved siden af er den andel, regnet på de ' +
+              pool.length + ' items grenen kan trække.' }));
     }
 
     render();
@@ -1007,7 +1011,8 @@
     if (off.length && rest.length === 1) parts.push('kun ' + rest[0]);
     else if (off.length && rest.length <= 3) parts.push('kun ' + rest.join(' og '));
     else if (off.length) parts.push('uden ' + off.join(', '));
-    tuned.forEach(function (n) { parts.push(n + ' ×' + num(w[n])); });
+    // Ikke "×2": tallet er lodder, ikke en faktor.
+    tuned.forEach(function (n) { parts.push(n + ' ' + num(w[n])); });
     return parts.length ? parts.join(', ') : null;
   }
 
