@@ -165,15 +165,102 @@ SKILLS = [
     "Performance", "Persuasion", "Religion", "Sleight of Hand", "Stealth", "Survival",
 ]
 
+# Perks er husets egne. De ligger uden for D&D's fem kategorier og er det
+# sted hvor dungeon'et kan give noget der ikke findes i regelbogen — derfor
+# står de her og ikke i en kildefil. Byt frit ud.
 PERKS = [
-    ("Ny Tool Proficiency", "uncommon"),
-    ("Nyt Sprog", "uncommon"),
-    ("Weapon Mastery-plads", "uncommon"),
-    ("Ekstra Hit Die", "uncommon"),
-    ("Ekstra Attunement-plads", "rare"),
-    ("Permanent +5 Hit Points", "rare"),
-    ("Ekstra Bevægelse (+5 ft.)", "rare"),
+    # Træning: små, konkrete udvidelser man kan skrive på arket med det samme.
+    ("Nyt sprog", "common",
+     "Vælg ét sprog. Du taler, læser og skriver det.", "Ét sprog"),
+    ("Ny tool proficiency", "common",
+     "Vælg ét sæt Artisan's Tools. Du får proficiency med det.", "Ét værktøj"),
+    ("Nyt instrument", "common",
+     "Vælg ét Musical Instrument. Du får proficiency med det.", "Ét instrument"),
+    ("Ekstra Hit Die", "common",
+     "Du får ét ekstra Hit Die af din klasses type. Det genvindes som de andre.",
+     "+1 Hit Die"),
+    ("Hårdfør", "common",
+     "Du har advantage på saving throws mod Exhaustion.", "Advantage mod Exhaustion"),
+    ("Permanent +3 Hit Points", "common",
+     "Dit Hit Point-maksimum stiger med 3.", "+3 HP"),
+
+    # Kroppen: mærkbare, men stadig afgrænsede fordele.
+    ("Weapon Mastery-plads", "uncommon",
+     "Du får én ekstra Weapon Mastery-plads. Vælg våbentype som normalt.",
+     "+1 mastery-plads"),
+    ("Permanent +5 Hit Points", "uncommon",
+     "Dit Hit Point-maksimum stiger med 5.", "+5 HP"),
+    ("Ekstra bevægelse", "uncommon",
+     "Din Speed stiger permanent med 5 fod.", "+5 ft. Speed"),
+    ("Sejlivet", "uncommon",
+     "Du har advantage på Death Saving Throws.", "Advantage på death saves"),
+    ("Dungeon-øje", "uncommon",
+     "Du har advantage på Wisdom (Perception)-tjek for at finde skjulte døre, "
+     "fælder og hulrum i sten.", "Advantage på at finde skjult"),
+    ("Mørketilvænnet", "uncommon",
+     "Du får Darkvision med en rækkevidde på 30 fod. Har du den i forvejen, "
+     "stiger rækkevidden med 30 fod.", "Darkvision 30 ft."),
+
+    # De stærke.
+    ("Ekstra Attunement-plads", "rare",
+     "Du kan være attuned til ét magic item mere end normalt.", "+1 attunement"),
+    ("Saving Throw-proficiency", "rare",
+     "Vælg én ability du ikke har saving throw-proficiency i. Du får den.",
+     "Ét saving throw"),
+    ("Anden vind", "rare",
+     "Én gang pr. Long Rest kan du som Bonus Action genvinde 1d10 plus dit "
+     "karakterniveau i Hit Points.", "Heling én gang pr. dag"),
+    ("Hurtig på aftrækkeren", "rare",
+     "Du har advantage på Initiative.", "Advantage på Initiative"),
+
+    ("Modstandsdygtig", "very_rare",
+     "Vælg én skadetype blandt Acid, Cold, Fire, Lightning, Poison eller Thunder. "
+     "Du har Resistance mod den.", "Resistance mod én skadetype"),
+    ("Årvågen sjæl", "very_rare",
+     "Du får +1 til alle saving throws.", "+1 til alle saves"),
+    ("Ekstra Reaction", "very_rare",
+     "Du kan tage én ekstra Reaction pr. runde. Du kan ikke bruge dem begge på "
+     "den samme udløser.", "+1 Reaction pr. runde"),
+
+    ("Uovervindelig vilje", "legendary",
+     "Vælg én tilstand blandt Charmed, Frightened, Paralyzed eller Poisoned. "
+     "Du er immun over for den.", "Immun mod én tilstand"),
+    ("Ekstra angreb", "legendary",
+     "Én gang pr. Long Rest kan du foretage ét ekstra angreb som del af "
+     "Attack-handlingen.", "+1 angreb pr. dag"),
+    ("Rustet hud", "legendary",
+     "Din Armor Class stiger permanent med 1.", "+1 AC"),
 ]
+
+# Dungeon'et er befolket, og det husker hvem man er. To familier af perks
+# knytter sig til et bestemt væsen: den ene køber fred, den anden køber vold.
+#
+# Fred er billigere end vold, fordi et bane-kort virker i hver eneste kamp
+# mod den slags, mens en våbenhvile kun tæller til det første møde.
+# Bestemt flertal, så navnet bliver til korrekt genitiv: "goblinerne" ->
+# "Goblinernes ven".
+CREATURES = ["goblinerne", "kobolderne", "orkerne", "gnollerne",
+             "skeletterne", "edderkopperne"]
+
+
+def creature_perks():
+    out = []
+    for bestemt in CREATURES:
+        stor = bestemt[0].upper() + bestemt[1:]
+        out.append((
+            "%ss ven" % stor, "uncommon",
+            "%s angriber dig ikke på sigte. Det første møde starter neutralt — hvad "
+            "der sker derefter er op til dig. Angriber du først, er aftalen brudt for "
+            "resten af etagen." % stor,
+            "Fred med %s" % bestemt,
+        ))
+        out.append((
+            "%ss fjende" % stor, "rare",
+            "Du gør 2 ekstra skade med våbenangreb mod %s, og du har advantage på "
+            "Wisdom (Survival)-tjek for at spore dem." % bestemt,
+            "+2 skade mod %s" % bestemt,
+        ))
+    return out
 
 
 def card(name, category, subcategory, rarity, desc, prerequisite="", summary=""):
@@ -227,11 +314,8 @@ def build() -> list[dict]:
             "Proficiency i " + s,
         ))
 
-    for name, rarity in PERKS:
-        out.append(card(
-            name, "Perk", "Perk", rarity,
-            "Homebrew — tilpas eller erstat med dine egne perks.",
-        ))
+    for name, rarity, desc, summary in PERKS + creature_perks():
+        out.append(card(name, "Perk", "Perk", rarity, desc, "", summary))
 
     feats = []
     for block in read_blocks(SRC.read_text(encoding="utf-8")):

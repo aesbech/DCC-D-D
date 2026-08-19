@@ -3,7 +3,7 @@
 
    Fem korttyper, som hver er kortets kategori: Class, Stat, Feat, Skill,
    Perk. Rarity styrer trækningen, men trykkes ikke på kortene. */
-window.CLASS_CARDS_VERSION = "f046c2cf8494";
+window.CLASS_CARDS_VERSION = "881c924c9905";
 window.CLASS_CARDS = [
  {
   "name": "Class Level: Barbarian",
@@ -1410,11 +1410,11 @@ window.CLASS_CARDS = [
   "desc": "Fordobl din proficiency bonus med Survival."
  },
  {
-  "name": "Ny Tool Proficiency",
+  "name": "Nyt sprog",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
-  "rarity": "uncommon",
+  "rarity": "common",
   "rarityLocked": true,
   "hideRarity": true,
   "scale": "none",
@@ -1424,15 +1424,15 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "",
-  "desc": "Homebrew — tilpas eller erstat med dine egne perks."
+  "summary": "Ét sprog",
+  "desc": "Vælg ét sprog. Du taler, læser og skriver det."
  },
  {
-  "name": "Nyt Sprog",
+  "name": "Ny tool proficiency",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
-  "rarity": "uncommon",
+  "rarity": "common",
   "rarityLocked": true,
   "hideRarity": true,
   "scale": "none",
@@ -1442,8 +1442,80 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "",
-  "desc": "Homebrew — tilpas eller erstat med dine egne perks."
+  "summary": "Ét værktøj",
+  "desc": "Vælg ét sæt Artisan's Tools. Du får proficiency med det."
+ },
+ {
+  "name": "Nyt instrument",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "common",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Ét instrument",
+  "desc": "Vælg ét Musical Instrument. Du får proficiency med det."
+ },
+ {
+  "name": "Ekstra Hit Die",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "common",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "+1 Hit Die",
+  "desc": "Du får ét ekstra Hit Die af din klasses type. Det genvindes som de andre."
+ },
+ {
+  "name": "Hårdfør",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "common",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Advantage mod Exhaustion",
+  "desc": "Du har advantage på saving throws mod Exhaustion."
+ },
+ {
+  "name": "Permanent +3 Hit Points",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "common",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "+3 HP",
+  "desc": "Dit Hit Point-maksimum stiger med 3."
  },
  {
   "name": "Weapon Mastery-plads",
@@ -1460,11 +1532,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "",
-  "desc": "Homebrew — tilpas eller erstat med dine egne perks."
+  "summary": "+1 mastery-plads",
+  "desc": "Du får én ekstra Weapon Mastery-plads. Vælg våbentype som normalt."
  },
  {
-  "name": "Ekstra Hit Die",
+  "name": "Permanent +5 Hit Points",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1478,8 +1550,80 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "",
-  "desc": "Homebrew — tilpas eller erstat med dine egne perks."
+  "summary": "+5 HP",
+  "desc": "Dit Hit Point-maksimum stiger med 5."
+ },
+ {
+  "name": "Ekstra bevægelse",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "uncommon",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "+5 ft. Speed",
+  "desc": "Din Speed stiger permanent med 5 fod."
+ },
+ {
+  "name": "Sejlivet",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "uncommon",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Advantage på death saves",
+  "desc": "Du har advantage på Death Saving Throws."
+ },
+ {
+  "name": "Dungeon-øje",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "uncommon",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Advantage på at finde skjult",
+  "desc": "Du har advantage på Wisdom (Perception)-tjek for at finde skjulte døre, fælder og hulrum i sten."
+ },
+ {
+  "name": "Mørketilvænnet",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "uncommon",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Darkvision 30 ft.",
+  "desc": "Du får Darkvision med en rækkevidde på 30 fod. Har du den i forvejen, stiger rækkevidden med 30 fod."
  },
  {
   "name": "Ekstra Attunement-plads",
@@ -1496,11 +1640,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "",
-  "desc": "Homebrew — tilpas eller erstat med dine egne perks."
+  "summary": "+1 attunement",
+  "desc": "Du kan være attuned til ét magic item mere end normalt."
  },
  {
-  "name": "Permanent +5 Hit Points",
+  "name": "Saving Throw-proficiency",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1514,11 +1658,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "",
-  "desc": "Homebrew — tilpas eller erstat med dine egne perks."
+  "summary": "Ét saving throw",
+  "desc": "Vælg én ability du ikke har saving throw-proficiency i. Du får den."
  },
  {
-  "name": "Ekstra Bevægelse (+5 ft.)",
+  "name": "Anden vind",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1532,8 +1676,350 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "",
-  "desc": "Homebrew — tilpas eller erstat med dine egne perks."
+  "summary": "Heling én gang pr. dag",
+  "desc": "Én gang pr. Long Rest kan du som Bonus Action genvinde 1d10 plus dit karakterniveau i Hit Points."
+ },
+ {
+  "name": "Hurtig på aftrækkeren",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "rare",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Advantage på Initiative",
+  "desc": "Du har advantage på Initiative."
+ },
+ {
+  "name": "Modstandsdygtig",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "very_rare",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Resistance mod én skadetype",
+  "desc": "Vælg én skadetype blandt Acid, Cold, Fire, Lightning, Poison eller Thunder. Du har Resistance mod den."
+ },
+ {
+  "name": "Årvågen sjæl",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "very_rare",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "+1 til alle saves",
+  "desc": "Du får +1 til alle saving throws."
+ },
+ {
+  "name": "Ekstra Reaction",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "very_rare",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "+1 Reaction pr. runde",
+  "desc": "Du kan tage én ekstra Reaction pr. runde. Du kan ikke bruge dem begge på den samme udløser."
+ },
+ {
+  "name": "Uovervindelig vilje",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "legendary",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Immun mod én tilstand",
+  "desc": "Vælg én tilstand blandt Charmed, Frightened, Paralyzed eller Poisoned. Du er immun over for den."
+ },
+ {
+  "name": "Ekstra angreb",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "legendary",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "+1 angreb pr. dag",
+  "desc": "Én gang pr. Long Rest kan du foretage ét ekstra angreb som del af Attack-handlingen."
+ },
+ {
+  "name": "Rustet hud",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "legendary",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "+1 AC",
+  "desc": "Din Armor Class stiger permanent med 1."
+ },
+ {
+  "name": "Goblinernes ven",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "uncommon",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Fred med goblinerne",
+  "desc": "Goblinerne angriber dig ikke på sigte. Det første møde starter neutralt — hvad der sker derefter er op til dig. Angriber du først, er aftalen brudt for resten af etagen."
+ },
+ {
+  "name": "Goblinernes fjende",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "rare",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "+2 skade mod goblinerne",
+  "desc": "Du gør 2 ekstra skade med våbenangreb mod goblinerne, og du har advantage på Wisdom (Survival)-tjek for at spore dem."
+ },
+ {
+  "name": "Koboldernes ven",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "uncommon",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Fred med kobolderne",
+  "desc": "Kobolderne angriber dig ikke på sigte. Det første møde starter neutralt — hvad der sker derefter er op til dig. Angriber du først, er aftalen brudt for resten af etagen."
+ },
+ {
+  "name": "Koboldernes fjende",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "rare",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "+2 skade mod kobolderne",
+  "desc": "Du gør 2 ekstra skade med våbenangreb mod kobolderne, og du har advantage på Wisdom (Survival)-tjek for at spore dem."
+ },
+ {
+  "name": "Orkernes ven",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "uncommon",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Fred med orkerne",
+  "desc": "Orkerne angriber dig ikke på sigte. Det første møde starter neutralt — hvad der sker derefter er op til dig. Angriber du først, er aftalen brudt for resten af etagen."
+ },
+ {
+  "name": "Orkernes fjende",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "rare",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "+2 skade mod orkerne",
+  "desc": "Du gør 2 ekstra skade med våbenangreb mod orkerne, og du har advantage på Wisdom (Survival)-tjek for at spore dem."
+ },
+ {
+  "name": "Gnollernes ven",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "uncommon",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Fred med gnollerne",
+  "desc": "Gnollerne angriber dig ikke på sigte. Det første møde starter neutralt — hvad der sker derefter er op til dig. Angriber du først, er aftalen brudt for resten af etagen."
+ },
+ {
+  "name": "Gnollernes fjende",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "rare",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "+2 skade mod gnollerne",
+  "desc": "Du gør 2 ekstra skade med våbenangreb mod gnollerne, og du har advantage på Wisdom (Survival)-tjek for at spore dem."
+ },
+ {
+  "name": "Skeletternes ven",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "uncommon",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Fred med skeletterne",
+  "desc": "Skeletterne angriber dig ikke på sigte. Det første møde starter neutralt — hvad der sker derefter er op til dig. Angriber du først, er aftalen brudt for resten af etagen."
+ },
+ {
+  "name": "Skeletternes fjende",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "rare",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "+2 skade mod skeletterne",
+  "desc": "Du gør 2 ekstra skade med våbenangreb mod skeletterne, og du har advantage på Wisdom (Survival)-tjek for at spore dem."
+ },
+ {
+  "name": "Edderkoppernes ven",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "uncommon",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "Fred med edderkopperne",
+  "desc": "Edderkopperne angriber dig ikke på sigte. Det første møde starter neutralt — hvad der sker derefter er op til dig. Angriber du først, er aftalen brudt for resten af etagen."
+ },
+ {
+  "name": "Edderkoppernes fjende",
+  "category": "Perk",
+  "subcategory": "Perk",
+  "price": null,
+  "rarity": "rare",
+  "rarityLocked": true,
+  "hideRarity": true,
+  "scale": "none",
+  "source": "Player's Handbook 2024",
+  "tags": [
+   "Class-kort",
+   "Perk"
+  ],
+  "prerequisite": "",
+  "summary": "+2 skade mod edderkopperne",
+  "desc": "Du gør 2 ekstra skade med våbenangreb mod edderkopperne, og du har advantage på Wisdom (Survival)-tjek for at spore dem."
  },
  {
   "name": "Ability Score Improvement",

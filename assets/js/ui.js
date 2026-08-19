@@ -831,11 +831,15 @@
       type: 'number', min: '0', max: '100', step: '1',
       value: own ? owner.magicChance : '',
       placeholder: inh.level && !own ? String(inh.value) : '0',
+      // Værdien gemmes mens der tastes, men panelet bygges først om når
+      // feltet forlades: en chance på 0 eller 100 skjuler en hel gren, og en
+      // ombygning midt i indtastningen ville tage fokus — og næste ciffer.
       oninput: function () {
         var raw = this.value.trim();
         owner.magicChance = raw === '' ? null : Math.max(0, Math.min(100, Number(raw) || 0));
-        updateGenHint(); persist(); refreshPackDetail();
-      }
+        updateGenHint(); persist();
+      },
+      onchange: function () { refreshPackDetail(); }
     });
     var note = own
       ? '% chance for at kortet bliver et magic item'
@@ -854,13 +858,23 @@
 
     function render() {
       host.innerHTML = '';
-      var own = !!owner[field] && (field !== 'dist' || hasAny(owner[field]));
+      // Afkrydsningen følger om feltet er sat, ikke om det har tal i sig. En
+      // fordeling med lutter nuller arver ved trækning, men den skal kunne
+      // stå tom mens man taster — ellers slår fluebenet sig selv fra igen.
+      var own = owner[field] !== null && owner[field] !== undefined;
       host.appendChild(el('label', { class: 'check' }, [
         el('input', {
           type: 'checkbox', checked: own ? 'checked' : null,
           onchange: function () {
-            owner[field] = this.checked
-              ? (field === 'dist' ? C.emptyDist() : C.emptyMagicDist()) : null;
+            // Start fra det der arves, så man retter i noget frem for at
+            // udfylde et tomt skema.
+            if (!this.checked) owner[field] = null;
+            else {
+              var inh = opts.inherited && opts.inherited();
+              owner[field] = inh ? JSON.parse(JSON.stringify(inh))
+                                 : (field === 'dist' ? C.emptyDist() : C.emptyMagicDist());
+              if (field === 'dist' && !hasAny(owner[field])) owner[field].common = 100;
+            }
             render(); persist(); refreshPackDetail();
           }
         }),
@@ -876,7 +890,8 @@
       function refresh() {
         var total = 0;
         keys.forEach(function (k) { total += (Number(owner[field][k]) || 0); });
-        sumEl.textContent = 'Sum: ' + (Math.round(total * 100) / 100) + '%';
+        sumEl.textContent = total === 0 ? 'Sum: 0 % — arver'
+                                       : 'Sum: ' + (Math.round(total * 100) / 100) + '%';
         sumEl.className = 'sum ' + (Math.abs(total - 100) < 0.01 ? 'good' : 'bad');
         if (barHost) { barHost.innerHTML = ''; barHost.appendChild(distBar(owner[field])); }
       }
@@ -953,18 +968,37 @@
         return;
       }
       var rows = el('div', { class: 'dist' });
+      // Etiketterne opdateres på plads når man taster. Byggede vi rækkerne om,
+      // ville feltet man skriver i blive erstattet midt i indtastningen, og
+      // fokus — og det næste ciffer — gå tabt.
+      var labels = {};
+      function refreshShares() {
+        var now = shares(own ? owner[field] : eff);
+        names.forEach(function (ty) {
+          var pct = now.total > 0 ? (100 * (now.by[ty] || 0) / now.total) : 0;
+          labels[ty].textContent = ty + ' · ' + (Math.round(pct * 10) / 10) + ' %';
+        });
+      }
       names.forEach(function (ty) {
         var w = (eff && eff[ty] !== undefined) ? eff[ty] : 1;
         var pct = st.total > 0 ? (100 * (st.by[ty] || 0) / st.total) : 0;
+        labels[ty] = el('span', { text: ty + ' · ' + (Math.round(pct * 10) / 10) + ' %' });
         rows.appendChild(el('label', { class: 'field' }, [
-          el('span', { text: ty + ' · ' + (Math.round(pct * 10) / 10) + ' %' }),
+          labels[ty],
           el('input', {
             type: 'number', min: '0', step: '0.5', value: w, disabled: own ? null : 'disabled',
             oninput: function () {
+              // Et tomt felt er "midt i en indtastning", ikke nul — værdien
+              // gemmes først når der står et tal.
+              if (this.value.trim() === '') return;
               var v = Number(this.value);
               if (!isFinite(v) || v < 0) v = 0;
               if (v === 1) delete owner[field][ty]; else owner[field][ty] = v;
-              render(); persist();
+              refreshShares(); persist();
+            },
+            onchange: function () {
+              if (this.value.trim() === '') { this.value = 1; delete owner[field][ty]; }
+              refreshShares(); persist(); refreshPackDetail();
             }
           })
         ]));
@@ -1079,6 +1113,7 @@
         el('div', { class: 'flow-step' }, [
           el('h5', { text: 'Rarity' }),
           rarityField({ owner: owner, field: 'dist', keys: C.RKEYS, list: C.RARITIES, bar: true,
+            inherited: function () { return inheritedDist(pack, t, c).value; },
             inheritNote: function () {
               var inh = inheritedDist(pack, t, c);
               return inh.level ? 'Arver fordelingen fra ' + inh.level + '.'
@@ -1120,6 +1155,7 @@
         eff < 100 ? branch('is-gear', 'Standard Item', 'Trækker blandt almindelige items.', [
           'Hvilken rarity',
           rarityField({ owner: owner, field: 'dist', keys: C.RKEYS, list: C.RARITIES, bar: true,
+            inherited: function () { return inheritedDist(pack, t, c).value; },
             inheritNote: function () {
               var inh = inheritedDist(pack, t, c);
               return inh.level ? 'Arver fordelingen fra ' + inh.level + '.'
@@ -1151,6 +1187,7 @@
         eff > 0 ? branch('is-magic', 'Magic Item', 'Trækker blandt magic items.', [
           'Hvilken rarity',
           rarityField({ owner: owner, field: 'magicDist', keys: C.MKEYS, list: C.MAGIC_RARITIES,
+            inherited: function () { return inherited(pack, t, c, 'magicDist').value; },
             inheritNote: function () {
               var inh = inherited(pack, t, c, 'magicDist');
               return inh.level ? 'Arver fordelingen fra ' + inh.level + '.'

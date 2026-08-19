@@ -418,7 +418,10 @@ window.LB = (function () {
           // Alle tolv class levels deler rarity — de er lige sandsynlige, og
           // hvilken klasse man trækker er hele pointen.
           card('Class', { common: 100 }, classFilter('Class')),
-          card('Perk', { uncommon: 60, rare: 40 }, classFilter('Perk')),
+          // Perks findes nu på alle fem trin, fra "ét sprog" til "+1 AC", så
+          // fordelingen skal spænde hele vejen.
+          card('Perk', { common: 20, uncommon: 38, rare: 27, very_rare: 11, legendary: 4 },
+               classFilter('Perk')),
           // Attributkortene er graduerede: rarityen er loftet. Et Common-kort
           // hæver kun til 13 og er derfor hverdagskost; kortet der når 20 er
           // sjældent. Fordelingen skal derfor spænde over alle fem trin.

@@ -20,7 +20,7 @@ Denne fil handler kun om generatoren.
 mappe `/ (root)`), eller **GitHub Actions** — så bruges workflowen i
 `.github/workflows/pages.yml`, der deployer ved hvert push til `main`.
 
-Første gang siden åbnes, indlæses de 216 udstyrsitems, 162 Class-kort og 450 magic items automatisk.
+Første gang siden åbnes, indlæses de 216 udstyrsitems, 189 Class-kort og 450 magic items automatisk.
 
 ## Data
 
@@ -28,7 +28,7 @@ Første gang siden åbnes, indlæses de 216 udstyrsitems, 162 Class-kort og 450 
 |-----|---------|
 | `data/dnd_items.xlsx` | Dit originale regneark — kilden til alt udstyr |
 | `assets/data/items.js` | 216 items: 214 fra arket `Alle items` plus to ammunitionsrækker arket mangler |
-| `assets/data/class-cards.js` | 162 Class-kort i fem typer (Class, Stat, Feat, Skill, Perk) |
+| `assets/data/class-cards.js` | 189 Class-kort i fem typer (Class, Stat, Feat, Skill, Perk) |
 | `assets/data/magic-items.js` | 450 magic items, heraf 9 tomes vi selv genererer |
 | `assets/data/spells.js` | 202 spells fra D&D Beyond, fordelt på niveau 0–9 |
 | `scripts/import_xlsx.py` | Konverterer regnearket til `items.js` |
@@ -342,7 +342,7 @@ pakken åbnes ved at brække seglet — bruddet skal ikke rive det øverste kort
 | Armor | Rustning, Udstyr | 78 | 8–32 %, kun Armor | en rustning |
 | Consumables | alle kategorier, kun forbrugsvarer | 23 | 40–100 %, Potion og Scroll | en magisk forbrugsvare |
 | Magic | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 167 | 10–100 %, alle typer | et magic item |
-| Classes | Class, Stat, Feat, Skill, Perk | 162 | — | (ikke gradueret) |
+| Classes | Class, Stat, Feat, Skill, Perk | 189 | — | (ikke gradueret) |
 
 Alle undtagen Classes har Bronze / Sølv / Guld. Puljetallet er udstyrssiden; magisiden er
 de 450 magic items, som trækkes for sig når chancen siger ja. I alt 806 items.
@@ -808,7 +808,7 @@ kortplads kan bede om præcis én type med et almindeligt filter:
 | **Stat** | Attribut +1, gradueret efter loft | 30 | Common → Legendary |
 | **Feat** | Origin feats, fighting styles, general feats, epic boons | 77 | Common → Legendary |
 | **Skill** | Proficiency og expertise i de 18 færdigheder | 36 | Uncommon, Rare |
-| **Perk** | Mekaniske fordele udenfor de fire ovenstående (homebrew) | 7 | Uncommon, Rare |
+| **Perk** | Mekaniske fordele udenfor de fire ovenstående (homebrew) | 34 | Common → Legendary |
 
 **Rarity trykkes ikke på class-kortene.** Den styrer trækningen, men den siger ikke noget
 brugbart på selve kortet: alle class levels er lige sandsynlige, og et attributkorts loft
@@ -852,6 +852,35 @@ Under navnet står kildens egen stikordsliste (`+1 Charisma, Impersonation, Mimi
 man kan se hvad feat'et gør uden at læse hele reglen. Magic Initiate er delt i tre kort —
 Cleric, Druid og Wizard — fordi listen vælges når man tager feat'et, og som fysisk kort er
 hver liste sit eget kort.
+
+### Perks er husets egne
+
+Perks ligger uden for D&D's fem kategorier. Det er stedet hvor dungeon'et kan give noget
+der ikke findes i regelbogen, så de er formuleret i importscriptet og ikke i en kildefil —
+byt frit ud.
+
+**22 almindelige perks**, gradueret fra et sprog til +1 AC:
+
+| Rarity | Eksempler |
+|--------|-----------|
+| Common | Nyt sprog · Ny tool proficiency · Ekstra Hit Die · +3 HP |
+| Uncommon | Weapon Mastery-plads · Darkvision 30 ft. · Advantage på death saves |
+| Rare | Ekstra Attunement-plads · Anden vind · Advantage på Initiative |
+| Very Rare | Resistance mod én skadetype · +1 til alle saves · Ekstra Reaction |
+| Legendary | Immun mod én tilstand · Ekstra angreb pr. dag · +1 AC |
+
+**12 væsen-perks** i to familier. Dungeon'et er befolket, og det husker hvem man er:
+
+| Familie | Rarity | Hvad kortet gør |
+|---------|--------|-----------------|
+| *Goblinernes ven* | Uncommon | De angriber dig ikke på sigte. Første møde starter neutralt — angriber du først, er aftalen brudt for resten af etagen. |
+| *Goblinernes fjende* | Rare | +2 skade med våbenangreb mod dem, og advantage på at spore dem. |
+
+Seks væsener har begge kort: goblinerne, kobolderne, orkerne, gnollerne, skeletterne og
+edderkopperne. **Fred er sat billigere end vold**, fordi et fjende-kort virker i hver eneste
+kamp mod den slags, mens en våbenhvile kun tæller til det første møde.
+
+Perk-pladsens fordeling spænder derfor over alle fem trin: 20 / 38 / 27 / 11 / 4 %.
 
 ### Pladserne
 
