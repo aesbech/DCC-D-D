@@ -618,6 +618,15 @@
         if (it && (it.subcategory || it.category))
           kids.push(el('div', { class: 'card-sub', text: it.subcategory || it.category }));
         if (it) {
+          // Class-kort: hvad kortet gør i stikord, og hvad der kræves for at
+          // spille det. Kravet er den vigtigste linje på et feat — et Epic
+          // Boon på level 3 er ikke noget man bare lægger på bordet.
+          if (it.summary)
+            kids.push(el('div', { class: 'card-stats', text: it.summary }));
+          if (it.prerequisite)
+            kids.push(el('div', { class: 'card-req' }, [
+              el('b', { text: 'Krav: ' }), document.createTextNode(it.prerequisite)
+            ]));
           var sl = statLine(it); if (sl) kids.push(sl);
           var pl = propLine(it); if (pl) kids.push(pl);
         }
@@ -634,16 +643,25 @@
           kids.push(el('div', { class: 'fallback-note', text: 'Dublet (puljen er for lille)' }));
         if (!it && c.rolled)
           kids.push(el('div', { class: 'fallback-note', text: 'Trak ' + C.rarityLabel(c.rolled) + ' — ingen items i puljen' }));
-        kids.push(el('div', { class: 'card-meta' }, [
-          el('span', { class: 'meta-rarity' }, [
-            c.actual ? starBadge(C.RKEYS, c.actual, false) : null,
-            el('span', {
-              class: 'rarity ' + (c.actual ? 'r-' + c.actual : ''),
-              text: c.actual ? C.rarityLabel(c.actual) : '—'
-            })
-          ]),
-          el('span', { text: it ? priceLabel(it) : '' })
-        ]));
+        // Et class-kort har hverken pris eller en rarity der siger noget: alle
+        // class levels er lige sandsynlige, og et attributkorts loft står i
+        // navnet. Så bliver bundlinjen tom, og den udelades helt.
+        // Ikke priceLabel her: den skriver "—" for et item uden pris.
+        var price = (it && it.price !== null && it.price !== undefined) ? priceLabel(it) : '';
+        if (!it || !it.hideRarity) {
+          kids.push(el('div', { class: 'card-meta' }, [
+            el('span', { class: 'meta-rarity' }, [
+              c.actual ? starBadge(C.RKEYS, c.actual, false) : null,
+              el('span', {
+                class: 'rarity ' + (c.actual ? 'r-' + c.actual : ''),
+                text: c.actual ? C.rarityLabel(c.actual) : '—'
+              })
+            ]),
+            el('span', { text: price })
+          ]));
+        } else if (price) {
+          kids.push(el('div', { class: 'card-meta' }, [el('span', { text: price })]));
+        }
         cards.appendChild(el('div', {
           class: 'card' + (it ? ' r-' + c.actual + typeClass(it.category) : ' is-empty')
         }, kids));
