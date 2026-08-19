@@ -20,7 +20,7 @@ Denne fil handler kun om generatoren.
 mappe `/ (root)`), eller **GitHub Actions** — så bruges workflowen i
 `.github/workflows/pages.yml`, der deployer ved hvert push til `main`.
 
-Første gang siden åbnes, indlæses de 216 udstyrsitems, 140 Class-kort og 450 magic items automatisk.
+Første gang siden åbnes, indlæses de 216 udstyrsitems, 162 Class-kort og 450 magic items automatisk.
 
 ## Data
 
@@ -28,7 +28,7 @@ Første gang siden åbnes, indlæses de 216 udstyrsitems, 140 Class-kort og 450 
 |-----|---------|
 | `data/dnd_items.xlsx` | Dit originale regneark — kilden til alt udstyr |
 | `assets/data/items.js` | 216 items: 214 fra arket `Alle items` plus to ammunitionsrækker arket mangler |
-| `assets/data/class-cards.js` | 140 Class-kort i fem typer (Class, Stat, Feat, Skill, Perk) |
+| `assets/data/class-cards.js` | 162 Class-kort i fem typer (Class, Stat, Feat, Skill, Perk) |
 | `assets/data/magic-items.js` | 450 magic items, heraf 9 tomes vi selv genererer |
 | `assets/data/spells.js` | 202 spells fra D&D Beyond, fordelt på niveau 0–9 |
 | `scripts/import_xlsx.py` | Konverterer regnearket til `items.js` |
@@ -342,7 +342,7 @@ pakken åbnes ved at brække seglet — bruddet skal ikke rive det øverste kort
 | Armor | Rustning, Udstyr | 78 | 8–32 %, kun Armor | en rustning |
 | Consumables | alle kategorier, kun forbrugsvarer | 23 | 40–100 %, Potion og Scroll | en magisk forbrugsvare |
 | Magic | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 167 | 10–100 %, alle typer | et magic item |
-| Classes | Class, Stat, Feat, Skill, Perk | 140 | — | (ikke gradueret) |
+| Classes | Class, Stat, Feat, Skill, Perk | 162 | — | (ikke gradueret) |
 
 Alle undtagen Classes har Bronze / Sølv / Guld. Puljetallet er udstyrssiden; magisiden er
 de 450 magic items, som trækkes for sig når chancen siger ja. I alt 806 items.
@@ -783,25 +783,75 @@ kortplads kan bede om præcis én type med et almindeligt filter:
 
 | Type | Indhold | Antal | Rarities |
 |------|---------|-------|----------|
-| **Class** | Class levels for de 12 klasser | 12 | Very Rare |
-| **Stat** | Attribut +1 og +2 | 12 | Common, Very Rare |
-| **Feat** | Origin feats, fighting styles, general feats, epic boons | 73 | Common → Legendary |
+| **Class** | Class levels for de 12 klasser | 12 | alle Common |
+| **Stat** | Attribut +1, gradueret efter loft | 30 | Common → Legendary |
+| **Feat** | Origin feats, fighting styles, general feats, epic boons | 77 | Common → Legendary |
 | **Skill** | Proficiency og expertise i de 18 færdigheder | 36 | Uncommon, Rare |
 | **Perk** | Mekaniske fordele udenfor de fire ovenstående (homebrew) | 7 | Uncommon, Rare |
 
-Pakken har tre kortpladser — én Class, én Perk, én Stat — og hver plads har en fordeling
-der matcher netop den types rarities, så der hverken bliver fallback eller tomme kort.
-Verificeret over 24.000 kort: nul fejltyper, nul fallback.
+**Rarity trykkes ikke på class-kortene.** Den styrer trækningen, men den siger ikke noget
+brugbart på selve kortet: alle class levels er lige sandsynlige, og et attributkorts loft
+står i navnet. Kortene har heller ingen pris, så bundlinjen udgår helt og pladsen går til
+reglen. Det sættes med `hideRarity` på itemet, ikke som en regel om kategorien.
 
-**Feat- og Skill-kortene har ingen plads endnu.** De ligger klar med 73 og 36 kort; vil du
-have dem med, så tilføj et kort på tieren og vælg kategorien.
+### Attributkort er graduerede
 
-Class levels ligger på Very Rare, fordi de er pakkens egentlige gevinst. Rediger frit i
-Items-fanen, eller udskift hele `assets/data/class-cards.js` med dit eget indhold.
+Et attributkort hæver altid med **1**. Det der er gradueret, er hvor højt det må hæve — og
+det er dét rarityen betyder:
 
-Kategorien `Class` er sat på listen over kategorier der aldrig trækkes af en pakke uden
-filter — så Class-kort ikke lækker ind i Adventurer-pakken. Det er verificeret over
-9.000 trukne kort.
+| Rarity | Kort | Værd for |
+|--------|------|----------|
+| Common | `Strength +1 (til maks. 13)` | en der står lavt |
+| Uncommon | `Strength +1 (til maks. 15)` | |
+| Rare | `Strength +1 (til maks. 17)` | |
+| Very Rare | `Strength +1 (til maks. 19)` | |
+| Legendary | `Strength +1 (til maks. 20)` | det eneste kort der når 20 |
+
+Seks evner gange fem lofter giver 30 kort. Loftet står i navnet, så to kort aldrig kan
+forveksles på bordet, og kravet står som `Krav: Strength under 13`. Stat-pladsens fordeling
+spænder derfor over alle fem trin: 45 / 28 / 16 / 8 / 3 %.
+
+### Feats bærer deres krav
+
+De 77 feats kommer fra `data/feats.txt` med **prerequisite og fuld regeltekst**. Kravet
+står øverst på kortet, fordi det er dét der afgør om kortet kan spilles:
+
+| Slags | Antal | Rarity | Krav på kortet |
+|-------|------:|--------|----------------|
+| Origin Feat | 12 | Common | *Ingen — men du må kun have ét Origin feat.* |
+| Fighting Style Feat | 10 | Uncommon | *Fighting Style Feature* |
+| General Feat | 43 | Rare | *Level 4+* og ofte en evne på 13+ |
+| Epic Boon Feat | 12 | Legendary | *Level 19+* |
+
+Origin-begrænsningen står ikke i kilden — den skriver ingen prerequisite på origin feats —
+men det er den begrænsning der betyder noget når kortene ligger på bordet, så den er
+skrevet ind.
+
+Under navnet står kildens egen stikordsliste (`+1 Charisma, Impersonation, Mimicry`), så
+man kan se hvad feat'et gør uden at læse hele reglen. Magic Initiate er delt i tre kort —
+Cleric, Druid og Wizard — fordi listen vælges når man tager feat'et, og som fysisk kort er
+hver liste sit eget kort.
+
+### Pladserne
+
+Pakken har tre kortpladser — én Class, én Perk, én Stat. **Feat- og Skill-kortene har ingen
+plads endnu.** De ligger klar med 77 og 36 kort; vil du have dem med, så tilføj et kort på
+tieren og vælg kategorien.
+
+Class-kortenes fem kategorier står på listen over kategorier der aldrig trækkes af en pakke
+uden filter — så de ikke lækker ind i Adventurer-pakken.
+
+### Data
+
+`data/feats.txt` er kilden til feats, klippet fra D&D Beyond.
+`scripts/import_class_cards.py` bygger hele `assets/data/class-cards.js` ud fra den plus de
+systematiske kort, som er formuleret i scriptet:
+
+```bash
+python3 scripts/import_class_cards.py
+```
+
+Rediger frit i Items-fanen, eller udskift hele datafilen med dit eget indhold.
 
 ## Datamodel
 
@@ -886,10 +936,12 @@ assets/css/app.css             styling, inkl. print-layout
 assets/js/core.js              datamodel, prisparsing, import, trækning
 assets/js/ui.js                UI og hændelser
 assets/data/items.js           items fra regnearket
-assets/data/class-cards.js     Class-pakkens indhold
+assets/data/class-cards.js     Class-pakkens indhold (genereret)
 assets/data/magic-items.js     magic items
 scripts/import_xlsx.py         regneark → items.js
 scripts/import_magic.py        magic_items.txt → magic-items.js
+scripts/import_class_cards.py  feats.txt + systematiske kort → class-cards.js
 data/dnd_items.xlsx            kilderegnearket
 data/magic_items.txt           kildeliste over magic items
+data/feats.txt                 kildeliste over feats
 ```

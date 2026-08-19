@@ -403,15 +403,23 @@ window.LB = (function () {
       {
         id: 'classes', name: 'Classes', filter: filt(['Class', 'Stat', 'Feat', 'Skill', 'Perk']),
         note: 'Pakkes i guldgult papir, forseglet med sort voks — Classes står uden for ' +
-              'bronze/sølv/guld. Ikke gradueret — ét tier. Hver kortplads beder om sin egen korttype via ' +
-              'tags: Class, Perk, Stat, Feat og Skill. Feat- og Skill-kortene findes, men ' +
-              'har ingen plads endnu — tilføj et kort, hvis de skal med.',
+              'bronze/sølv/guld. Ikke gradueret — ét tier. Hver kortplads beder om sin egen ' +
+              'korttype som kategori: Class, Stat, Feat, Skill og Perk. Rarity styrer ' +
+              'trækningen, men trykkes ikke på kortene — loftet står i navnet på et ' +
+              'attributkort, og alle class levels er lige sandsynlige. Feat- og ' +
+              'Skill-kortene findes, men har ingen plads endnu — tilføj et kort.',
         tiers: [tier('standard', 'Standard', [
           // Fordelingerne matcher hver types faktiske rarities, så der hverken
           // bliver fallback eller tomme kort.
-          card('Class', { very_rare: 100 }, classFilter('Class')),
+          // Alle tolv class levels deler rarity — de er lige sandsynlige, og
+          // hvilken klasse man trækker er hele pointen.
+          card('Class', { common: 100 }, classFilter('Class')),
           card('Perk', { uncommon: 60, rare: 40 }, classFilter('Perk')),
-          card('Stat', { common: 85, very_rare: 15 }, classFilter('Stat'))
+          // Attributkortene er graduerede: rarityen er loftet. Et Common-kort
+          // hæver kun til 13 og er derfor hverdagskost; kortet der når 20 er
+          // sjældent. Fordelingen skal derfor spænde over alle fem trin.
+          card('Stat', { common: 45, uncommon: 28, rare: 16, very_rare: 8, legendary: 3 },
+               classFilter('Stat'))
         ])]
       }
     ];
@@ -823,7 +831,10 @@ window.LB = (function () {
   /* Felter fra regnearket som hører til på selve kortet: skade, egenskaber,
      AC og den slags. De skal med hele vejen fra items.js til kortvisningen. */
   var STAT_FIELDS = ['damage', 'damageType', 'properties', 'mastery', 'masteryText',
-                     'ac', 'strength', 'stealth', 'weight'];
+                     'ac', 'strength', 'stealth', 'weight',
+                     // Class-kort: kravet man skal opfylde, og kildens egen
+                     // stikordsliste over hvad kortet gør.
+                     'prerequisite', 'summary'];
 
   function copyStats(from, to) {
     STAT_FIELDS.forEach(function (f) {
@@ -851,6 +862,9 @@ window.LB = (function () {
       consumable: typeof raw.consumable === 'string'
         ? /^(1|true|ja|yes|x)$/i.test(raw.consumable.trim())
         : !!raw.consumable,
+      // Rarity styrer trækningen, men den siger ikke altid noget brugbart på
+      // selve kortet — et class level er lige så sandsynligt som alle andre.
+      hideRarity: !!raw.hideRarity,
       source: String(raw.source || '').trim(),
       tags: splitTags(raw.tags),
       desc: String(raw.desc || '').trim()
@@ -883,6 +897,7 @@ window.LB = (function () {
         rarityLocked: o.rarityLocked,
         scale: o.scale,
         consumable: o.consumable,
+        hideRarity: o.hideRarity,
         source: o.source || o.kilde,
         tags: o.tags,
         desc: o.desc || o.description || o.beskrivelse || o.notes

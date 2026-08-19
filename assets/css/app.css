@@ -197,6 +197,11 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 .fold-tools{align-items:center;margin:0 0 4px}
 .fold-tools .hint{margin:0}
 
+/* Kravlinjen på et class-kort. Den skal springe i øjnene: et Epic Boon på
+   level 3 er ikke noget man bare lægger på bordet. */
+.card-req{font-size:9.5px;line-height:1.35;margin-top:2px}
+.card-req b{font-weight:700}
+
 .flow-diagram{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.5;white-space:pre;overflow-x:auto;margin:8px 0}
 .flow-q{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:var(--bg-2);margin-bottom:12px}
 .flow-q h4{margin:0 0 8px;font-size:13px}
