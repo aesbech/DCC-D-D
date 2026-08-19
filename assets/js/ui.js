@@ -7,7 +7,6 @@
   var state = {
     cfg: C.migrateConfig(C.storage.load(C.storage.K_CFG, null)),
     items: C.storage.load(C.storage.K_ITEMS, null),
-    magic: C.storage.load(C.storage.K_MAGIC, null),
     magicPage: 0,
     packId: null,
     results: [],
@@ -386,7 +385,8 @@
     'Fokus': 'arcane', 'Ring': 'arcane', 'Rod': 'arcane',
     'Staff': 'arcane', 'Wand': 'arcane', 'Wondrous Item': 'arcane',
     'Køretøj': 'vehicle', 'Ridedyr': 'vehicle',
-    'Class': 'class',
+    // Class-kortenes fem typer er kategorier nu; de deler farvekant.
+    'Class': 'class', 'Stat': 'class', 'Feat': 'class', 'Skill': 'class', 'Perk': 'class',
     'Udstyr': 'gear', 'Pakke': 'gear'
   };
 
@@ -794,21 +794,15 @@
      Alle fem findes på pakke, tier og kort, og hvert felt arver for sig, så
      man kan sætte chancen på ét kort og lade resten følge pakken.          */
 
-  function inherited(pack, t, c, field) {
-    if (c && c[field] !== null && c[field] !== undefined) return { level: 'kort', value: c[field] };
-    if (t && t[field] !== null && t[field] !== undefined) return { level: 'tier', value: t[field] };
-    if (pack[field] !== null && pack[field] !== undefined) return { level: 'pakke', value: pack[field] };
-    return { level: null, value: null };
+  /* Er en fordeling rørt? Lutter nuller tæller som "ikke sat", samme regel som
+     arven i core bruger. */
+  function hasAny(d) {
+    return C.RKEYS.some(function (k) { return (Number(d && d[k]) || 0) > 0; });
   }
 
-  /* Fordelinger arver kun når de er tomme — en fordeling med lutter nuller er
-     ikke et valg, det er et felt man ikke har rørt. */
-  function inheritedDist(pack, t, c) {
-    if (c && C.hasDist(c.dist)) return { level: 'kort', value: c.dist };
-    if (t && C.hasDist(t.dist)) return { level: 'tier', value: t.dist };
-    if (C.hasDist(pack.dist)) return { level: 'pakke', value: pack.dist };
-    return { level: null, value: null };
-  }
+  /* Arvereglen bor i core, så panelet viser præcis det trækningen gør. */
+  function inherited(pack, t, c, field) { return C.settingFor(pack, t, c, field); }
+  function inheritedDist(pack, t, c) { return C.settingFor(pack, t, c, 'dist'); }
 
   /* Spørgsmålet: bliver kortet magisk? Ét felt — tomt betyder "som niveauet
      over", så der ikke skal et flueben til for at sige "ikke sat". */
@@ -842,7 +836,7 @@
 
     function render() {
       host.innerHTML = '';
-      var own = !!owner[field] && (field !== 'dist' || C.hasDist(owner[field]));
+      var own = !!owner[field] && (field !== 'dist' || hasAny(owner[field]));
       host.appendChild(el('label', { class: 'check' }, [
         el('input', {
           type: 'checkbox', checked: own ? 'checked' : null,
@@ -1023,7 +1017,7 @@
     if (eff < 100) {
       var gd = inheritedDist(pack, t, c);
       chip('Standard', distText(gd.value, C.RKEYS) || 'ikke sat',
-           !!(owner.dist && C.hasDist(owner.dist)));
+           !!(owner.dist && hasAny(owner.dist)));
       // Typevægte vises kun når de er sat på netop dette niveau. Arvede vægte
       // står ens på hver eneste række og fylder uden at sige noget nyt — de er
       // at finde på det niveau der satte dem.

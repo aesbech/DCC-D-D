@@ -158,8 +158,6 @@ window.LB = (function () {
     };
   }
 
-  /* Kun magi-indstillinger, uden at røre filter eller vægte. */
-  function magicOnly(magic) { return magic; }
 
 
 
@@ -191,19 +189,28 @@ window.LB = (function () {
     return false;
   }
 
-  function distFor(pack, tierObj, c) {
-    if (c && hasDist(c.dist)) return c.dist;
-    if (tierObj && hasDist(tierObj.dist)) return tierObj.dist;
-    if (hasDist(pack.dist)) return pack.dist;
-    return c ? c.dist : null;
+  /* Alle fem indstillinger arver efter samme regel: kort slår tier, tier slår
+     pakke. Den står ét sted, så de fem felter ikke kan komme til at opføre sig
+     forskelligt — og UI'et bruger den samme, så det viser det trækningen gør.
+
+     Returnerer også hvilket niveau der bestemte, fordi UI'et skal kunne sige
+     "arver 32 % fra tier". */
+  function settingFor(pack, tierObj, c, field) {
+    var levels = [['kort', c], ['tier', tierObj], ['pakke', pack]];
+    for (var i = 0; i < levels.length; i++) {
+      var owner = levels[i][1];
+      if (!owner) continue;
+      var v = owner[field];
+      if (v === null || v === undefined) continue;
+      // En fordeling med lutter nuller er ikke et valg, det er et urørt felt.
+      if (field === 'dist' && !hasDist(v)) continue;
+      return { level: levels[i][0], value: v };
+    }
+    return { level: null, value: null };
   }
 
-  /* Vægte arver på samme måde. De hang tidligere sammen med et eget filter;
-     det gør de ikke længere — de to ting er uafhængige. */
-  function weightsFor(pack, tierObj, c) {
-    if (c && c.weights) return c.weights;
-    if (tierObj && tierObj.weights) return tierObj.weights;
-    return pack.weights || null;
+  function distFor(pack, tierObj, c) {
+    return settingFor(pack, tierObj, c, 'dist').value || (c ? c.dist : null);
   }
 
   /* Class-kort bærer deres type som tag, så en kortplads kan bede om præcis
@@ -241,23 +248,6 @@ window.LB = (function () {
     return pack;
   }
 
-  function standardTiers() {
-    return gradedTiers(
-      [card('Kort 1', { common: 100 }),
-       card('Kort 2', { common: 85, uncommon: 15 }),
-       card('Kort 3', { uncommon: 90, rare: 9, very_rare: 1 })],
-      [card('Kort 1', { common: 70, uncommon: 30 }),
-       card('Kort 2', { common: 50, uncommon: 50 }),
-       card('Kort 3', { uncommon: 65, rare: 30, very_rare: 5 })],
-      [card('Kort 1', { common: 40, uncommon: 60 }),
-       card('Kort 2', { uncommon: 80, rare: 20 }),
-       card('Kort 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 })]
-    );
-  }
-
-  /* Den brede udstyrspulje, som de fleste pakker falder tilbage på. Magic er
-     med som kategori, så et kort kan lande på et magic item uden at der skal
-     et særligt maskineri til — hvor tit det sker styres af vægten. */
   /* Den brede udstyrspulje. Magic er ikke en kategori man filtrerer på —
      magi har sin egen pulje og sin egen chance. Filteret er udstyrssiden. */
   var GEAR = ['Ammunition', 'Gift', 'Rustning', 'Udstyr', 'Våben', 'Værktøj'];
@@ -914,12 +904,6 @@ window.LB = (function () {
     return Object.keys(seen).sort();
   }
 
-  function tagsOf(items) {
-    var seen = {};
-    items.forEach(function (i) { (i.tags || []).forEach(function (t) { seen[t] = true; }); });
-    return Object.keys(seen).sort();
-  }
-
   /* ---------------- trækning ---------------- */
 
   function weightedPick(d) {
@@ -1159,24 +1143,17 @@ window.LB = (function () {
      De to sider er adskilte puljer: magi konkurrerer ikke med udstyret om
      pladsen, chancen afgør det.                                            */
 
-  function magicSetting(pack, tierObj, c, field) {
-    if (c && c[field] !== null && c[field] !== undefined) return c[field];
-    if (tierObj && tierObj[field] !== null && tierObj[field] !== undefined) return tierObj[field];
-    if (pack[field] !== null && pack[field] !== undefined) return pack[field];
-    return null;
-  }
-
   /* Trin 1. Uden en chance nogen steder bliver kortet aldrig magisk. */
   function magicChanceFor(pack, tierObj, c) {
-    var v = magicSetting(pack, tierObj, c, 'magicChance');
+    var v = settingFor(pack, tierObj, c, 'magicChance').value;
     return (typeof v === 'number' && isFinite(v)) ? Math.max(0, Math.min(100, v)) : 0;
   }
 
   /* Trin 2. Egen fordeling vinder; ellers oversættes korttrinnet af tabellen. */
   function magicRarityFor(pack, tierObj, c, korttrin, cfg) {
-    var own = magicSetting(pack, tierObj, c, 'magicDist');
+    var own = settingFor(pack, tierObj, c, 'magicDist').value;
     if (own) return pickMagicWeighted(own);
-    var map = magicSetting(pack, tierObj, c, 'magicMapping') ||
+    var map = settingFor(pack, tierObj, c, 'magicMapping').value ||
               (cfg.magic && cfg.magic.mapping) || null;
     var row = map && map[korttrin];
     return row ? pickMagicWeighted(row) : null;
@@ -1239,13 +1216,6 @@ window.LB = (function () {
     return { item: hit, rolled: wanted, actual: actual, duplicate: dup };
   }
 
-  /* Rullene der hører til et magic item, efter det er trukket. De ligger her
-     frem for i drawOne, fordi drawOne også bruges til alt andet. */
-  function magicRolls(item, items, spells, cfg) {
-    if (!item || item.category !== MAGIC_CAT) return null;
-    return { base: rollBaseItem(item, items), spell: rollSpell(item, spells, cfg) };
-  }
-
   function generate(pack, tierObj, items, cfg, spells) {
     var used = {};
     var magicOn = !(cfg.magic && cfg.magic.enabled === false);
@@ -1256,7 +1226,7 @@ window.LB = (function () {
       // Udstyrssiden: filteret som altid, minus magi. Magi har sin egen pulje,
       // så de to ikke konkurrerer om den samme plads.
       var pool = poolFor(items, f, cfg).filter(function (i) { return i.category !== MAGIC_CAT; });
-      var weights = weightsFor(pack, tierObj, c);
+      var weights = settingFor(pack, tierObj, c, 'weights').value;
       var rarity = weightedPick(distFor(pack, tierObj, c));
       var slot = c.label || ('Kort ' + (idx + 1));
       if (!rarity) return { slot: slot, item: null, rolled: null, actual: null, poolSize: pool.length };
@@ -1272,7 +1242,7 @@ window.LB = (function () {
       if (wantMagic) {
         // Trin 2 og 3.
         var wanted = magicRarityFor(pack, tierObj, c, rarity, cfg);
-        var types = magicSetting(pack, tierObj, c, 'magicTypes');
+        var types = settingFor(pack, tierObj, c, 'magicTypes').value;
         var mag = drawMagicItem(mPool, wanted, used, cfg, types);
         if (mag) {
           if (cfg.noDuplicates) used[mag.item.id] = true;
@@ -1363,18 +1333,15 @@ window.LB = (function () {
     MAGIC_RARITIES: MAGIC_RARITIES, MKEYS: MKEYS,
     magicRarityLabel: magicRarityLabel, magicToItems: magicToItems,
     emptyMagicDist: function () { return magicDist({}); },
-    magicMapping: magicMapping,
-    magicTypesOf: magicTypesOf, rollSpell: rollSpell, MAGIC_CAT: MAGIC_CAT,
-    magicPoolFor: magicPoolFor, distFor: distFor, weightsFor: weightsFor, hasDist: hasDist,
-    rarityLabel: rarityLabel, normalizeRarity: normalizeRarity,
-    defaultConfig: defaultConfig, defaultScales: defaultScales, findScale: findScale,
+    magicTypesOf: magicTypesOf, MAGIC_CAT: MAGIC_CAT,
+    magicPoolFor: magicPoolFor, settingFor: settingFor,
+    rarityLabel: rarityLabel,
+    defaultConfig: defaultConfig,
     migrateConfig: migrateConfig, emptyDist: function () { return dist({}); },
-    emptyFilter: function () { return filt([]); },
-    parsePrice: parsePrice, priceToRarity: priceToRarity, recalcRarities: recalcRarities,
+    emptyFilter: function () { return filt([]); }, recalcRarities: recalcRarities,
     parseCSV: parseCSV, guessMapping: guessMapping,
     itemsFromRows: itemsFromRows, itemsFromJSON: itemsFromJSON,
-    categoriesOf: categoriesOf, tagsOf: tagsOf, poolFor: poolFor, generate: generate,
-    rollBaseItem: rollBaseItem,
+    categoriesOf: categoriesOf, poolFor: poolFor, generate: generate,
     storage: {
       available: available, load: load, save: save, clearAll: clearAll,
       K_CFG: K_CFG, K_ITEMS: K_ITEMS, K_SEEDED: K_SEEDED, K_MAGIC: K_MAGIC,
