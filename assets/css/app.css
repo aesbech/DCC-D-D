@@ -163,9 +163,6 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
   border-radius:999px;padding:4px 10px;font-size:12px;cursor:pointer;
 }
 .chip.on{background:var(--accent);border-color:var(--accent);color:#1a1608;font-weight:600}
-/* "+ N flere" er en handling, ikke et valg — den skal ikke ligne et tag der kan slås til. */
-.chip-more{border-style:dashed;color:var(--muted)}
-.chip-search{width:100%;max-width:320px;margin:0 0 8px}
 
 /* Flow-panelet: spørgsmålet øverst, de to grene ved siden af hinanden nedenunder,
    så det kan læses som det diagram det er. Under 900 px falder grenene under
@@ -325,7 +322,6 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 .cell-sub{font-size:12px;color:var(--muted);margin-top:2px}
 .card{min-height:150px}
 .cards{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
-.filter-mode{margin-top:12px;max-width:320px}
 .bulk-bar{margin-top:12px;align-items:center}
 .bulk-bar:empty{display:none}
 .notice{
@@ -367,12 +363,6 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
    og tre rækker giver ni kort pr. A4-side. Kortene støder op til hinanden,
    så ét snit deler to kort. Rarity vises som en farvet kant, ikke som
    baggrundsfarve, fordi mange printere er sat til at udelade baggrunde. */
-.tier-weights{
-  border-bottom:1px solid var(--line-soft);
-  padding-bottom:10px;margin-bottom:12px;
-}
-.tier-weights .check{margin-bottom:0}
-.tier-weights .dist{margin-top:10px}
 
 @media print{
   @page{ size:A4 portrait; margin:6mm; }
