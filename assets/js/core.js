@@ -288,6 +288,17 @@ window.LB = (function () {
      ved hånden når man printer og pakker. */
   var WAX = 'Forsegles med voks i tierets farve — bronze, sølv eller guld. ';
 
+  /* Falder der magi på et almindeligt kort, er det som regel noget lille. De
+     to fordelinger går igen på tværs af pakkerne, så de står ét sted. */
+  var SMALL_MAGIC = { common: 80, uncommon: 20 };
+  var WIDE_MAGIC = { common: 70, uncommon: 16, rare: 8, very_rare: 4, legendary: 2 };
+
+  /* Kort 2 i Adventurer: en lille chance, og kun for en potion eller et
+     scroll. Et ekstra sværd på kort 2 ville tage pladsen fra kort 3. */
+  function POTION_CARD(chance) {
+    return { chance: chance, dist: SMALL_MAGIC, types: onlyTypes('Potion', 'Scroll') };
+  }
+
   function defaultPacks() {
     return packs().map(gradeMagic);
   }
@@ -296,49 +307,60 @@ window.LB = (function () {
     return [
       {
         id: 'adventurer', name: 'Adventurer',
-        filter: filt(GEAR),
+        // Stat-kort er med i puljen: en attributforhøjelse er noget man kan
+        // finde i en kiste, ikke kun noget man får i en Classes-pakke.
+        filter: filt(GEAR.concat(['Stat'])),
         note: 'Pakkes i orange papir. ' + WAX +
-              'Den almindelige pakke — udstyr, våben, rustning, værktøj, gift og ammunition. ' +
-              'Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra. Hvert kort har en ' +
-              'chance for at blive et magic item i stedet; hvor godt det er, følger den ' +
-              'fælles korttrin-tabel under fanen Magic.',
+              'Den almindelige pakke — udstyr, våben, rustning, værktøj, gift og ammunition, ' +
+              'plus en lille chance for et attributkort. Fokus, køretøjer, ridedyr og ' +
+              'udstyrspakker er valgt fra. Kort 1 er aldrig magisk; kort 2 og 3 har hver ' +
+              'sin voksende chance, og på kort 2 er magien låst til potions og scrolls.',
         // Lodder pr. kategori. De kategorier der ikke står her har ét lod
         // hver, så tyve på udstyr og fem på værktøj gør pakken til det den
         // hedder: mest almindeligt grej, med et stænk af resten.
         weights: { 'Udstyr': 20, 'Værktøj': 5 },
-        magicChance: 6,
-        tierMagic: { chance: [6, 12, 18] },
+        // Nul på pakken betyder "aldrig", ikke "ikke sat" — magien sidder på
+        // de enkelte kort, så kort 1 kan holdes helt fri af den.
+        magicChance: 0,
         tiers: gradedTiers(
           [card('Card 1', { common: 100 }),
-           card('Card 2', { common: 50, uncommon: 50 }),
-           card('Card 3', { uncommon: 96, rare: 3.7, very_rare: 0.2, legendary: 0.1 })],
+           card('Card 2', { common: 50, uncommon: 50 }, null, null, POTION_CARD(3)),
+           card('Card 3', { uncommon: 96, rare: 3.7, very_rare: 0.2, legendary: 0.1 },
+                null, null, { chance: 5, dist: WIDE_MAGIC })],
           [card('Card 1', { common: 20, uncommon: 80 }),
-           card('Card 2', { uncommon: 80, rare: 20 }),
-           card('Card 3', { uncommon: 60, rare: 35, very_rare: 4, legendary: 1 })],
+           card('Card 2', { uncommon: 80, rare: 20 }, null, null, POTION_CARD(6)),
+           card('Card 3', { uncommon: 60, rare: 35, very_rare: 4, legendary: 1 },
+                null, null, { chance: 10 })],
           [card('Card 1', { common: 25, uncommon: 50, rare: 25 }),
-           card('Card 2', { uncommon: 75, rare: 25 }),
-           card('Card 3', { uncommon: 40, rare: 45, very_rare: 12, legendary: 3 })]
+           card('Card 2', { uncommon: 75, rare: 25 }, null, null, POTION_CARD(9)),
+           card('Card 3', { uncommon: 40, rare: 45, very_rare: 12, legendary: 3 },
+                null, null, { chance: 15, dist: WIDE_MAGIC })]
         )
       },
       {
         id: 'weapons', name: 'Weapons', filter: filt(['Våben', 'Ammunition', 'Udstyr']),
         note: 'Pakkes i rødt papir. ' + WAX +
               'Kort 3 er garanteret et våben. De to første trækker bredere, så der også ' +
-              'falder udstyr og ammunition. Magisiden er låst til typen Weapon, så pakken ' +
-              'ikke deler ringe ud — bliver et kort magisk, er det et magisk våben.',
-        magicChance: 8,
+              'falder udstyr og ammunition, og de er aldrig magiske. Magien sidder på kort 3 ' +
+              'alene og er låst til typen Weapon: bliver kortet magisk, er det et magisk våben.',
+        // Lodder: udstyr fylder mest, så de to første kort ikke slider den
+        // lille våbenhylde ned inden kort 3.
+        weights: { 'Udstyr': 3 },
+        magicChance: 0,
         magicTypes: onlyTypes('Weapon'),
-        tierMagic: { chance: [8, 18, 32] },
         tiers: gradedTiers(
           [card('Card 1', { common: 100 }),
            card('Card 2', { common: 85, uncommon: 15 }),
-           card('Card 3', { common: 10, uncommon: 80, rare: 9, very_rare: 1 }, filt(['Våben']))],
+           card('Card 3', { common: 10, uncommon: 80, rare: 9, very_rare: 1 }, filt(['Våben']),
+                null, { chance: 5, dist: WIDE_MAGIC })],
           [card('Card 1', { common: 70, uncommon: 30 }),
            card('Card 2', { common: 50, uncommon: 50 }),
-           card('Card 3', { uncommon: 65, rare: 30, very_rare: 5 }, filt(['Våben']))],
+           card('Card 3', { uncommon: 65, rare: 30, very_rare: 5 }, filt(['Våben']),
+                null, { chance: 10, dist: WIDE_MAGIC })],
           [card('Card 1', { common: 40, uncommon: 60 }),
            card('Card 2', { uncommon: 80, rare: 20 }),
-           card('Card 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, filt(['Våben']))]
+           card('Card 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, filt(['Våben']),
+                null, { chance: 15, dist: WIDE_MAGIC })]
         )
       },
       {
@@ -350,20 +372,22 @@ window.LB = (function () {
               'er pakkens skraldeitem. Kun 14 rustninger i alt, så gentagelser er uundgåelige.',
         // Kort 3 er allerede garanteret en rustning, så de to første må gerne
         // læne mod udstyr — ellers bliver en fjorten-items-hylde slidt tynd.
-        weights: { 'Udstyr': 3, 'Rustning': 1 },
-        magicChance: 8,
+        weights: { 'Udstyr': 3, 'Rustning': 2 },
+        magicChance: 0,
         magicTypes: onlyTypes('Armor'),
-        tierMagic: { chance: [8, 18, 32] },
         tiers: gradedTiers(
           [card('Card 1', { common: 80, uncommon: 20 }),
            card('Card 2', { common: 50, uncommon: 50 }),
-           card('Card 3', { uncommon: 80, rare: 15, very_rare: 4, legendary: 1 }, filt(['Rustning']))],
+           card('Card 3', { uncommon: 80, rare: 15, very_rare: 4, legendary: 1 }, filt(['Rustning']),
+                null, { chance: 5, dist: WIDE_MAGIC })],
           [card('Card 1', { common: 50, uncommon: 30, rare: 20 }),
            card('Card 2', { common: 10, uncommon: 40, rare: 40, very_rare: 10 }),
-           card('Card 3', { uncommon: 40, rare: 40, very_rare: 15, legendary: 5 }, filt(['Rustning']))],
+           card('Card 3', { uncommon: 40, rare: 40, very_rare: 15, legendary: 5 }, filt(['Rustning']),
+                null, { chance: 10, dist: WIDE_MAGIC })],
           [card('Card 1', { uncommon: 50, rare: 50 }),
            card('Card 2', { rare: 50, very_rare: 50 }),
-           card('Card 3', { rare: 50, very_rare: 40, legendary: 10 }, filt(['Rustning']))]
+           card('Card 3', { rare: 50, very_rare: 40, legendary: 10 }, filt(['Rustning']),
+                null, { chance: 15, dist: WIDE_MAGIC })]
         )
       },
       {
@@ -374,21 +398,25 @@ window.LB = (function () {
         filter: filt([], 'only'),
         note: 'Pakkes i mørkegrønt papir. ' + WAX +
               'Union-filter på udstyrssiden: hele Gift-gruppen plus alt med tagget Consumable. ' +
-              'Magisiden er låst til Potion og Scroll, og kort 3 er 100 % magisk, så pakken ' +
-              'altid giver mindst én potion eller ét scroll.',
-        magicChance: 40,
+              'Magisiden er låst til Potion og Scroll, og kort 3 har den store chance — ' +
+              'pakken er først og fremmest almindelige forbrugsvarer, med magi som gevinsten.',
+        // Gift er den lille gruppe og består af de dyreste forbrugsvarer.
+        // Uden vægt ville den fylde halvdelen af pakken.
+        weights: { 'Udstyr': 9 },
+        magicChance: 5,
+        magicDist: { common: 85, uncommon: 8, rare: 4, very_rare: 2, legendary: 1 },
         magicTypes: onlyTypes('Potion', 'Scroll'),
-        tierMagic: { chance: [40, 55, 70] },
+        tierMagic: { chance: [5, 10, 15] },
         tiers: gradedTiers(
           [card('Card 1', { common: 100 }),
            card('Card 2', { common: 85, uncommon: 15 }),
-           card('Card 3', { common: 60, uncommon: 35, rare: 5 }, null, null, { chance: 100 })],
+           card('Card 3', { common: 60, uncommon: 35, rare: 5 }, null, null, { chance: 30 })],
           [card('Card 1', { common: 70, uncommon: 30 }),
            card('Card 2', { common: 50, uncommon: 50 }),
-           card('Card 3', { common: 20, uncommon: 60, rare: 20 }, null, null, { chance: 100 })],
+           card('Card 3', { common: 20, uncommon: 60, rare: 20 }, null, null, { chance: 30 })],
           [card('Card 1', { common: 40, uncommon: 60 }),
            card('Card 2', { uncommon: 80, rare: 20 }),
-           card('Card 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, null, null, { chance: 100 })]
+           card('Card 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, null, null, { chance: 30 })]
         )
       },
       {
@@ -397,11 +425,12 @@ window.LB = (function () {
               'Kort 3 er 100 % magisk. De to første har en chance, som stiger med tieret — ' +
               'i Bronze er de mest udstyr, i Sølv omtrent fifty-fifty, og i Guld er de også ' +
               'altid magi. Hvert kort sætter selv hvor godt magic itemet er, i stedet for at ' +
-              'gå gennem den fælles tabel.',
-        // Udstyrssiden i denne pakke er kun det man kan få i stedet for magi,
-        // så den læner mod det der ligner et magic item: rustning, våben og
-        // ammunition frem for lygter og reb.
-        weights: { 'Våben': 2, 'Rustning': 4, 'Ammunition': 2 },
+              'gå gennem den fælles tabel. Udstyrssiden er bred på Bronze og læner mod ' +
+              'rustning og våben fra Sølv og op, hvor den kun er trøstepræmien.',
+        // I Bronze er udstyrssiden det man som regel får, så den er bred og
+        // tung på udstyr. Fra Sølv og op er den kun trøstepræmien, og der
+        // læner den mod det der ligner et magic item.
+        weights: { 'Udstyr': 15 },
         magicChance: 10,
         tierMagic: { chance: [10, 45, 100] },
         tiers: gradedTiers(
@@ -426,7 +455,9 @@ window.LB = (function () {
            card('Card 2', { common: 100 }, null, null,
                 { chance: 100, dist: { common: 60, uncommon: 30, rare: 8, very_rare: 2 } }),
            card('Card 3', { common: 100 }, null, null,
-                { chance: 100, dist: { uncommon: 5, rare: 45, very_rare: 35, legendary: 15 } })]
+                { chance: 100, dist: { uncommon: 5, rare: 45, very_rare: 35, legendary: 15 } })],
+          { silver: { 'Våben': 2, 'Rustning': 4, 'Ammunition': 2 },
+            gold: { 'Våben': 2, 'Rustning': 4, 'Ammunition': 2 } }
         )
       },
       {
@@ -445,15 +476,15 @@ window.LB = (function () {
           // Alle tolv class levels er Common, så en femdeling ville betyde det
           // samme — bare med "puljen var tom" på fire ud af fem kort.
           card('Class', { common: 100 }, classFilter('Class')),
-          // Feats: jævnt fordelt over trinnene. Der findes ingen Very Rare
-          // feat, så den femtedel glider til nabotrinnet — i praksis flere
-          // rare general feats og epic boons.
-          card('Feat', { common: 20, uncommon: 20, rare: 20, very_rare: 20, legendary: 20 },
+          // Feats: origin og general deler hovedparten, og Very Rare står på
+          // nul fordi der ikke findes et eneste Very Rare feat. Epic boons
+          // kræver level 19, så de er sat til én procent.
+          card('Feat', { common: 40, uncommon: 19, rare: 40, legendary: 1 },
                classFilter('Feat')),
           // Attributkortene er graduerede: rarityen er loftet. Et Common-kort
           // hæver kun til 13 og er derfor hverdagskost; kortet der når 20 er
           // sjældent. Fordelingen skal derfor spænde over alle fem trin.
-          card('Stat', { common: 50, uncommon: 30, rare: 11, very_rare: 6, legendary: 3 },
+          card('Stat', { common: 50, uncommon: 30, rare: 12.5, very_rare: 7, legendary: 0.5 },
                classFilter('Stat'))
         ])]
       }
@@ -504,7 +535,7 @@ window.LB = (function () {
       scales: defaultScales(),
       noDuplicates: true,
       fallback: 'nearest',
-      excludeFromAll: ['Class', 'Stat', 'Feat', 'Skill', 'Perk'],
+      excludeFromAll: ['Class', 'Feat', 'Skill', 'Perk'],
       magic: defaultMagic(),
       packs: packs
     };

@@ -337,14 +337,19 @@ pakken åbnes ved at brække seglet — bruddet skal ikke rive det øverste kort
 
 | Pakke | Filter (udstyrssiden) | Pulje | Magi | Garanteret kort 3 |
 |-------|----------------------|-------|------|-------------------|
-| Adventurer | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 167 | 6–18 %, alle typer | — |
-| Weapons | Våben, Ammunition, Udstyr | 105 | 8–32 %, kun Weapon | et våben |
-| Armor | Rustning, Udstyr | 78 | 8–32 %, kun Armor | en rustning |
-| Consumables | alle kategorier, kun forbrugsvarer | 23 | 40–100 %, Potion og Scroll | en magisk forbrugsvare |
-| Magic | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 167 | 10–100 %, alle typer | et magic item |
+| Adventurer | de seks kategorier + Stat | 197 | 0–15 %, kun kort 2 og 3 | — |
+| Weapons | Våben, Ammunition, Udstyr | 105 | 5–15 %, kun kort 3, kun Weapon | et våben |
+| Armor | Rustning, Udstyr | 78 | 5–15 %, kun kort 3, kun Armor | en rustning |
+| Consumables | alle kategorier, kun forbrugsvarer | 23 | 5–30 %, Potion og Scroll | — |
+| Magic | de seks kategorier | 167 | 10–100 %, alle typer | et magic item |
 | Classes | Class, Stat, Feat, Skill, Perk | 186 | — | (ikke gradueret) |
 
-Adventurer og Magic vægter udstyrssiden hver sin vej — se afsnittet om vægtning.
+**Magi er sjælden nu, og den sidder på kortet — ikke på pakken.** De fire udstyrspakker
+står på 0 % på pakkeniveau, hvilket betyder *aldrig*, ikke *ikke sat*; derfra tændes den
+kort for kort. Kort 1 er derfor aldrig magisk nogen steder, og i Weapons og Armor er det
+kun kort 3 der overhovedet kan blive det.
+
+Hver pakke vægter udstyrssiden sin egen vej — se afsnittet om vægtning.
 
 Alle undtagen Classes har Bronze / Sølv / Guld. Puljetallet er udstyrssiden; magisiden er
 de 450 magic items, som trækkes for sig når chancen siger ja. I alt 806 items.
@@ -353,6 +358,15 @@ de 450 magic items, som trækkes for sig når chancen siger ja. I alt 806 items.
 
 Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra — en galej eller en ridehest
 hører ikke hjemme i en almindelig pakke.
+
+**Attributkort ligger i puljen.** Adventurer-filteret rummer `Stat` ved siden af de seks
+udstyrskategorier, og `Stat` er taget ud af listen over kategorier der aldrig trækkes af
+en pakke uden filter. En attributforhøjelse er noget man kan finde i en kiste, ikke kun
+noget man får i en Classes-pakke. Stat har ét lod mod udstyrets tyve, så det er **3 % af
+kortene** — og dermed én pakke ud af elleve der giver et attributkort.
+
+De øvrige fire class-korttyper er stadig lukket ude: et class level eller et epic boon i
+en almindelig kiste ville flytte pakkens tyngdepunkt.
 
 | Kort | Bronze | Sølv | Guld |
 |------|--------|------|------|
@@ -411,9 +425,19 @@ Adventurer kører ét sæt hele vejen igennem — 29 lodder i alt:
 De kursiverede står ikke i opsætningen; de er det underforståede ene lod. De målte tal på
 Guld ligger lavere hele vejen ned, fordi magi tager 18 % af pladserne dér.
 
-Magic-pakken vægter modsat. Dens udstyrsside er kun det man kan få *i stedet for* magi, så
-den læner mod det der ligner et magic item — `Våben 2, Rustning 4, Ammunition 2`, og
-Udstyr, Værktøj og Gift på deres ene lod.
+De andre pakker vægter hver sin vej, og alle af samme grund: at holde en lille hylde fra
+at blive slidt tynd inden det garanterede kort.
+
+| Pakke | Vægte | Hvorfor |
+|-------|-------|---------|
+| Weapons | `Udstyr 3` | de to første kort skal ikke bruge våbenhylden op inden kort 3 |
+| Armor | `Udstyr 3, Rustning 2` | kun 14 rustninger i alt |
+| Consumables | `Udstyr 9` | Gift er den lille gruppe og består af de dyreste forbrugsvarer |
+| Magic (pakke) | `Udstyr 15` | på Bronze er udstyrssiden det man som regel får |
+| Magic (Sølv, Guld) | `Våben 2, Rustning 4, Ammunition 2` | her er den kun trøstepræmien og skal ligne magi |
+
+Magic-pakken er det tydeligste eksempel på at vægte kan gradbøjes gennem tierne: pakkens
+eget sæt gælder Bronze, og Sølv og Guld overstyrer det med hver sit.
 
 Hvor de målte tal afviger fra lodderne, er det fordi gruppen mangler items ved den rarity
 kortet beder om: der findes ingen Common-rustning og ingen billig gift, så de grupper er
@@ -428,7 +452,7 @@ samme regel som en rarity-fordeling med lutter nuller. `Potion 0` alene betyder 
 
 ### Ét garanteret kort pr. pakke
 
-Fire pakker garanterer **én ting på kort 3** og lader de to første trække bredere, så en
+Tre pakker garanterer **én ting på kort 3** og lader de to første trække bredere, så en
 våbenpakke ikke bliver tre våben og intet andet. Garantien laves med to skruer, alt efter
 om det garanterede er udstyr eller magi:
 
@@ -436,18 +460,19 @@ om det garanterede er udstyr eller magi:
 |-------|----------------------|-------|
 | Weapons | et våben | kortfilter `Våben` + magisiden låst til typen `Weapon` |
 | Armor | en rustning | kortfilter `Rustning` + magisiden låst til typen `Armor` |
-| Consumables | en magisk forbrugsvare | magic item-chance **100 %** + typer `Potion`, `Scroll` |
 | Magic | et magic item | magic item-chance **100 %** |
 
 Adventurer har med vilje ingen garanti. Det er den blandede pakke, og en garanti ville
-gøre den til en af de andre.
+gøre den til en af de andre. **Consumables har heller ikke længere en**: kort 3 er faldet
+fra 100 % til 30 % magi, så pakken er først og fremmest almindelige forbrugsvarer med magi
+som gevinsten.
 
 Weapons og Armor bruger begge skruer på én gang: filteret sikrer at udstyrssiden kun kan
 give et våben, og typevægtene at magisiden kun kan give et magisk våben. Uanset hvilken
-vej trækningen går, er kortet et våben. Hvor tit det bliver magisk, følger chancen for
-tieret: 8 % i Bronze, 18 % i Sølv, 32 % i Guld.
+vej trækningen går, er kortet et våben. Hvor tit det bliver magisk, står på kort 3 selv:
+5 % i Bronze, 10 % i Sølv, 15 % i Guld.
 
-Consumables og Magic har ikke brug for et filter — chancen på 100 % gør arbejdet alene.
+Magic har ikke brug for et filter — chancen på 100 % gør arbejdet alene.
 
 **Weapons**
 
@@ -543,6 +568,26 @@ er hele resten af pakkerne. Tool proficiency var det sidste hul, og det lukkes m
 i stedet for et kort. Reglen står i `TOOL_RULE` i `assets/js/ui.js` og trykkes automatisk
 på alt i kategorien `Værktøj`; teksten er trukket fra kortets tekstbudget, så beskrivelsen
 beskæres i stedet for at flyde ud over kortet.
+
+### Consumables er en endnu tyndere hylde
+
+Udstyrssiden i Consumables er **23 items**, og de ligger skævt:
+
+| Rarity | Items | Hvad |
+|--------|------:|------|
+| Common | 7 | udstyr |
+| Uncommon | **1** | udstyr |
+| Rare | 2 | udstyr |
+| Very Rare | 4 | gift |
+| Legendary | 9 | gift |
+
+Det uncommon-felt med ét item er hvorfor Guld kort 2 lander på **35 % fallback**: kortet
+beder om 80 % Uncommon fra en hylde med præcis ét bud, så resten glider til nabotrinnet.
+Bronze rammer plet, fordi de syv common-items er nok.
+
+Det blev tydeligere da magien faldt fra 55–70 % til 10–15 %: flere trækninger lander nu
+på udstyrssiden, hvor der er mindre at komme efter. Vil du have færre gentagelser, er det
+enten magic item-chancen der skal op igen eller filteret der skal åbnes.
 
 ### Armor er en tynd hylde
 
@@ -958,12 +1003,16 @@ ingen plads endnu. Vil du have dem med, så tilføj et kort på tieren og vælg 
 | Plads | Fordeling | Hvad der faktisk falder |
 |-------|-----------|-------------------------|
 | Class | 100 % Common | alle tolv class levels er Common, så alle er lige sandsynlige |
-| Feat | 20 % pr. trin | 20 % origin · 20 % fighting style · 39 % general · 21 % epic boon |
-| Stat | 50 / 30 / 11 / 6 / 3 | loftet følger trinnet: 13 · 15 · 17 · 19 · 20 |
+| Feat | 40 / 19 / 40 / 0 / 1 | 40 % origin · 19 % fighting style · 40 % general · 1 % epic boon |
+| Stat | 50 / 30 / 12,5 / 7 / 0,5 | loftet følger trinnet: 13 · 15 · 17 · 19 · 20 |
 
-Feat-pladsen beder om en femtedel Very Rare, og **der findes ingen Very Rare feat** — den
-femtedel glider til nabotrinnet, hvilket er hvorfor general feats lander på 39 % og epic
-boons på 21 %. Vil du have epic boons sjældnere, er det Legendary-tallet der skal ned.
+**Very Rare står på nul på Feat-pladsen, og det er med vilje: der findes ikke ét eneste
+Very Rare feat.** Bad man om dem, ville de bare glide til nabotrinnet og gøre epic boons
+almindeligere end tilsigtet. Epic boons kræver level 19, så de står på 1 %. Ingen af de
+tre pladser falder tilbage længere — hver fordeling beder kun om trin der findes.
+
+Attributkortenes Legendary er sat lavt af samme grund som epic boons: kortet der hæver
+til 20 er det eneste af sin slags, og det skal føles sådan.
 
 Class-kortenes fem kategorier står på listen over kategorier der aldrig trækkes af en pakke
 uden filter — så de ikke lækker ind i Adventurer-pakken.
