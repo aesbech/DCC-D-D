@@ -534,8 +534,8 @@ fordi oversættelsen gør arbejdet.
 Et værktøjskort er ingen hjælp hvis man ikke må bruge det, og ingen pakke deler
 proficiencies ud. Derfor bærer **alle 35 værktøjskort deres egen regel** nederst på kortet:
 
-> **Lær værktøjet:** Har du ikke proficiency, kan du øve dig under en Long Rest og slå
-> 1d20 + Intelligence. På 15 eller derover får du proficiency med værktøjet.
+> **Learn the tool:** If you lack proficiency, you can practise during a Long Rest and
+> roll 1d20 + Intelligence. On a 15 or higher you gain proficiency with the tool.
 
 Det er den eneste del af "Parts of a Background" der ikke allerede har et kort — ability
 scores er Stat-kortene, feat'et er Origin-feats, færdighederne er Skill-kortene og udstyret
@@ -829,6 +829,30 @@ Spell-listen kommer fra `data/spells.txt`:
 python3 scripts/import_spells.py
 ```
 
+## Kortene taler engelsk
+
+**Alt der står på et kort er på engelsk. Alt uden om er på dansk.** Grænsen går ved
+kortets kant: navn, type, krav, regeltekst, rarity og de faste etiketter — `Requires:`,
+`Learn the tool:`, `Base:`, `Mastery:` — står på samme sprog som de 216 udstyrsitems, de
+450 magic items og de 202 spells, der kommer fra D&D Beyond og aldrig har været andet end
+engelske. Et kort skal kunne slås op i regelbogen uden at oversætte tilbage først.
+
+Appen omkring dem er dansk: fanerne, pakkenavnene, tier-navnene, pakkebeskrivelserne,
+knapperne og forklaringerne. Det er værktøjet, ikke spillet.
+
+To ting sidder på grænsen og er med vilje ladt i ro:
+
+- **Kortpladsens navn** (`Card 1`, `Class`, `Feat`) er engelsk, men det er data du selv
+  redigerer under Pakker, og det trykkes ikke — det er skjult i print og står kun i
+  forhåndsvisningen.
+- **Kategorierne** (`Udstyr`, `Våben`, `Rustning`, `Værktøj`, `Gift`, `Ammunition`) er
+  danske, men de når aldrig et kort: hvert item har en engelsk subcategory —
+  `Adventuring Gear`, `Martial Melee Weapon`, `Tool` — og det er den der trykkes.
+  Kategorien er noget filtre og vægte taler om, ikke noget spilleren læser.
+
+En gemt opsætning bevarer sine egne kortnavne. Har du `Kort 1` liggende fra før, står der
+`Kort 1` indtil du enten omdøber pladsen eller trykker **Ryd alt**.
+
 ## Classes-pakken
 
 Class-kortene er ikke items, men det der mekanisk sker med spilleren. De er delt i **fem
@@ -867,7 +891,7 @@ det er dét rarityen betyder:
 
 Seks evner gange fem lofter giver 30 kort. Kortet hedder bare **`Strength +1`** — loftet
 ville stå tre gange på samme kort, så det står de to steder hvor det gør arbejde: som
-`Krav: Strength under 13` øverst og i regelteksten. Rarityen på bundlinjen er den tredje
+`Requires: Strength below 13` øverst og i regelteksten. Rarityen på bundlinjen er den tredje
 læsning af det samme, for her *er* trinnet loftet. Stat-pladsens fordeling spænder over
 alle fem trin: 50 / 30 / 11 / 6 / 3 %.
 
@@ -907,21 +931,20 @@ har et sted til.
 
 | Rarity | Eksempler |
 |--------|-----------|
-| Common | Ekstra Hit Die · Hårdfør · Permanent +3 Hit Points |
-| Uncommon | Weapon Mastery-plads · Darkvision 30 ft. · Advantage på death saves |
-| Rare | Ekstra Attunement-plads · Anden vind · Advantage på Initiative |
-| Very Rare | Resistance mod én skadetype · +1 til alle saves · Ekstra Reaction |
-| Legendary | Immun mod én tilstand · Ekstra angreb pr. dag · +1 AC |
+| Common | Extra Hit Die · Hardy · Permanent +3 Hit Points |
+| Uncommon | Weapon Mastery Slot · Dark-Adapted · Tenacious |
+| Rare | Extra Attunement Slot · Second Wind · Quick Off the Mark |
+| Very Rare | Resilient · Watchful Soul · Extra Reaction |
+| Legendary | Indomitable Will · Extra Attack · Armoured Hide |
 
 **12 væsen-perks** i to familier. Dungeon'et er befolket, og det husker hvem man er:
 
 | Familie | Rarity | Hvad kortet gør |
 |---------|--------|-----------------|
-| *Goblinernes ven* | Uncommon | De angriber dig ikke på sigte. Første møde starter neutralt — angriber du først, er aftalen brudt for resten af etagen. |
-| *Goblinernes fjende* | Rare | +2 skade med våbenangreb mod dem, og advantage på at spore dem. |
+| *Friend of the Goblins* | Uncommon | De angriber dig ikke på sigte. Første møde starter neutralt — angriber du først, er aftalen brudt for resten af etagen. |
+| *Bane of the Goblins* | Rare | +2 skade med våbenangreb mod dem, og advantage på at spore dem. |
 
-Seks væsener har begge kort: goblinerne, kobolderne, orkerne, gnollerne, skeletterne og
-edderkopperne. **Fred er sat billigere end vold**, fordi et fjende-kort virker i hver eneste
+Seks væsener har begge kort: Goblins, Kobolds, Orcs, Gnolls, Skeletons og Spiders. **Fred er sat billigere end vold**, fordi et fjende-kort virker i hver eneste
 kamp mod den slags, mens en våbenhvile kun tæller til det første møde.
 
 Perk-pladsens fordeling spænder derfor over alle fem trin: 20 / 38 / 27 / 11 / 4 %.

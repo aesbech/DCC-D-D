@@ -115,7 +115,7 @@
     // 'skema' bumpes når itemformatet ændrer sig, ikke kun når datafilerne gør.
     // v6 slog magic items sammen med de andre items, og en gemt kopi fra før
     // det har dem liggende i en sideliste der ikke bruges længere.
-    return 'skema:6|dnd:' + (window.DND_ITEMS_VERSION || '?') +
+    return 'skema:7|dnd:' + (window.DND_ITEMS_VERSION || '?') +
            '|class:' + (window.CLASS_CARDS_VERSION || '?') +
            '|magic:' + (window.MAGIC_ITEMS_VERSION || '?');
   }
@@ -418,7 +418,7 @@
     if (it.damage) parts.push(it.damage + (it.damageType ? ' ' + it.damageType : ''));
     // Et skjolds AC-værdi i regnearket er en bonus, ikke en samlet AC.
     if (it.ac) parts.push('AC ' + (it.subcategory === 'Shield' ? '+' : '') + it.ac);
-    if (it.strength) parts.push('Styrke ' + it.strength);
+    if (it.strength) parts.push('Strength ' + it.strength);
     if (it.stealth) parts.push('Stealth: ' + it.stealth);
     return parts.length ? el('div', { class: 'card-stats', text: parts.join(' · ') }) : null;
   }
@@ -448,13 +448,13 @@
      ikke et modstykke til — så den ligger på værktøjet selv: finder du et
      værktøj du ikke kan bruge, kan du lære det. Reglen står på hvert
      værktøjskort, så den ikke skal huskes udenad. */
-  var TOOL_RULE = 'Har du ikke proficiency, kan du øve dig under en Long Rest og slå ' +
-                  '1d20 + Intelligence. På 15 eller derover får du proficiency med værktøjet.';
+  var TOOL_RULE = 'If you lack proficiency, you can practise during a Long Rest and roll ' +
+                  '1d20 + Intelligence. On a 15 or higher you gain proficiency with the tool.';
 
   function toolLine(it) {
     if (it.category !== 'Værktøj') return null;
     return el('div', { class: 'card-desc' }, [
-      el('b', { text: 'Lær værktøjet: ' }), document.createTextNode(TOOL_RULE)
+      el('b', { text: 'Learn the tool: ' }), document.createTextNode(TOOL_RULE)
     ]);
   }
 
@@ -476,7 +476,7 @@
     // miste det meste af teksten for at slutte pænt.
     cut = (stop > budget * 0.4) ? cut.slice(0, stop + 1)
                                 : cut.slice(0, cut.lastIndexOf(' ')) + '…';
-    return cut + ' Se ' + (source || 'D&D Beyond') + '.';
+    return cut + ' See ' + (source || 'D&D Beyond') + '.';
   }
 
   function descLine(text, source, budget) {
@@ -544,7 +544,7 @@
     state.results.forEach(function (box, idx) {
       var cards = el('div', { class: 'cards' });
       // Etiketten i printets venstremargen, hvor overskrifterne er væk.
-      var origin = box.pack + ' · ' + box.tier + ' · pakke ' + (idx + 1);
+      var origin = box.pack + ' · ' + box.tier + ' · pack ' + (idx + 1);
       box.cards.forEach(function (c) {
         // Magic item-kort: viser magic itemet, dets magi-rarity og et
         // eventuelt udrullet basisitem. Kortets eget trin står nederst.
@@ -584,7 +584,7 @@
             // Bærerens egen regeltekst tages kun med, hvis den er kort nok.
             var head = spell.school || '';
             if (roll.upcast)
-              head += (head ? ' · ' : '') + 'Upcastet fra ' + levelLabel(spell.level);
+              head += (head ? ' · ' : '') + 'Upcast from ' + levelLabel(spell.level);
             if (head) mk.push(el('div', { class: 'card-stats', text: head }));
             var sp = [spell.castingTime, spell.range, spell.components]
               .filter(Boolean).join(' · ');
@@ -594,7 +594,7 @@
           }
           if (base) {
             // Navnet rummer allerede basisitemet når det kunne sættes sammen.
-            if (!composed) mk.push(el('div', { class: 'card-base', text: 'Basis: ' + base.name }));
+            if (!composed) mk.push(el('div', { class: 'card-base', text: 'Base: ' + base.name }));
             var bs = statLine(base); if (bs) mk.push(bs);
             // Magic itemets egen regeltekst fylder pladsen, så basisvåbnets
             // mastery nævnes kun ved navn her.
@@ -609,15 +609,15 @@
           if (body) mk.push(body);
           if (c.actual && c.rolled && c.actual !== c.rolled)
             mk.push(el('div', { class: 'fallback-note',
-              text: 'Trak ' + C.rarityLabel(c.rolled) + ' — puljen var tom' }));
+              text: 'Rolled ' + C.rarityLabel(c.rolled) + ' — the shelf was empty' }));
           if (c.duplicate)
-            mk.push(el('div', { class: 'fallback-note', text: 'Dublet (puljen er for lille)' }));
+            mk.push(el('div', { class: 'fallback-note', text: 'Duplicate (pool too small)' }));
           mk.push(el('div', { class: 'card-meta' }, [
             el('span', { class: 'meta-rarity' }, [
               starBadge(C.MKEYS, m.rarity, true),
               el('span', { class: 'rarity r-' + m.rarity, text: C.magicRarityLabel(m.rarity) })
             ]),
-            el('span', { class: 'meta-tier', text: C.rarityLabel(c.rolled) + '-kort' })
+            el('span', { class: 'meta-tier', text: C.rarityLabel(c.rolled) + ' card' })
           ]));
           cards.appendChild(el('div', {
             class: 'card is-magic r-' + m.rarity + typeClass(m.subcategory)
@@ -627,7 +627,7 @@
 
         var kids = [
           el('div', { class: 'card-slot', text: c.slot }),
-          el('div', { class: 'card-name', text: it ? it.name : 'Intet item matcher' })
+          el('div', { class: 'card-name', text: it ? it.name : 'No item matches' })
         ];
         if (it && (it.subcategory || it.category))
           kids.push(el('div', { class: 'card-sub', text: it.subcategory || it.category }));
@@ -639,7 +639,7 @@
             kids.push(el('div', { class: 'card-stats', text: it.summary }));
           if (it.prerequisite)
             kids.push(el('div', { class: 'card-req' }, [
-              el('b', { text: 'Krav: ' }), document.createTextNode(it.prerequisite)
+              el('b', { text: 'Requires: ' }), document.createTextNode(it.prerequisite)
             ]));
           var sl = statLine(it); if (sl) kids.push(sl);
           var pl = propLine(it); if (pl) kids.push(pl);
@@ -655,11 +655,11 @@
           var tl = toolLine(it); if (tl) kids.push(tl);
         }
         if (c.actual && c.rolled && c.actual !== c.rolled)
-          kids.push(el('div', { class: 'fallback-note', text: 'Trak ' + C.rarityLabel(c.rolled) + ' — puljen var tom' }));
+          kids.push(el('div', { class: 'fallback-note', text: 'Rolled ' + C.rarityLabel(c.rolled) + ' — the shelf was empty' }));
         if (c.duplicate)
-          kids.push(el('div', { class: 'fallback-note', text: 'Dublet (puljen er for lille)' }));
+          kids.push(el('div', { class: 'fallback-note', text: 'Duplicate (pool too small)' }));
         if (!it && c.rolled)
-          kids.push(el('div', { class: 'fallback-note', text: 'Trak ' + C.rarityLabel(c.rolled) + ' — ingen items i puljen' }));
+          kids.push(el('div', { class: 'fallback-note', text: 'Rolled ' + C.rarityLabel(c.rolled) + ' — no items in the pool' }));
         // Et class-kort har hverken pris eller en rarity der siger noget: alle
         // class levels er lige sandsynlige, og et attributkorts loft står i
         // navnet. Så bliver bundlinjen tom, og den udelades helt.
@@ -1324,7 +1324,7 @@
           pack.tiers.push({
             id: uniqueId('tier-' + (pack.tiers.length + 1), taken),
             name: 'Nyt tier',
-            cards: [{ label: 'Kort 1', dist: C.emptyDist(), filter: null }]
+            cards: [{ label: 'Card 1', dist: C.emptyDist(), filter: null }]
           });
           renderPackDetail(); renderTierOptions(); persist();
         }
@@ -1365,7 +1365,7 @@
         class: 'btn btn-sm', text: '+ Tilføj kort',
         onclick: function () {
           t.cards.push({
-            label: 'Kort ' + (t.cards.length + 1), dist: C.emptyDist(),
+            label: 'Card ' + (t.cards.length + 1), dist: C.emptyDist(),
             filter: null, weights: null
           });
           renderPackDetail(); updateGenHint(); persist();
@@ -1451,7 +1451,7 @@
     var pack = {
       id: uniqueId('pakke-' + (state.cfg.packs.length + 1), state.cfg.packs.map(function (p) { return p.id; })),
       name: 'Ny pakketype', filter: C.emptyFilter(), note: '',
-      tiers: [{ id: 'bronze', name: 'Bronze', cards: [{ label: 'Kort 1', dist: C.emptyDist(), filter: null }] }]
+      tiers: [{ id: 'bronze', name: 'Bronze', cards: [{ label: 'Card 1', dist: C.emptyDist(), filter: null }] }]
     };
     state.cfg.packs.push(pack);
     state.packId = pack.id;

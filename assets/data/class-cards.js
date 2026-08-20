@@ -3,7 +3,7 @@
 
    Fem korttyper, som hver er kortets kategori: Class, Stat, Feat, Skill,
    Perk. Rarity styrer trækningen, men trykkes ikke på kortene. */
-window.CLASS_CARDS_VERSION = "e23257cdd647";
+window.CLASS_CARDS_VERSION = "dd59eaaf8ee9";
 window.CLASS_CARDS = [
  {
   "name": "Class Level: Barbarian",
@@ -19,9 +19,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Class"
   ],
-  "prerequisite": "Level up til rådighed",
+  "prerequisite": "A level up available",
   "summary": "",
-  "desc": "Tag et level i Barbarian. Kræver at du har et level up til rådighed."
+  "desc": "Take a level in Barbarian. Requires that you have a level up available."
  },
  {
   "name": "Class Level: Bard",
@@ -37,9 +37,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Class"
   ],
-  "prerequisite": "Level up til rådighed",
+  "prerequisite": "A level up available",
   "summary": "",
-  "desc": "Tag et level i Bard. Kræver at du har et level up til rådighed."
+  "desc": "Take a level in Bard. Requires that you have a level up available."
  },
  {
   "name": "Class Level: Cleric",
@@ -55,9 +55,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Class"
   ],
-  "prerequisite": "Level up til rådighed",
+  "prerequisite": "A level up available",
   "summary": "",
-  "desc": "Tag et level i Cleric. Kræver at du har et level up til rådighed."
+  "desc": "Take a level in Cleric. Requires that you have a level up available."
  },
  {
   "name": "Class Level: Druid",
@@ -73,9 +73,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Class"
   ],
-  "prerequisite": "Level up til rådighed",
+  "prerequisite": "A level up available",
   "summary": "",
-  "desc": "Tag et level i Druid. Kræver at du har et level up til rådighed."
+  "desc": "Take a level in Druid. Requires that you have a level up available."
  },
  {
   "name": "Class Level: Fighter",
@@ -91,9 +91,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Class"
   ],
-  "prerequisite": "Level up til rådighed",
+  "prerequisite": "A level up available",
   "summary": "",
-  "desc": "Tag et level i Fighter. Kræver at du har et level up til rådighed."
+  "desc": "Take a level in Fighter. Requires that you have a level up available."
  },
  {
   "name": "Class Level: Monk",
@@ -109,9 +109,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Class"
   ],
-  "prerequisite": "Level up til rådighed",
+  "prerequisite": "A level up available",
   "summary": "",
-  "desc": "Tag et level i Monk. Kræver at du har et level up til rådighed."
+  "desc": "Take a level in Monk. Requires that you have a level up available."
  },
  {
   "name": "Class Level: Paladin",
@@ -127,9 +127,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Class"
   ],
-  "prerequisite": "Level up til rådighed",
+  "prerequisite": "A level up available",
   "summary": "",
-  "desc": "Tag et level i Paladin. Kræver at du har et level up til rådighed."
+  "desc": "Take a level in Paladin. Requires that you have a level up available."
  },
  {
   "name": "Class Level: Ranger",
@@ -145,9 +145,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Class"
   ],
-  "prerequisite": "Level up til rådighed",
+  "prerequisite": "A level up available",
   "summary": "",
-  "desc": "Tag et level i Ranger. Kræver at du har et level up til rådighed."
+  "desc": "Take a level in Ranger. Requires that you have a level up available."
  },
  {
   "name": "Class Level: Rogue",
@@ -163,9 +163,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Class"
   ],
-  "prerequisite": "Level up til rådighed",
+  "prerequisite": "A level up available",
   "summary": "",
-  "desc": "Tag et level i Rogue. Kræver at du har et level up til rådighed."
+  "desc": "Take a level in Rogue. Requires that you have a level up available."
  },
  {
   "name": "Class Level: Sorcerer",
@@ -181,9 +181,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Class"
   ],
-  "prerequisite": "Level up til rådighed",
+  "prerequisite": "A level up available",
   "summary": "",
-  "desc": "Tag et level i Sorcerer. Kræver at du har et level up til rådighed."
+  "desc": "Take a level in Sorcerer. Requires that you have a level up available."
  },
  {
   "name": "Class Level: Warlock",
@@ -199,9 +199,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Class"
   ],
-  "prerequisite": "Level up til rådighed",
+  "prerequisite": "A level up available",
   "summary": "",
-  "desc": "Tag et level i Warlock. Kræver at du har et level up til rådighed."
+  "desc": "Take a level in Warlock. Requires that you have a level up available."
  },
  {
   "name": "Class Level: Wizard",
@@ -217,9 +217,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Class"
   ],
-  "prerequisite": "Level up til rådighed",
+  "prerequisite": "A level up available",
   "summary": "",
-  "desc": "Tag et level i Wizard. Kræver at du har et level up til rådighed."
+  "desc": "Take a level in Wizard. Requires that you have a level up available."
  },
  {
   "name": "Strength +1",
@@ -235,9 +235,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Strength under 13",
+  "prerequisite": "Strength below 13",
   "summary": "",
-  "desc": "Hæv din Strength med 1. Kortet kan ikke hæve scoren over 13."
+  "desc": "Increase your Strength by 1. This card cannot raise the score above 13."
  },
  {
   "name": "Strength +1",
@@ -253,9 +253,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Strength under 15",
+  "prerequisite": "Strength below 15",
   "summary": "",
-  "desc": "Hæv din Strength med 1. Kortet kan ikke hæve scoren over 15."
+  "desc": "Increase your Strength by 1. This card cannot raise the score above 15."
  },
  {
   "name": "Strength +1",
@@ -271,9 +271,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Strength under 17",
+  "prerequisite": "Strength below 17",
   "summary": "",
-  "desc": "Hæv din Strength med 1. Kortet kan ikke hæve scoren over 17."
+  "desc": "Increase your Strength by 1. This card cannot raise the score above 17."
  },
  {
   "name": "Strength +1",
@@ -289,9 +289,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Strength under 19",
+  "prerequisite": "Strength below 19",
   "summary": "",
-  "desc": "Hæv din Strength med 1. Kortet kan ikke hæve scoren over 19."
+  "desc": "Increase your Strength by 1. This card cannot raise the score above 19."
  },
  {
   "name": "Strength +1",
@@ -307,9 +307,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Strength under 20",
+  "prerequisite": "Strength below 20",
   "summary": "",
-  "desc": "Hæv din Strength med 1. Kortet kan ikke hæve scoren over 20."
+  "desc": "Increase your Strength by 1. This card cannot raise the score above 20."
  },
  {
   "name": "Dexterity +1",
@@ -325,9 +325,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Dexterity under 13",
+  "prerequisite": "Dexterity below 13",
   "summary": "",
-  "desc": "Hæv din Dexterity med 1. Kortet kan ikke hæve scoren over 13."
+  "desc": "Increase your Dexterity by 1. This card cannot raise the score above 13."
  },
  {
   "name": "Dexterity +1",
@@ -343,9 +343,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Dexterity under 15",
+  "prerequisite": "Dexterity below 15",
   "summary": "",
-  "desc": "Hæv din Dexterity med 1. Kortet kan ikke hæve scoren over 15."
+  "desc": "Increase your Dexterity by 1. This card cannot raise the score above 15."
  },
  {
   "name": "Dexterity +1",
@@ -361,9 +361,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Dexterity under 17",
+  "prerequisite": "Dexterity below 17",
   "summary": "",
-  "desc": "Hæv din Dexterity med 1. Kortet kan ikke hæve scoren over 17."
+  "desc": "Increase your Dexterity by 1. This card cannot raise the score above 17."
  },
  {
   "name": "Dexterity +1",
@@ -379,9 +379,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Dexterity under 19",
+  "prerequisite": "Dexterity below 19",
   "summary": "",
-  "desc": "Hæv din Dexterity med 1. Kortet kan ikke hæve scoren over 19."
+  "desc": "Increase your Dexterity by 1. This card cannot raise the score above 19."
  },
  {
   "name": "Dexterity +1",
@@ -397,9 +397,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Dexterity under 20",
+  "prerequisite": "Dexterity below 20",
   "summary": "",
-  "desc": "Hæv din Dexterity med 1. Kortet kan ikke hæve scoren over 20."
+  "desc": "Increase your Dexterity by 1. This card cannot raise the score above 20."
  },
  {
   "name": "Constitution +1",
@@ -415,9 +415,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Constitution under 13",
+  "prerequisite": "Constitution below 13",
   "summary": "",
-  "desc": "Hæv din Constitution med 1. Kortet kan ikke hæve scoren over 13."
+  "desc": "Increase your Constitution by 1. This card cannot raise the score above 13."
  },
  {
   "name": "Constitution +1",
@@ -433,9 +433,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Constitution under 15",
+  "prerequisite": "Constitution below 15",
   "summary": "",
-  "desc": "Hæv din Constitution med 1. Kortet kan ikke hæve scoren over 15."
+  "desc": "Increase your Constitution by 1. This card cannot raise the score above 15."
  },
  {
   "name": "Constitution +1",
@@ -451,9 +451,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Constitution under 17",
+  "prerequisite": "Constitution below 17",
   "summary": "",
-  "desc": "Hæv din Constitution med 1. Kortet kan ikke hæve scoren over 17."
+  "desc": "Increase your Constitution by 1. This card cannot raise the score above 17."
  },
  {
   "name": "Constitution +1",
@@ -469,9 +469,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Constitution under 19",
+  "prerequisite": "Constitution below 19",
   "summary": "",
-  "desc": "Hæv din Constitution med 1. Kortet kan ikke hæve scoren over 19."
+  "desc": "Increase your Constitution by 1. This card cannot raise the score above 19."
  },
  {
   "name": "Constitution +1",
@@ -487,9 +487,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Constitution under 20",
+  "prerequisite": "Constitution below 20",
   "summary": "",
-  "desc": "Hæv din Constitution med 1. Kortet kan ikke hæve scoren over 20."
+  "desc": "Increase your Constitution by 1. This card cannot raise the score above 20."
  },
  {
   "name": "Intelligence +1",
@@ -505,9 +505,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Intelligence under 13",
+  "prerequisite": "Intelligence below 13",
   "summary": "",
-  "desc": "Hæv din Intelligence med 1. Kortet kan ikke hæve scoren over 13."
+  "desc": "Increase your Intelligence by 1. This card cannot raise the score above 13."
  },
  {
   "name": "Intelligence +1",
@@ -523,9 +523,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Intelligence under 15",
+  "prerequisite": "Intelligence below 15",
   "summary": "",
-  "desc": "Hæv din Intelligence med 1. Kortet kan ikke hæve scoren over 15."
+  "desc": "Increase your Intelligence by 1. This card cannot raise the score above 15."
  },
  {
   "name": "Intelligence +1",
@@ -541,9 +541,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Intelligence under 17",
+  "prerequisite": "Intelligence below 17",
   "summary": "",
-  "desc": "Hæv din Intelligence med 1. Kortet kan ikke hæve scoren over 17."
+  "desc": "Increase your Intelligence by 1. This card cannot raise the score above 17."
  },
  {
   "name": "Intelligence +1",
@@ -559,9 +559,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Intelligence under 19",
+  "prerequisite": "Intelligence below 19",
   "summary": "",
-  "desc": "Hæv din Intelligence med 1. Kortet kan ikke hæve scoren over 19."
+  "desc": "Increase your Intelligence by 1. This card cannot raise the score above 19."
  },
  {
   "name": "Intelligence +1",
@@ -577,9 +577,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Intelligence under 20",
+  "prerequisite": "Intelligence below 20",
   "summary": "",
-  "desc": "Hæv din Intelligence med 1. Kortet kan ikke hæve scoren over 20."
+  "desc": "Increase your Intelligence by 1. This card cannot raise the score above 20."
  },
  {
   "name": "Wisdom +1",
@@ -595,9 +595,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Wisdom under 13",
+  "prerequisite": "Wisdom below 13",
   "summary": "",
-  "desc": "Hæv din Wisdom med 1. Kortet kan ikke hæve scoren over 13."
+  "desc": "Increase your Wisdom by 1. This card cannot raise the score above 13."
  },
  {
   "name": "Wisdom +1",
@@ -613,9 +613,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Wisdom under 15",
+  "prerequisite": "Wisdom below 15",
   "summary": "",
-  "desc": "Hæv din Wisdom med 1. Kortet kan ikke hæve scoren over 15."
+  "desc": "Increase your Wisdom by 1. This card cannot raise the score above 15."
  },
  {
   "name": "Wisdom +1",
@@ -631,9 +631,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Wisdom under 17",
+  "prerequisite": "Wisdom below 17",
   "summary": "",
-  "desc": "Hæv din Wisdom med 1. Kortet kan ikke hæve scoren over 17."
+  "desc": "Increase your Wisdom by 1. This card cannot raise the score above 17."
  },
  {
   "name": "Wisdom +1",
@@ -649,9 +649,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Wisdom under 19",
+  "prerequisite": "Wisdom below 19",
   "summary": "",
-  "desc": "Hæv din Wisdom med 1. Kortet kan ikke hæve scoren over 19."
+  "desc": "Increase your Wisdom by 1. This card cannot raise the score above 19."
  },
  {
   "name": "Wisdom +1",
@@ -667,9 +667,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Wisdom under 20",
+  "prerequisite": "Wisdom below 20",
   "summary": "",
-  "desc": "Hæv din Wisdom med 1. Kortet kan ikke hæve scoren over 20."
+  "desc": "Increase your Wisdom by 1. This card cannot raise the score above 20."
  },
  {
   "name": "Charisma +1",
@@ -685,9 +685,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Charisma under 13",
+  "prerequisite": "Charisma below 13",
   "summary": "",
-  "desc": "Hæv din Charisma med 1. Kortet kan ikke hæve scoren over 13."
+  "desc": "Increase your Charisma by 1. This card cannot raise the score above 13."
  },
  {
   "name": "Charisma +1",
@@ -703,9 +703,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Charisma under 15",
+  "prerequisite": "Charisma below 15",
   "summary": "",
-  "desc": "Hæv din Charisma med 1. Kortet kan ikke hæve scoren over 15."
+  "desc": "Increase your Charisma by 1. This card cannot raise the score above 15."
  },
  {
   "name": "Charisma +1",
@@ -721,9 +721,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Charisma under 17",
+  "prerequisite": "Charisma below 17",
   "summary": "",
-  "desc": "Hæv din Charisma med 1. Kortet kan ikke hæve scoren over 17."
+  "desc": "Increase your Charisma by 1. This card cannot raise the score above 17."
  },
  {
   "name": "Charisma +1",
@@ -739,9 +739,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Charisma under 19",
+  "prerequisite": "Charisma below 19",
   "summary": "",
-  "desc": "Hæv din Charisma med 1. Kortet kan ikke hæve scoren over 19."
+  "desc": "Increase your Charisma by 1. This card cannot raise the score above 19."
  },
  {
   "name": "Charisma +1",
@@ -757,9 +757,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Stat"
   ],
-  "prerequisite": "Charisma under 20",
+  "prerequisite": "Charisma below 20",
   "summary": "",
-  "desc": "Hæv din Charisma med 1. Kortet kan ikke hæve scoren over 20."
+  "desc": "Increase your Charisma by 1. This card cannot raise the score above 20."
  },
  {
   "name": "Proficiency: Acrobatics",
@@ -777,7 +777,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Acrobatics."
+  "desc": "Add your proficiency bonus to Acrobatics checks."
  },
  {
   "name": "Expertise: Acrobatics",
@@ -793,9 +793,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Acrobatics",
+  "prerequisite": "Proficiency in Acrobatics",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Acrobatics."
+  "desc": "Double your proficiency bonus for Acrobatics checks."
  },
  {
   "name": "Proficiency: Animal Handling",
@@ -813,7 +813,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Animal Handling."
+  "desc": "Add your proficiency bonus to Animal Handling checks."
  },
  {
   "name": "Expertise: Animal Handling",
@@ -829,9 +829,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Animal Handling",
+  "prerequisite": "Proficiency in Animal Handling",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Animal Handling."
+  "desc": "Double your proficiency bonus for Animal Handling checks."
  },
  {
   "name": "Proficiency: Arcana",
@@ -849,7 +849,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Arcana."
+  "desc": "Add your proficiency bonus to Arcana checks."
  },
  {
   "name": "Expertise: Arcana",
@@ -865,9 +865,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Arcana",
+  "prerequisite": "Proficiency in Arcana",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Arcana."
+  "desc": "Double your proficiency bonus for Arcana checks."
  },
  {
   "name": "Proficiency: Athletics",
@@ -885,7 +885,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Athletics."
+  "desc": "Add your proficiency bonus to Athletics checks."
  },
  {
   "name": "Expertise: Athletics",
@@ -901,9 +901,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Athletics",
+  "prerequisite": "Proficiency in Athletics",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Athletics."
+  "desc": "Double your proficiency bonus for Athletics checks."
  },
  {
   "name": "Proficiency: Deception",
@@ -921,7 +921,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Deception."
+  "desc": "Add your proficiency bonus to Deception checks."
  },
  {
   "name": "Expertise: Deception",
@@ -937,9 +937,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Deception",
+  "prerequisite": "Proficiency in Deception",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Deception."
+  "desc": "Double your proficiency bonus for Deception checks."
  },
  {
   "name": "Proficiency: History",
@@ -957,7 +957,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med History."
+  "desc": "Add your proficiency bonus to History checks."
  },
  {
   "name": "Expertise: History",
@@ -973,9 +973,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i History",
+  "prerequisite": "Proficiency in History",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med History."
+  "desc": "Double your proficiency bonus for History checks."
  },
  {
   "name": "Proficiency: Insight",
@@ -993,7 +993,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Insight."
+  "desc": "Add your proficiency bonus to Insight checks."
  },
  {
   "name": "Expertise: Insight",
@@ -1009,9 +1009,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Insight",
+  "prerequisite": "Proficiency in Insight",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Insight."
+  "desc": "Double your proficiency bonus for Insight checks."
  },
  {
   "name": "Proficiency: Intimidation",
@@ -1029,7 +1029,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Intimidation."
+  "desc": "Add your proficiency bonus to Intimidation checks."
  },
  {
   "name": "Expertise: Intimidation",
@@ -1045,9 +1045,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Intimidation",
+  "prerequisite": "Proficiency in Intimidation",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Intimidation."
+  "desc": "Double your proficiency bonus for Intimidation checks."
  },
  {
   "name": "Proficiency: Investigation",
@@ -1065,7 +1065,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Investigation."
+  "desc": "Add your proficiency bonus to Investigation checks."
  },
  {
   "name": "Expertise: Investigation",
@@ -1081,9 +1081,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Investigation",
+  "prerequisite": "Proficiency in Investigation",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Investigation."
+  "desc": "Double your proficiency bonus for Investigation checks."
  },
  {
   "name": "Proficiency: Medicine",
@@ -1101,7 +1101,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Medicine."
+  "desc": "Add your proficiency bonus to Medicine checks."
  },
  {
   "name": "Expertise: Medicine",
@@ -1117,9 +1117,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Medicine",
+  "prerequisite": "Proficiency in Medicine",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Medicine."
+  "desc": "Double your proficiency bonus for Medicine checks."
  },
  {
   "name": "Proficiency: Nature",
@@ -1137,7 +1137,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Nature."
+  "desc": "Add your proficiency bonus to Nature checks."
  },
  {
   "name": "Expertise: Nature",
@@ -1153,9 +1153,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Nature",
+  "prerequisite": "Proficiency in Nature",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Nature."
+  "desc": "Double your proficiency bonus for Nature checks."
  },
  {
   "name": "Proficiency: Perception",
@@ -1173,7 +1173,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Perception."
+  "desc": "Add your proficiency bonus to Perception checks."
  },
  {
   "name": "Expertise: Perception",
@@ -1189,9 +1189,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Perception",
+  "prerequisite": "Proficiency in Perception",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Perception."
+  "desc": "Double your proficiency bonus for Perception checks."
  },
  {
   "name": "Proficiency: Performance",
@@ -1209,7 +1209,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Performance."
+  "desc": "Add your proficiency bonus to Performance checks."
  },
  {
   "name": "Expertise: Performance",
@@ -1225,9 +1225,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Performance",
+  "prerequisite": "Proficiency in Performance",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Performance."
+  "desc": "Double your proficiency bonus for Performance checks."
  },
  {
   "name": "Proficiency: Persuasion",
@@ -1245,7 +1245,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Persuasion."
+  "desc": "Add your proficiency bonus to Persuasion checks."
  },
  {
   "name": "Expertise: Persuasion",
@@ -1261,9 +1261,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Persuasion",
+  "prerequisite": "Proficiency in Persuasion",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Persuasion."
+  "desc": "Double your proficiency bonus for Persuasion checks."
  },
  {
   "name": "Proficiency: Religion",
@@ -1281,7 +1281,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Religion."
+  "desc": "Add your proficiency bonus to Religion checks."
  },
  {
   "name": "Expertise: Religion",
@@ -1297,9 +1297,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Religion",
+  "prerequisite": "Proficiency in Religion",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Religion."
+  "desc": "Double your proficiency bonus for Religion checks."
  },
  {
   "name": "Proficiency: Sleight of Hand",
@@ -1317,7 +1317,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Sleight of Hand."
+  "desc": "Add your proficiency bonus to Sleight of Hand checks."
  },
  {
   "name": "Expertise: Sleight of Hand",
@@ -1333,9 +1333,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Sleight of Hand",
+  "prerequisite": "Proficiency in Sleight of Hand",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Sleight of Hand."
+  "desc": "Double your proficiency bonus for Sleight of Hand checks."
  },
  {
   "name": "Proficiency: Stealth",
@@ -1353,7 +1353,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Stealth."
+  "desc": "Add your proficiency bonus to Stealth checks."
  },
  {
   "name": "Expertise: Stealth",
@@ -1369,9 +1369,9 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Stealth",
+  "prerequisite": "Proficiency in Stealth",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Stealth."
+  "desc": "Double your proficiency bonus for Stealth checks."
  },
  {
   "name": "Proficiency: Survival",
@@ -1389,7 +1389,7 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "",
-  "desc": "Tilføj din proficiency bonus til tjek med Survival."
+  "desc": "Add your proficiency bonus to Survival checks."
  },
  {
   "name": "Expertise: Survival",
@@ -1405,12 +1405,12 @@ window.CLASS_CARDS = [
    "Class-kort",
    "Skill"
   ],
-  "prerequisite": "Proficiency i Survival",
+  "prerequisite": "Proficiency in Survival",
   "summary": "",
-  "desc": "Fordobl din proficiency bonus med Survival."
+  "desc": "Double your proficiency bonus for Survival checks."
  },
  {
-  "name": "Ekstra Hit Die",
+  "name": "Extra Hit Die",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1425,10 +1425,10 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "+1 Hit Die",
-  "desc": "Du får ét ekstra Hit Die af din klasses type. Det genvindes som de andre."
+  "desc": "You gain one extra Hit Die of your class's type. It is regained like the others."
  },
  {
-  "name": "Hårdfør",
+  "name": "Hardy",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1442,8 +1442,8 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Advantage mod Exhaustion",
-  "desc": "Du har advantage på saving throws mod Exhaustion."
+  "summary": "Advantage vs. Exhaustion",
+  "desc": "You have advantage on saving throws against Exhaustion."
  },
  {
   "name": "Permanent +3 Hit Points",
@@ -1461,10 +1461,10 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "+3 HP",
-  "desc": "Dit Hit Point-maksimum stiger med 3."
+  "desc": "Your Hit Point maximum increases by 3."
  },
  {
-  "name": "Weapon Mastery-plads",
+  "name": "Weapon Mastery Slot",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1478,8 +1478,8 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "+1 mastery-plads",
-  "desc": "Du får én ekstra Weapon Mastery-plads. Vælg våbentype som normalt."
+  "summary": "+1 mastery slot",
+  "desc": "You gain one extra Weapon Mastery slot. Choose a weapon type as normal."
  },
  {
   "name": "Permanent +5 Hit Points",
@@ -1497,10 +1497,10 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "+5 HP",
-  "desc": "Dit Hit Point-maksimum stiger med 5."
+  "desc": "Your Hit Point maximum increases by 5."
  },
  {
-  "name": "Ekstra bevægelse",
+  "name": "Fleet of Foot",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1515,10 +1515,10 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "+5 ft. Speed",
-  "desc": "Din Speed stiger permanent med 5 fod."
+  "desc": "Your Speed increases permanently by 5 feet."
  },
  {
-  "name": "Sejlivet",
+  "name": "Tenacious",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1532,11 +1532,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Advantage på death saves",
-  "desc": "Du har advantage på Death Saving Throws."
+  "summary": "Advantage on death saves",
+  "desc": "You have advantage on Death Saving Throws."
  },
  {
-  "name": "Dungeon-øje",
+  "name": "Dungeon Eye",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1550,11 +1550,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Advantage på at finde skjult",
-  "desc": "Du har advantage på Wisdom (Perception)-tjek for at finde skjulte døre, fælder og hulrum i sten."
+  "summary": "Advantage to find the hidden",
+  "desc": "You have advantage on Wisdom (Perception) checks to find hidden doors, traps and cavities in stone."
  },
  {
-  "name": "Mørketilvænnet",
+  "name": "Dark-Adapted",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1569,10 +1569,10 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "Darkvision 30 ft.",
-  "desc": "Du får Darkvision med en rækkevidde på 30 fod. Har du den i forvejen, stiger rækkevidden med 30 fod."
+  "desc": "You gain Darkvision out to 30 feet. If you already have it, its range increases by 30 feet."
  },
  {
-  "name": "Ekstra Attunement-plads",
+  "name": "Extra Attunement Slot",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1587,10 +1587,10 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "+1 attunement",
-  "desc": "Du kan være attuned til ét magic item mere end normalt."
+  "desc": "You can be attuned to one more magic item than normal."
  },
  {
-  "name": "Saving Throw-proficiency",
+  "name": "Saving Throw Proficiency",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1604,11 +1604,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Ét saving throw",
-  "desc": "Vælg én ability du ikke har saving throw-proficiency i. Du får den."
+  "summary": "One saving throw",
+  "desc": "Choose one ability you lack saving throw proficiency in. You gain it."
  },
  {
-  "name": "Anden vind",
+  "name": "Second Wind",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1622,11 +1622,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Heling én gang pr. dag",
-  "desc": "Én gang pr. Long Rest kan du som Bonus Action genvinde 1d10 plus dit karakterniveau i Hit Points."
+  "summary": "Healing once per day",
+  "desc": "Once per Long Rest you can take a Bonus Action to regain 1d10 plus your character level in Hit Points."
  },
  {
-  "name": "Hurtig på aftrækkeren",
+  "name": "Quick Off the Mark",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1640,11 +1640,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Advantage på Initiative",
-  "desc": "Du har advantage på Initiative."
+  "summary": "Advantage on Initiative",
+  "desc": "You have advantage on Initiative."
  },
  {
-  "name": "Modstandsdygtig",
+  "name": "Resilient",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1658,11 +1658,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Resistance mod én skadetype",
-  "desc": "Vælg én skadetype blandt Acid, Cold, Fire, Lightning, Poison eller Thunder. Du har Resistance mod den."
+  "summary": "Resistance to one damage type",
+  "desc": "Choose one damage type among Acid, Cold, Fire, Lightning, Poison or Thunder. You have Resistance to it."
  },
  {
-  "name": "Årvågen sjæl",
+  "name": "Watchful Soul",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1676,11 +1676,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "+1 til alle saves",
-  "desc": "Du får +1 til alle saving throws."
+  "summary": "+1 to all saves",
+  "desc": "You gain +1 to all saving throws."
  },
  {
-  "name": "Ekstra Reaction",
+  "name": "Extra Reaction",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1694,11 +1694,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "+1 Reaction pr. runde",
-  "desc": "Du kan tage én ekstra Reaction pr. runde. Du kan ikke bruge dem begge på den samme udløser."
+  "summary": "+1 Reaction per round",
+  "desc": "You can take one extra Reaction per round. You cannot spend both on the same trigger."
  },
  {
-  "name": "Uovervindelig vilje",
+  "name": "Indomitable Will",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1712,11 +1712,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Immun mod én tilstand",
-  "desc": "Vælg én tilstand blandt Charmed, Frightened, Paralyzed eller Poisoned. Du er immun over for den."
+  "summary": "Immune to one condition",
+  "desc": "Choose one condition among Charmed, Frightened, Paralyzed or Poisoned. You are immune to it."
  },
  {
-  "name": "Ekstra angreb",
+  "name": "Extra Attack",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1730,11 +1730,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "+1 angreb pr. dag",
-  "desc": "Én gang pr. Long Rest kan du foretage ét ekstra angreb som del af Attack-handlingen."
+  "summary": "+1 attack per day",
+  "desc": "Once per Long Rest you can make one extra attack as part of the Attack action."
  },
  {
-  "name": "Rustet hud",
+  "name": "Armoured Hide",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1749,10 +1749,10 @@ window.CLASS_CARDS = [
   ],
   "prerequisite": "",
   "summary": "+1 AC",
-  "desc": "Din Armor Class stiger permanent med 1."
+  "desc": "Your Armor Class increases permanently by 1."
  },
  {
-  "name": "Goblinernes ven",
+  "name": "Friend of the Goblins",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1766,11 +1766,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Fred med goblinerne",
-  "desc": "Goblinerne angriber dig ikke på sigte. Det første møde starter neutralt — hvad der sker derefter er op til dig. Angriber du først, er aftalen brudt for resten af etagen."
+  "summary": "Peace with goblins",
+  "desc": "Goblins do not attack you on sight. The first meeting starts neutral — what happens after that is up to you. Strike first and the truce is broken for the rest of the floor."
  },
  {
-  "name": "Goblinernes fjende",
+  "name": "Bane of the Goblins",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1784,11 +1784,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "+2 skade mod goblinerne",
-  "desc": "Du gør 2 ekstra skade med våbenangreb mod goblinerne, og du har advantage på Wisdom (Survival)-tjek for at spore dem."
+  "summary": "+2 damage vs. goblins",
+  "desc": "You deal 2 extra damage with weapon attacks against goblins, and you have advantage on Wisdom (Survival) checks to track them."
  },
  {
-  "name": "Koboldernes ven",
+  "name": "Friend of the Kobolds",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1802,11 +1802,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Fred med kobolderne",
-  "desc": "Kobolderne angriber dig ikke på sigte. Det første møde starter neutralt — hvad der sker derefter er op til dig. Angriber du først, er aftalen brudt for resten af etagen."
+  "summary": "Peace with kobolds",
+  "desc": "Kobolds do not attack you on sight. The first meeting starts neutral — what happens after that is up to you. Strike first and the truce is broken for the rest of the floor."
  },
  {
-  "name": "Koboldernes fjende",
+  "name": "Bane of the Kobolds",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1820,11 +1820,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "+2 skade mod kobolderne",
-  "desc": "Du gør 2 ekstra skade med våbenangreb mod kobolderne, og du har advantage på Wisdom (Survival)-tjek for at spore dem."
+  "summary": "+2 damage vs. kobolds",
+  "desc": "You deal 2 extra damage with weapon attacks against kobolds, and you have advantage on Wisdom (Survival) checks to track them."
  },
  {
-  "name": "Orkernes ven",
+  "name": "Friend of the Orcs",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1838,11 +1838,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Fred med orkerne",
-  "desc": "Orkerne angriber dig ikke på sigte. Det første møde starter neutralt — hvad der sker derefter er op til dig. Angriber du først, er aftalen brudt for resten af etagen."
+  "summary": "Peace with orcs",
+  "desc": "Orcs do not attack you on sight. The first meeting starts neutral — what happens after that is up to you. Strike first and the truce is broken for the rest of the floor."
  },
  {
-  "name": "Orkernes fjende",
+  "name": "Bane of the Orcs",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1856,11 +1856,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "+2 skade mod orkerne",
-  "desc": "Du gør 2 ekstra skade med våbenangreb mod orkerne, og du har advantage på Wisdom (Survival)-tjek for at spore dem."
+  "summary": "+2 damage vs. orcs",
+  "desc": "You deal 2 extra damage with weapon attacks against orcs, and you have advantage on Wisdom (Survival) checks to track them."
  },
  {
-  "name": "Gnollernes ven",
+  "name": "Friend of the Gnolls",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1874,11 +1874,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Fred med gnollerne",
-  "desc": "Gnollerne angriber dig ikke på sigte. Det første møde starter neutralt — hvad der sker derefter er op til dig. Angriber du først, er aftalen brudt for resten af etagen."
+  "summary": "Peace with gnolls",
+  "desc": "Gnolls do not attack you on sight. The first meeting starts neutral — what happens after that is up to you. Strike first and the truce is broken for the rest of the floor."
  },
  {
-  "name": "Gnollernes fjende",
+  "name": "Bane of the Gnolls",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1892,11 +1892,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "+2 skade mod gnollerne",
-  "desc": "Du gør 2 ekstra skade med våbenangreb mod gnollerne, og du har advantage på Wisdom (Survival)-tjek for at spore dem."
+  "summary": "+2 damage vs. gnolls",
+  "desc": "You deal 2 extra damage with weapon attacks against gnolls, and you have advantage on Wisdom (Survival) checks to track them."
  },
  {
-  "name": "Skeletternes ven",
+  "name": "Friend of the Skeletons",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1910,11 +1910,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Fred med skeletterne",
-  "desc": "Skeletterne angriber dig ikke på sigte. Det første møde starter neutralt — hvad der sker derefter er op til dig. Angriber du først, er aftalen brudt for resten af etagen."
+  "summary": "Peace with skeletons",
+  "desc": "Skeletons do not attack you on sight. The first meeting starts neutral — what happens after that is up to you. Strike first and the truce is broken for the rest of the floor."
  },
  {
-  "name": "Skeletternes fjende",
+  "name": "Bane of the Skeletons",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1928,11 +1928,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "+2 skade mod skeletterne",
-  "desc": "Du gør 2 ekstra skade med våbenangreb mod skeletterne, og du har advantage på Wisdom (Survival)-tjek for at spore dem."
+  "summary": "+2 damage vs. skeletons",
+  "desc": "You deal 2 extra damage with weapon attacks against skeletons, and you have advantage on Wisdom (Survival) checks to track them."
  },
  {
-  "name": "Edderkoppernes ven",
+  "name": "Friend of the Spiders",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1946,11 +1946,11 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "Fred med edderkopperne",
-  "desc": "Edderkopperne angriber dig ikke på sigte. Det første møde starter neutralt — hvad der sker derefter er op til dig. Angriber du først, er aftalen brudt for resten af etagen."
+  "summary": "Peace with spiders",
+  "desc": "Spiders do not attack you on sight. The first meeting starts neutral — what happens after that is up to you. Strike first and the truce is broken for the rest of the floor."
  },
  {
-  "name": "Edderkoppernes fjende",
+  "name": "Bane of the Spiders",
   "category": "Perk",
   "subcategory": "Perk",
   "price": null,
@@ -1964,8 +1964,8 @@ window.CLASS_CARDS = [
    "Perk"
   ],
   "prerequisite": "",
-  "summary": "+2 skade mod edderkopperne",
-  "desc": "Du gør 2 ekstra skade med våbenangreb mod edderkopperne, og du har advantage på Wisdom (Survival)-tjek for at spore dem."
+  "summary": "+2 damage vs. spiders",
+  "desc": "You deal 2 extra damage with weapon attacks against spiders, and you have advantage on Wisdom (Survival) checks to track them."
  },
  {
   "name": "Ability Score Improvement",
@@ -2020,7 +2020,7 @@ window.CLASS_CARDS = [
    "Feat",
    "Origin"
   ],
-  "prerequisite": "Ingen — men du må kun have ét Origin feat.",
+  "prerequisite": "None — but you may have only one Origin feat.",
   "summary": "Initiative Proficiency, Initiative Swap",
   "desc": "You gain the following benefits. Initiative Proficiency. When you roll Initiative, you can add your Proficiency Bonus to the roll. Initiative Swap. Immediately after you roll Initiative, you can swap your Initiative with the Initiative of one willing ally in the same combat. You can’t make this swap if you or the ally has the Incapacitated condition."
  },
@@ -2362,7 +2362,7 @@ window.CLASS_CARDS = [
    "Feat",
    "Origin"
   ],
-  "prerequisite": "Ingen — men du må kun have ét Origin feat.",
+  "prerequisite": "None — but you may have only one Origin feat.",
   "summary": "Tool Proficiency, Discount, Fast Crafting",
   "desc": "You gain the following benefits. Tool Proficiency. You gain proficiency with three different Artisan’s Tools of your choice from the Fast Crafting table. Discount. Whenever you buy a nonmagical item, you receive a 20 percent discount on it. Fast Crafting. When you finish a Long Rest, you can craft one piece of gear from the Fast Crafting table, provided you have the Artisan’s Tools associated with that item and have proficiency with those tools. The item lasts until you finish another Long Rest, at which point the item falls apart."
  },
@@ -2609,7 +2609,7 @@ window.CLASS_CARDS = [
    "Feat",
    "Origin"
   ],
-  "prerequisite": "Ingen — men du må kun have ét Origin feat.",
+  "prerequisite": "None — but you may have only one Origin feat.",
   "summary": "Battle Medic, Healing Rerolls",
   "desc": "You gain the following benefits. Battle Medic. If you have a Healer’s Kit, you can expend one use of it and tend to a creature within 5 feet of yourself as a Utilize action. That creature can expend one of its Hit Point Dice, and you then roll that die. The creature regains a number of Hit Points equal to the roll plus your Proficiency Bonus. Healing Rerolls. Whenever you roll a die to determine the number of Hit Points you restore with a spell or with this feat’s Battle Medic benefit, you can reroll the die if it rolls a 1, and you must use the new roll."
  },
@@ -2742,7 +2742,7 @@ window.CLASS_CARDS = [
    "Feat",
    "Origin"
   ],
-  "prerequisite": "Ingen — men du må kun have ét Origin feat.",
+  "prerequisite": "None — but you may have only one Origin feat.",
   "summary": "Luck Points, Advantage, Disadvantage",
   "desc": "You gain the following benefits. Luck Points. You have a number of Luck Points equal to your Proficiency Bonus and can spend the points on the benefits below. You regain your expended Luck Points when you finish a Long Rest. Advantage. When you roll a d20 for a D20 Test, you can spend 1 Luck Point to give yourself Advantage on the roll. Disadvantage. When a creature rolls a d20 for an attack roll against you, you can spend 1 Luck Point to impose Disadvantage on that roll."
  },
@@ -2780,7 +2780,7 @@ window.CLASS_CARDS = [
    "Feat",
    "Origin"
   ],
-  "prerequisite": "Ingen — men du må kun have ét Origin feat.",
+  "prerequisite": "None — but you may have only one Origin feat.",
   "summary": "Two Cantrips, Level 1 Spell, Spell Change, Repeatable",
   "desc": "You gain the following benefits. Two Cantrips. You learn two cantrips of your choice from the Cleric spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat’s spells (choose when you select this feat). Level 1 Spell. Choose a level 1 spell from the same list you selected for this feat’s cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have. Spell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list. Repeatable. You can take this feat more than once, but you must choose a different spell list each time."
  },
@@ -2799,7 +2799,7 @@ window.CLASS_CARDS = [
    "Feat",
    "Origin"
   ],
-  "prerequisite": "Ingen — men du må kun have ét Origin feat.",
+  "prerequisite": "None — but you may have only one Origin feat.",
   "summary": "Two Cantrips, Level 1 Spell, Spell Change, Repeatable",
   "desc": "You gain the following benefits. Two Cantrips. You learn two cantrips of your choice from the Druid spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat’s spells (choose when you select this feat). Level 1 Spell. Choose a level 1 spell from the same list you selected for this feat’s cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have. Spell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list. Repeatable. You can take this feat more than once, but you must choose a different spell list each time."
  },
@@ -2818,7 +2818,7 @@ window.CLASS_CARDS = [
    "Feat",
    "Origin"
   ],
-  "prerequisite": "Ingen — men du må kun have ét Origin feat.",
+  "prerequisite": "None — but you may have only one Origin feat.",
   "summary": "Two Cantrips, Level 1 Spell, Spell Change, Repeatable",
   "desc": "You gain the following benefits. Two Cantrips. You learn two cantrips of your choice from the Wizard spell list. Intelligence, Wisdom, or Charisma is your spellcasting ability for this feat’s spells (choose when you select this feat). Level 1 Spell. Choose a level 1 spell from the same list you selected for this feat’s cantrips. You always have that spell prepared. You can cast it once without a spell slot, and you regain the ability to cast it in that way when you finish a Long Rest. You can also cast the spell using any spell slots you have. Spell Change. Whenever you gain a new level, you can replace one of the spells you chose for this feat with a different spell of the same level from the chosen spell list. Repeatable. You can take this feat more than once, but you must choose a different spell list each time."
  },
@@ -2913,7 +2913,7 @@ window.CLASS_CARDS = [
    "Feat",
    "Origin"
   ],
-  "prerequisite": "Ingen — men du må kun have ét Origin feat.",
+  "prerequisite": "None — but you may have only one Origin feat.",
   "summary": "Instrument Training, Encouraging Song",
   "desc": "You gain the following benefits. Instrument Training. You gain proficiency with three Musical Instruments of your choice. Encouraging Song. As you finish a Short or Long Rest, you can play a song on a Musical Instrument with which you have proficiency and give Heroic Inspiration to allies who hear the song. The number of allies you can affect in this way equals your Proficiency Bonus."
  },
@@ -3065,7 +3065,7 @@ window.CLASS_CARDS = [
    "Feat",
    "Origin"
   ],
-  "prerequisite": "Ingen — men du må kun have ét Origin feat.",
+  "prerequisite": "None — but you may have only one Origin feat.",
   "summary": "Roll damage twice and use either roll",
   "desc": "You’ve trained to deal particularly damaging strikes. Once per turn when you hit a target with a weapon, you can roll the weapon’s damage dice twice and use either roll against the target."
  },
@@ -3179,7 +3179,7 @@ window.CLASS_CARDS = [
    "Feat",
    "Origin"
   ],
-  "prerequisite": "Ingen — men du må kun have ét Origin feat.",
+  "prerequisite": "None — but you may have only one Origin feat.",
   "summary": "Proficiency in three skills or tools",
   "desc": "You gain proficiency in any combination of three skills or tools of your choice. Repeatable. You can take this feat more than once."
  },
@@ -3274,7 +3274,7 @@ window.CLASS_CARDS = [
    "Feat",
    "Origin"
   ],
-  "prerequisite": "Ingen — men du må kun have ét Origin feat.",
+  "prerequisite": "None — but you may have only one Origin feat.",
   "summary": "Enhanced Unarmed Strike, Damage Rerolls, Improvised Weaponry, Push",
   "desc": "You gain the following benefits. Enhanced Unarmed Strike. When you hit with your Unarmed Strike and deal damage, you can deal Bludgeoning damage equal to 1d4 plus your Strength modifier instead of the normal damage of an Unarmed Strike. Damage Rerolls. Whenever you roll a damage die for your Unarmed Strike, you can reroll the die if it rolls a 1, and you must use the new roll. Improvised Weaponry. You have proficiency with improvised weapons. Push. When you hit a creature with an Unarmed Strike as part of the Attack action on your turn, you can deal damage to the target and also push it 5 feet away from you. You can use this benefit only once per turn."
  },
@@ -3350,7 +3350,7 @@ window.CLASS_CARDS = [
    "Feat",
    "Origin"
   ],
-  "prerequisite": "Ingen — men du må kun have ét Origin feat.",
+  "prerequisite": "None — but you may have only one Origin feat.",
   "summary": "HP maximum increase",
   "desc": "Your Hit Point maximum increases by an amount equal to twice your character level when you gain this feat. Whenever you gain a character level thereafter, your Hit Point maximum increases by an additional 2 Hit Points."
  },

@@ -40,7 +40,7 @@ FEAT_KIND = {
 # Et Origin feat får man ved level 1, og man må kun have ét. Det står ikke i
 # kildens prerequisite-felt, men det er den begrænsning der betyder noget når
 # kortene ligger på bordet.
-ORIGIN_LIMIT = "Ingen — men du må kun have ét Origin feat."
+ORIGIN_LIMIT = "None — but you may have only one Origin feat."
 
 
 def read_blocks(text: str) -> list[list[str]]:
@@ -171,61 +171,62 @@ SKILLS = [
 # Værktøjs- og sprogperks er væk: en baggrunds tool proficiency ligger nu som
 # en regel på selve værktøjskortet, hvor man kan slå for at lære det.
 PERKS = [
-    # Kroppen: små, konkrete udvidelser man kan skrive på arket med det samme.
-    ("Ekstra Hit Die", "common",
-     "Du får ét ekstra Hit Die af din klasses type. Det genvindes som de andre.",
+    # The body: small, concrete additions you can write on the sheet at once.
+    ("Extra Hit Die", "common",
+     "You gain one extra Hit Die of your class's type. It is regained like the others.",
      "+1 Hit Die"),
-    ("Hårdfør", "common",
-     "Du har advantage på saving throws mod Exhaustion.", "Advantage mod Exhaustion"),
+    ("Hardy", "common",
+     "You have advantage on saving throws against Exhaustion.",
+     "Advantage vs. Exhaustion"),
     ("Permanent +3 Hit Points", "common",
-     "Dit Hit Point-maksimum stiger med 3.", "+3 HP"),
+     "Your Hit Point maximum increases by 3.", "+3 HP"),
 
-    # Kroppen: mærkbare, men stadig afgrænsede fordele.
-    ("Weapon Mastery-plads", "uncommon",
-     "Du får én ekstra Weapon Mastery-plads. Vælg våbentype som normalt.",
-     "+1 mastery-plads"),
+    # The body: noticeable, but still bounded.
+    ("Weapon Mastery Slot", "uncommon",
+     "You gain one extra Weapon Mastery slot. Choose a weapon type as normal.",
+     "+1 mastery slot"),
     ("Permanent +5 Hit Points", "uncommon",
-     "Dit Hit Point-maksimum stiger med 5.", "+5 HP"),
-    ("Ekstra bevægelse", "uncommon",
-     "Din Speed stiger permanent med 5 fod.", "+5 ft. Speed"),
-    ("Sejlivet", "uncommon",
-     "Du har advantage på Death Saving Throws.", "Advantage på death saves"),
-    ("Dungeon-øje", "uncommon",
-     "Du har advantage på Wisdom (Perception)-tjek for at finde skjulte døre, "
-     "fælder og hulrum i sten.", "Advantage på at finde skjult"),
-    ("Mørketilvænnet", "uncommon",
-     "Du får Darkvision med en rækkevidde på 30 fod. Har du den i forvejen, "
-     "stiger rækkevidden med 30 fod.", "Darkvision 30 ft."),
+     "Your Hit Point maximum increases by 5.", "+5 HP"),
+    ("Fleet of Foot", "uncommon",
+     "Your Speed increases permanently by 5 feet.", "+5 ft. Speed"),
+    ("Tenacious", "uncommon",
+     "You have advantage on Death Saving Throws.", "Advantage on death saves"),
+    ("Dungeon Eye", "uncommon",
+     "You have advantage on Wisdom (Perception) checks to find hidden doors, "
+     "traps and cavities in stone.", "Advantage to find the hidden"),
+    ("Dark-Adapted", "uncommon",
+     "You gain Darkvision out to 30 feet. If you already have it, its range "
+     "increases by 30 feet.", "Darkvision 30 ft."),
 
-    # De stærke.
-    ("Ekstra Attunement-plads", "rare",
-     "Du kan være attuned til ét magic item mere end normalt.", "+1 attunement"),
-    ("Saving Throw-proficiency", "rare",
-     "Vælg én ability du ikke har saving throw-proficiency i. Du får den.",
-     "Ét saving throw"),
-    ("Anden vind", "rare",
-     "Én gang pr. Long Rest kan du som Bonus Action genvinde 1d10 plus dit "
-     "karakterniveau i Hit Points.", "Heling én gang pr. dag"),
-    ("Hurtig på aftrækkeren", "rare",
-     "Du har advantage på Initiative.", "Advantage på Initiative"),
+    # The strong ones.
+    ("Extra Attunement Slot", "rare",
+     "You can be attuned to one more magic item than normal.", "+1 attunement"),
+    ("Saving Throw Proficiency", "rare",
+     "Choose one ability you lack saving throw proficiency in. You gain it.",
+     "One saving throw"),
+    ("Second Wind", "rare",
+     "Once per Long Rest you can take a Bonus Action to regain 1d10 plus your "
+     "character level in Hit Points.", "Healing once per day"),
+    ("Quick Off the Mark", "rare",
+     "You have advantage on Initiative.", "Advantage on Initiative"),
 
-    ("Modstandsdygtig", "very_rare",
-     "Vælg én skadetype blandt Acid, Cold, Fire, Lightning, Poison eller Thunder. "
-     "Du har Resistance mod den.", "Resistance mod én skadetype"),
-    ("Årvågen sjæl", "very_rare",
-     "Du får +1 til alle saving throws.", "+1 til alle saves"),
-    ("Ekstra Reaction", "very_rare",
-     "Du kan tage én ekstra Reaction pr. runde. Du kan ikke bruge dem begge på "
-     "den samme udløser.", "+1 Reaction pr. runde"),
+    ("Resilient", "very_rare",
+     "Choose one damage type among Acid, Cold, Fire, Lightning, Poison or "
+     "Thunder. You have Resistance to it.", "Resistance to one damage type"),
+    ("Watchful Soul", "very_rare",
+     "You gain +1 to all saving throws.", "+1 to all saves"),
+    ("Extra Reaction", "very_rare",
+     "You can take one extra Reaction per round. You cannot spend both on the "
+     "same trigger.", "+1 Reaction per round"),
 
-    ("Uovervindelig vilje", "legendary",
-     "Vælg én tilstand blandt Charmed, Frightened, Paralyzed eller Poisoned. "
-     "Du er immun over for den.", "Immun mod én tilstand"),
-    ("Ekstra angreb", "legendary",
-     "Én gang pr. Long Rest kan du foretage ét ekstra angreb som del af "
-     "Attack-handlingen.", "+1 angreb pr. dag"),
-    ("Rustet hud", "legendary",
-     "Din Armor Class stiger permanent med 1.", "+1 AC"),
+    ("Indomitable Will", "legendary",
+     "Choose one condition among Charmed, Frightened, Paralyzed or Poisoned. "
+     "You are immune to it.", "Immune to one condition"),
+    ("Extra Attack", "legendary",
+     "Once per Long Rest you can make one extra attack as part of the Attack "
+     "action.", "+1 attack per day"),
+    ("Armoured Hide", "legendary",
+     "Your Armor Class increases permanently by 1.", "+1 AC"),
 ]
 
 # Dungeon'et er befolket, og det husker hvem man er. To familier af perks
@@ -235,26 +236,25 @@ PERKS = [
 # mod den slags, mens en våbenhvile kun tæller til det første møde.
 # Bestemt flertal, så navnet bliver til korrekt genitiv: "goblinerne" ->
 # "Goblinernes ven".
-CREATURES = ["goblinerne", "kobolderne", "orkerne", "gnollerne",
-             "skeletterne", "edderkopperne"]
+CREATURES = ["Goblins", "Kobolds", "Orcs", "Gnolls", "Skeletons", "Spiders"]
 
 
 def creature_perks():
     out = []
-    for bestemt in CREATURES:
-        stor = bestemt[0].upper() + bestemt[1:]
+    for name in CREATURES:
+        low = name.lower()
         out.append((
-            "%ss ven" % stor, "uncommon",
-            "%s angriber dig ikke på sigte. Det første møde starter neutralt — hvad "
-            "der sker derefter er op til dig. Angriber du først, er aftalen brudt for "
-            "resten af etagen." % stor,
-            "Fred med %s" % bestemt,
+            "Friend of the %s" % name, "uncommon",
+            "%s do not attack you on sight. The first meeting starts neutral — what "
+            "happens after that is up to you. Strike first and the truce is broken "
+            "for the rest of the floor." % name,
+            "Peace with %s" % low,
         ))
         out.append((
-            "%ss fjende" % stor, "rare",
-            "Du gør 2 ekstra skade med våbenangreb mod %s, og du har advantage på "
-            "Wisdom (Survival)-tjek for at spore dem." % bestemt,
-            "+2 skade mod %s" % bestemt,
+            "Bane of the %s" % name, "rare",
+            "You deal 2 extra damage with weapon attacks against %s, and you have "
+            "advantage on Wisdom (Survival) checks to track them." % low,
+            "+2 damage vs. %s" % low,
         ))
     return out
 
@@ -288,8 +288,8 @@ def build() -> list[dict]:
     for c in CLASSES:
         out.append(card(
             "Class Level: " + c, "Class", "Class Level", "common",
-            "Tag et level i " + c + ". Kræver at du har et level up til rådighed.",
-            "Level up til rådighed",
+            "Take a level in " + c + ". Requires that you have a level up available.",
+            "A level up available",
         ))
 
     for ability in ABILITIES:
@@ -298,8 +298,8 @@ def build() -> list[dict]:
                 # Loftet står som krav og i beskrivelsen — titlen skal bare
                 # sige hvad kortet er.
                 "%s +1" % ability, "Stat", "Attribute", rarity,
-                "Hæv din %s med 1. Kortet kan ikke hæve scoren over %d." % (ability, cap),
-                "%s under %d" % (ability, cap), "",
+                "Increase your %s by 1. This card cannot raise the score above %d." % (ability, cap),
+                "%s below %d" % (ability, cap), "",
                 # Her siger rarityen noget: loftet ér graduereringen, så den
                 # trykkes i modsætning til de andre class-kort.
                 False,
@@ -308,12 +308,12 @@ def build() -> list[dict]:
     for s in SKILLS:
         out.append(card(
             "Proficiency: " + s, "Skill", "Skill Proficiency", "uncommon",
-            "Tilføj din proficiency bonus til tjek med " + s + ".",
+            "Add your proficiency bonus to " + s + " checks.",
         ))
         out.append(card(
             "Expertise: " + s, "Skill", "Skill Expertise", "rare",
-            "Fordobl din proficiency bonus med " + s + ".",
-            "Proficiency i " + s,
+            "Double your proficiency bonus for " + s + " checks.",
+            "Proficiency in " + s,
         ))
 
     for name, rarity, desc, summary in PERKS + creature_perks():
