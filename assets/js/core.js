@@ -309,15 +309,15 @@ window.LB = (function () {
         magicChance: 6,
         tierMagic: { chance: [6, 12, 18] },
         tiers: gradedTiers(
-          [card('Kort 1', { common: 100 }),
-           card('Kort 2', { common: 50, uncommon: 50 }),
-           card('Kort 3', { uncommon: 96, rare: 3.7, very_rare: 0.2, legendary: 0.1 })],
-          [card('Kort 1', { common: 20, uncommon: 80 }),
-           card('Kort 2', { uncommon: 80, rare: 20 }),
-           card('Kort 3', { uncommon: 60, rare: 35, very_rare: 4, legendary: 1 })],
-          [card('Kort 1', { common: 25, uncommon: 50, rare: 25 }),
-           card('Kort 2', { uncommon: 75, rare: 25 }),
-           card('Kort 3', { uncommon: 40, rare: 45, very_rare: 12, legendary: 3 })]
+          [card('Card 1', { common: 100 }),
+           card('Card 2', { common: 50, uncommon: 50 }),
+           card('Card 3', { uncommon: 96, rare: 3.7, very_rare: 0.2, legendary: 0.1 })],
+          [card('Card 1', { common: 20, uncommon: 80 }),
+           card('Card 2', { uncommon: 80, rare: 20 }),
+           card('Card 3', { uncommon: 60, rare: 35, very_rare: 4, legendary: 1 })],
+          [card('Card 1', { common: 25, uncommon: 50, rare: 25 }),
+           card('Card 2', { uncommon: 75, rare: 25 }),
+           card('Card 3', { uncommon: 40, rare: 45, very_rare: 12, legendary: 3 })]
         )
       },
       {
@@ -330,15 +330,15 @@ window.LB = (function () {
         magicTypes: onlyTypes('Weapon'),
         tierMagic: { chance: [8, 18, 32] },
         tiers: gradedTiers(
-          [card('Kort 1', { common: 100 }),
-           card('Kort 2', { common: 85, uncommon: 15 }),
-           card('Kort 3', { common: 10, uncommon: 80, rare: 9, very_rare: 1 }, filt(['Våben']))],
-          [card('Kort 1', { common: 70, uncommon: 30 }),
-           card('Kort 2', { common: 50, uncommon: 50 }),
-           card('Kort 3', { uncommon: 65, rare: 30, very_rare: 5 }, filt(['Våben']))],
-          [card('Kort 1', { common: 40, uncommon: 60 }),
-           card('Kort 2', { uncommon: 80, rare: 20 }),
-           card('Kort 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, filt(['Våben']))]
+          [card('Card 1', { common: 100 }),
+           card('Card 2', { common: 85, uncommon: 15 }),
+           card('Card 3', { common: 10, uncommon: 80, rare: 9, very_rare: 1 }, filt(['Våben']))],
+          [card('Card 1', { common: 70, uncommon: 30 }),
+           card('Card 2', { common: 50, uncommon: 50 }),
+           card('Card 3', { uncommon: 65, rare: 30, very_rare: 5 }, filt(['Våben']))],
+          [card('Card 1', { common: 40, uncommon: 60 }),
+           card('Card 2', { uncommon: 80, rare: 20 }),
+           card('Card 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, filt(['Våben']))]
         )
       },
       {
@@ -355,15 +355,15 @@ window.LB = (function () {
         magicTypes: onlyTypes('Armor'),
         tierMagic: { chance: [8, 18, 32] },
         tiers: gradedTiers(
-          [card('Kort 1', { common: 80, uncommon: 20 }),
-           card('Kort 2', { common: 50, uncommon: 50 }),
-           card('Kort 3', { uncommon: 80, rare: 15, very_rare: 4, legendary: 1 }, filt(['Rustning']))],
-          [card('Kort 1', { common: 50, uncommon: 30, rare: 20 }),
-           card('Kort 2', { common: 10, uncommon: 40, rare: 40, very_rare: 10 }),
-           card('Kort 3', { uncommon: 40, rare: 40, very_rare: 15, legendary: 5 }, filt(['Rustning']))],
-          [card('Kort 1', { uncommon: 50, rare: 50 }),
-           card('Kort 2', { rare: 50, very_rare: 50 }),
-           card('Kort 3', { rare: 50, very_rare: 40, legendary: 10 }, filt(['Rustning']))]
+          [card('Card 1', { common: 80, uncommon: 20 }),
+           card('Card 2', { common: 50, uncommon: 50 }),
+           card('Card 3', { uncommon: 80, rare: 15, very_rare: 4, legendary: 1 }, filt(['Rustning']))],
+          [card('Card 1', { common: 50, uncommon: 30, rare: 20 }),
+           card('Card 2', { common: 10, uncommon: 40, rare: 40, very_rare: 10 }),
+           card('Card 3', { uncommon: 40, rare: 40, very_rare: 15, legendary: 5 }, filt(['Rustning']))],
+          [card('Card 1', { uncommon: 50, rare: 50 }),
+           card('Card 2', { rare: 50, very_rare: 50 }),
+           card('Card 3', { rare: 50, very_rare: 40, legendary: 10 }, filt(['Rustning']))]
         )
       },
       {
@@ -380,15 +380,15 @@ window.LB = (function () {
         magicTypes: onlyTypes('Potion', 'Scroll'),
         tierMagic: { chance: [40, 55, 70] },
         tiers: gradedTiers(
-          [card('Kort 1', { common: 100 }),
-           card('Kort 2', { common: 85, uncommon: 15 }),
-           card('Kort 3', { common: 60, uncommon: 35, rare: 5 }, null, null, { chance: 100 })],
-          [card('Kort 1', { common: 70, uncommon: 30 }),
-           card('Kort 2', { common: 50, uncommon: 50 }),
-           card('Kort 3', { common: 20, uncommon: 60, rare: 20 }, null, null, { chance: 100 })],
-          [card('Kort 1', { common: 40, uncommon: 60 }),
-           card('Kort 2', { uncommon: 80, rare: 20 }),
-           card('Kort 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, null, null, { chance: 100 })]
+          [card('Card 1', { common: 100 }),
+           card('Card 2', { common: 85, uncommon: 15 }),
+           card('Card 3', { common: 60, uncommon: 35, rare: 5 }, null, null, { chance: 100 })],
+          [card('Card 1', { common: 70, uncommon: 30 }),
+           card('Card 2', { common: 50, uncommon: 50 }),
+           card('Card 3', { common: 20, uncommon: 60, rare: 20 }, null, null, { chance: 100 })],
+          [card('Card 1', { common: 40, uncommon: 60 }),
+           card('Card 2', { uncommon: 80, rare: 20 }),
+           card('Card 3', { uncommon: 30, rare: 50, very_rare: 17, legendary: 3 }, null, null, { chance: 100 })]
         )
       },
       {
@@ -405,27 +405,27 @@ window.LB = (function () {
         magicChance: 10,
         tierMagic: { chance: [10, 45, 100] },
         tiers: gradedTiers(
-          [card('Kort 1', { common: 78.5, uncommon: 12, rare: 7, very_rare: 2, legendary: 0.5 },
+          [card('Card 1', { common: 78.5, uncommon: 12, rare: 7, very_rare: 2, legendary: 0.5 },
                 null, null, { dist: { common: 85, uncommon: 12, rare: 3 } }),
-           card('Kort 2', { common: 78.5, uncommon: 12, rare: 7, very_rare: 2, legendary: 0.5 },
+           card('Card 2', { common: 78.5, uncommon: 12, rare: 7, very_rare: 2, legendary: 0.5 },
                 null, null, { dist: { common: 85, uncommon: 12, rare: 3 } }),
-           card('Kort 3', { common: 78.5, uncommon: 12, rare: 7, very_rare: 2, legendary: 0.5 },
+           card('Card 3', { common: 78.5, uncommon: 12, rare: 7, very_rare: 2, legendary: 0.5 },
                 null, null,
                 { chance: 100, dist: { common: 78.5, uncommon: 12, rare: 7, very_rare: 2, legendary: 0.5 } })],
-          [card('Kort 1', { common: 10, uncommon: 66, rare: 15, very_rare: 8, legendary: 1 },
+          [card('Card 1', { common: 10, uncommon: 66, rare: 15, very_rare: 8, legendary: 1 },
                 null, null, { dist: { common: 25, uncommon: 60, rare: 12, very_rare: 3 } }),
-           card('Kort 2', { common: 10, uncommon: 66, rare: 15, very_rare: 8, legendary: 1 },
+           card('Card 2', { common: 10, uncommon: 66, rare: 15, very_rare: 8, legendary: 1 },
                 null, null, { dist: { common: 25, uncommon: 60, rare: 12, very_rare: 3 } }),
-           card('Kort 3', { common: 10, uncommon: 66, rare: 15, very_rare: 8, legendary: 1 },
+           card('Card 3', { common: 10, uncommon: 66, rare: 15, very_rare: 8, legendary: 1 },
                 null, null,
                 { chance: 100, dist: { common: 10, uncommon: 66, rare: 15, very_rare: 8, legendary: 1 } })],
           // Guld: alle tre kort er magi. De to første er tungt vægtet mod
           // Common, så pakkens tyngde ligger på kort 3.
-          [card('Kort 1', { common: 100 }, null, null,
+          [card('Card 1', { common: 100 }, null, null,
                 { chance: 100, dist: { common: 60, uncommon: 30, rare: 8, very_rare: 2 } }),
-           card('Kort 2', { common: 100 }, null, null,
+           card('Card 2', { common: 100 }, null, null,
                 { chance: 100, dist: { common: 60, uncommon: 30, rare: 8, very_rare: 2 } }),
-           card('Kort 3', { common: 100 }, null, null,
+           card('Card 3', { common: 100 }, null, null,
                 { chance: 100, dist: { uncommon: 5, rare: 45, very_rare: 35, legendary: 15 } })]
         )
       },
@@ -1341,7 +1341,7 @@ window.LB = (function () {
       var pool = poolFor(items, f, cfg).filter(function (i) { return i.category !== MAGIC_CAT; });
       var weights = settingFor(pack, tierObj, c, 'weights').value;
       var rarity = weightedPick(distFor(pack, tierObj, c));
-      var slot = c.label || ('Kort ' + (idx + 1));
+      var slot = c.label || ('Card ' + (idx + 1));
       if (!rarity) return { slot: slot, item: null, rolled: null, actual: null, poolSize: pool.length };
 
       // Trin 1: bliver kortet magisk?
