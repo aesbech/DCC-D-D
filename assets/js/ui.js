@@ -444,6 +444,20 @@
     ]);
   }
 
+  /* Baggrunde giver én tool proficiency. Den del af en baggrund har kortene
+     ikke et modstykke til — så den ligger på værktøjet selv: finder du et
+     værktøj du ikke kan bruge, kan du lære det. Reglen står på hvert
+     værktøjskort, så den ikke skal huskes udenad. */
+  var TOOL_RULE = 'Har du ikke proficiency, kan du øve dig under en Long Rest og slå ' +
+                  '1d20 + Intelligence. På 15 eller derover får du proficiency med værktøjet.';
+
+  function toolLine(it) {
+    if (it.category !== 'Værktøj') return null;
+    return el('div', { class: 'card-desc' }, [
+      el('b', { text: 'Lær værktøjet: ' }), document.createTextNode(TOOL_RULE)
+    ]);
+  }
+
   /* Der er plads til omkring 950 tegn brødtekst på et 63 × 88 mm kort. Alt
      derover blev klippet af uden at man kunne se det — sætningen sluttede bare
      midt i et ord. Nu skæres teksten ved en sætningsgrænse, med god margen, og
@@ -631,11 +645,14 @@
           var pl = propLine(it); if (pl) kids.push(pl);
         }
         if (it) {
-          // Mastery-reglen står under beskrivelsen og deler pladsen med den.
+          // Mastery-reglen og lær-værktøjet-reglen står under beskrivelsen og
+          // deler pladsen med den.
           var used = it.masteryText ? String(it.masteryText).length + 16 : 0;
+          if (it.category === 'Værktøj') used += TOOL_RULE.length + 16;
           var dl = descLine(it.desc, it.source, TEXT_BUDGET - used);
           if (dl) kids.push(dl);
           var ml = masteryLine(it); if (ml) kids.push(ml);
+          var tl = toolLine(it); if (tl) kids.push(tl);
         }
         if (c.actual && c.rolled && c.actual !== c.rolled)
           kids.push(el('div', { class: 'fallback-note', text: 'Trak ' + C.rarityLabel(c.rolled) + ' — puljen var tom' }));

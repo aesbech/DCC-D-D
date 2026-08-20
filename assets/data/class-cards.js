@@ -3,7 +3,7 @@
 
    Fem korttyper, som hver er kortets kategori: Class, Stat, Feat, Skill,
    Perk. Rarity styrer trækningen, men trykkes ikke på kortene. */
-window.CLASS_CARDS_VERSION = "881c924c9905";
+window.CLASS_CARDS_VERSION = "f84ed7069625";
 window.CLASS_CARDS = [
  {
   "name": "Class Level: Barbarian",
@@ -228,7 +228,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "common",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -246,7 +246,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "uncommon",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -264,7 +264,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "rare",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -282,7 +282,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "very_rare",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -300,7 +300,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "legendary",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -318,7 +318,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "common",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -336,7 +336,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "uncommon",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -354,7 +354,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "rare",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -372,7 +372,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "very_rare",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -390,7 +390,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "legendary",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -408,7 +408,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "common",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -426,7 +426,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "uncommon",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -444,7 +444,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "rare",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -462,7 +462,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "very_rare",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -480,7 +480,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "legendary",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -498,7 +498,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "common",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -516,7 +516,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "uncommon",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -534,7 +534,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "rare",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -552,7 +552,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "very_rare",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -570,7 +570,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "legendary",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -588,7 +588,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "common",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -606,7 +606,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "uncommon",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -624,7 +624,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "rare",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -642,7 +642,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "very_rare",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -660,7 +660,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "legendary",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -678,7 +678,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "common",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -696,7 +696,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "uncommon",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -714,7 +714,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "rare",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -732,7 +732,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "very_rare",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -750,7 +750,7 @@ window.CLASS_CARDS = [
   "price": null,
   "rarity": "legendary",
   "rarityLocked": true,
-  "hideRarity": true,
+  "hideRarity": false,
   "scale": "none",
   "source": "Player's Handbook 2024",
   "tags": [
@@ -1408,60 +1408,6 @@ window.CLASS_CARDS = [
   "prerequisite": "Proficiency i Survival",
   "summary": "",
   "desc": "Fordobl din proficiency bonus med Survival."
- },
- {
-  "name": "Nyt sprog",
-  "category": "Perk",
-  "subcategory": "Perk",
-  "price": null,
-  "rarity": "common",
-  "rarityLocked": true,
-  "hideRarity": true,
-  "scale": "none",
-  "source": "Player's Handbook 2024",
-  "tags": [
-   "Class-kort",
-   "Perk"
-  ],
-  "prerequisite": "",
-  "summary": "Ét sprog",
-  "desc": "Vælg ét sprog. Du taler, læser og skriver det."
- },
- {
-  "name": "Ny tool proficiency",
-  "category": "Perk",
-  "subcategory": "Perk",
-  "price": null,
-  "rarity": "common",
-  "rarityLocked": true,
-  "hideRarity": true,
-  "scale": "none",
-  "source": "Player's Handbook 2024",
-  "tags": [
-   "Class-kort",
-   "Perk"
-  ],
-  "prerequisite": "",
-  "summary": "Ét værktøj",
-  "desc": "Vælg ét sæt Artisan's Tools. Du får proficiency med det."
- },
- {
-  "name": "Nyt instrument",
-  "category": "Perk",
-  "subcategory": "Perk",
-  "price": null,
-  "rarity": "common",
-  "rarityLocked": true,
-  "hideRarity": true,
-  "scale": "none",
-  "source": "Player's Handbook 2024",
-  "tags": [
-   "Class-kort",
-   "Perk"
-  ],
-  "prerequisite": "",
-  "summary": "Ét instrument",
-  "desc": "Vælg ét Musical Instrument. Du får proficiency med det."
  },
  {
   "name": "Ekstra Hit Die",

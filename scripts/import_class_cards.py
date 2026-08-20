@@ -168,14 +168,10 @@ SKILLS = [
 # Perks er husets egne. De ligger uden for D&D's fem kategorier og er det
 # sted hvor dungeon'et kan give noget der ikke findes i regelbogen — derfor
 # står de her og ikke i en kildefil. Byt frit ud.
+# Værktøjs- og sprogperks er væk: en baggrunds tool proficiency ligger nu som
+# en regel på selve værktøjskortet, hvor man kan slå for at lære det.
 PERKS = [
-    # Træning: små, konkrete udvidelser man kan skrive på arket med det samme.
-    ("Nyt sprog", "common",
-     "Vælg ét sprog. Du taler, læser og skriver det.", "Ét sprog"),
-    ("Ny tool proficiency", "common",
-     "Vælg ét sæt Artisan's Tools. Du får proficiency med det.", "Ét værktøj"),
-    ("Nyt instrument", "common",
-     "Vælg ét Musical Instrument. Du får proficiency med det.", "Ét instrument"),
+    # Kroppen: små, konkrete udvidelser man kan skrive på arket med det samme.
     ("Ekstra Hit Die", "common",
      "Du får ét ekstra Hit Die af din klasses type. Det genvindes som de andre.",
      "+1 Hit Die"),
@@ -263,7 +259,8 @@ def creature_perks():
     return out
 
 
-def card(name, category, subcategory, rarity, desc, prerequisite="", summary=""):
+def card(name, category, subcategory, rarity, desc, prerequisite="", summary="",
+         hide_rarity=True):
     return {
         "name": name,
         "category": category,
@@ -274,7 +271,7 @@ def card(name, category, subcategory, rarity, desc, prerequisite="", summary="")
         # Rarity styrer trækningen, men den siger ikke noget brugbart på et
         # class-kort: alle class levels er lige sandsynlige, og et attributkorts
         # loft står i navnet. Derfor trykkes den ikke.
-        "hideRarity": True,
+        "hideRarity": hide_rarity,
         "scale": "none",
         "source": SOURCE,
         "tags": ["Class-kort", category],
@@ -300,7 +297,10 @@ def build() -> list[dict]:
             out.append(card(
                 "%s +1 (til maks. %d)" % (ability, cap), "Stat", "Attribute", rarity,
                 "Hæv din %s med 1. Kortet kan ikke hæve scoren over %d." % (ability, cap),
-                "%s under %d" % (ability, cap),
+                "%s under %d" % (ability, cap), "",
+                # Her siger rarityen noget: loftet ér graduereringen, så den
+                # trykkes i modsætning til de andre class-kort.
+                False,
             ))
 
     for s in SKILLS:
