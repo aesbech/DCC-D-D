@@ -189,6 +189,19 @@ window.LB = (function () {
     return false;
   }
 
+  /* Et vægtsæt hvor hver eneste mulige gruppe står på nul er ikke et valg —
+     det er en tom hat. En manglende nøgle tæller som ét lod, så {Potion: 0}
+     betyder stadig "alt andet end potions" og er sat. Det er kun det
+     gennemførte nul over hele universet der er tomt. */
+  function allZero(w, universe) {
+    if (!w || typeof w !== 'object') return false;
+    for (var i = 0; i < universe.length; i++)
+      if ((Number(w[universe[i]]) || 0) !== 0) return false;
+    for (i = 0; i < universe.length; i++)
+      if (w[universe[i]] === undefined) return false;
+    return true;
+  }
+
   /* Alle fem indstillinger arver efter samme regel: kort slår tier, tier slår
      pakke. Den står ét sted, så de fem felter ikke kan komme til at opføre sig
      forskelligt — og UI'et bruger den samme, så det viser det trækningen gør.
@@ -204,6 +217,11 @@ window.LB = (function () {
       if (v === null || v === undefined) continue;
       // En fordeling med lutter nuller er ikke et valg, det er et urørt felt.
       if (field === 'dist' && !hasDist(v)) continue;
+      // Samme regel for vægtene. Er hver eneste gruppe sat til nul, er der
+      // ingen lodder i hatten: et magic item-kort ville falde tilbage til
+      // udstyrssiden uden at sige det. Så arver vi hellere niveauet ovenover.
+      if (field === 'magicTypes' && allZero(v, MAGIC_TYPES)) continue;
+      if (field === 'weights' && allZero(v, GEAR)) continue;
       return { level: levels[i][0], value: v };
     }
     return { level: null, value: null };
@@ -252,12 +270,16 @@ window.LB = (function () {
      magi har sin egen pulje og sin egen chance. Filteret er udstyrssiden. */
   var GEAR = ['Ammunition', 'Gift', 'Rustning', 'Udstyr', 'Våben', 'Værktøj'];
 
+  /* D&D's ni magic item-typer. Vægtes de alle sammen til nul, er der intet at
+     trække — se allZero. */
+  var MAGIC_TYPES = ['Armor', 'Potion', 'Ring', 'Rod', 'Scroll', 'Staff', 'Wand',
+                     'Weapon', 'Wondrous Item'];
+
   /* Kun én type magi må falde: alle andre sættes til 0. */
   function onlyTypes() {
     var allow = Array.prototype.slice.call(arguments);
     var out = {};
-    ['Armor', 'Potion', 'Ring', 'Rod', 'Scroll', 'Staff', 'Wand', 'Weapon', 'Wondrous Item']
-      .forEach(function (t) { if (allow.indexOf(t) < 0) out[t] = 0; });
+    MAGIC_TYPES.forEach(function (t) { if (allow.indexOf(t) < 0) out[t] = 0; });
     return out;
   }
 
@@ -280,10 +302,10 @@ window.LB = (function () {
               'Fokus, køretøjer, ridedyr og udstyrspakker er valgt fra. Hvert kort har en ' +
               'chance for at blive et magic item i stedet; hvor godt det er, følger den ' +
               'fælles korttrin-tabel under fanen Magic.',
-        // Lodder pr. kategori: elleve i alt, så tallene er andelen direkte.
-        // Udstyr og våben deler hovedparten; rustning holdes nede, fordi der
-        // kun er fjorten af dem og en hel pakke findes til dem.
-        weights: { 'Udstyr': 3, 'Våben': 3, 'Værktøj': 2, 'Rustning': 1, 'Ammunition': 1, 'Gift': 1 },
+        // Lodder pr. kategori. De kategorier der ikke står her har ét lod
+        // hver, så tyve på udstyr og fem på værktøj gør pakken til det den
+        // hedder: mest almindeligt grej, med et stænk af resten.
+        weights: { 'Udstyr': 20, 'Værktøj': 5 },
         magicChance: 6,
         tierMagic: { chance: [6, 12, 18] },
         tiers: gradedTiers(
@@ -376,7 +398,10 @@ window.LB = (function () {
               'i Bronze er de mest udstyr, i Sølv omtrent fifty-fifty, og i Guld er de også ' +
               'altid magi. Hvert kort sætter selv hvor godt magic itemet er, i stedet for at ' +
               'gå gennem den fælles tabel.',
-        weights: { 'Udstyr': 3, 'Våben': 3, 'Værktøj': 2, 'Rustning': 1, 'Ammunition': 1, 'Gift': 1 },
+        // Udstyrssiden i denne pakke er kun det man kan få i stedet for magi,
+        // så den læner mod det der ligner et magic item: rustning, våben og
+        // ammunition frem for lygter og reb.
+        weights: { 'Våben': 2, 'Rustning': 4, 'Ammunition': 2 },
         magicChance: 10,
         tierMagic: { chance: [10, 45, 100] },
         tiers: gradedTiers(
@@ -408,24 +433,27 @@ window.LB = (function () {
         id: 'classes', name: 'Classes', filter: filt(['Class', 'Stat', 'Feat', 'Skill', 'Perk']),
         note: 'Pakkes i guldgult papir, forseglet med sort voks — Classes står uden for ' +
               'bronze/sølv/guld. Ikke gradueret — ét tier. Hver kortplads beder om sin egen ' +
-              'korttype som kategori: Class, Stat, Feat, Skill og Perk. Rarity styrer ' +
-              'trækningen, men trykkes ikke på kortene — loftet står i navnet på et ' +
-              'attributkort, og alle class levels er lige sandsynlige. Feat- og ' +
-              'Skill-kortene findes, men har ingen plads endnu — tilføj et kort.',
+              'korttype som kategori: Class, Feat og Stat. Rarity styrer trækningen og ' +
+              'trykkes kun på attributkortene, hvor den ér loftet — alle class levels er ' +
+              'lige sandsynlige, og et feats reelle begrænsning er dets krav. Skill- og ' +
+              'Perk-kortene findes, men har ingen plads endnu — tilføj et kort.',
         tiers: [tier('standard', 'Standard', [
           // Fordelingerne matcher hver types faktiske rarities, så der hverken
           // bliver fallback eller tomme kort.
           // Alle tolv class levels deler rarity — de er lige sandsynlige, og
           // hvilken klasse man trækker er hele pointen.
+          // Alle tolv class levels er Common, så en femdeling ville betyde det
+          // samme — bare med "puljen var tom" på fire ud af fem kort.
           card('Class', { common: 100 }, classFilter('Class')),
-          // Perks findes nu på alle fem trin, fra "ét sprog" til "+1 AC", så
-          // fordelingen skal spænde hele vejen.
-          card('Perk', { common: 20, uncommon: 38, rare: 27, very_rare: 11, legendary: 4 },
-               classFilter('Perk')),
+          // Feats: jævnt fordelt over trinnene. Der findes ingen Very Rare
+          // feat, så den femtedel glider til nabotrinnet — i praksis flere
+          // rare general feats og epic boons.
+          card('Feat', { common: 20, uncommon: 20, rare: 20, very_rare: 20, legendary: 20 },
+               classFilter('Feat')),
           // Attributkortene er graduerede: rarityen er loftet. Et Common-kort
           // hæver kun til 13 og er derfor hverdagskost; kortet der når 20 er
           // sjældent. Fordelingen skal derfor spænde over alle fem trin.
-          card('Stat', { common: 45, uncommon: 28, rare: 16, very_rare: 8, legendary: 3 },
+          card('Stat', { common: 50, uncommon: 30, rare: 11, very_rare: 6, legendary: 3 },
                classFilter('Stat'))
         ])]
       }
@@ -472,7 +500,7 @@ window.LB = (function () {
     packs.forEach(function (p) { if (!p.weights) p.weights = {}; });
 
     return {
-      version: 8,
+      version: 9,
       scales: defaultScales(),
       noDuplicates: true,
       fallback: 'nearest',
@@ -745,7 +773,56 @@ window.LB = (function () {
       });
     }
 
-    cfg.version = 8;
+    /* v9 reparerer tre ting som tidligere migreringer efterlod stumme. De er
+       alle tre kendetegnet ved at pakken bliver ved med at virke — den giver
+       bare noget andet end den siger, hvilket er værre end en fejl. */
+    if ((cfg.version || 0) < 9) {
+      cfg.packs.forEach(function (p) {
+        var dp = null;
+        def.packs.forEach(function (x) { if (x.id === p.id) dp = x; });
+
+        // 1) En typevægtning hvor alle ni typer står på nul er en tom hat.
+        //    Kortet kunne ikke trække magi og faldt tilbage til udstyr uden
+        //    at sige det. Nulstil den, så niveauet ovenover gælder igen.
+        [p].concat(p.tiers, p.tiers.reduce(function (a, t) {
+          return a.concat(t.cards);
+        }, [])).forEach(function (o) {
+          if (allZero(o.magicTypes, MAGIC_TYPES)) o.magicTypes = null;
+        });
+
+        if (!dp) return;
+
+        // 2) Chancen for magi lå på pakken i de indbyggede pakker, men gik
+        //    tabt for opsætninger der blev migreret undervejs. Står der intet
+        //    på hverken pakke eller tier, kunne alle kort uden deres egen
+        //    chance aldrig blive magiske — så hentes standarden ind igen.
+        //    Kortenes egne tal røres ikke; de vinder stadig.
+        var anyChance = typeof p.magicChance === 'number' ||
+          p.tiers.some(function (t) { return typeof t.magicChance === 'number'; });
+        if (!anyChance && typeof dp.magicChance === 'number') {
+          p.magicChance = dp.magicChance;
+          p.tiers.forEach(function (t, ti) {
+            if (dp.tiers[ti] && typeof dp.tiers[ti].magicChance === 'number')
+              t.magicChance = dp.tiers[ti].magicChance;
+          });
+        }
+
+        // Typelåsen gik samme vej. Uden den deler våbenpakken ringe ud, og
+        // Consumables giver andet end potions og scrolls.
+        var anyTypes = !!p.magicTypes || p.tiers.some(function (t) { return !!t.magicTypes; });
+        if (!anyTypes && dp.magicTypes) p.magicTypes = JSON.parse(JSON.stringify(dp.magicTypes));
+
+        // 3) Consumables-filteret var en union: Gift eller alt med tagget
+        //    Consumable. Tags forsvandt i v7, og tilbage stod kun Gift — så
+        //    pakken delte ren gift ud. Filteret siger nu det samme uden tags.
+        if (p.id === 'consumables' && p.filter.consumables === 'all' &&
+            p.filter.categories.length === 1 && p.filter.categories[0] === 'Gift') {
+          p.filter = JSON.parse(JSON.stringify(dp.filter));
+        }
+      });
+    }
+
+    cfg.version = 9;
     return cfg;
   }
 

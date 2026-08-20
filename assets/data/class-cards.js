@@ -3,7 +3,7 @@
 
    Fem korttyper, som hver er kortets kategori: Class, Stat, Feat, Skill,
    Perk. Rarity styrer trækningen, men trykkes ikke på kortene. */
-window.CLASS_CARDS_VERSION = "f84ed7069625";
+window.CLASS_CARDS_VERSION = "e23257cdd647";
 window.CLASS_CARDS = [
  {
   "name": "Class Level: Barbarian",
@@ -222,7 +222,7 @@ window.CLASS_CARDS = [
   "desc": "Tag et level i Wizard. Kræver at du har et level up til rådighed."
  },
  {
-  "name": "Strength +1 (til maks. 13)",
+  "name": "Strength +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -240,7 +240,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Strength med 1. Kortet kan ikke hæve scoren over 13."
  },
  {
-  "name": "Strength +1 (til maks. 15)",
+  "name": "Strength +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -258,7 +258,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Strength med 1. Kortet kan ikke hæve scoren over 15."
  },
  {
-  "name": "Strength +1 (til maks. 17)",
+  "name": "Strength +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -276,7 +276,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Strength med 1. Kortet kan ikke hæve scoren over 17."
  },
  {
-  "name": "Strength +1 (til maks. 19)",
+  "name": "Strength +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -294,7 +294,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Strength med 1. Kortet kan ikke hæve scoren over 19."
  },
  {
-  "name": "Strength +1 (til maks. 20)",
+  "name": "Strength +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -312,7 +312,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Strength med 1. Kortet kan ikke hæve scoren over 20."
  },
  {
-  "name": "Dexterity +1 (til maks. 13)",
+  "name": "Dexterity +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -330,7 +330,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Dexterity med 1. Kortet kan ikke hæve scoren over 13."
  },
  {
-  "name": "Dexterity +1 (til maks. 15)",
+  "name": "Dexterity +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -348,7 +348,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Dexterity med 1. Kortet kan ikke hæve scoren over 15."
  },
  {
-  "name": "Dexterity +1 (til maks. 17)",
+  "name": "Dexterity +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -366,7 +366,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Dexterity med 1. Kortet kan ikke hæve scoren over 17."
  },
  {
-  "name": "Dexterity +1 (til maks. 19)",
+  "name": "Dexterity +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -384,7 +384,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Dexterity med 1. Kortet kan ikke hæve scoren over 19."
  },
  {
-  "name": "Dexterity +1 (til maks. 20)",
+  "name": "Dexterity +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -402,7 +402,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Dexterity med 1. Kortet kan ikke hæve scoren over 20."
  },
  {
-  "name": "Constitution +1 (til maks. 13)",
+  "name": "Constitution +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -420,7 +420,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Constitution med 1. Kortet kan ikke hæve scoren over 13."
  },
  {
-  "name": "Constitution +1 (til maks. 15)",
+  "name": "Constitution +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -438,7 +438,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Constitution med 1. Kortet kan ikke hæve scoren over 15."
  },
  {
-  "name": "Constitution +1 (til maks. 17)",
+  "name": "Constitution +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -456,7 +456,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Constitution med 1. Kortet kan ikke hæve scoren over 17."
  },
  {
-  "name": "Constitution +1 (til maks. 19)",
+  "name": "Constitution +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -474,7 +474,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Constitution med 1. Kortet kan ikke hæve scoren over 19."
  },
  {
-  "name": "Constitution +1 (til maks. 20)",
+  "name": "Constitution +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -492,7 +492,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Constitution med 1. Kortet kan ikke hæve scoren over 20."
  },
  {
-  "name": "Intelligence +1 (til maks. 13)",
+  "name": "Intelligence +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -510,7 +510,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Intelligence med 1. Kortet kan ikke hæve scoren over 13."
  },
  {
-  "name": "Intelligence +1 (til maks. 15)",
+  "name": "Intelligence +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -528,7 +528,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Intelligence med 1. Kortet kan ikke hæve scoren over 15."
  },
  {
-  "name": "Intelligence +1 (til maks. 17)",
+  "name": "Intelligence +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -546,7 +546,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Intelligence med 1. Kortet kan ikke hæve scoren over 17."
  },
  {
-  "name": "Intelligence +1 (til maks. 19)",
+  "name": "Intelligence +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -564,7 +564,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Intelligence med 1. Kortet kan ikke hæve scoren over 19."
  },
  {
-  "name": "Intelligence +1 (til maks. 20)",
+  "name": "Intelligence +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -582,7 +582,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Intelligence med 1. Kortet kan ikke hæve scoren over 20."
  },
  {
-  "name": "Wisdom +1 (til maks. 13)",
+  "name": "Wisdom +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -600,7 +600,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Wisdom med 1. Kortet kan ikke hæve scoren over 13."
  },
  {
-  "name": "Wisdom +1 (til maks. 15)",
+  "name": "Wisdom +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -618,7 +618,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Wisdom med 1. Kortet kan ikke hæve scoren over 15."
  },
  {
-  "name": "Wisdom +1 (til maks. 17)",
+  "name": "Wisdom +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -636,7 +636,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Wisdom med 1. Kortet kan ikke hæve scoren over 17."
  },
  {
-  "name": "Wisdom +1 (til maks. 19)",
+  "name": "Wisdom +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -654,7 +654,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Wisdom med 1. Kortet kan ikke hæve scoren over 19."
  },
  {
-  "name": "Wisdom +1 (til maks. 20)",
+  "name": "Wisdom +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -672,7 +672,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Wisdom med 1. Kortet kan ikke hæve scoren over 20."
  },
  {
-  "name": "Charisma +1 (til maks. 13)",
+  "name": "Charisma +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -690,7 +690,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Charisma med 1. Kortet kan ikke hæve scoren over 13."
  },
  {
-  "name": "Charisma +1 (til maks. 15)",
+  "name": "Charisma +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -708,7 +708,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Charisma med 1. Kortet kan ikke hæve scoren over 15."
  },
  {
-  "name": "Charisma +1 (til maks. 17)",
+  "name": "Charisma +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -726,7 +726,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Charisma med 1. Kortet kan ikke hæve scoren over 17."
  },
  {
-  "name": "Charisma +1 (til maks. 19)",
+  "name": "Charisma +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,
@@ -744,7 +744,7 @@ window.CLASS_CARDS = [
   "desc": "Hæv din Charisma med 1. Kortet kan ikke hæve scoren over 19."
  },
  {
-  "name": "Charisma +1 (til maks. 20)",
+  "name": "Charisma +1",
   "category": "Stat",
   "subcategory": "Attribute",
   "price": null,

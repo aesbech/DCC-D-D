@@ -344,6 +344,8 @@ pakken åbnes ved at brække seglet — bruddet skal ikke rive det øverste kort
 | Magic | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 167 | 10–100 %, alle typer | et magic item |
 | Classes | Class, Stat, Feat, Skill, Perk | 186 | — | (ikke gradueret) |
 
+Adventurer og Magic vægter udstyrssiden hver sin vej — se afsnittet om vægtning.
+
 Alle undtagen Classes har Bronze / Sølv / Guld. Puljetallet er udstyrssiden; magisiden er
 de 450 magic items, som trækkes for sig når chancen siger ja. I alt 806 items.
 
@@ -392,21 +394,37 @@ Vægtene ligger i **Flowet** — *Hvilken type* på begge grene — og findes p�
 kort. Ja-grenen bruger magic itemets type i stedet for kategorien; samme greb, samme
 procenter ved siden af.
 
-Adventurer kører ét sæt hele vejen igennem — elleve lodder, så tallene er andelen direkte:
+**Kategorier du ikke nævner har ét lod hver.** Det er dét der gør vægtene korte at skrive:
+i Adventurer står der kun to tal, og resten følger med af sig selv.
+
+Adventurer kører ét sæt hele vejen igennem — 29 lodder i alt:
 
 | Kategori | Lodder | Andel | Målt, Bronze | Målt, Guld |
 |----------|-------:|------:|-------------:|-----------:|
-| Udstyr | 3 | 27 % | 30 % | 26 % |
-| Våben | 3 | 27 % | 30 % | 25 % |
-| Værktøj | 2 | 18 % | 20 % | 17 % |
-| Rustning | 1 | 9 % | 5 % | 8 % |
-| Ammunition | 1 | 9 % | 9 % | 5 % |
-| Gift | 1 | 9 % | 0 % | 0 % |
+| Udstyr | 20 | 69 % | 70 % | 59 % |
+| Værktøj | 5 | 17 % | 17 % | 15 % |
+| Våben | *1* | 3 % | 3 % | 3 % |
+| Rustning | *1* | 3 % | 1 % | 2 % |
+| Ammunition | *1* | 3 % | 3 % | 2 % |
+| Gift | *1* | 3 % | 0 % | 1 % |
 
-De målte tal ligger tæt på lodderne, og hvor de afviger er det fordi gruppen mangler items
-ved den rarity kortet beder om: der findes ingen Common-rustning og ingen billig gift, så
-de grupper er slet ikke i hatten på de lave trin. Det er meningen — et lod på en tom hylde
-ville bare give tomme kort.
+De kursiverede står ikke i opsætningen; de er det underforståede ene lod. De målte tal på
+Guld ligger lavere hele vejen ned, fordi magi tager 18 % af pladserne dér.
+
+Magic-pakken vægter modsat. Dens udstyrsside er kun det man kan få *i stedet for* magi, så
+den læner mod det der ligner et magic item — `Våben 2, Rustning 4, Ammunition 2`, og
+Udstyr, Værktøj og Gift på deres ene lod.
+
+Hvor de målte tal afviger fra lodderne, er det fordi gruppen mangler items ved den rarity
+kortet beder om: der findes ingen Common-rustning og ingen billig gift, så de grupper er
+slet ikke i hatten på de lave trin. Det er meningen — et lod på en tom hylde ville bare
+give tomme kort.
+
+**Alt vægtet til nul er ikke et valg, det er en tom hat.** Sætter man hver eneste gruppe
+til 0, er der intet at trække, og kortet ville falde tilbage til den anden gren uden at
+sige det. Derfor tæller et gennemført nul som "ikke sat", og niveauet ovenover gælder —
+samme regel som en rarity-fordeling med lutter nuller. `Potion 0` alene betyder stadig
+"alt andet end potions".
 
 ### Ét garanteret kort pr. pakke
 
@@ -825,6 +843,8 @@ kortplads kan bede om præcis én type med et almindeligt filter:
 | **Skill** | Proficiency og expertise i de 18 færdigheder | 36 | Uncommon, Rare |
 | **Perk** | Mekaniske fordele udenfor de fire ovenstående (homebrew) | 31 | Common → Legendary |
 
+Classes-pakken trækker Class, Feat og Stat; Skill og Perk ligger klar uden en plads.
+
 **Rarity trykkes kun der hvor den betyder noget.** På class levels, feats, skills og perks
 styrer den trækningen, men siger intet brugbart på selve kortet — alle class levels er lige
 sandsynlige, og et feats reelle begrænsning er dets krav. **Attributkortene viser den**,
@@ -837,17 +857,19 @@ item, ikke som en regel om kategorien.
 Et attributkort hæver altid med **1**. Det der er gradueret, er hvor højt det må hæve — og
 det er dét rarityen betyder:
 
-| Rarity | Kort | Værd for |
-|--------|------|----------|
-| Common | `Strength +1 (til maks. 13)` | en der står lavt |
-| Uncommon | `Strength +1 (til maks. 15)` | |
-| Rare | `Strength +1 (til maks. 17)` | |
-| Very Rare | `Strength +1 (til maks. 19)` | |
-| Legendary | `Strength +1 (til maks. 20)` | det eneste kort der når 20 |
+| Rarity | Loft | Værd for |
+|--------|-----:|----------|
+| Common | 13 | en der står lavt |
+| Uncommon | 15 | |
+| Rare | 17 | |
+| Very Rare | 19 | |
+| Legendary | 20 | det eneste kort der når 20 |
 
-Seks evner gange fem lofter giver 30 kort. Loftet står i navnet, så to kort aldrig kan
-forveksles på bordet, og kravet står som `Krav: Strength under 13`. Stat-pladsens fordeling
-spænder derfor over alle fem trin: 45 / 28 / 16 / 8 / 3 %.
+Seks evner gange fem lofter giver 30 kort. Kortet hedder bare **`Strength +1`** — loftet
+ville stå tre gange på samme kort, så det står de to steder hvor det gør arbejde: som
+`Krav: Strength under 13` øverst og i regelteksten. Rarityen på bundlinjen er den tredje
+læsning af det samme, for her *er* trinnet loftet. Stat-pladsens fordeling spænder over
+alle fem trin: 50 / 30 / 11 / 6 / 3 %.
 
 ### Feats bærer deres krav
 
@@ -906,9 +928,19 @@ Perk-pladsens fordeling spænder derfor over alle fem trin: 20 / 38 / 27 / 11 / 
 
 ### Pladserne
 
-Pakken har tre kortpladser — én Class, én Perk, én Stat. **Feat- og Skill-kortene har ingen
-plads endnu.** De ligger klar med 77 og 36 kort; vil du have dem med, så tilføj et kort på
-tieren og vælg kategorien.
+Pakken har tre kortpladser — én **Class**, én **Feat**, én **Stat**. Det er de tre dele af
+en baggrund som pakken selv skal levere; færdigheder og perks findes som kort, men har
+ingen plads endnu. Vil du have dem med, så tilføj et kort på tieren og vælg kategorien.
+
+| Plads | Fordeling | Hvad der faktisk falder |
+|-------|-----------|-------------------------|
+| Class | 100 % Common | alle tolv class levels er Common, så alle er lige sandsynlige |
+| Feat | 20 % pr. trin | 20 % origin · 20 % fighting style · 39 % general · 21 % epic boon |
+| Stat | 50 / 30 / 11 / 6 / 3 | loftet følger trinnet: 13 · 15 · 17 · 19 · 20 |
+
+Feat-pladsen beder om en femtedel Very Rare, og **der findes ingen Very Rare feat** — den
+femtedel glider til nabotrinnet, hvilket er hvorfor general feats lander på 39 % og epic
+boons på 21 %. Vil du have epic boons sjældnere, er det Legendary-tallet der skal ned.
 
 Class-kortenes fem kategorier står på listen over kategorier der aldrig trækkes af en pakke
 uden filter — så de ikke lækker ind i Adventurer-pakken.
@@ -999,6 +1031,26 @@ Den gemte kopi opdateres automatisk når datafilerne i repoet er nyere, med ét 
 fortryde. Vil man ud af den manuelt, ligger der to knapper under Indstillinger:
 **Hent data forfra** kasserer items og beholder pakkerne, og **Ryd alt** sletter appens
 fem nøgler og genindlæser siden.
+
+### Opsætningen migreres, ikke overskrives
+
+Pakkeopsætningen bærer et versionsnummer (nu **9**), og en gemt opsætning løftes op til
+det nyeste ved indlæsning. Det er dét der gør at man kan tilpasse pakkerne uden at miste
+tilpasningerne næste gang appen ændrer sig — men det betyder også at **nye standardværdier
+ikke automatisk gælder for en opsætning der allerede er gemt**. Vil du have de nye
+pakkeindstillinger som de står i koden, skal du trykke **Ryd alt**.
+
+Migreringen retter kun det den kan se er gået tabt, og kun på de indbyggede pakker. v9
+reparerer tre ting som tidligere trin efterlod stumme — pakken blev ved med at virke, den
+gav bare noget andet end den lovede:
+
+| Symptom | Årsag | Hvad v9 gør |
+|---------|-------|-------------|
+| Pakken gav aldrig magi | chancen forsvandt da magi fik sin egen gren | henter standardchancen tilbage, hvis der ikke står en på hverken pakke eller tier |
+| Weapons delte ringe ud | typelåsen forsvandt samme vej | sætter låsen igen (`kun Weapon`, `kun Armor`, `kun Potion og Scroll`) |
+| Consumables gav ren gift | union-filteret `Gift eller Consumable` mistede sin tag-halvdel da tags røg ud | sætter filteret til forbrugsvarer igen |
+
+Kortenes egne tal røres ikke i nogen af tilfældene — de vinder stadig over pakke og tier.
 
 ## Filer
 
