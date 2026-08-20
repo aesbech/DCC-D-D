@@ -295,7 +295,9 @@ def build() -> list[dict]:
     for ability in ABILITIES:
         for rarity, cap in STAT_CAPS:
             out.append(card(
-                "%s +1 (til maks. %d)" % (ability, cap), "Stat", "Attribute", rarity,
+                # Loftet står som krav og i beskrivelsen — titlen skal bare
+                # sige hvad kortet er.
+                "%s +1" % ability, "Stat", "Attribute", rarity,
                 "Hæv din %s med 1. Kortet kan ikke hæve scoren over %d." % (ability, cap),
                 "%s under %d" % (ability, cap), "",
                 # Her siger rarityen noget: loftet ér graduereringen, så den
