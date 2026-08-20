@@ -20,7 +20,7 @@ Denne fil handler kun om generatoren.
 mappe `/ (root)`), eller **GitHub Actions** — så bruges workflowen i
 `.github/workflows/pages.yml`, der deployer ved hvert push til `main`.
 
-Første gang siden åbnes, indlæses de 216 udstyrsitems, 189 Class-kort og 450 magic items automatisk.
+Første gang siden åbnes, indlæses de 216 udstyrsitems, 186 Class-kort og 450 magic items automatisk.
 
 ## Data
 
@@ -28,7 +28,7 @@ Første gang siden åbnes, indlæses de 216 udstyrsitems, 189 Class-kort og 450 
 |-----|---------|
 | `data/dnd_items.xlsx` | Dit originale regneark — kilden til alt udstyr |
 | `assets/data/items.js` | 216 items: 214 fra arket `Alle items` plus to ammunitionsrækker arket mangler |
-| `assets/data/class-cards.js` | 189 Class-kort i fem typer (Class, Stat, Feat, Skill, Perk) |
+| `assets/data/class-cards.js` | 186 Class-kort i fem typer (Class, Stat, Feat, Skill, Perk) |
 | `assets/data/magic-items.js` | 450 magic items, heraf 9 tomes vi selv genererer |
 | `assets/data/spells.js` | 202 spells fra D&D Beyond, fordelt på niveau 0–9 |
 | `scripts/import_xlsx.py` | Konverterer regnearket til `items.js` |
@@ -342,7 +342,7 @@ pakken åbnes ved at brække seglet — bruddet skal ikke rive det øverste kort
 | Armor | Rustning, Udstyr | 78 | 8–32 %, kun Armor | en rustning |
 | Consumables | alle kategorier, kun forbrugsvarer | 23 | 40–100 %, Potion og Scroll | en magisk forbrugsvare |
 | Magic | Udstyr, Våben, Rustning, Værktøj, Gift, Ammunition | 167 | 10–100 %, alle typer | et magic item |
-| Classes | Class, Stat, Feat, Skill, Perk | 189 | — | (ikke gradueret) |
+| Classes | Class, Stat, Feat, Skill, Perk | 186 | — | (ikke gradueret) |
 
 Alle undtagen Classes har Bronze / Sølv / Guld. Puljetallet er udstyrssiden; magisiden er
 de 450 magic items, som trækkes for sig når chancen siger ja. I alt 806 items.
@@ -510,6 +510,21 @@ korttrin de lander på, følger af oversættelsen:
 
 De mindste kommer helt ned på Rare-kort, de største kræver de høje trin — uden særregler,
 fordi oversættelsen gør arbejdet.
+
+### Værktøj lærer man undervejs
+
+Et værktøjskort er ingen hjælp hvis man ikke må bruge det, og ingen pakke deler
+proficiencies ud. Derfor bærer **alle 35 værktøjskort deres egen regel** nederst på kortet:
+
+> **Lær værktøjet:** Har du ikke proficiency, kan du øve dig under en Long Rest og slå
+> 1d20 + Intelligence. På 15 eller derover får du proficiency med værktøjet.
+
+Det er den eneste del af "Parts of a Background" der ikke allerede har et kort — ability
+scores er Stat-kortene, feat'et er Origin-feats, færdighederne er Skill-kortene og udstyret
+er hele resten af pakkerne. Tool proficiency var det sidste hul, og det lukkes med et slag
+i stedet for et kort. Reglen står i `TOOL_RULE` i `assets/js/ui.js` og trykkes automatisk
+på alt i kategorien `Værktøj`; teksten er trukket fra kortets tekstbudget, så beskrivelsen
+beskæres i stedet for at flyde ud over kortet.
 
 ### Armor er en tynd hylde
 
@@ -808,12 +823,14 @@ kortplads kan bede om præcis én type med et almindeligt filter:
 | **Stat** | Attribut +1, gradueret efter loft | 30 | Common → Legendary |
 | **Feat** | Origin feats, fighting styles, general feats, epic boons | 77 | Common → Legendary |
 | **Skill** | Proficiency og expertise i de 18 færdigheder | 36 | Uncommon, Rare |
-| **Perk** | Mekaniske fordele udenfor de fire ovenstående (homebrew) | 34 | Common → Legendary |
+| **Perk** | Mekaniske fordele udenfor de fire ovenstående (homebrew) | 31 | Common → Legendary |
 
-**Rarity trykkes ikke på class-kortene.** Den styrer trækningen, men den siger ikke noget
-brugbart på selve kortet: alle class levels er lige sandsynlige, og et attributkorts loft
-står i navnet. Kortene har heller ingen pris, så bundlinjen udgår helt og pladsen går til
-reglen. Det sættes med `hideRarity` på itemet, ikke som en regel om kategorien.
+**Rarity trykkes kun der hvor den betyder noget.** På class levels, feats, skills og perks
+styrer den trækningen, men siger intet brugbart på selve kortet — alle class levels er lige
+sandsynlige, og et feats reelle begrænsning er dets krav. **Attributkortene viser den**,
+fordi rarityen dér *er* kortets styrke: den er loftet. Kortene har ingen pris, så
+bundlinjen udgår og pladsen går til reglen. Det sættes med `hideRarity` på det enkelte
+item, ikke som en regel om kategorien.
 
 ### Attributkort er graduerede
 
@@ -859,11 +876,16 @@ Perks ligger uden for D&D's fem kategorier. Det er stedet hvor dungeon'et kan gi
 der ikke findes i regelbogen, så de er formuleret i importscriptet og ikke i en kildefil —
 byt frit ud.
 
-**22 almindelige perks**, gradueret fra et sprog til +1 AC:
+De tre perks der bare gav en proficiency — nyt sprog, nyt instrument, nyt værktøj — er
+taget ud igen. Værktøjet lærer man nu ved et slag på selve værktøjskortet, og resten af
+baggrunden dækkes af Stat-, Feat- og Skill-kortene. Tilbage står kun det regelbogen ikke
+har et sted til.
+
+**19 almindelige perks**, gradueret fra et ekstra Hit Die til +1 AC:
 
 | Rarity | Eksempler |
 |--------|-----------|
-| Common | Nyt sprog · Ny tool proficiency · Ekstra Hit Die · +3 HP |
+| Common | Ekstra Hit Die · Hårdfør · Permanent +3 Hit Points |
 | Uncommon | Weapon Mastery-plads · Darkvision 30 ft. · Advantage på death saves |
 | Rare | Ekstra Attunement-plads · Anden vind · Advantage på Initiative |
 | Very Rare | Resistance mod én skadetype · +1 til alle saves · Ekstra Reaction |
