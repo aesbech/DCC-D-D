@@ -8,9 +8,16 @@ Er der brug for en *størrelse* — hvor stor en pakke — så kommer den fra **
 længere nede. CR står i statblokken foran dig. Det er ikke en sammentælling, det er et
 opslag.
 
-Se [`ideen.md`](ideen.md) for hvordan de tildeles ved bordet. Der er et printbart ark i
-[`checklist.html`](checklist.html) — en afkrydsningsliste, ikke et regnskab. Den bygges af
-`scripts/build_checklist.py` ud fra denne fil, så de to ikke kan komme ud af trit.
+Se [`ideen.md`](ideen.md) for hvordan de tildeles ved bordet.
+
+Der er et printbart ark i [`checklist.html`](checklist.html) — seks A4-sider med **én
+række pr. bedrift: navn, udløser og præmie, og fire felter til spillerne.** Skriv navnene
+øverst på hver side, og sæt kryds når pakken er givet. Siderne er delt efter pakketype, så
+har du en Weapons Sølv i hånden, står alt hvad der kan betale for den på den samme side.
+Forsiden samler CR-trappen og Class Box, som står uden for de fem farver.
+
+Arket bygges af `scripts/build_checklist.py` ud fra denne fil, så de to ikke kan komme ud
+af trit. Ret her, kør scriptet, print igen.
 
 **Tegnforklaring**
 

@@ -76,8 +76,8 @@ Listen ligger i [`achievements.md`](achievements.md). **Ingen af dem kræver at 
 noget** — hver eneste udløses i ét øjeblik, og det øjeblik kan afgøres af det der ligger på
 bordet. Skal en belønning have en størrelse, kommer den fra monsterets CR, ikke fra en
 optælling. Det printbare ark i [`checklist.html`](checklist.html) er derfor en
-afkrydsningsliste og ikke et regnskab: man krydser af, så den samme bedrift ikke bliver
-givet to gange.
+afkrydsningsliste og ikke et regnskab: hver bedrift står som én række med navn, udløser og
+præmie, og fire felter — ét pr. spiller — så man kan se hvem der har fået hvad.
 
 ## Sådan kører det ved bordet
 
@@ -122,4 +122,4 @@ Når det virker, føles en bedrift som at blive grebet i noget — og så få be
 | `README.md` | Generatoren: pakker, fordelinger, kort, print |
 | `docs/ideen.md` | Dette dokument |
 | `docs/achievements.md` | Bedrifterne og deres belønninger |
-| `docs/checklist.html` | Printbar afkrydsningsliste — spillerark og bordark |
+| `docs/checklist.html` | Printbart afkrydsningsark — seks sider, fire spillerkolonner |
