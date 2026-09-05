@@ -7,9 +7,9 @@ og gemmes automatisk fra session til session.
 Ren statisk HTML/CSS/JS. Ingen build, ingen dependencies, intet backend.
 
 **Spillet selv** er beskrevet i [`docs/ideen.md`](docs/ideen.md), og de 150 bedrifter der
-udløser pakkerne ligger i [`docs/achievements.md`](docs/achievements.md) — med
-[`docs/bogfoering.md`](docs/bogfoering.md) og et printbart tælleark
-([`docs/tallysheet.html`](docs/tallysheet.html)) til det man skal holde styr på undervejs.
+udløser pakkerne ligger i [`docs/achievements.md`](docs/achievements.md) — ingen af dem
+kræver at man tæller noget, og der er en printbar afkrydsningsliste i
+[`docs/checklist.html`](docs/checklist.html).
 Denne fil handler kun om generatoren.
 
 ## Sådan kommer du i gang
