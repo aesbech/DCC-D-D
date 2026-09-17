@@ -106,7 +106,19 @@ a{color:var(--accent-2)}
   background:var(--bg-2);border:1px solid var(--line);border-radius:8px;
   padding:12px 14px;overflow-x:auto;font-size:12.5px;line-height:1.5}
 .doc-main code{font-size:12.5px}
-.doc-main .note{color:var(--muted);font-size:13px}
+.doc-main .note{color:var(--muted);font-size:13px;max-width:68ch}
+
+/* Regnemaskinen på Dungeon-siden */
+.calc{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0 16px}
+.calc label{display:flex;flex-direction:column;gap:5px;font-size:12px;color:var(--muted)}
+.calc select,.calc input{
+  background:var(--bg-3);color:var(--text);border:1px solid var(--line);
+  border-radius:8px;padding:7px 10px;font:inherit;font-size:13px;
+}
+.calc select:focus-visible,.calc input:focus-visible{
+  outline:2px solid var(--accent);outline-offset:1px}
+#cOut td:last-child{width:46%;white-space:nowrap}
+#cOut tr:has(td:empty) td{border:0;padding:3px}
 
 .topbar-right{color:var(--muted);font-size:12px}
 .save-state.flash{color:var(--ok)}

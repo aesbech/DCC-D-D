@@ -37,7 +37,9 @@
 #
 #   XP fordeles så holdet kan stige et level pr. etage med plads til at
 #   springe noget over. Budgettet er party_size * XP-til-næste-level *
-#   xp_slack, hvor bossrummet tager sin andel og resten deles efter areal.
+#   xp_slack. Bossen er præcis én High-kamp efter D&D 2024's tabel, intet
+#   rum må være hårdere end det, og resten deles efter areal. Går et rum
+#   over loftet, skæres overskuddet af og fordeles til de andre.
 #   Safe room får ingenting.
 #
 # Kræver Perls GD-modul: apt install libgd-perl  (eller cpan GD)
@@ -196,6 +198,36 @@ my $xp_to_next = {
   16 => 30000, 17 => 40000, 18 => 40000, 19 => 50000,
 };
 
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# DCC-D-D: budget for én kamp, pr. karakter. D&D 2024's tabel.
+#
+# Den sætter loftet: ingen kamp på etagen må være hårdere end High, og
+# bossen er præcis én High-kamp. En boss på 35 % af etagens XP ville ved
+# level 1 være 157 XP pr. karakter — halvanden gang High.
+
+my $encounter = {
+   1 => {'low' =>   50, 'moderate' =>    75, 'high' =>   100 },
+   2 => {'low' =>  100, 'moderate' =>   150, 'high' =>   200 },
+   3 => {'low' =>  150, 'moderate' =>   225, 'high' =>   400 },
+   4 => {'low' =>  250, 'moderate' =>   375, 'high' =>   500 },
+   5 => {'low' =>  500, 'moderate' =>   750, 'high' =>  1100 },
+   6 => {'low' =>  600, 'moderate' =>  1000, 'high' =>  1400 },
+   7 => {'low' =>  750, 'moderate' =>  1300, 'high' =>  1700 },
+   8 => {'low' => 1000, 'moderate' =>  1700, 'high' =>  2100 },
+   9 => {'low' => 1300, 'moderate' =>  2000, 'high' =>  2600 },
+  10 => {'low' => 1600, 'moderate' =>  2300, 'high' =>  3100 },
+  11 => {'low' => 1900, 'moderate' =>  2900, 'high' =>  4100 },
+  12 => {'low' => 2200, 'moderate' =>  3700, 'high' =>  4700 },
+  13 => {'low' => 2600, 'moderate' =>  4200, 'high' =>  5400 },
+  14 => {'low' => 2900, 'moderate' =>  4900, 'high' =>  6200 },
+  15 => {'low' => 3300, 'moderate' =>  5400, 'high' =>  7800 },
+  16 => {'low' => 3800, 'moderate' =>  6100, 'high' =>  9800 },
+  17 => {'low' => 4500, 'moderate' =>  7200, 'high' => 11700 },
+  18 => {'low' => 5000, 'moderate' =>  8700, 'high' => 14200 },
+  19 => {'low' => 5500, 'moderate' => 10700, 'high' => 17200 },
+  20 => {'low' => 6400, 'moderate' => 13200, 'high' => 22000 },
+};
+
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # showtime
 
@@ -227,7 +259,8 @@ sub get_opts {
     'party_size'        => 4,           # antal spillere
     'party_level'       => 1,           # holdets level på vej ind på etagen
     'xp_slack'          => 1.5,         # 1.5 = 50 % mere XP end der skal til
-    'boss_share'        => 0.35,        # bossrummets andel af etagens XP
+    'boss_fight'        => 'high',      # bossen er én kamp af denne slags
+    'room_cap'          => 'high',      # intet rum må være hårdere end dette
   };
   return $opts;
 }
@@ -1427,47 +1460,91 @@ sub dcc_forget_door {
 sub dcc_xp {
   my ($dungeon) = @_;
   my $level = $dungeon->{'party_level'};
-  my $need = $xp_to_next->{$level};
-     $need = $xp_to_next->{19} unless (defined $need);
+     $level = 1 if ($level < 1);
+     $level = 20 if ($level > 20);
+  my $size = $dungeon->{'party_size'};
 
-  my $floor_xp = int($need * $dungeon->{'party_size'} * $dungeon->{'xp_slack'});
-  my $boss_xp = int($floor_xp * $dungeon->{'boss_share'});
-  my $rest = $floor_xp - $boss_xp;
+  # Level 20 er toppen: der er ikke et level mere at stige til, så budgettet
+  # regnes på det sidste spring. Kampbudgettet bruger stadig level 20.
+  my $need = $xp_to_next->{ ($level < 20) ? $level : 19 };
+
+  my $floor_xp = int($need * $size * $dungeon->{'xp_slack'});
+
+  # Loftet kommer fra encounter-tabellen, ikke fra en procentdel af etagen.
+  my $cap = $encounter->{$level}{ $dungeon->{'room_cap'} } * $size;
+  my $boss_xp = $encounter->{$level}{ $dungeon->{'boss_fight'} } * $size;
+     $boss_xp = $floor_xp if ($boss_xp > $floor_xp);
+
   my $boss_id = $dungeon->{'dcc_boss'} ? $dungeon->{'dcc_boss'}{'id'} : 0;
   my $safe_id = $dungeon->{'dcc_safe'} ? $dungeon->{'dcc_safe'}{'id'} : 0;
 
-  # Samlet areal af de rum der skal dele resten. Bossrummet har sin egen
-  # andel, og safe room skal stå tomt, så de tæller ikke med.
-  my ($total_area,$id) = (0,0);
+  my ($id,@rooms);
   for ($id = 1; $id <= $dungeon->{'n_rooms'}; $id++) {
     my $room = $dungeon->{'room'}[$id] or next;
+    $room->{'xp'} = 0;
     next if ($room->{'id'} == $boss_id);
     next if ($room->{'id'} == $safe_id);
-    $total_area += $room->{'area'};
+    push(@rooms,$room);
+  }
+  if ($boss_id && $dungeon->{'room'}[$boss_id]) {
+    $dungeon->{'room'}[$boss_id]{'xp'} = $boss_xp;
   }
 
-  my $placed = 0;
-  for ($id = 1; $id <= $dungeon->{'n_rooms'}; $id++) {
-    my $room = $dungeon->{'room'}[$id] or next;
+  # - - - fordel resten efter areal, med loft - - -
+  #
+  # Et stort rum er en stor kamp, men intet rum må være hårdere end loftet.
+  # Det et rum ikke kan rumme, skæres af og fordeles til de andre. Gentag
+  # indtil der ikke er mere at fordele, eller alle rum er fyldt op.
 
-    if ($room->{'id'} == $boss_id) {
-      $room->{'xp'} = $boss_xp;
-    } elsif ($room->{'id'} == $safe_id) {
-      $room->{'xp'} = 0;
-    } elsif ($total_area > 0) {
-      $room->{'xp'} = int($rest * $room->{'area'} / $total_area);
-    } else {
-      $room->{'xp'} = 0;
+  my $rest = $floor_xp - $boss_xp;
+     $rest = 0 if ($rest < 0);
+  my ($left,$round,%full) = ($rest,0);
+
+  while ($left >= 1 && $round < 25) {
+    $round++;
+    my ($area,$room) = (0);
+    foreach $room (@rooms) {
+      $area += $room->{'area'} unless ($full{$room->{'id'}});
     }
+    last unless ($area > 0);
+
+    my $moved = 0;
+    foreach $room (@rooms) {
+      next if ($full{$room->{'id'}});
+      my $add = $left * $room->{'area'} / $area;
+
+      if ($room->{'xp'} + $add >= $cap) {
+        $add = $cap - $room->{'xp'};
+        $full{$room->{'id'}} = 1;
+      }
+      next if ($add <= 0);
+      $room->{'xp'} += $add;
+      $moved += $add;
+    }
+    last if ($moved < 1);
+    $left -= $moved;
+  }
+
+  my ($placed,$room) = (0);
+  foreach $room (@rooms) {
+    $room->{'xp'} = int($room->{'xp'} + 0.5);
     $placed += $room->{'xp'};
   }
+  $placed += $boss_xp;
 
   $dungeon->{'dcc_xp'} = {
     'need_each'  => $need,
-    'need_party' => $need * $dungeon->{'party_size'},
+    'need_party' => $need * $size,
     'floor'      => $floor_xp,
     'placed'     => $placed,
     'boss'       => $boss_xp,
+    'cap'        => $cap,
+    'high'       => $encounter->{$level}{'high'} * $size,
+    'moderate'   => $encounter->{$level}{'moderate'} * $size,
+    'low'        => $encounter->{$level}{'low'} * $size,
+    # Det fordelingen ikke kunne placere, ikke forskellen på summerne:
+    # rummenes afrunding må ikke se ud som et manglende budget.
+    'short'      => ($left >= 1) ? int($left + 0.5) : 0,
   };
   return $dungeon;
 }
@@ -1510,6 +1587,16 @@ sub dcc_report {
   printf("             de kan springe %d %% over og stadig stige et level\n\n",
     int(100 * (1 - 1 / $dungeon->{'xp_slack'}) + 0.5));
 
+  printf("Kampbudget   Low %d · Moderate %d · High %d  (for hele holdet)\n",
+    $xp->{'low'}, $xp->{'moderate'}, $xp->{'high'});
+  printf("             bossen er én %s-kamp: %d XP\n",
+    ucfirst($dungeon->{'boss_fight'}), $xp->{'boss'});
+  printf("             maks pr. rum: %d XP — intet rum er hårdere end bossen\n",
+    $xp->{'cap'});
+  my $fights = sprintf("%.1f", $xp->{'high'} ? $xp->{'floor'} / $xp->{'high'} : 0);
+     $fights =~ s/\./,/;
+  printf("             etagen svarer til %s High-kampe\n\n", $fights);
+
   printf("%-5s %-8s %-7s %8s  %s\n", 'Rum', 'Mål', 'Døre', 'XP', '');
   my $id; for ($id = 1; $id <= $dungeon->{'n_rooms'}; $id++) {
     my $room = $dungeon->{'room'}[$id] or next;
@@ -1529,6 +1616,13 @@ sub dcc_report {
   unless ($safe) {
     print("\nNote: der var intet rum med én dør, og ingen dør kunne mures til\n");
     print("uden at skære noget af etagen fra. Kør igen med et andet seed.\n");
+  }
+  if ($xp->{'short'}) {
+    printf("\nNote: %d XP kunne ikke lægges i rummene uden at bryde loftet på\n",
+      $xp->{'short'});
+    printf("%d. Læg dem i gangene, som vandrende monstre, eller giv etagen\n",
+      $xp->{'cap'});
+    print("flere rum — n_rows og n_cols op, eller room_max ned.\n");
   }
   return;
 }
