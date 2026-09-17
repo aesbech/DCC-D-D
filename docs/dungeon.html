@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dungeon — DCC-D-D</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2312131a'/%3E%3Cpath d='M16 6l2.9 6.2 6.6.9-4.8 4.8 1.2 6.7-5.9-3.2-5.9 3.2 1.2-6.7L6.5 13.1l6.6-.9z' fill='%23c9a227'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../assets/css/app.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">&#9733;</span>
+    <span>DCC-D-D</span>
+  </div>
+  <nav class="tabs"></nav>
+  <div class="topbar-right">
+    <label class="site-nav-wrap">
+      <span class="visually-hidden">Vælg side</span>
+      <select class="site-nav" onchange="if(this.value)location.href=this.value">
+        <option value="../index.html">Loot Box Generator</option>
+        <option value="index.html">Docs</option>
+        <option value="" selected>Dungeon</option>
+      </select>
+    </label>
+  </div>
+</header>
+
+<main class="doc-main">
+
+  <h1>Dungeon</h1>
+  <p class="lead">Etagerne kommer fra donjons kortgenerator med tre tilføjelser, så en
+    etage kan bruges som den er: trappen ned har mere end én udvej, der er et bossrum
+    foran den, og der ligger XP nok til at stige et level.</p>
+
+  <h2>Kør den</h2>
+  <pre>perl tools/dungeon.pl</pre>
+  <p>Den skriver et kort som <code>&lt;seed&gt;.gif</code> og en rapport i terminalen.
+    Den kræver Perls GD-modul — <code>apt install libgd-perl</code> eller
+    <code>cpan GD</code>.</p>
+  <p><a class="doc-card" href="https://github.com/aesbech/DCC-D-D/blob/main/tools/dungeon.pl">
+    <b>tools/dungeon.pl</b>
+    <span>Hele scriptet. Tilføjelserne står i blokke mærket DCC-D-D og kan fjernes uden
+      at røre resten.</span>
+  </a></p>
+
+  <h2>Hvad der er ændret</h2>
+  <table>
+    <tr><th>Problem</th><th>Løsning</th></tr>
+    <tr>
+      <td><b>Trappen ned lå i en blindgang.</b> Originalens
+        <code>emplace_stairs</code> sætter altid trapper for enden af en blindgyde —
+        <code>check_tunnel</code> kræver netop syv vægge omkring — så man kunne blive
+        trængt op i et hjørne ved udgangen.</td>
+      <td>Trappen lægges inde i et rum med <b>mindst to døre</b>. Målt over 200 etager
+        med standardindstillingerne skete det 200 gange ud af 200.</td>
+    </tr>
+    <tr>
+      <td><b>Ingen boss.</b></td>
+      <td>Bossrummet er det rum der ligger længst fra indgangen målt i skridt gennem
+        åbne felter, blandt dem med to døre. Trappen ned står i den ende af rummet der
+        ligger længst fra indgangen, så man skal tværs gennem bossrummet for at komme
+        ned.</td>
+    </tr>
+    <tr>
+      <td><b>Ingen styring på XP.</b> Holdet skulle støvsuge etagen for at stige.</td>
+      <td>Etagen får <code>party_size × XP-til-næste-level × xp_slack</code>.
+        Bossrummet tager sin andel, resten deles efter rummenes areal. Med slack på
+        1,5 kan de springe en tredjedel over og stadig stige et level.</td>
+    </tr>
+  </table>
+
+  <h2>Indstillinger</h2>
+  <p>Alt sidder i <code>get_opts</code>. De fire nederste er nye:</p>
+  <pre>'n_rows'          =&gt; 39,          # skal være ulige
+'n_cols'          =&gt; 39,
+'room_min'        =&gt; 3,
+'room_max'        =&gt; 9,
+'room_layout'     =&gt; 'Scattered', # eller 'Packed'
+'corridor_layout' =&gt; 'Bent',      # 'Labyrinth', 'Bent', 'Straight'
+'remove_deadends' =&gt; 50,          # procent
+
+'party_size'      =&gt; 4,
+'party_level'     =&gt; 1,           # holdets level på vej ind
+'xp_slack'        =&gt; 1.5,         # 1.5 = 50 % mere XP end der skal til
+'boss_share'      =&gt; 0.35,        # bossrummets andel af etagens XP</pre>
+
+  <p><b>Rumantallet er ikke en indstilling — det er en brøk.</b>
+    <code>int(n_rows × n_cols / room_max²)</code>, og gitteret rundes først ned til et
+    lige tal. Og det er <i>forsøg</i>: et rum der kolliderer med et andet bliver stille
+    droppet, så du får altid færre.</p>
+
+  <table>
+    <tr><th><code>n_rows</code></th><th>Gitter</th><th>Rumforsøg</th></tr>
+    <tr><td>19</td><td>18 × 18</td><td>4</td></tr>
+    <tr><td>25</td><td>24 × 24</td><td>7</td></tr>
+    <tr><td>31</td><td>30 × 30</td><td>11</td></tr>
+    <tr><td>39 (standard)</td><td>38 × 38</td><td>17</td></tr>
+  </table>
+  <p class="note">Sæt <code>seed</code> til et fast tal, så kan den samme etage
+    genskabes — nyttigt hvis printet forsvinder.</p>
+
+  <h2>Rapporten</h2>
+  <pre>Etage — seed 12345
+11 rum. Indgang i en blindgang; udgang i rum 2.
+
+Bossrum      rum 2, 3 døre ud
+Trappen ned  står inde i rum 2, i den ende der ligger længst fra indgangen
+
+XP-budget    4 spillere på level 1 skal bruge 300 XP hver
+             = 1200 XP for holdet, x 1.5 slack = 1800 XP på etagen
+             de kan springe 33 % over og stadig stige et level
+
+Rum   Mål     Døre         XP
+1     9x3      2           123
+2     9x7      3           630  BOSS + trappen ned
+3     3x5      3            68
+...
+               i alt      1794</pre>
+  <p>XP-tallet pr. rum er et budget, ikke en liste over monstre. 123 XP er for eksempel
+    fem CR 1/8 eller to CR 1/4 plus en enkelt CR 1/8 — du vælger selv hvad der står i
+    rummet.</p>
+
+  <h2>Kredit</h2>
+  <p class="note"><b>Random Dungeon Generator af drow</b>,
+    <a href="https://donjon.bin.sh/">donjon.bin.sh</a> — brugt og ændret under
+    <a href="https://creativecommons.org/licenses/by-nc/3.0/">Creative Commons
+    Attribution-NonCommercial 3.0 Unported</a>. Kreditlinjen står i headeren på
+    <code>tools/dungeon.pl</code> og skal blive stående. Licensen tillader ikke
+    kommerciel brug.</p>
+
+</main>
+
+</body>
+</html>

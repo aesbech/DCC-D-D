@@ -314,7 +314,8 @@ def main() -> None:
   <b>Afkrydsningsark til DCC-D-D — DM-materiale.</b> Alle bedrifter er skjulte, så arket
   bliver bag skærmen. Én række pr. bedrift med navn og udløser, fire felter til spillerne,
   og stiplede rækker til dem du finder på undervejs. Tryk print — A4, {len(sheets)} sider.
-  Se <a href="achievements.md">achievements.md</a> for reglerne bag.
+  <a href="index.html">Docs</a> · <a href="dungeon.html">Dungeon</a> ·
+  <a href="../index.html">Loot Box Generator</a>.
   Sæt skalering til 100 % og slå «print baggrundsgrafik» til, så kolonnerne kan ses.
 </div>
 

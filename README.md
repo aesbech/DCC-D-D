@@ -1094,6 +1094,30 @@ for items uden rarity. Magic items kan desuden være `artifact`, som kun kan tr�
 en magi-fordeling giver artifacts vægt. `scale` er `gear`, `magic` eller `none`.
 `enabled: false` tager et item ud af alle puljer uden at slette det.
 
+## Dungeon-generatoren
+
+`tools/dungeon.pl` laver etagerne. Den er **donjons Random Dungeon Generator af drow**
+([donjon.bin.sh](https://donjon.bin.sh/)), brugt og ændret under
+**[Creative Commons Attribution-NonCommercial 3.0 Unported](https://creativecommons.org/licenses/by-nc/3.0/)**.
+Kreditlinjen står i filens header og skal blive stående; licensen tillader ikke
+kommerciel brug.
+
+Originalen laver kun geometri — rum, gange, døre, trapper. Tre ting er føjet til, alle i
+blokke mærket `DCC-D-D`:
+
+| | |
+|---|---|
+| **Trappen ned har mere end én udvej** | Originalen sætter altid trapper for enden af en blindgyde. Nu ligger trappen inde i et rum med mindst to døre |
+| **Et bossrum foran den** | Rummet længst fra indgangen, målt i skridt gennem åbne felter. Trappen står i den fjerneste ende af det, så man skal tværs igennem |
+| **XP nok til et level pr. etage** | `party_size × XP-til-næste-level × xp_slack`, fordelt med bossrummets andel først og resten efter rummenes areal |
+
+```bash
+perl tools/dungeon.pl     # kræver Perls GD-modul: apt install libgd-perl
+```
+
+Den skriver kortet som `<seed>.gif` og en rapport med rum, døre og XP-budget pr. rum.
+Se [`docs/dungeon.html`](docs/dungeon.html) for indstillingerne.
+
 ## Lagring
 
 Alt gemmes i browserens `localStorage` under `dccdd.config.v1` og `dccdd.items.v1`
