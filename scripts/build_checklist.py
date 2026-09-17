@@ -4,16 +4,17 @@
 Arket er en afkrydsningsliste, ikke et regnskab. Der er intet at tælle — man
 krydser af når en bedrift er givet, så den ikke bliver givet to gange.
 
-Én række pr. bedrift: navn, hvad der udløser den, hvilken pakke den giver, og
-fire felter — ét pr. spiller. Spillernavnene skrives øverst på hver side, så
-kolonne 1 betyder det samme hele vejen igennem.
+Én række pr. bedrift: navn, hvad der udløser den, og fire felter — ét pr.
+spiller. Spillernavnene skrives øverst på hver side, så kolonne 1 betyder det
+samme hele vejen igennem.
+
+Præmien står i overskriften og ikke på hver række. Papiret siger alligevel hvad
+pakken er, og en kolonne der gentager «Armor · Sølv» toogtyve gange er plads der
+kunne være gået til udløseren.
 
 Siderne er delt efter pakketype, fordi det er sådan bordet er delt: én bunke
-orange papir, én rød, én blå. Har du en Weapons Sølv i hånden, står alle de
-bedrifter der kan betale for den på den samme side.
-
-Forsiden samler det der står uden for de fem farver: CR-trappen, de fire
-bedrifter der slår op i den, og Class Box.
+orange papir, én rød, én blå. Hver type fylder to sider — Bronze for sig, og
+Sølv og Guld sammen. Forsiden holder Class Box, som står uden for de fem farver.
 
 Listen læses ud af achievements.md, så de to filer ikke kan komme ud af trit.
 
@@ -42,26 +43,18 @@ PAPER = {
     "Class Box": ("guldgult papir, sort voks", "#8a6d1f"),
 }
 
-TIERS = ("Bronze", "Sølv", "Guld", "Efter vægtklasse", "Class")
+TIERS = ("Bronze", "Sølv", "Guld", "Class")
+
+# Hver type fylder to sider: Bronze for sig, fordi der er toogtyve af dem, og
+# Sølv og Guld sammen, fordi de to tilsammen fylder atten.
+PAGES = (("Bronze",), ("Sølv", "Guld"))
 
 ROW = re.compile(r"^\| \*\*(.+?)\*\*(.*?)\|(.+)\|$")
 
-# Hvad rækken giver. Præmien står ikke i kildens tabeller — den følger af
-# hvilken sektion bedriften står i, og det er dét opslag der laves her.
-PRIZE = {
-    "Bronze": "%s · Bronze",
-    "Sølv": "%s · Sølv",
-    "Guld": "%s · Guld",
-    "Efter vægtklasse": "CR-trappen",
-    "Class": "Class Box",
-}
-
 TIER_NOTE = {
-    "Bronze": "Personlig. Hver spiller kan få sin egen.",
-    "Sølv": "Personlig. Hver spiller kan få sin egen.",
-    "Guld": "Kapløb — går til den første i hele kampagnen der gør det.",
-    "Efter vægtklasse": "Størrelsen læses af CR-trappen på forsiden. "
-                        "Gentagelig, så felterne er til den første gang.",
+    "Bronze": "Personlig — hver spiller kan få sin egen. 22 bedrifter, 22 pakker i kassen.",
+    "Sølv": "Personlig — hver spiller kan få sin egen. 12 bedrifter, 12 pakker i kassen.",
+    "Guld": "Kapløb — går til den første i hele kampagnen der gør det. Ét kryds pr. række.",
     "Class": "Ikke gradueret, og står uden for beholdningen.",
 }
 
@@ -76,7 +69,7 @@ def parse(text: str) -> dict[tuple[str, str], list[tuple[str, str, str]]]:
             kind = m.group(1).strip()
             tier = "Class" if kind == "Class Box" else None
             continue
-        m = re.match(r"^## (Bronze|Sølv|Guld|Efter vægtklasse)", line)
+        m = re.match(r"^## (Bronze|Sølv|Guld)", line)
         if m:
             tier = m.group(1)
             continue
@@ -91,26 +84,12 @@ def parse(text: str) -> dict[tuple[str, str], list[tuple[str, str, str]]]:
     return out
 
 
-def ladder(text: str) -> list[tuple[str, str]]:
-    """CR-trappens tre trin, læst ud af tabellen i dokumentet."""
-    block = text.split("## CR-trappen", 1)[1]
-    rows: list[tuple[str, str]] = []
-    for line in block.splitlines():
-        m = re.match(r"^\| (\*\*.+?\*\*.*?) \| (Bronze|Sølv|Guld) \|$", line)
-        if m:
-            rows.append((re.sub(r"\*\*", "", m.group(1)), m.group(2)))
-        if len(rows) == 3:
-            break
-    return rows
-
-
 def esc(s: str) -> str:
     return html.escape(s.replace("|", "").strip())
 
 
-def rows_html(kind: str, tier: str, rows: list[tuple[str, str, str]]) -> str:
+def rows_html(rows: list[tuple[str, str, str]]) -> str:
     """Én tabelrække pr. bedrift, med fire afkrydsningsfelter til sidst."""
-    prize = PRIZE[tier] % kind if "%s" in PRIZE[tier] else PRIZE[tier]
     out = []
     for name, marks, trigger in rows:
         mk = ' <i class="mk">%s</i>' % esc(marks) if marks.strip() else ""
@@ -118,9 +97,8 @@ def rows_html(kind: str, tier: str, rows: list[tuple[str, str, str]]) -> str:
             "<tr>"
             '<td class="name"><b>%s</b>%s</td>'
             '<td class="what">%s</td>'
-            '<td class="prize">%s</td>'
             '<td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td>'
-            "</tr>" % (esc(name), mk, esc(trigger), html.escape(prize))
+            "</tr>" % (esc(name), mk, esc(trigger))
         )
     return "\n".join(out)
 
@@ -132,13 +110,12 @@ def table(kind: str, tier: str, rows: list[tuple[str, str, str]]) -> str:
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
 %s
   </tbody>
-</table>""" % (html.escape(label), len(rows), TIER_NOTE[tier], rows_html(kind, tier, rows))
+</table>""" % (html.escape(label), len(rows), TIER_NOTE[tier], rows_html(rows))
 
 
 CSS = """
@@ -182,18 +159,17 @@ h2 .cnt{float:right;font-weight:400;color:#666;letter-spacing:0}
 .players label span{flex:1;display:block;border-bottom:.3mm solid #000;height:5mm}
 
 table{width:100%;border-collapse:collapse;font-size:8.5pt;margin:0}
-th,td{border:.25mm solid #9a9a9a;padding:1.4mm 1.8mm;text-align:left;vertical-align:top}
+th,td{border:.25mm solid #9a9a9a;padding:2mm 1.8mm;text-align:left;vertical-align:top}
 th{
   background:#eee;font-size:7pt;text-transform:uppercase;letter-spacing:.05em;
   padding:1.2mm 1.8mm;
 }
-td.name{width:42mm}
+td.name{width:46mm}
 td.name b{font-weight:700}
-td.prize{width:32mm;white-space:nowrap;font-size:8pt}
-th.p,td.p{width:8mm;text-align:center;background:#fafafa}
+th.p,td.p{width:9mm;text-align:center;background:#fafafa}
 th.p{background:#e4e4e4}
 /* Feltet skal være stort nok til et kryds med kuglepen. */
-td.p{height:7mm}
+td.p{height:8mm}
 tbody tr:nth-child(even) td{background:#f7f7f7}
 tbody tr:nth-child(even) td.p{background:#f2f2f2}
 .mk{font-style:normal;color:#777;font-weight:400}
@@ -238,97 +214,52 @@ LEGEND = ('<p class="legend">★ skjult, læses ikke op før den udløses · '
 def main() -> None:
     text = SRC.read_text(encoding="utf-8")
     data = parse(text)
-    steps = ladder(text)
-
-    order = list(PAPER)
+    total = sum(len(v) for v in data.values())
     sheets = []
 
-    # Forside: sådan bruges arket, og CR-trappen, som de fire
-    # vægtklasse-bedrifter slår op i.
-    cr = "\n".join(
-        "<tr><td>%s</td><td>%s</td></tr>" % (esc(a), esc(b)) for a, b in steps
-    )
-    weight_rows = [(k, n, m, d) for k in order
-                   for n, m, d in data.get((k, "Efter vægtklasse"), [])]
-    weight = "\n".join(
-        '<tr><td class="name"><b>%s</b>%s</td><td class="what">%s</td>'
-        '<td class="prize">%s</td>'
-        '<td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>'
-        % (esc(n), ' <i class="mk">%s</i>' % esc(m) if m.strip() else "", esc(d),
-           "CR-trappen")
-        for _, n, m, d in weight_rows
-    )
-    total = sum(len(v) for v in data.values()) + 2  # + Boss Down og Floor Cleared
-
+    # Forsiden: sådan bruges arket, og Class Box, som hverken er gradueret
+    # eller en del af beholdningen og derfor ikke har sin egen farveside.
     sheets.append("""<section class="sheet">
   <h1>Bedrifter <span class="paper">— afkrydsningsark, %d bedrifter</span></h1>
-  <p class="sub">Én række pr. bedrift: hvad den hedder, hvad der udløser den, og hvilken
-    pakke den giver. De fire felter til højre er spillerne — skriv navnene øverst på
-    hver side, og sæt kryds når pakken er givet. Der er intet at tælle.</p>
+  <p class="sub">Én række pr. bedrift: hvad den hedder, og hvad der udløser den. De fire
+    felter til højre er spillerne — skriv navnene øverst på hver side, og sæt kryds når
+    pakken er givet. Præmien står i overskriften, ikke på hver række: papiret siger
+    alligevel hvad pakken er. Der er intet at tælle.</p>
 
   %s
 
-  <h2>CR-trappen</h2>
-  <p class="tiernote">Handler bedriften om at fælde noget, kommer størrelsen herfra.
-    Sammenlign monsterets CR med holdets level — ét fratrækningsstykke, og statblokken
-    ligger allerede fremme.</p>
-  <table class="ladder">
-    <thead><tr><th>CR i forhold til holdets level</th><th>Pakke</th></tr></thead>
-    <tbody>
-%s
-    </tbody>
-  </table>
-
-  <h2>Efter vægtklasse <span class="cnt">%d</span></h2>
-  <p class="tiernote">%s</p>
-  <table>
-    <thead><tr>
-      <th class="name">Bedrift</th><th class="what">Udløses af</th>
-      <th class="prize">Præmie</th>
-      <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
-    </tr></thead>
-    <tbody>
-%s
-    <tr><td class="name"><b>Boss Down</b> <i class="mk">⚑</i></td>
-        <td class="what">Holdet fælder etagens boss</td>
-        <td class="prize">CR-trappen, eget valg</td>
-        <td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-    <tr><td class="name"><b>Floor Cleared</b> <i class="mk">⚑ ↻</i></td>
-        <td class="what">Etagen er ryddet — trappen læses på etagens hårdeste fjende</td>
-        <td class="prize">CR-trappen, Adventurer</td>
-        <td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-    </tbody>
-  </table>
-
 %s
 
-  <p class="note"><b>Beholdningen er 22 Bronze, 12 Sølv og 6 Guld af hver pakketype.</b>
-    Der er ikke et felt til at tælle dem ned i — kassen er tælleren. Bronze og Sølv er
-    personlige, så alle fire felter kan krydses af. Guld går til den første i hele
-    kampagnen der gør det, så der bliver kun ét kryds pr. række.</p>
+  <p class="note"><b>Beholdningen er 22 Bronze, 12 Sølv og 6 Guld af hver pakketype — og
+    der er præcis lige så mange bedrifter af hver slags.</b> Blev hver eneste udløst én
+    gang, ville kassen være tom og arket krydset af på samme tid. Sådan går det ikke:
+    nogle rammer tre spillere, andre bliver aldrig til noget. Det er forholdet du kan
+    regne i hovedet. Der er ikke et felt til at tælle pakkerne ned i — kassen er
+    tælleren.</p>
   %s
-</section>""" % (total, PLAYERS, cr, len(weight_rows) + 2,
-                 TIER_NOTE["Efter vægtklasse"], weight,
+</section>""" % (total, PLAYERS,
                  table("Class Box", "Class", data[("Class Box", "Class")]), LEGEND))
 
-    # Én side pr. pakketype, så bunken orange papir og siden om orange papir
-    # hører sammen.
-    for kind in [k for k in order if k != "Class Box"]:
+    # To sider pr. pakketype: Bronze for sig, Sølv og Guld sammen. Bunken
+    # orange papir og siderne om orange papir hører sammen.
+    for kind in [k for k in PAPER if k != "Class Box"]:
         paper, ink = PAPER[kind]
-        tiers = [t for t in TIERS if (kind, t) in data and t != "Efter vægtklasse"]
-        if not tiers:
-            continue
-        body = "\n\n".join(table(kind, t, data[(kind, t)]) for t in tiers)
-        n = sum(len(data[(kind, t)]) for t in tiers)
-        sheets.append("""<section class="sheet" style="--ink:%s">
-  <h1>%s <span class="paper">— %s · %d bedrifter</span></h1>
+        for page in PAGES:
+            tiers = [t for t in page if (kind, t) in data]
+            if not tiers:
+                continue
+            body = "\n\n".join(table(kind, t, data[(kind, t)]) for t in tiers)
+            n = sum(len(data[(kind, t)]) for t in tiers)
+            sheets.append("""<section class="sheet" style="--ink:%s">
+  <h1>%s <span class="paper">— %s · %s · %d bedrifter</span></h1>
 
   %s
 
 %s
 
   %s
-</section>""" % (ink, html.escape(kind), html.escape(paper), n, PLAYERS, body, LEGEND))
+</section>""" % (ink, html.escape(kind), html.escape(paper),
+                 html.escape(" og ".join(tiers)), n, PLAYERS, body, LEGEND))
 
     OUT.write_text(f"""<!DOCTYPE html>
 <html lang="da">
@@ -341,9 +272,9 @@ def main() -> None:
 <body>
 
 <div class="no-print">
-  <b>Afkrydsningsark til DCC-D-D.</b> Én række pr. bedrift med navn, udløser og præmie,
-  og fire felter til spillerne. Tryk print — A4, {len(sheets)} sider. Skriv spillernavnene
-  øverst på hver side. Se <a href="achievements.md">achievements.md</a> for reglerne bag.
+  <b>Afkrydsningsark til DCC-D-D.</b> Én række pr. bedrift med navn og udløser, og fire
+  felter til spillerne. Tryk print — A4, {len(sheets)} sider. Skriv spillernavnene øverst
+  på hver side. Se <a href="achievements.md">achievements.md</a> for reglerne bag.
   Sæt skalering til 100 % og slå «print baggrundsgrafik» til, så kolonnerne kan ses.
 </div>
 
