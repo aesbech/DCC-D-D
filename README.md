@@ -1166,6 +1166,27 @@ gav bare noget andet end den lovede:
 
 Kortenes egne tal røres ikke i nogen af tilfældene — de vinder stadig over pakke og tier.
 
+## Licenser
+
+Tre sæt vilkår mødes i repoet, og der er derfor **ingen samlet licens** — se
+[`LICENSE.md`](LICENSE.md).
+
+Kort fortalt: generatoren, siderne og bedrifterne er vores. Kortgeometrien er
+donjons under **CC BY-NC 3.0**, som forbyder kommerciel brug. Kortenes regeltekst
+er Wizards of the Coasts, og kun den del der står i **SRD 5.2.1** er frigivet
+(CC BY 4.0). Den påkrævede kredit står ordret i kolofonen på hver side og på det
+printede kortark.
+
+**Før siden deles med nogen:** `assets/data/` indeholder i dag **204 kort hvis
+regeltekst hverken står i SRD'en eller er vores egen** — 132 magic items, 43
+feats, 21 spells og 8 stykker udstyr, fra Player's Handbook og Dungeon Master's
+Guide. At eje bøgerne giver ret til at bruge dem ved sit eget bord, ikke til at
+udgive teksten. Listen står i [`docs/licens.md`](docs/licens.md) og laves med:
+
+```bash
+python3 scripts/check_srd.py docs/SRD_CC_v5.2.1.pdf.txt
+```
+
 ## Filer
 
 ```
@@ -1173,13 +1194,17 @@ index.html                     markup og faner
 assets/css/app.css             styling, inkl. print-layout
 assets/js/core.js              datamodel, prisparsing, import, trækning
 assets/js/ui.js                UI og hændelser
+assets/js/dungeon.js           etagegeneratoren
+assets/js/dungeon-map.js       etagens kort og rapport som printbart ark
 assets/data/items.js           items fra regnearket
 assets/data/class-cards.js     Class-pakkens indhold (genereret)
 assets/data/magic-items.js     magic items
 scripts/import_xlsx.py         regneark → items.js
 scripts/import_magic.py        magic_items.txt → magic-items.js
 scripts/import_class_cards.py  feats.txt + systematiske kort → class-cards.js
+scripts/check_srd.py           hvilke kort ligger uden for SRD 5.2.1?
 data/dnd_items.xlsx            kilderegnearket
 data/magic_items.txt           kildeliste over magic items
 data/feats.txt                 kildeliste over feats
+LICENSE.md                     hvad der er hvis, og hvad der må bruges hvordan
 ```

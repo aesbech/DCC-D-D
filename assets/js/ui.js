@@ -539,6 +539,11 @@
                            'printes der med skalering — sæt den til 100 %, ikke "tilpas til side". ' +
                            'Kortene er 63 × 88 mm.' })
       ]));
+
+      /* Kortene gengiver tekst fra SRD 5.2.1, og CC BY 4.0 kræver kreditten
+         med. Der er ikke plads på et kort på 63 × 88 mm, så den står på arket
+         — én gang, med småt, i den ledige plads under de tre rækker. */
+      wrap.appendChild(el('div', { class: 'print-credit', text: C.SRD_NOTICE }));
     }
 
     state.results.forEach(function (box, idx) {

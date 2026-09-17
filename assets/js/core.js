@@ -35,6 +35,16 @@ window.LB = (function () {
      en vægt og en kortplads alle taler om det samme. */
   var MAGIC_CAT = 'Magic';
 
+  /* Kortenes regeltekst kommer fra SRD 5.2.1, der er frigivet under CC BY 4.0.
+     Licensen kræver denne sætning ordret, og SRD'en beder om at der ikke står
+     anden kredit til Wizards end netop den. Den står ét sted, så den ikke kan
+     nå at blive omskrevet i en af de tre-fire kopier den skal bruges i. */
+  var SRD_NOTICE = 'This work includes material from the System Reference '
+    + 'Document 5.2.1 ("SRD 5.2.1") by Wizards of the Coast LLC, available at '
+    + 'https://www.dndbeyond.com/srd. The SRD 5.2.1 is licensed under the '
+    + 'Creative Commons Attribution 4.0 International License, available at '
+    + 'https://creativecommons.org/licenses/by/4.0/legalcode.';
+
   function magicRarityLabel(key) {
     for (var i = 0; i < MAGIC_RARITIES.length; i++)
       if (MAGIC_RARITIES[i].key === key) return MAGIC_RARITIES[i].label;
@@ -1477,7 +1487,7 @@ window.LB = (function () {
     MAGIC_RARITIES: MAGIC_RARITIES, MKEYS: MKEYS,
     magicRarityLabel: magicRarityLabel, magicToItems: magicToItems,
     emptyMagicDist: function () { return magicDist({}); },
-    magicTypesOf: magicTypesOf, MAGIC_CAT: MAGIC_CAT,
+    magicTypesOf: magicTypesOf, MAGIC_CAT: MAGIC_CAT, SRD_NOTICE: SRD_NOTICE,
     magicPoolFor: magicPoolFor, settingFor: settingFor,
     rarityLabel: rarityLabel,
     defaultConfig: defaultConfig,
