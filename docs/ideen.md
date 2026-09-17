@@ -141,3 +141,4 @@ Når det virker, føles en bedrift som at blive grebet i noget — og så få be
 | `docs/ideen.md` | Dette dokument |
 | `docs/achievements.md` | Bedrifterne og deres belønninger |
 | `docs/checklist.html` | Printbart afkrydsningsark — elleve sider, fire spillerkolonner |
+| `docs/idekatalog.md` | Den samlede sandhed plus ventelisten — LitRPG, kort, dungeon |
