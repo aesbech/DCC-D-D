@@ -74,14 +74,127 @@
     <tr>
       <td><b>Ingen styring på XP.</b> Holdet skulle støvsuge etagen for at stige.</td>
       <td>Etagen får <code>party_size × XP-til-næste-level × xp_slack</code>.
-        Bossrummet tager sin andel, safe room står tomt, og resten deles efter rummenes
-        areal. Med slack på 1,5 kan de springe en tredjedel over og stadig stige et
-        level.</td>
+        <b>Bossen er præcis én High-kamp</b> efter tabellen nedenfor, og intet rum må være
+        hårdere end det. Safe room står tomt, resten deles efter rummenes areal, og det
+        et rum ikke kan rumme uden at bryde loftet, skæres af og fordeles til de andre.
+        Med slack på 1,5 kan de springe en tredjedel over og stadig stige et level.</td>
     </tr>
   </table>
 
+  <h2>Hvor meget XP skal der på etagen?</h2>
+  <p>Vælg holdets level, så regner den resten. Tallene til venstre kommer fra D&amp;D's
+    XP-tabel, tallene til højre fra encounter-budgettet i 2024-reglerne — begge er
+    <b>pr. karakter</b>, så de ganges med holdets størrelse.</p>
+
+  <form class="calc" id="calc" onsubmit="return false">
+    <label>Holdets level
+      <select id="cLevel"></select>
+    </label>
+    <label>Spillere
+      <input type="number" id="cSize" value="4" min="1" max="8" step="1">
+    </label>
+    <label>Slack
+      <select id="cSlack">
+        <option value="1">1,0 — de skal rydde hele etagen</option>
+        <option value="1.25">1,25 — de kan springe 20 % over</option>
+        <option value="1.5" selected>1,5 — de kan springe 33 % over</option>
+        <option value="2">2,0 — de kan springe halvdelen over</option>
+      </select>
+    </label>
+  </form>
+
+  <table id="cOut"></table>
+  <p class="note" id="cNote"></p>
+
+  <script>
+  (function () {
+    // XP der skal til for at stige ét level, pr. karakter.
+    var toNext = {1:300,2:600,3:1800,4:3800,5:7500,6:9000,7:11000,8:14000,
+      9:16000,10:21000,11:15000,12:20000,13:20000,14:25000,15:30000,
+      16:30000,17:40000,18:40000,19:50000,20:0};
+
+    // Budget for én kamp, pr. karakter. D&D 2024.
+    var enc = {
+      1:[50,75,100], 2:[100,150,200], 3:[150,225,400], 4:[250,375,500],
+      5:[500,750,1100], 6:[600,1000,1400], 7:[750,1300,1700],
+      8:[1000,1700,2100], 9:[1300,2000,2600], 10:[1600,2300,3100],
+      11:[1900,2900,4100], 12:[2200,3700,4700], 13:[2600,4200,5400],
+      14:[2900,4900,6200], 15:[3300,5400,7800], 16:[3800,6100,9800],
+      17:[4500,7200,11700], 18:[5000,8700,14200], 19:[5500,10700,17200],
+      20:[6400,13200,22000]
+    };
+
+    var lvl = document.getElementById('cLevel');
+    for (var i = 1; i <= 20; i++) {
+      var o = document.createElement('option');
+      o.value = i; o.textContent = 'Level ' + i;
+      if (i === 1) o.selected = true;
+      lvl.appendChild(o);
+    }
+
+    function n(x) { return x.toLocaleString('da-DK'); }
+
+    function calc() {
+      var L = +lvl.value;
+      var size = Math.max(1, Math.min(8, +document.getElementById('cSize').value || 4));
+      var slack = +document.getElementById('cSlack').value;
+      var need = toNext[L] * size;
+      var floor = Math.round(need * slack);
+      var low = enc[L][0] * size, mod = enc[L][1] * size, high = enc[L][2] * size;
+      var fights = high ? floor / high : 0;
+      var rooms = high ? Math.ceil(floor / high) : 0;
+
+      var rows = [
+        [L < 20 ? 'XP til level ' + (L + 1) : 'Level 20',
+          toNext[L] ? n(toNext[L]) + ' pr. karakter' : 'toppen — intet level mere'],
+        ['Holdet skal bruge', toNext[L] ? n(need) + ' XP' : '— level 20 er toppen'],
+        ['<b>På etagen</b>', toNext[L] ? '<b>' + n(floor) + ' XP</b>' : '—'],
+        ['&nbsp;', ''],
+        ['Én Low-kamp', n(low) + ' XP'],
+        ['Én Moderate-kamp', n(mod) + ' XP'],
+        ['<b>Én High-kamp — loftet</b>', '<b>' + n(high) + ' XP</b>'],
+        ['&nbsp;', ''],
+        ['Bossen', n(high) + ' XP — præcis én High-kamp'],
+        ['<b>Maks pr. rum</b>', '<b>' + n(high) + ' XP</b>'],
+        ['Etagen svarer til',
+          toNext[L] ? fights.toFixed(1).replace('.', ',') + ' High-kampe' : '—'],
+        ['Rum der mindst skal til', toNext[L] ? rooms + ' rum med kamp i' : '—']
+      ];
+      document.getElementById('cOut').innerHTML = rows.map(function (r) {
+        return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>';
+      }).join('');
+
+      var note = '';
+      if (!toNext[L]) {
+        note = 'Level 20 er toppen — der er ikke et level mere at stige til.';
+      } else if (rooms > 12) {
+        note = 'Det er ' + rooms + ' rum med kamp i. Standardetagen på 38 × 38 giver '
+             + 'op mod sytten rumforsøg og i praksis færre, så budgettet kan ikke '
+             + 'ligge i rummene alene. Sænk slack, giv etagen flere rum, eller lad '
+             + 'noget af XP\'en ligge i gangene.';
+      } else if (rooms > 8) {
+        note = 'Det er ' + rooms + ' rum med kamp i — tæt på hvad en standardetage kan '
+             + 'rumme. Vil du have luft, så sænk slack eller gør etagen større.';
+      } else {
+        note = 'Det er ' + rooms + ' rum med kamp i. Der er plads til det på en '
+             + 'standardetage, og resten af rummene kan stå tomme eller have noget '
+             + 'andet i.';
+      }
+      document.getElementById('cNote').textContent = note;
+    }
+
+    document.getElementById('calc').addEventListener('input', calc);
+    document.getElementById('calc').addEventListener('change', calc);
+    calc();
+  }());
+  </script>
+
+  <p class="note">Generatoren regner det samme ud og lægger tallene i rummene. Vil du
+    have et andet loft, så sæt <code>room_cap</code> til <code>'moderate'</code> — eller
+    gør bossen mildere med <code>boss_fight</code>.</p>
+
   <h2>Indstillinger</h2>
-  <p>Alt sidder i <code>get_opts</code>. De fire nederste er nye:</p>
+  <p>Alt sidder i <code>get_opts</code>. De fem nederste er nye:</p>
   <pre>'n_rows'          =&gt; 39,          # skal være ulige
 'n_cols'          =&gt; 39,
 'room_min'        =&gt; 3,
@@ -93,7 +206,8 @@
 'party_size'      =&gt; 4,
 'party_level'     =&gt; 1,           # holdets level på vej ind
 'xp_slack'        =&gt; 1.5,         # 1.5 = 50 % mere XP end der skal til
-'boss_share'      =&gt; 0.35,        # bossrummets andel af etagens XP</pre>
+'boss_fight'      =&gt; 'high',      # bossen er én kamp af denne slags
+'room_cap'        =&gt; 'high',      # intet rum må være hårdere end dette</pre>
 
   <p><b>Rumantallet er ikke en indstilling — det er en brøk.</b>
     <code>int(n_rows × n_cols / room_max²)</code>, og gitteret rundes først ned til et
@@ -122,16 +236,24 @@ XP-budget    4 spillere på level 1 skal bruge 300 XP hver
              = 1200 XP for holdet, x 1.5 slack = 1800 XP på etagen
              de kan springe 33 % over og stadig stige et level
 
+Kampbudget   Low 200 · Moderate 300 · High 400  (for hele holdet)
+             bossen er én High-kamp: 400 XP
+             maks pr. rum: 400 XP — intet rum er hårdere end bossen
+             etagen svarer til 4,5 High-kampe
+
 Rum   Mål     Døre         XP
-1     9x3      2           123
-2     9x7      3           630  BOSS + trappen ned
-3     3x5      3            72
+1     9x3      2           157
+2     9x7      3           400  BOSS + trappen ned
+3     3x5      3            87
 ...
 11    5x3      1             0  SAFE ROOM — står tomt
-               i alt      1795</pre>
-  <p>XP-tallet pr. rum er et budget, ikke en liste over monstre. 123 XP er for eksempel
-    fem CR 1/8 eller to CR 1/4 plus en enkelt CR 1/8 — du vælger selv hvad der står i
-    rummet.</p>
+               i alt      1800</pre>
+  <p>XP-tallet pr. rum er et budget, ikke en liste over monstre. 157 XP er for eksempel
+    seks CR 1/8 eller tre CR 1/4 — du vælger selv hvad der står i rummet.</p>
+  <p class="note">Kan budgettet ikke ligge i rummene uden at bryde loftet, siger rapporten
+    hvor meget der er tilbage. Det sker fra omkring level 4, hvor ét level pr. etage
+    kræver over ti High-kampe. Læg resten i gangene, sænk <code>xp_slack</code>, eller
+    giv etagen flere rum.</p>
 
   <h2>Kredit</h2>
   <p class="note"><b>Random Dungeon Generator af drow</b>,

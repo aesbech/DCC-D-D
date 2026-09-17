@@ -1110,7 +1110,7 @@ blokke mærket `DCC-D-D`:
 | **Trappen ned har mere end én udvej** | Originalen sætter altid trapper for enden af en blindgyde. Nu ligger trappen inde i et rum med mindst to døre |
 | **Et bossrum foran den** | Rummet længst fra indgangen, målt i skridt gennem åbne felter. Trappen står i den fjerneste ende af det, så man skal tværs igennem |
 | **Et safe room** | Præcis én dør ind og ud, så tæt på bossrummet som muligt, og tomt. Er der ikke et rum med én dør, mures døre til — men kun hvis alt stadig kan nås bagefter |
-| **XP nok til et level pr. etage** | `party_size × XP-til-næste-level × xp_slack`, fordelt med bossrummets andel først og resten efter rummenes areal. Safe room får ingenting |
+| **XP nok til et level pr. etage** | `party_size × XP-til-næste-level × xp_slack`. Bossen er præcis én High-kamp efter D&D 2024's encounter-tabel, og intet rum må være hårdere end det. Safe room får ingenting |
 
 ```bash
 perl tools/dungeon.pl     # kræver Perls GD-modul: apt install libgd-perl
