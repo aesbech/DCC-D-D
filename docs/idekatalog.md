@@ -562,5 +562,7 @@ Idéer der ikke er skrevet ind nogen steder endnu.
 - **En bedrift der afsløres halvt.** Systemet antyder at der er en præmie i nærheden —
   *«Der er en præmie i det her rum. Den er ikke til den forsigtige.»* — uden at sige
   hvilken. Det bryder ikke med at alt er skjult, men det gør et enkelt rum spændende.
-- **Læg `dungeon.pl` i repoet** med DCC-D-D-profilen og `stock_dungeon` allerede sat ind,
-  så en ny etage er én kommando. Headeren og kreditlinjen skal blive stående.
+- **En stokketabel i generatoren.** `tools/dungeon.pl` ligger nu i repoet og giver
+  bossrum, safe room, to udveje ved trappen og et XP-budget pr. rum — men den siger
+  stadig ikke *hvad* der står i rummene. d12-tabellen ovenfor kunne skrives ind som en
+  kolonne i rapporten.

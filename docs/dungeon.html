@@ -30,9 +30,9 @@
 <main class="doc-main">
 
   <h1>Dungeon</h1>
-  <p class="lead">Etagerne kommer fra donjons kortgenerator med tre tilføjelser, så en
+  <p class="lead">Etagerne kommer fra donjons kortgenerator med fire tilføjelser, så en
     etage kan bruges som den er: trappen ned har mere end én udvej, der er et bossrum
-    foran den, og der ligger XP nok til at stige et level.</p>
+    foran den, der er et safe room, og der ligger XP nok til at stige et level.</p>
 
   <h2>Kør den</h2>
   <pre>perl tools/dungeon.pl</pre>
@@ -64,10 +64,19 @@
         ned.</td>
     </tr>
     <tr>
+      <td><b>Intet sted at puste ud.</b></td>
+      <td>Ét rum er <b>safe room</b>: præcis én dør, så man kun kan angribes fra én
+        retning. Det vælges så tæt på bossrummet som muligt og står tomt. Findes der ikke
+        et rum med én dør, mures døre til i et andet — men kun hvis hele etagen stadig
+        kan nås bagefter, og bossrummet beholder sine to udveje. Over 1000 etager lykkedes
+        det 989 gange; resten siger rapporten til om.</td>
+    </tr>
+    <tr>
       <td><b>Ingen styring på XP.</b> Holdet skulle støvsuge etagen for at stige.</td>
       <td>Etagen får <code>party_size × XP-til-næste-level × xp_slack</code>.
-        Bossrummet tager sin andel, resten deles efter rummenes areal. Med slack på
-        1,5 kan de springe en tredjedel over og stadig stige et level.</td>
+        Bossrummet tager sin andel, safe room står tomt, og resten deles efter rummenes
+        areal. Med slack på 1,5 kan de springe en tredjedel over og stadig stige et
+        level.</td>
     </tr>
   </table>
 
@@ -107,6 +116,7 @@
 
 Bossrum      rum 2, 3 døre ud
 Trappen ned  står inde i rum 2, i den ende der ligger længst fra indgangen
+Safe room    rum 11, én dør ind og ud
 
 XP-budget    4 spillere på level 1 skal bruge 300 XP hver
              = 1200 XP for holdet, x 1.5 slack = 1800 XP på etagen
@@ -115,9 +125,10 @@ XP-budget    4 spillere på level 1 skal bruge 300 XP hver
 Rum   Mål     Døre         XP
 1     9x3      2           123
 2     9x7      3           630  BOSS + trappen ned
-3     3x5      3            68
+3     3x5      3            72
 ...
-               i alt      1794</pre>
+11    5x3      1             0  SAFE ROOM — står tomt
+               i alt      1795</pre>
   <p>XP-tallet pr. rum er et budget, ikke en liste over monstre. 123 XP er for eksempel
     fem CR 1/8 eller to CR 1/4 plus en enkelt CR 1/8 — du vælger selv hvad der står i
     rummet.</p>
