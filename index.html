@@ -22,6 +22,14 @@
     <button class="tab" data-tab="settings">Indstillinger</button>
   </nav>
   <div class="topbar-right">
+    <label class="site-nav-wrap">
+      <span class="visually-hidden">Vælg side</span>
+      <select class="site-nav" onchange="if(this.value)location.href=this.value">
+        <option value="" selected>Loot Box Generator</option>
+        <option value="docs/index.html">Docs</option>
+        <option value="docs/dungeon.html">Dungeon</option>
+      </select>
+    </label>
     <span class="save-state" id="saveState">Gemt lokalt</span>
   </div>
 </header>

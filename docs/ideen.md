@@ -142,3 +142,5 @@ Når det virker, føles en bedrift som at blive grebet i noget — og så få be
 | `docs/achievements.md` | Bedrifterne og deres belønninger |
 | `docs/checklist.html` | Printbart afkrydsningsark — elleve sider, fire spillerkolonner |
 | `docs/idekatalog.md` | Den samlede sandhed plus ventelisten — LitRPG, kort, dungeon |
+| `docs/index.html` · `docs/dungeon.html` | Docs- og Dungeon-siderne |
+| `tools/dungeon.pl` | Etagegeneratoren — donjon af drow, CC BY-NC 3.0, med tre tilføjelser |
