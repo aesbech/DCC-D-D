@@ -31,9 +31,14 @@
 #   målt i skridt gennem åbne felter. Trappen lægges i den fjerneste ende af
 #   det, så man skal tværs gennem rummet for at komme ned.
 #
+#   Ét rum er safe room. Det har præcis én dør, så der kun er én vej ind og
+#   ud, og det står tomt. Findes der ikke et rum med én dør, mures en dør
+#   til i et rum med to — men kun hvis alt stadig kan nås bagefter.
+#
 #   XP fordeles så holdet kan stige et level pr. etage med plads til at
 #   springe noget over. Budgettet er party_size * XP-til-næste-level *
 #   xp_slack, hvor bossrummet tager sin andel og resten deles efter areal.
+#   Safe room får ingenting.
 #
 # Kræver Perls GD-modul: apt install libgd-perl  (eller cpan GD)
 # Kør:  perl dungeon.pl
@@ -266,6 +271,7 @@ sub create_dungeon {
   # afgjort hvilke døre der faktisk blev til noget — og det er dørene der
   # afgør om trappen ned har mere end én udvej.
   $dungeon = &dcc_boss_exit($dungeon);
+  $dungeon = &dcc_safe_room($dungeon);
   $dungeon = &dcc_xp($dungeon);
 
   return $dungeon;
@@ -1151,10 +1157,10 @@ sub dcc_boss_exit {
   my $id; for ($id = 1; $id <= $dungeon->{'n_rooms'}; $id++) {
     my $room = $dungeon->{'room'}[$id];
        next unless ($room);
-    my $doors = &dcc_door_count($room);
+    my $doors = &dcc_door_count($dungeon,$room);
     my $d = &dcc_room_dist($dungeon,$room,$dist);
 
-    $fallback = $room if (!$fallback || $doors > &dcc_door_count($fallback));
+    $fallback = $room if (!$fallback || $doors > &dcc_door_count($dungeon,$fallback));
     next if ($doors < 2);
 
     if ($d > $boss_dist) {
@@ -1164,7 +1170,7 @@ sub dcc_boss_exit {
   unless ($boss) {
     # Ingen rum med to døre — tag det med flest og sig det højt i rapporten.
     $boss = $fallback;
-    $boss_doors = $boss ? &dcc_door_count($boss) : 0;
+    $boss_doors = $boss ? &dcc_door_count($dungeon,$boss) : 0;
   }
   return $dungeon unless ($boss);
 
@@ -1202,11 +1208,16 @@ sub dcc_boss_exit {
 # DCC-D-D: antal døre ud af et rum
 
 sub dcc_door_count {
-  my ($room) = @_;
-  my $n = 0;
+  my ($dungeon,$room) = @_;
+  my $cell = $dungeon->{'cell'};
+  my ($n,%seen) = (0);
 
   my $dir; foreach $dir (keys %{ $room->{'door'} }) {
-    $n += scalar @{ $room->{'door'}{$dir} };
+    my $d; foreach $d (@{ $room->{'door'}{$dir} }) {
+      my $key = $d->{'row'} . ',' . $d->{'col'};
+      next if ($seen{$key}++);
+      $n++ if ($cell->[$d->{'row'}][$d->{'col'}] & $OPENSPACE);
+    }
   }
   return $n;
 }
@@ -1221,6 +1232,189 @@ sub dcc_room_dist {
   my $c = int(($room->{'west'} + $room->{'east'}) / 2);
 
   return (defined $dist->[$r][$c]) ? $dist->[$r][$c] : 0;
+}
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+# DCC-D-D: safe room
+#
+# Et rum med præcis én dør. Én vej ind og ud er defensivt af sig selv: man
+# kan kun blive angrebet fra én retning, og man kan holde øje med den mens
+# man hviler. Rummet står tomt — dcc_xp giver det ingen XP.
+#
+# Det vælges så tæt på bossrummet som muligt, fordi det er dér man har brug
+# for at kunne puste ud. Findes der ikke et rum med én dør, mures en af
+# dørene til i et rum med to — men kun hvis hele etagen stadig kan nås
+# bagefter, og kun hvis bossrummet beholder sine to udveje.
+
+sub dcc_safe_room {
+  my ($dungeon) = @_;
+  my $entrance = $dungeon->{'dcc_entrance'};
+     return $dungeon unless ($entrance);
+  my $boss_id = $dungeon->{'dcc_boss'} ? $dungeon->{'dcc_boss'}{'id'} : 0;
+
+  # Afstand fra bossrummet, så kandidaterne kan sorteres efter nærhed.
+  my $from_boss;
+  if ($boss_id) {
+    my $b = $dungeon->{'room'}[$boss_id];
+    $from_boss = &dcc_bfs($dungeon,
+      int(($b->{'north'} + $b->{'south'}) / 2),
+      int(($b->{'west'} + $b->{'east'}) / 2));
+  }
+
+  my @cand;
+  my $id; for ($id = 1; $id <= $dungeon->{'n_rooms'}; $id++) {
+    my $room = $dungeon->{'room'}[$id];
+       next unless ($room);
+       next if ($room->{'id'} == $boss_id);
+    push(@cand,$room);
+  }
+  @cand = sort {
+    &dcc_room_dist($dungeon,$a,$from_boss) <=> &dcc_room_dist($dungeon,$b,$from_boss)
+  } @cand;
+
+  # - - - findes der allerede et rum med én dør? - - -
+
+  my $room; foreach $room (@cand) {
+    if (&dcc_door_count($dungeon,$room) == 1) {
+      $dungeon->{'dcc_safe'} = { 'id' => $room->{'id'}, 'sealed' => 0 };
+      return $dungeon;
+    }
+  }
+
+  # - - - ellers: mur døre til, færreste først - - -
+
+  @cand = sort {
+    &dcc_door_count($dungeon,$a) <=> &dcc_door_count($dungeon,$b)
+  } @cand;
+
+  foreach $room (@cand) {
+    my $sealed = &dcc_seal_door($dungeon,$room);
+    if ($sealed) {
+      $dungeon->{'dcc_safe'} = { 'id' => $room->{'id'}, 'sealed' => $sealed };
+      return $dungeon;
+    }
+  }
+  return $dungeon;
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# DCC-D-D: prøv at mure en af rummets døre til
+#
+# Døren lukkes, og så kontrolleres det at alt stadig hænger sammen. Gør det
+# ikke det, rulles den tilbage. Det er billigere end at regne ud på forhånd
+# hvilke døre der er livsvigtige.
+
+sub dcc_seal_door {
+  my ($dungeon,$room) = @_;
+  my $cell = $dungeon->{'cell'};
+  my @doors = &dcc_door_cells($room);
+     return 0 if (scalar @doors < 2);
+
+  # Mur til én ad gangen indtil der er én dør tilbage. Dørlisterne røres
+  # først når det er lykkedes, så fortrydelse blot er at lægge felternes
+  # gamle værdi tilbage.
+  my @sealed;
+  my $door; foreach $door (@doors) {
+    last if ((scalar @doors) - (scalar @sealed) <= 1);
+    my ($r,$c) = @{ $door };
+    my $save = $cell->[$r][$c];
+    $cell->[$r][$c] = $NOTHING;
+
+    if (&dcc_seal_ok($dungeon)) {
+      push(@sealed,[$r,$c,$save]);
+    } else {
+      $cell->[$r][$c] = $save;
+    }
+  }
+  if ((scalar @doors) - (scalar @sealed) == 1) {
+    my $s; foreach $s (@sealed) { &dcc_forget_door($dungeon,$s->[0],$s->[1]); }
+    return scalar @sealed;
+  }
+  my $s; foreach $s (@sealed) { $cell->[$s->[0]][$s->[1]] = $s->[2]; }
+  return 0;
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# DCC-D-D: rummets døre som (række, kolonne), hvert felt én gang
+
+sub dcc_door_cells {
+  my ($room) = @_;
+  my (@out,%seen);
+
+  my $dir; foreach $dir (sort keys %{ $room->{'door'} }) {
+    my $d; foreach $d (@{ $room->{'door'}{$dir} }) {
+      my $key = $d->{'row'} . ',' . $d->{'col'};
+      next if ($seen{$key}++);
+      push(@out,[$d->{'row'},$d->{'col'}]);
+    }
+  }
+  return @out;
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# DCC-D-D: må etagen se sådan ud?
+#
+# Alt skal stadig kunne nås fra indgangen, og bossrummet skal beholde sine
+# to udveje — en dør kan være delt med det.
+
+sub dcc_seal_ok {
+  my ($dungeon) = @_;
+  my $entrance = $dungeon->{'dcc_entrance'};
+     return 0 unless (&dcc_all_reachable($dungeon,$entrance->{'row'},$entrance->{'col'}));
+
+  my $boss_id = $dungeon->{'dcc_boss'} ? $dungeon->{'dcc_boss'}{'id'} : 0;
+     return 1 unless ($boss_id);
+  my $boss = $dungeon->{'room'}[$boss_id];
+     return 1 unless ($boss);
+
+  return (&dcc_door_count($dungeon,$boss) >= 2) ? 1 : 0;
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# DCC-D-D: kan hvert eneste åbne felt nås fra indgangen?
+
+sub dcc_all_reachable {
+  my ($dungeon,$r0,$c0) = @_;
+  my $cell = $dungeon->{'cell'};
+     return 0 unless ($cell->[$r0][$c0] & $OPENSPACE);
+  my $dist = &dcc_bfs($dungeon,$r0,$c0);
+
+  my $r; for ($r = 0; $r <= $dungeon->{'n_rows'}; $r++) {
+    my $c; for ($c = 0; $c <= $dungeon->{'n_cols'}; $c++) {
+      next unless ($cell->[$r][$c] & $OPENSPACE);
+      return 0 unless (defined $dist->[$r][$c]);
+    }
+  }
+  return 1;
+}
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+# DCC-D-D: fjern en tilmuret dør fra listerne, så den ikke bliver tegnet
+
+sub dcc_forget_door {
+  my ($dungeon,$r,$c) = @_;
+
+  my $room; foreach $room (@{ $dungeon->{'room'} }) {
+    next unless ($room && $room->{'door'});
+    my $dir; foreach $dir (keys %{ $room->{'door'} }) {
+      my @keep = grep {
+        $_->{'row'} != $r || $_->{'col'} != $c
+      } @{ $room->{'door'}{$dir} };
+
+      if (@keep) {
+        $room->{'door'}{$dir} = \@keep;
+      } else {
+        delete $room->{'door'}{$dir};
+      }
+    }
+  }
+  if ($dungeon->{'door'}) {
+    my @keep = grep {
+      $_->{'row'} != $r || $_->{'col'} != $c
+    } @{ $dungeon->{'door'} };
+    $dungeon->{'door'} = \@keep;
+  }
+  return;
 }
 
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -1240,12 +1434,15 @@ sub dcc_xp {
   my $boss_xp = int($floor_xp * $dungeon->{'boss_share'});
   my $rest = $floor_xp - $boss_xp;
   my $boss_id = $dungeon->{'dcc_boss'} ? $dungeon->{'dcc_boss'}{'id'} : 0;
+  my $safe_id = $dungeon->{'dcc_safe'} ? $dungeon->{'dcc_safe'}{'id'} : 0;
 
-  # samlet areal af alle rum der ikke er bossrummet
+  # Samlet areal af de rum der skal dele resten. Bossrummet har sin egen
+  # andel, og safe room skal stå tomt, så de tæller ikke med.
   my ($total_area,$id) = (0,0);
   for ($id = 1; $id <= $dungeon->{'n_rooms'}; $id++) {
     my $room = $dungeon->{'room'}[$id] or next;
     next if ($room->{'id'} == $boss_id);
+    next if ($room->{'id'} == $safe_id);
     $total_area += $room->{'area'};
   }
 
@@ -1255,6 +1452,8 @@ sub dcc_xp {
 
     if ($room->{'id'} == $boss_id) {
       $room->{'xp'} = $boss_xp;
+    } elsif ($room->{'id'} == $safe_id) {
+      $room->{'xp'} = 0;
     } elsif ($total_area > 0) {
       $room->{'xp'} = int($rest * $room->{'area'} / $total_area);
     } else {
@@ -1281,6 +1480,8 @@ sub dcc_report {
   my $xp = $dungeon->{'dcc_xp'} or return;
   my $boss_id = $dungeon->{'dcc_boss'} ? $dungeon->{'dcc_boss'}{'id'} : 0;
   my $doors = $dungeon->{'dcc_boss'} ? $dungeon->{'dcc_boss'}{'doors'} : 0;
+  my $safe = $dungeon->{'dcc_safe'};
+  my $safe_id = $safe ? $safe->{'id'} : 0;
 
   printf("Etage — seed %s\n", $dungeon->{'seed'});
   printf("%d rum. Indgang i en blindgang; udgang i rum %d.\n\n",
@@ -1288,8 +1489,19 @@ sub dcc_report {
 
   printf("Bossrum      rum %d, %d døre ud%s\n", $boss_id, $doors,
     ($doors < 2) ? "  ** kun én udvej — se noten nederst **" : "");
-  printf("Trappen ned  står inde i rum %d, i den ende der ligger længst fra indgangen\n\n",
+  printf("Trappen ned  står inde i rum %d, i den ende der ligger længst fra indgangen\n",
     $boss_id);
+
+  if ($safe) {
+    printf("Safe room    rum %d, én dør ind og ud%s\n", $safe_id,
+      $safe->{'sealed'}
+        ? sprintf("  (%d dør%s muret til)", $safe->{'sealed'},
+            ($safe->{'sealed'} == 1) ? ' er' : 'e er')
+        : "");
+  } else {
+    printf("Safe room    ingen — se noten nederst\n");
+  }
+  print("\n");
 
   printf("XP-budget    %d spillere på level %d skal bruge %d XP hver\n",
     $dungeon->{'party_size'}, $dungeon->{'party_level'}, $xp->{'need_each'});
@@ -1303,8 +1515,9 @@ sub dcc_report {
     my $room = $dungeon->{'room'}[$id] or next;
     printf("%-5d %-8s %-7d %8d  %s\n", $room->{'id'},
       sprintf('%dx%d', $room->{'width'} / 10, $room->{'height'} / 10),
-      &dcc_door_count($room), $room->{'xp'},
-      ($room->{'id'} == $boss_id) ? 'BOSS + trappen ned' : '');
+      &dcc_door_count($dungeon,$room), $room->{'xp'},
+      ($room->{'id'} == $boss_id) ? 'BOSS + trappen ned'
+        : ($room->{'id'} == $safe_id) ? 'SAFE ROOM — står tomt' : '');
   }
   printf("%-5s %-8s %-7s %8d\n", '', '', 'i alt', $xp->{'placed'});
 
@@ -1312,6 +1525,10 @@ sub dcc_report {
     print("\nNote: intet rum på etagen fik to døre, så udgangen har kun én\n");
     print("udvej. Kør igen med et andet seed, eller sæt remove_deadends\n");
     print("lavere — så bliver der flere forbindelser.\n");
+  }
+  unless ($safe) {
+    print("\nNote: der var intet rum med én dør, og ingen dør kunne mures til\n");
+    print("uden at skære noget af etagen fra. Kør igen med et andet seed.\n");
   }
   return;
 }
