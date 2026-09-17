@@ -120,6 +120,18 @@ a{color:var(--accent-2)}
 #cOut td:last-child{width:46%;white-space:nowrap}
 #cOut tr:has(td:empty) td{border:0;padding:3px}
 
+/* Etagegeneratoren. Arket ligger på hvidt papir midt i en mørk side, så det
+   får en ramme og lidt luft — man skal kunne se hvor papiret slutter. */
+.gen{gap:12px 16px}
+.gen label{min-width:150px}
+.gen-actions{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 10px}
+.btn[disabled]{opacity:.45;cursor:default}
+.btn[disabled]:hover{border-color:var(--line);color:var(--text)}
+.sheet-wrap{
+  margin:18px 0 22px;border:1px solid var(--line);border-radius:10px;
+  overflow:hidden;background:#fff;
+}
+
 .topbar-right{color:var(--muted);font-size:12px}
 .save-state.flash{color:var(--ok)}
 
@@ -433,6 +445,12 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 
   .topbar,.toast,.panel,.notice,#dataNotice,#itemPager,#magicPager,
   .site-nav,.site-nav-wrap{display:none!important}
+
+  /* Dungeon-siden: når der trykkes Print, skal papiret være etagen og ikke
+     resten af siden. Arket har sin egen margen, så siden får ingen. */
+  body.printing-sheet .doc-main > *:not(#sheetWrap){display:none!important}
+  body.printing-sheet .doc-main,body.printing-sheet #sheetWrap{
+    margin:0;padding:0;border:0;border-radius:0}
   html,body{background:#fff;color:#000}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   main{max-width:none;margin:0;padding:0}

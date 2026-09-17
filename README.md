@@ -1096,7 +1096,9 @@ en magi-fordeling giver artifacts vægt. `scale` er `gear`, `magic` eller `none`
 
 ## Dungeon-generatoren
 
-`tools/dungeon.pl` laver etagerne. Den er **donjons Random Dungeon Generator af drow**
+Etagerne laves to steder, af den samme kode i to sprog: `assets/js/dungeon.js` kører på
+[`docs/dungeon.html`](docs/dungeon.html) og giver et printbart ark, og `tools/dungeon.pl`
+gør det samme fra terminalen. Den er **donjons Random Dungeon Generator af drow**
 ([donjon.bin.sh](https://donjon.bin.sh/)), brugt og ændret under
 **[Creative Commons Attribution-NonCommercial 3.0 Unported](https://creativecommons.org/licenses/by-nc/3.0/)**.
 Kreditlinjen står i filens header og skal blive stående; licensen tillader ikke
@@ -1112,12 +1114,25 @@ blokke mærket `DCC-D-D`:
 | **Et safe room** | Præcis én dør ind og ud, så tæt på bossrummet som muligt, og tomt. Er der ikke et rum med én dør, mures døre til — men kun hvis alt stadig kan nås bagefter |
 | **XP nok til et level pr. etage** | `party_size × XP-til-næste-level × xp_slack`. Bossen er præcis én High-kamp efter D&D 2024's encounter-tabel, og intet rum må være hårdere end det. Safe room får ingenting |
 
+På **Dungeon-siden** vælger man level, holdstørrelse og etagens form og trykker *Generér
+etage*. Ud kommer et ark med kortet som SVG — ét felt pr. fem fod, rum med nummer og
+XP-budget, bossrum og safe room tonede, og en nøgle der kun viser de dørtyper der faktisk
+er på etagen — og en rapport med rum, døre og XP. *Print* lægger kortet på én A4 og
+rapporten på den næste; *Hent som fil* gemmer det hele som én HTML-fil, der virker uden
+net og uden JavaScript.
+
 ```bash
 perl tools/dungeon.pl     # kræver Perls GD-modul: apt install libgd-perl
 ```
 
-Den skriver kortet som `<seed>.gif` og en rapport med rum, døre og XP-budget pr. rum.
-Se [`docs/dungeon.html`](docs/dungeon.html) for indstillingerne.
+Perl-udgaven skriver kortet som `<seed>.gif` og den samme rapport i terminalen, og er
+mest til at lave mange etager i træk. **Det samme seed giver ikke det samme kort i de to
+udgaver** — Perl og JavaScript har hver sin `rand()`. Inden for hver af dem er et seed
+fuldstændig gentageligt.
+
+Rummene er tegnet med `assets/js/dungeon-map.js`, som ikke hører til donjons kode.
+Arkets CSS kommer fra den samme fil som selve kortet, så det man ser på skærmen og det
+man har på papiret ikke kan komme fra hinanden.
 
 ## Lagring
 

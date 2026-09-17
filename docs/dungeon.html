@@ -34,16 +34,181 @@
     etage kan bruges som den er: trappen ned har mere end én udvej, der er et bossrum
     foran den, der er et safe room, og der ligger XP nok til at stige et level.</p>
 
-  <h2>Kør den</h2>
-  <pre>perl tools/dungeon.pl</pre>
-  <p>Den skriver et kort som <code>&lt;seed&gt;.gif</code> og en rapport i terminalen.
-    Den kræver Perls GD-modul — <code>apt install libgd-perl</code> eller
-    <code>cpan GD</code>.</p>
-  <p><a class="doc-card" href="https://github.com/aesbech/DCC-D-D/blob/main/tools/dungeon.pl">
-    <b>tools/dungeon.pl</b>
-    <span>Hele scriptet. Tilføjelserne står i blokke mærket DCC-D-D og kan fjernes uden
-      at røre resten.</span>
-  </a></p>
+  <h2>Generér en etage</h2>
+  <p>Den kører her på siden. Ud kommer et ark du kan printe eller gemme: kortet på
+    én side, rapporten på den næste.</p>
+
+  <form class="calc gen" id="gen" onsubmit="return false">
+    <label>Holdets level
+      <select id="gLevel"></select>
+    </label>
+    <label>Spillere
+      <input type="number" id="gSize" value="4" min="1" max="8" step="1">
+    </label>
+    <label>Slack
+      <select id="gSlack">
+        <option value="1">1,0 — de skal rydde hele etagen</option>
+        <option value="1.25">1,25 — de kan springe 20 % over</option>
+        <option value="1.5" selected>1,5 — de kan springe 33 % over</option>
+        <option value="2">2,0 — de kan springe halvdelen over</option>
+      </select>
+    </label>
+    <label>Etagens størrelse
+      <select id="gRows">
+        <option value="19">Lille — 18 × 18 felter</option>
+        <option value="25">Mellem — 24 × 24</option>
+        <option value="31">Stor — 30 × 30</option>
+        <option value="39" selected>Meget stor — 38 × 38</option>
+      </select>
+    </label>
+    <label>Rummene
+      <select id="gRoom">
+        <option value="5">Små — 3 til 5 felter, mange af dem</option>
+        <option value="7">Mellem — 3 til 7 felter</option>
+        <option value="9" selected>Store — 3 til 9 felter, færre af dem</option>
+      </select>
+    </label>
+    <label>Gange
+      <select id="gCorr">
+        <option value="Bent" selected>Bugtede</option>
+        <option value="Straight">Lige</option>
+        <option value="Labyrinth">Labyrint</option>
+      </select>
+    </label>
+    <label>Blindgyder
+      <select id="gDead">
+        <option value="100">Alle væk — kun gange der fører et sted hen</option>
+        <option value="50" selected>Halvdelen væk</option>
+        <option value="0">Alle beholdes</option>
+      </select>
+    </label>
+    <label>Bossen
+      <select id="gBoss">
+        <option value="high" selected>Én High-kamp</option>
+        <option value="moderate">Én Moderate-kamp</option>
+        <option value="low">Én Low-kamp</option>
+      </select>
+    </label>
+    <label>Maks pr. rum
+      <select id="gCap">
+        <option value="high" selected>High</option>
+        <option value="moderate">Moderate</option>
+        <option value="low">Low</option>
+      </select>
+    </label>
+    <label>Seed
+      <input type="text" id="gSeed" inputmode="numeric" placeholder="tilfældigt">
+    </label>
+  </form>
+
+  <p class="gen-actions">
+    <button type="button" id="gRun" class="btn btn-primary">Generér etage</button>
+    <button type="button" id="gPrint" class="btn" disabled>Print</button>
+    <button type="button" id="gSave" class="btn" disabled>Hent som fil</button>
+  </p>
+  <p class="note" id="gNote">Samme seed giver samme etage. Lad feltet stå tomt, så
+    finder den selv et — det står øverst på arket, så etagen kan laves igen hvis
+    printet forsvinder. Rumantallet kan du ikke sætte: det er en brøk af pladsen,
+    så små rum på en stor etage giver mange rum og store rum giver få. Hvor mange
+    det blev, står på arket.</p>
+
+  <div id="sheetWrap" class="sheet-wrap" hidden><div class="dsheet" id="sheet"></div></div>
+
+  <h3>Hvad der står på arket</h3>
+  <p>Kortet har ét felt pr. fem fod, så bevægelse kan tælles direkte på papiret.
+    Rummene er nummererede, og under nummeret står rummets XP-budget. Bossrummet og
+    safe room er tonede, og nøglen under kortet viser kun de dørtyper der faktisk er
+    på etagen.</p>
+  <p>XP-tallet pr. rum er <b>et budget, ikke en liste over monstre</b>. 157 XP er for
+    eksempel seks CR 1/8 eller tre CR 1/4 — du vælger selv hvad der står i rummet.
+    Safe room står tomt, og bossen er præcis én kamp af den slags du har valgt.
+    Monstrene kan slås op i <a href="SRD_CC_v5.2.1.pdf">SRD 5.2.1</a>, der ligger
+    under Docs.</p>
+  <p class="note">Kan budgettet ikke ligge i rummene uden at bryde loftet, siger arket
+    hvor meget der er tilbage. Det sker fra omkring level 4, hvor ét level pr. etage
+    kræver over ti High-kampe. Læg resten i gangene, sænk slack, eller gør etagen
+    større.</p>
+
+  <script src="../assets/js/dungeon.js"></script>
+  <script src="../assets/js/dungeon-map.js"></script>
+  <script>
+  (function () {
+    var lvl = document.getElementById('gLevel');
+    for (var i = 1; i <= 20; i++) {
+      var o = document.createElement('option');
+      o.value = i; o.textContent = 'Level ' + i;
+      if (i === 1) o.selected = true;
+      lvl.appendChild(o);
+    }
+
+    /* Arkets CSS kommer fra generatoren selv, så siden og den hentede fil
+       viser det samme. */
+    var st = document.createElement('style');
+    st.textContent = DUNGEON.css;
+    document.head.appendChild(st);
+
+    var wrap = document.getElementById('sheetWrap');
+    var out = document.getElementById('sheet');
+    var note = document.getElementById('gNote');
+    var current = null;
+
+    function val(id) { return document.getElementById(id).value; }
+
+    function run() {
+      var seed = parseInt(val('gSeed'), 10);
+      if (!(seed >= 0)) seed = Math.floor(Math.random() * 1e9);
+
+      current = DUNGEON.create({
+        seed: seed,
+        n_rows: +val('gRows'), n_cols: +val('gRows'),
+        room_max: +val('gRoom'),
+        corridor_layout: val('gCorr'),
+        remove_deadends: +val('gDead'),
+        party_level: +val('gLevel'),
+        party_size: Math.max(1, Math.min(8, +val('gSize') || 4)),
+        xp_slack: +val('gSlack'),
+        boss_fight: val('gBoss'),
+        room_cap: val('gCap')
+      });
+
+      out.innerHTML = DUNGEON.sheet(current);
+      wrap.hidden = false;
+      document.getElementById('gSeed').value = seed;
+      document.getElementById('gPrint').disabled = false;
+      document.getElementById('gSave').disabled = false;
+
+      var xp = current.xp;
+      note.textContent = xp.short
+        ? 'Der var ' + xp.short.toLocaleString('da-DK') + ' XP der ikke kunne ligge '
+          + 'i rummene uden at bryde loftet. Læg dem i gangene, sænk slack, eller '
+          + 'gør etagen større.'
+        : 'Etagen er klar. Seed ' + seed + ' — skriv det ned, så kan den laves igen.';
+    }
+
+    /* Printet skal vise arket og ikke resten af siden. */
+    document.getElementById('gPrint').addEventListener('click', function () {
+      document.body.classList.add('printing-sheet');
+      window.print();
+    });
+    window.addEventListener('afterprint', function () {
+      document.body.classList.remove('printing-sheet');
+    });
+
+    document.getElementById('gSave').addEventListener('click', function () {
+      if (!current) return;
+      var blob = new Blob([DUNGEON.page(current)], { type: 'text/html;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'etage-' + current.seed + '.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    });
+
+    document.getElementById('gRun').addEventListener('click', run);
+  }());
+  </script>
 
   <h2>Hvad der er ændret</h2>
   <table>
@@ -53,8 +218,8 @@
         <code>emplace_stairs</code> sætter altid trapper for enden af en blindgyde —
         <code>check_tunnel</code> kræver netop syv vægge omkring — så man kunne blive
         trængt op i et hjørne ved udgangen.</td>
-      <td>Trappen lægges inde i et rum med <b>mindst to døre</b>. Målt over 200 etager
-        med standardindstillingerne skete det 200 gange ud af 200.</td>
+      <td>Trappen lægges inde i et rum med <b>mindst to døre</b>. Målt over 1000
+        etager med standardindstillingerne skete det 1000 gange ud af 1000.</td>
     </tr>
     <tr>
       <td><b>Ingen boss.</b></td>
@@ -69,7 +234,7 @@
         retning. Det vælges så tæt på bossrummet som muligt og står tomt. Findes der ikke
         et rum med én dør, mures døre til i et andet — men kun hvis hele etagen stadig
         kan nås bagefter, og bossrummet beholder sine to udveje. Over 1000 etager lykkedes
-        det 989 gange; resten siger rapporten til om.</td>
+        det 990 gange; resten siger arket til om.</td>
     </tr>
     <tr>
       <td><b>Ingen styring på XP.</b> Holdet skulle støvsuge etagen for at stige.</td>
@@ -193,7 +358,23 @@
     have et andet loft, så sæt <code>room_cap</code> til <code>'moderate'</code> — eller
     gør bossen mildere med <code>boss_fight</code>.</p>
 
-  <h2>Indstillinger</h2>
+  <h2>Perl-udgaven</h2>
+  <p>Den samme generator findes som et Perl-script. Siden herover kan alt det samme,
+    så scriptet er mest til hvis du vil lave tyve etager i træk eller rode i koden.</p>
+  <pre>perl tools/dungeon.pl</pre>
+  <p>Den skriver et kort som <code>&lt;seed&gt;.gif</code> og en rapport i terminalen.
+    Den kræver Perls GD-modul — <code>apt install libgd-perl</code> eller
+    <code>cpan GD</code>.</p>
+  <p><a class="doc-card" href="https://github.com/aesbech/DCC-D-D/blob/main/tools/dungeon.pl">
+    <b>tools/dungeon.pl</b>
+    <span>Hele scriptet. Tilføjelserne står i blokke mærket DCC-D-D og kan fjernes uden
+      at røre resten.</span>
+  </a></p>
+  <p class="note"><b>Samme seed giver ikke samme etage de to steder.</b> Perl og
+    JavaScript har hver sin terning, så et seed er kun gentageligt inden for den
+    udgave det kommer fra.</p>
+
+  <h3>Indstillinger</h3>
   <p>Alt sidder i <code>get_opts</code>. De fem nederste er nye:</p>
   <pre>'n_rows'          =&gt; 39,          # skal være ulige
 'n_cols'          =&gt; 39,
@@ -223,37 +404,6 @@
   </table>
   <p class="note">Sæt <code>seed</code> til et fast tal, så kan den samme etage
     genskabes — nyttigt hvis printet forsvinder.</p>
-
-  <h2>Rapporten</h2>
-  <pre>Etage — seed 12345
-11 rum. Indgang i en blindgang; udgang i rum 2.
-
-Bossrum      rum 2, 3 døre ud
-Trappen ned  står inde i rum 2, i den ende der ligger længst fra indgangen
-Safe room    rum 11, én dør ind og ud
-
-XP-budget    4 spillere på level 1 skal bruge 300 XP hver
-             = 1200 XP for holdet, x 1.5 slack = 1800 XP på etagen
-             de kan springe 33 % over og stadig stige et level
-
-Kampbudget   Low 200 · Moderate 300 · High 400  (for hele holdet)
-             bossen er én High-kamp: 400 XP
-             maks pr. rum: 400 XP — intet rum er hårdere end bossen
-             etagen svarer til 4,5 High-kampe
-
-Rum   Mål     Døre         XP
-1     9x3      2           157
-2     9x7      3           400  BOSS + trappen ned
-3     3x5      3            87
-...
-11    5x3      1             0  SAFE ROOM — står tomt
-               i alt      1800</pre>
-  <p>XP-tallet pr. rum er et budget, ikke en liste over monstre. 157 XP er for eksempel
-    seks CR 1/8 eller tre CR 1/4 — du vælger selv hvad der står i rummet.</p>
-  <p class="note">Kan budgettet ikke ligge i rummene uden at bryde loftet, siger rapporten
-    hvor meget der er tilbage. Det sker fra omkring level 4, hvor ét level pr. etage
-    kræver over ti High-kampe. Læg resten i gangene, sænk <code>xp_slack</code>, eller
-    giv etagen flere rum.</p>
 
   <h2>Kredit</h2>
   <p class="note"><b>Random Dungeon Generator af drow</b>,
