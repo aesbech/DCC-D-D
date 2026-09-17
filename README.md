@@ -10,6 +10,8 @@ Ren statisk HTML/CSS/JS. Ingen build, ingen dependencies, intet backend.
 udløser pakkerne ligger i [`docs/achievements.md`](docs/achievements.md) — ingen af dem
 kræver at man tæller noget. De 216 bedrifter ligger som et printbart afkrydsningsark i
 [`docs/checklist.html`](docs/checklist.html) med en kolonne pr. spiller.
+[`docs/idekatalog.md`](docs/idekatalog.md) samler hele designet ét sted — hvad der er
+besluttet, hvorfor, og hvad der ligger på ventelisten.
 Denne fil handler kun om generatoren.
 
 ## Sådan kommer du i gang
