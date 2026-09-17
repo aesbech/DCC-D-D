@@ -1,5 +1,13 @@
 # Bedrifter
 
+**Alle bedrifter er skjulte.** Listen læses aldrig op, og der hænger ikke et ark på
+væggen. Man finder ud af at en bedrift fandtes i det øjeblik man udløser den — det er
+halvdelen af mekanikken. En spiller der går efter en bedrift hun har set på forhånd,
+spiller efter listen; en spiller der ikke kender den, spiller bare, og bliver så grebet i
+noget.
+
+Derfor er **dette dokument og arket DM-materiale.** De ligger bag skærmen.
+
 **Ingen bedrift kræver at du tæller noget.** Hver eneste udløses i ét øjeblik, og det
 øjeblik kan afgøres af det der ligger på bordet. Ingen løbende tællere, ingen målere der
 nulstilles, ingen streaks du skal huske ikke er brudt. Ser du det ske, er den opnået.
@@ -11,14 +19,17 @@ navn, udløser og fire felter til spillerne.** Skriv navnene øverst på hver si
 kryds når pakken er givet. Siderne er delt efter pakketype og niveau, så præmien står i
 overskriften og ikke på hver eneste række — papiret siger alligevel hvad det er.
 
+Hver tabel slutter med et par **stiplede rækker**. De er til de bedrifter du finder på i
+kampens hede: skriv navn og udløser, og læs den op som om den havde stået der hele tiden.
+Pakken kommer fra den samme bunke som resten.
+
 Arket bygges af `scripts/build_checklist.py` ud fra denne fil, så de to ikke kan komme ud
 af trit. Ret her, kør scriptet, print igen.
 
-**Tegnforklaring**
+**Tegnforklaring.** Der er ikke et tegn for «skjult» — det er de alle sammen.
 
 | Tegn | Betyder |
 |------|---------|
-| ★ | **Skjult** — læses ikke op før den udløses |
 | ↻ | **Gentagelig** — højst én gang pr. session |
 | ⚑ | **Holdbedrift** — alle får belønningen |
 
@@ -46,7 +57,8 @@ bunke.
 
 **Guld er et kapløb.** De seks guldbedrifter pr. type går til **den første i hele
 kampagnen** der gør det. Der bliver altså kun ét kryds pr. guldrække, og det er dét der
-holder seks bedrifter inden for seks pakker.
+holder seks bedrifter inden for seks pakker. Kapløbet er stiltiende: ingen ved at der var
+et, før nogen har vundet det.
 
 Class Box står uden for regnestykket. Den er ikke gradueret, og der er ikke sat et loft.
 
@@ -106,11 +118,11 @@ højst én gang pr. session hver, men hver session.
 | **Local Knowledge** | Du får en brugbar retningsanvisning ud af nogen dernede |
 | **Shortcut** | Du finder en vej rundt om noget holdet troede de skulle igennem |
 | **Bagman** | Du bærer holdets loot ud af et rum |
-| **Wave to the Camera** ★ | Du taler direkte til dem der ser med |
-| **Wrong Way** ★ | Du går tilbage til et rum I har ryddet, og finder noget alligevel |
-| **Housekeeping** ★ | Du rydder op efter jer, og det viser sig at betale sig |
-| **Tourist** ★ | Du stopper op for at kigge på noget mens de andre skynder sig |
-| **Name Taken** ★ | Du giver noget dernede et navn, og det hænger ved |
+| **Wave to the Camera** | Du taler direkte til dem der ser med |
+| **Wrong Way** | Du går tilbage til et rum I har ryddet, og finder noget alligevel |
+| **Housekeeping** | Du rydder op efter jer, og det viser sig at betale sig |
+| **Tourist** | Du stopper op for at kigge på noget mens de andre skynder sig |
+| **Name Taken** | Du giver noget dernede et navn, og det hænger ved |
 
 ## Sølv — 12
 
@@ -124,10 +136,10 @@ højst én gang pr. session hver, men hver session.
 | **The Long Way Round** | Du kommer uden om en forhindring uden at løse den |
 | **Bilingual** | Du kommunikerer med noget I ikke deler sprog med |
 | **Style Points** | Du løser et problem på den mest omstændelige måde der findes |
-| **Wearing His Face** ★ | Du kommer forbi noget ved at udgive dig for en anden |
-| **Caught Red-Handed** ★ | Du bliver taget i at stjæle og slipper afsted med det alligevel |
-| **The Old Switcheroo** ★ | Du erstatter det du stjæler med noget værdiløst |
-| **Insider Trading** ★ | Du sælger noget tilbage til den du tog det fra |
+| **Wearing His Face** | Du kommer forbi noget ved at udgive dig for en anden |
+| **Caught Red-Handed** | Du bliver taget i at stjæle og slipper afsted med det alligevel |
+| **The Old Switcheroo** | Du erstatter det du stjæler med noget værdiløst |
+| **Insider Trading** | Du sælger noget tilbage til den du tog det fra |
 
 ## Guld — 6 · *første i kampagnen*
 
@@ -137,8 +149,8 @@ højst én gang pr. session hver, men hver session.
 | **Speedrun** ⚑ | Etagen er ryddet inden pausen |
 | **No Stone Unturned** ⚑ | Hver kiste, hvert lig og hver skuffe er gennemsøgt når I går ned |
 | **Cartographer** ⚑ | Holdet har tegnet en hel etage færdig |
-| **Front Door** ★ | Du går ind ad hovedindgangen et sted alle andre ville liste sig ind |
-| **Broke the Dungeon** ★ ⚑ | Holdet løser noget på en måde DM'en ikke havde forudset |
+| **Front Door** | Du går ind ad hovedindgangen et sted alle andre ville liste sig ind |
+| **Broke the Dungeon** ⚑ | Holdet løser noget på en måde DM'en ikke havde forudset |
 
 ---
 
@@ -168,10 +180,10 @@ højst én gang pr. session hver, men hver session.
 | **Reach Out** | Du rammer noget der troede det stod uden for rækkevidde |
 | **Intimidation Tactics** | Du får noget til at flygte uden at slå |
 | **One-Liner** | Du siger noget godt lige før eller efter et drab |
-| **Held Item** ★ | Du taber dit våben midt i kamp |
-| **Broken** ★ | Dit våben går i stykker midt i et slag |
-| **Out of Ammo** ★ | Du løber tør midt i en kamp |
-| **The Hard Way** ★ | Du løser et problem ved at ødelægge det |
+| **Held Item** | Du taber dit våben midt i kamp |
+| **Broken** | Dit våben går i stykker midt i et slag |
+| **Out of Ammo** | Du løber tør midt i en kamp |
+| **The Hard Way** | Du løser et problem ved at ødelægge det |
 
 ## Sølv — 12
 
@@ -187,8 +199,8 @@ højst én gang pr. session hver, men hver session.
 | **Disarmed** | Du tager en fjendes våben fra den |
 | **Combo** | Du og en anden spiller kombinerer to effekter til noget større |
 | **Crowd Pleaser** | Du gør noget tydeligt mere spektakulært end nødvendigt |
-| **Improvised** ★ | Du dræber noget med en genstand der ikke er et våben |
-| **Executioner** ★ | Du gør det af med noget der havde overgivet sig |
+| **Improvised** | Du dræber noget med en genstand der ikke er et våben |
+| **Executioner** | Du gør det af med noget der havde overgivet sig |
 
 ## Guld — 6 · *første i kampagnen*
 
@@ -199,7 +211,7 @@ højst én gang pr. session hver, men hver session.
 | **Last One Standing** | Alle andre er nede, og du vinder kampen |
 | **Duelist** | Du vinder en kamp en mod en, uden at nogen blander sig |
 | **Speedrun Any%** ⚑ | En boss nedlagt i første runde |
-| **Called Shot** ★ | Du siger hvor du rammer, inden du slår — og det gør du |
+| **Called Shot** | Du siger hvor du rammer, inden du slår — og det gør du |
 
 ---
 
@@ -227,12 +239,12 @@ højst én gang pr. session hver, men hver session.
 | **Sacrificial** | Et af dine kort ødelægges i stedet for dig |
 | **Human Ladder** | Holdet løser noget fysisk ved at bruge hinanden |
 | **Second Skin** | Du sover i din rustning |
-| **Naked and Afraid** ★ | Du står uden rustning midt i en kamp |
-| **Trust Fall** ★ | Du gør noget dumt fordi en anden spiller bad dig om det |
-| **The Floor Is Also a Weapon** ★ | Du tager faldskade fra noget du selv satte i gang |
-| **Face First** ★ | Du fejler en save og lander på noget hårdt |
-| **Slippery** ★ | Du undslipper noget der havde fat i dig |
-| **Scarred** ★ | Du får et mærke du beholder resten af kampagnen |
+| **Naked and Afraid** | Du står uden rustning midt i en kamp |
+| **Trust Fall** | Du gør noget dumt fordi en anden spiller bad dig om det |
+| **The Floor Is Also a Weapon** | Du tager faldskade fra noget du selv satte i gang |
+| **Face First** | Du fejler en save og lander på noget hårdt |
+| **Slippery** | Du undslipper noget der havde fat i dig |
+| **Scarred** | Du får et mærke du beholder resten af kampagnen |
 
 ## Sølv — 12
 
@@ -248,8 +260,8 @@ højst én gang pr. session hver, men hver session.
 | **Hold the Line** | Du er den eneste mellem fjenden og resten af holdet, og de kommer ikke forbi |
 | **Anchor** | Du holder den samme position hele kampen igennem |
 | **Two for One** | Et angreb rettet mod dig rammer noget andet i stedet |
-| **Adrenaline** ★ | Du gør noget du ikke burde kunne, fordi du er ved at dø |
-| **Carried** ★ | Du bliver reddet af den du selv havde reddet |
+| **Adrenaline** | Du gør noget du ikke burde kunne, fordi du er ved at dø |
+| **Carried** | Du bliver reddet af den du selv havde reddet |
 
 ## Guld — 6 · *første i kampagnen*
 
@@ -259,8 +271,8 @@ højst én gang pr. session hver, men hver session.
 | **Unbreakable** | Du bliver stående gennem noget der lagde alle andre ned |
 | **Prime Time** ⚑ | Holdet fælder en boss, og ingen er nede når den falder |
 | **The Wall** ⚑ | Holdet kommer helskindet gennem en kamp de ikke burde |
-| **Not Even Close** ★ | Du overlever et angreb der var beregnet til at tage hele holdet |
-| **Death's Door** ★ | Du fejler to death saves og kommer tilbage alligevel |
+| **Not Even Close** | Du overlever et angreb der var beregnet til at tage hele holdet |
+| **Death's Door** | Du fejler to death saves og kommer tilbage alligevel |
 
 ---
 
@@ -283,20 +295,20 @@ sjovere at prøve.
 | **Emergency Only** | Du bruger noget du havde gemt til senere |
 | **Shared Supply** | Du giver en consumable væk til en anden spiller |
 | **Rations** | Du deler din mad med nogen |
-| **Nat One** ★ | Din første naturlige 1 på noget der betød noget |
-| **Friendly Fire** ★ | Du rammer en kammerat |
-| **Trapfinder, Eventually** ★ | Din første fælde fundet **efter** den er udløst |
-| **Trapped by a Trap You Found** ★ | Du udløser en fælde du selv havde opdaget |
-| **Locked Out** ★ | Du låser dig selv inde eller ude |
-| **Loud** ★ | Din listeplan bliver afsløret af noget du selv gjorde |
-| **Butterfingers** ★ | Du taber noget skrøbeligt |
-| **Wrong Order** ★ | Du gør tingene i den forkerte rækkefølge, og det koster |
-| **Overpriced** ★ | Du betaler alt for meget for noget |
-| **Junk Collector** ★ | Du står med tre kort af det samme værdiløse grej |
-| **Hoarder** ★ | Du står med fem consumables du ikke har brugt |
-| **Waste of Good Rope** ★ | Du efterlader noget brugbart bag dig |
-| **Zero Percent** ★ | Du prøver noget med nul chance for at lykkes, og prøver alligevel |
-| **Ate It** ★ | Du spiser noget du ikke burde spise |
+| **Nat One** | Din første naturlige 1 på noget der betød noget |
+| **Friendly Fire** | Du rammer en kammerat |
+| **Trapfinder, Eventually** | Din første fælde fundet **efter** den er udløst |
+| **Trapped by a Trap You Found** | Du udløser en fælde du selv havde opdaget |
+| **Locked Out** | Du låser dig selv inde eller ude |
+| **Loud** | Din listeplan bliver afsløret af noget du selv gjorde |
+| **Butterfingers** | Du taber noget skrøbeligt |
+| **Wrong Order** | Du gør tingene i den forkerte rækkefølge, og det koster |
+| **Overpriced** | Du betaler alt for meget for noget |
+| **Junk Collector** | Du står med tre kort af det samme værdiløse grej |
+| **Hoarder** | Du står med fem consumables du ikke har brugt |
+| **Waste of Good Rope** | Du efterlader noget brugbart bag dig |
+| **Zero Percent** | Du prøver noget med nul chance for at lykkes, og prøver alligevel |
+| **Ate It** | Du spiser noget du ikke burde spise |
 
 ## Sølv — 12
 
@@ -306,14 +318,14 @@ sjovere at prøve.
 | **Better Living Through Chemistry** | En consumable afgør en kamp |
 | **Waste Not** | Du bruger et forbrugskort i det sidste øjeblik hvor det stadig nåede at virke |
 | **Cut It Close** | Du bruger noget i den allersidste tur af en kamp |
-| **Chemist** ★ | Du kombinerer to consumables til én effekt |
-| **Weaponised** ★ | Du bruger noget beregnet til at hjælpe som et våben |
-| **Down the Wrong Pipe** ★ | Du drikker den forkerte potion |
-| **Allergic** ★ | En consumable virker modsat på dig |
-| **Regret** ★ | Du fortryder noget du drak, højlydt |
-| **Poisoned, Cursed, and Late for Dinner** ★ | Tre forskellige tilstande på dig samtidig |
-| **Well, That Was Expensive** ★ | Du ødelægger noget værdifuldt ved et uheld |
-| **Made an Enemy** ★ | Noget i dungeon'et beslutter at det hader dig personligt |
+| **Chemist** | Du kombinerer to consumables til én effekt |
+| **Weaponised** | Du bruger noget beregnet til at hjælpe som et våben |
+| **Down the Wrong Pipe** | Du drikker den forkerte potion |
+| **Allergic** | En consumable virker modsat på dig |
+| **Regret** | Du fortryder noget du drak, højlydt |
+| **Poisoned, Cursed, and Late for Dinner** | Tre forskellige tilstande på dig samtidig |
+| **Well, That Was Expensive** | Du ødelægger noget værdifuldt ved et uheld |
+| **Made an Enemy** | Noget i dungeon'et beslutter at det hader dig personligt |
 
 ## Guld — 6 · *første i kampagnen*
 
@@ -321,10 +333,10 @@ sjovere at prøve.
 |---------|-----------|
 | **Big Spender** | Du bruger alt hvad du ejer på ét køb |
 | **The Last Potion** ⚑ | Holdets sidste helbredende genstand bliver brugt, og det rækker |
-| **Full Party Wipe Avoided** ★ ⚑ | Holdet var ét slag fra at dø, og kom hjem |
-| **Better Than Nothing** ★ | Du redder holdet med noget der burde være værdiløst |
-| **Iron Stomach** ★ | Du overlever noget der skulle have slået dig ihjel at spise |
-| **Terms and Conditions** ★ | Du indgår en aftale du ikke har læst helt |
+| **Full Party Wipe Avoided** ⚑ | Holdet var ét slag fra at dø, og kom hjem |
+| **Better Than Nothing** | Du redder holdet med noget der burde være værdiløst |
+| **Iron Stomach** | Du overlever noget der skulle have slået dig ihjel at spise |
+| **Terms and Conditions** | Du indgår en aftale du ikke har læst helt |
 
 ---
 
@@ -350,14 +362,14 @@ sjovere at prøve.
 | **Identified** | Du finder ud af hvad et magic item gør, før du bruger det |
 | **Borrowed Power** | Du bruger et magic item der ikke er dit |
 | **Second Opinion** | Du caster den samme spell to gange i træk, fordi den virkede |
-| **Attunement Issues** ★ | Du står med tre attunede magic items samtidig |
-| **Read the Label** ★ | Du bruger et magic item forkert |
-| **Backfire** ★ | En spell rammer dig selv |
-| **Fizzled** ★ | Du bruger et slot på ingenting |
-| **Cursed** ★ | Du finder ud af at noget er forbandet ved at bære det |
-| **Look Up** ★ | Du opdager noget vigtigt ved at kigge opad |
-| **Don't Read That** ★ | Du læser noget du ikke burde læse |
-| **Sponsored Content** ★ | Du bruger et produkt der blev navngivet i en af systemets beskeder |
+| **Attunement Issues** | Du står med tre attunede magic items samtidig |
+| **Read the Label** | Du bruger et magic item forkert |
+| **Backfire** | En spell rammer dig selv |
+| **Fizzled** | Du bruger et slot på ingenting |
+| **Cursed** | Du finder ud af at noget er forbandet ved at bære det |
+| **Look Up** | Du opdager noget vigtigt ved at kigge opad |
+| **Don't Read That** | Du læser noget du ikke burde læse |
+| **Sponsored Content** | Du bruger et produkt der blev navngivet i en af systemets beskeder |
 
 ## Sølv — 12
 
@@ -372,9 +384,9 @@ sjovere at prøve.
 | **Turned** | Du får noget til at kæmpe for dig med magi |
 | **Through the Wall** | Du kommer igennem noget fast ved hjælp af magi |
 | **Sharing Is Caring** | Du giver et magic item væk til en anden spiller |
-| **Out of Slots** ★ | Du bruger dit sidste spell slot, og vinder kampen alligevel |
-| **Overcharged** ★ | Du presser et magic item længere end det burde kunne |
-| **Deal with It** ★ | Du løser et problem med en spell der slet ikke var beregnet til det |
+| **Out of Slots** | Du bruger dit sidste spell slot, og vinder kampen alligevel |
+| **Overcharged** | Du presser et magic item længere end det burde kunne |
+| **Deal with It** | Du løser et problem med en spell der slet ikke var beregnet til det |
 
 ## Guld — 6 · *første i kampagnen*
 
@@ -382,10 +394,10 @@ sjovere at prøve.
 |---------|-----------|
 | **Archmage** | Din første spell på level 6 eller højere |
 | **Legendary Bearer** | Dit første Legendary magic item |
-| **Artifact** ★ | Du får fat i noget der har sit eget navn og sin egen vilje |
-| **Wild Magic** ★ | Magi går galt på en måde der ender med at hjælpe |
-| **Rewritten** ★ | Magi ændrer noget permanent ved dungeon'et |
-| **Patron** ★ | Noget dernede tilbyder dig en aftale, og du siger ja |
+| **Artifact** | Du får fat i noget der har sit eget navn og sin egen vilje |
+| **Wild Magic** | Magi går galt på en måde der ender med at hjælpe |
+| **Rewritten** | Magi ændrer noget permanent ved dungeon'et |
+| **Patron** | Noget dernede tilbyder dig en aftale, og du siger ja |
 
 ---
 
@@ -403,18 +415,36 @@ sjovere at prøve.
 | **Mentor** | Du lærer en anden spiller noget din karakter kan |
 | **New Friend** | Du får en fjende til at skifte side |
 | **Signature Move** | Du gør noget så karakteristisk at bordet giver det et navn |
-| **Multiclass** ★ | Du tager et level i noget andet end det du startede med |
-| **Rival** ★ | En anden spiller og du kappes om det samme, og du vinder |
-| **Reputation** ★ | Noget dernede har hørt om dig før I mødes |
-| **Sacrifice** ★ | Du giver afkald på noget du havde, for holdets skyld |
-| **Kingmaker** ★ | Du får noget dernede til at adlyde dig permanent |
-| **The Long Game** ★ | En plan du lagde flere sessioner tidligere går op |
-| **Solo** ★ | Du vinder en kamp helt alene mens resten af holdet er ude af spil |
+| **Multiclass** | Du tager et level i noget andet end det du startede med |
+| **Rival** | En anden spiller og du kappes om det samme, og du vinder |
+| **Reputation** | Noget dernede har hørt om dig før I mødes |
+| **Sacrifice** | Du giver afkald på noget du havde, for holdets skyld |
+| **Kingmaker** | Du får noget dernede til at adlyde dig permanent |
+| **The Long Game** | En plan du lagde flere sessioner tidligere går op |
+| **Solo** | Du vinder en kamp helt alene mens resten af holdet er ude af spil |
 | **Ascended** | Du forlader dungeon'et i live |
 
 `Welcome to the Dungeon` er den eneste der uddeles uden at nogen har gjort noget. Den skal
 læses op inden første tur, sammen med en Adventurer- og en Weapons-pakke i Bronze — så har
 alle kort på bordet fra minut ét.
+
+---
+
+## Dine egne bedrifter
+
+De stiplede rækker på arket er til dem der opstår ved bordet. Tre regler holder dem på
+linje med resten:
+
+1. **Ét øjeblik.** Kan den ikke afgøres af det der ligger på bordet lige nu, hører den
+   ikke til her. «Du har gjort det tre gange» er en tæller, ikke en bedrift.
+2. **Vælg niveau efter hvor stort det føltes**, ikke efter hvor svært det var. Bronze er
+   noget man gjorde; Sølv er noget man vil fortælle om; Guld er noget bordet stadig
+   snakker om næste gang.
+3. **Den koster fra den samme bunke.** Der kommer ikke flere pakker af at skrive en ny
+   linje. Giver du en hjemmelavet Sølv, er der elleve tilbage.
+
+Skriv den ned med det samme, og læs den op som om den havde stået der hele tiden. Spillerne
+kan alligevel ikke se forskel — de har aldrig set listen.
 
 ---
 
@@ -452,6 +482,6 @@ Sølv.
   en større pakke i den anden ende. `Sponsored Content` og `Patron` peger allerede den vej.
 - **Negative bedrifter.** En bedrift der giver en *forbandelse* i stedet for en pakke. Kan
   være meget sjovt og meget surt — prøv én og se.
-- **Guld som kapløb, sagt højt.** Guldbedrifterne går til den første der gør det. Læses de
-  op ved kampagnens start, bliver de til mål. Holdes de skjult, bliver de til overraskelser.
-  Begge dele virker; de virker ikke samtidig.
+- **En bedrift der afsløres halvt.** Systemet kunne antyde at noget er i nærheden —
+  *«Der er en præmie i det her rum. Den er ikke til den forsigtige.»* — uden at sige
+  hvilken. Det bryder ikke med at alt er skjult, men det gør et enkelt rum spændende.
