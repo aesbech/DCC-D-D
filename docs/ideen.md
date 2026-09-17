@@ -106,10 +106,24 @@ første i hele kampagnen der gør det**, og så er den brugt.
 
 **Anti-grind.** En bedrift kan kun opnås én gang pr. spiller, medmindre den er mærket som
 gentagelig. Og gør en spiller noget udelukkende for at udløse en bedrift, tæller det ikke —
-systemet er kynisk, ikke dumt.
+systemet er kynisk, ikke dumt. Når listen er skjult, er det sjældent et problem: man kan
+ikke gå efter noget man ikke ved findes.
 
-**Hemmelige bedrifter.** En del af listen er skjult og afsløres først når den udløses. Det
-er dem der er sjovest, fordi ingen gik efter dem.
+**Dem du finder på undervejs.** Gør nogen noget der fortjener en pakke, og som ikke står på
+listen, så giv den. Arket har stiplede rækker til formålet — skriv navn og udløser, og læs
+den op som om den havde stået der hele tiden. Spillerne kan alligevel ikke se forskel.
+Pakken kommer fra den samme bunke som resten; der bliver ikke flere af at skrive en linje.
+
+**Alt er hemmeligt.** Hele listen er skjult. Den læses aldrig op, den hænger ikke på
+væggen, og spillerne får ikke et ark. Man finder ud af at en bedrift fandtes i det øjeblik
+man udløser den.
+
+Det er ikke pyntet på — det er selve mekanikken. En spiller der kender listen, spiller
+efter listen: hun åbner døren fordi der er en pakke i det, ikke fordi hun vil vide hvad
+der er bagved. En spiller der ikke kender den, gør bare noget, og bliver så grebet i det.
+Det er dét systemet skal føles som.
+
+Derfor er `achievements.md` og det printede ark **DM-materiale**. De bliver bag skærmen.
 
 ## Tonen
 

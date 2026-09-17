@@ -51,6 +51,15 @@ PAGES = (("Bronze",), ("Sølv", "Guld"))
 
 ROW = re.compile(r"^\| \*\*(.+?)\*\*(.*?)\|(.+)\|$")
 
+# Tomme rækker til bedrifter man finder på i kampens hede. De ligger i den
+# tabel de hører til, så en hjemmelavet Weapons Sølv står blandt de andre
+# Weapons Sølv — og koster fra den samme bunke.
+#
+# Antallet er sat af pladsen: Bronze-tabellen er den lange, så den får tre,
+# og Sølv og Guld deler en side og får to hver. Mere end det, og den
+# tætteste side (Consumables) ville løbe over A4.
+BLANKS = {"Bronze": 3, "Sølv": 2, "Guld": 2, "Class": 3}
+
 TIER_NOTE = {
     "Bronze": "Personlig — hver spiller kan få sin egen. 22 bedrifter, 22 pakker i kassen.",
     "Sølv": "Personlig — hver spiller kan få sin egen. 12 bedrifter, 12 pakker i kassen.",
@@ -88,8 +97,15 @@ def esc(s: str) -> str:
     return html.escape(s.replace("|", "").strip())
 
 
-def rows_html(rows: list[tuple[str, str, str]]) -> str:
-    """Én tabelrække pr. bedrift, med fire afkrydsningsfelter til sidst."""
+TICKS = ('<td class="p"></td><td class="p"></td>'
+         '<td class="p"></td><td class="p"></td>')
+
+
+def rows_html(rows: list[tuple[str, str, str]], blanks: int = 0) -> str:
+    """Én tabelrække pr. bedrift, med fire afkrydsningsfelter til sidst.
+
+    Til sidst et par tomme rækker til dem man finder på undervejs.
+    """
     out = []
     for name, marks, trigger in rows:
         mk = ' <i class="mk">%s</i>' % esc(marks) if marks.strip() else ""
@@ -97,9 +113,14 @@ def rows_html(rows: list[tuple[str, str, str]]) -> str:
             "<tr>"
             '<td class="name"><b>%s</b>%s</td>'
             '<td class="what">%s</td>'
-            '<td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td>'
-            "</tr>" % (esc(name), mk, esc(trigger))
+            "%s</tr>" % (esc(name), mk, esc(trigger), TICKS)
         )
+    for i in range(blanks):
+        # Første tomme række bærer etiketten, så det er tydeligt at resten
+        # også er til fri afbenyttelse.
+        hint = '<span class="own">Din egen</span>' if i == 0 else ""
+        out.append('<tr class="blank"><td class="name">%s</td>'
+                   '<td class="what"></td>%s</tr>' % (hint, TICKS))
     return "\n".join(out)
 
 
@@ -115,7 +136,8 @@ def table(kind: str, tier: str, rows: list[tuple[str, str, str]]) -> str:
   <tbody>
 %s
   </tbody>
-</table>""" % (html.escape(label), len(rows), TIER_NOTE[tier], rows_html(rows))
+</table>""" % (html.escape(label), len(rows), TIER_NOTE[tier],
+               rows_html(rows, BLANKS.get(tier, 0)))
 
 
 CSS = """
@@ -174,6 +196,19 @@ tbody tr:nth-child(even) td{background:#f7f7f7}
 tbody tr:nth-child(even) td.p{background:#f2f2f2}
 .mk{font-style:normal;color:#777;font-weight:400}
 
+/* Tomme rækker til egne bedrifter. Ingen zebrastribe — de skal se ud som
+   noget der mangler, ikke som en række der allerede står der. */
+tbody tr.blank td{background:#fff}
+tbody tr.blank td.p{background:#fcfcfc}
+tbody tr.blank td.name,tbody tr.blank td.what{
+  border-top-style:dotted;border-bottom-style:dotted;
+}
+/* Tabellens yderkant skal stadig være hel, ellers ser den uafsluttet ud. */
+tbody tr.blank:last-child td{border-bottom-style:solid}
+.own{
+  font-size:6.5pt;text-transform:uppercase;letter-spacing:.07em;color:#aaa;
+}
+
 .ladder td:first-child{font-weight:700}
 .ladder td{font-size:10pt;padding:2.2mm 2mm}
 .note{font-size:8pt;color:#555;margin:3mm 0 0}
@@ -206,9 +241,12 @@ PLAYERS = """<div class="players">
   <label><i>4</i><span></span></label>
 </div>"""
 
-LEGEND = ('<p class="legend">★ skjult, læses ikke op før den udløses · '
-          "↻ gentagelig, højst én gang pr. session · "
-          "⚑ holdbedrift, alle får belønningen</p>")
+LEGEND = ('<p class="legend">↻ gentagelig, højst én gang pr. session · '
+          "⚑ holdbedrift, alle får belønningen<br>"
+          "<b>Alle bedrifter er skjulte</b> — arket bliver bag skærmen. "
+          "De stiplede rækker er til dem du finder på undervejs: skriv navn og "
+          "udløser, og læs den op som om den havde stået der hele tiden. Pakken "
+          "kommer fra den samme bunke som resten.</p>")
 
 
 def main() -> None:
@@ -221,10 +259,11 @@ def main() -> None:
     # eller en del af beholdningen og derfor ikke har sin egen farveside.
     sheets.append("""<section class="sheet">
   <h1>Bedrifter <span class="paper">— afkrydsningsark, %d bedrifter</span></h1>
-  <p class="sub">Én række pr. bedrift: hvad den hedder, og hvad der udløser den. De fire
-    felter til højre er spillerne — skriv navnene øverst på hver side, og sæt kryds når
-    pakken er givet. Præmien står i overskriften, ikke på hver række: papiret siger
-    alligevel hvad pakken er. Der er intet at tælle.</p>
+  <p class="sub"><b>DM-ark — bliver bag skærmen.</b> Alle bedrifter er skjulte; spillerne
+    finder ud af at en fandtes i det øjeblik de udløser den. Én række pr. bedrift: hvad den
+    hedder, og hvad der udløser den. De fire felter til højre er spillerne — skriv navnene
+    øverst på hver side, og sæt kryds når pakken er givet. Præmien står i overskriften,
+    ikke på hver række: papiret siger alligevel hvad pakken er.</p>
 
   %s
 
@@ -272,9 +311,10 @@ def main() -> None:
 <body>
 
 <div class="no-print">
-  <b>Afkrydsningsark til DCC-D-D.</b> Én række pr. bedrift med navn og udløser, og fire
-  felter til spillerne. Tryk print — A4, {len(sheets)} sider. Skriv spillernavnene øverst
-  på hver side. Se <a href="achievements.md">achievements.md</a> for reglerne bag.
+  <b>Afkrydsningsark til DCC-D-D — DM-materiale.</b> Alle bedrifter er skjulte, så arket
+  bliver bag skærmen. Én række pr. bedrift med navn og udløser, fire felter til spillerne,
+  og stiplede rækker til dem du finder på undervejs. Tryk print — A4, {len(sheets)} sider.
+  Se <a href="achievements.md">achievements.md</a> for reglerne bag.
   Sæt skalering til 100 % og slå «print baggrundsgrafik» til, så kolonnerne kan ses.
 </div>
 
