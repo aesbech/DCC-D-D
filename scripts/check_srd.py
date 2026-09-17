@@ -18,6 +18,12 @@ over: «Proficiency: Stealth — Add your proficiency bonus to Acrobatics checks
 er vores sætning om SRD'ens færdighed, ikke SRD'ens sætning.
 
     python3 scripts/check_srd.py docs/SRD_CC_v5.2.1.pdf.txt
+    python3 scripts/check_srd.py docs/SRD_CC_v5.2.1.pdf.txt --mark
+
+Med --mark skriver den også `"srd": false` på de kort der ligger uden for
+SRD'en, så generatoren kan holde dem ude af puljerne. Kortene bliver liggende
+i data — det er kun et flag. Importscripts skriver filerne forfra, så kør
+--mark igen efter en import.
 
 Tekstfilen laves fra PDF'en med `pdftotext docs/SRD_CC_v5.2.1.pdf` — eller,
 hvis poppler ikke er installeret, med pdfjs:
@@ -31,6 +37,7 @@ hvis poppler ikke er installeret, med pdfjs:
       require('fs').writeFileSync('docs/SRD_CC_v5.2.1.pdf.txt',o.join('\\n'))})"
 """
 
+import hashlib
 import json
 import re
 import sys
@@ -98,9 +105,11 @@ def coverage(srd, desc, run=12):
 
 
 def main():
-    if len(sys.argv) < 2:
+    args = [a for a in sys.argv[1:] if not a.startswith("-")]
+    mark = "--mark" in sys.argv
+    if not args:
         sys.exit(__doc__)
-    srd = " " + norm(Path(sys.argv[1]).read_text(encoding="utf-8")) + " "
+    srd = " " + norm(Path(args[0]).read_text(encoding="utf-8")) + " "
 
     report, totals = [], Counter()
     for fname, title, unit in FILES:
@@ -131,6 +140,8 @@ def main():
 
         totals[title] = (len(rows), len(outside), len(unsure))
         report.append((title, unit, rows, outside, unsure))
+        if mark:
+            stamp(fname, {x["name"] for x in outside})
 
     write(report, totals)
     for title, (n, out, uns) in totals.items():
@@ -141,6 +152,38 @@ def main():
              sum(t[1] for t in totals.values()),
              sum(t[2] for t in totals.values())))
     print("\nSkrevet til", OUT.relative_to(ROOT))
+
+
+def stamp(fname, names):
+    """Skriv `"srd": false` på de kort der ligger uden for SRD'en.
+
+    Kortene bliver liggende. Det er et flag, ikke en sletning: generatoren kan
+    holde dem ude af puljerne, og ved ens eget bord kan de slås til igen.
+    Filen læses forfra og skrives med samme formatering som importscriptene,
+    så en kørsel uden fund ikke laver en diff.
+    """
+    path = DATA / fname
+    text = path.read_text(encoding="utf-8")
+    # Headeren er en kommentar på én eller flere linjer, så den findes bagfra:
+    # alt før versionslinjen er header.
+    m = re.search(r'^window\.(\w+)_VERSION = "[^"]*";$', text, re.M)
+    if not m:
+        raise SystemExit("%s: uventet format, kan ikke sætte flag" % fname)
+    var, head = m.group(1), text[:m.start()].rstrip("\n")
+
+    rows = json.loads(text[text.index("["): text.rindex("]") + 1])
+    for x in rows:
+        x.pop("srd", None)                    # sæt det forfra hver gang
+        if x["name"] in names:
+            x["srd"] = False
+
+    payload = json.dumps(rows, ensure_ascii=False, indent=1)
+    version = hashlib.sha1(payload.encode("utf-8")).hexdigest()[:12]
+    path.write_text(
+        "%s\nwindow.%s_VERSION = \"%s\";\nwindow.%s = %s;\n"
+        % (head, var, version, var, payload), encoding="utf-8")
+    print("  %-18s %3d kort mærket srd:false (version %s)"
+          % (fname, len(names), version))
 
 
 def write(report, totals):
@@ -154,6 +197,12 @@ def write(report, totals):
         "**ikke lovligt ligge på en offentligt tilgængelig side**. At eje "
         "bøgerne giver ret til at bruge dem ved sit eget bord — ikke til at "
         "udgive teksten.\n")
+    L.append(
+        "De er ikke slettet. De har fået `\"srd\": false` i datafilerne, og "
+        "**«Kun kort fra SRD 5.2.1»** under Indstillinger holder dem ude af "
+        "puljerne. Knappen er slået til i en ny browser, så en side der deles "
+        "er i orden fra starten; ved dit eget bord kan du slå den fra og få "
+        "dem alle igen.\n")
     L.append("| | Kort i alt | Uden for SRD | Skal ses efter |")
     L.append("|---|---:|---:|---:|")
     for title, (n, out, uns) in totals.items():

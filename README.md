@@ -1177,14 +1177,21 @@ er Wizards of the Coasts, og kun den del der står i **SRD 5.2.1** er frigivet
 (CC BY 4.0). Den påkrævede kredit står ordret i kolofonen på hver side og på det
 printede kortark.
 
-**Før siden deles med nogen:** `assets/data/` indeholder i dag **204 kort hvis
+**Før siden deles med nogen:** `assets/data/` indeholder **204 kort hvis
 regeltekst hverken står i SRD'en eller er vores egen** — 132 magic items, 43
 feats, 21 spells og 8 stykker udstyr, fra Player's Handbook og Dungeon Master's
 Guide. At eje bøgerne giver ret til at bruge dem ved sit eget bord, ikke til at
-udgive teksten. Listen står i [`docs/licens.md`](docs/licens.md) og laves med:
+udgive teksten.
+
+De er mærket `"srd": false` i datafilerne, og **«Kun kort fra SRD 5.2.1»** under
+Indstillinger holder dem ude af puljerne — også ude af de spells et scroll kan
+trække. Knappen er slået til i en ny browser; en opsætning der allerede lå i
+browseren får den slået fra, så et bord der kører ikke ændrer sig af en
+kodeopdatering. Listen står i [`docs/licens.md`](docs/licens.md), og både den og
+flagene laves med:
 
 ```bash
-python3 scripts/check_srd.py docs/SRD_CC_v5.2.1.pdf.txt
+python3 scripts/check_srd.py docs/SRD_CC_v5.2.1.pdf.txt --mark
 ```
 
 ## Filer

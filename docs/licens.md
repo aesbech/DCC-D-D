@@ -4,6 +4,8 @@
 
 SRD 5.2.1 er frigivet under CC BY 4.0 og må gengives frit, så længe kreditten står der. Resten af D&D er ikke. Kortene herunder har hverken et navn eller en tekst der findes i SRD'en, og de kan derfor **ikke lovligt ligge på en offentligt tilgængelig side**. At eje bøgerne giver ret til at bruge dem ved sit eget bord — ikke til at udgive teksten.
 
+De er ikke slettet. De har fået `"srd": false` i datafilerne, og **«Kun kort fra SRD 5.2.1»** under Indstillinger holder dem ude af puljerne. Knappen er slået til i en ny browser, så en side der deles er i orden fra starten; ved dit eget bord kan du slå den fra og få dem alle igen.
+
 | | Kort i alt | Uden for SRD | Skal ses efter |
 |---|---:|---:|---:|
 | Spells | 202 | **21** | 1 |

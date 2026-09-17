@@ -157,6 +157,9 @@ main{max-width:1180px;margin:0 auto;padding:20px}
 .spacer{flex:1}
 .hidden{display:none}
 .hint{color:var(--muted);font-size:13px;margin:8px 0 0}
+/* Står en forklaring mellem to felter, skal den have luft under sig — ellers
+   klæber den til etiketten på det næste felt og ligner en del af det. */
+.hint + .field,.hint + .check{margin-top:16px}
 .print-help{margin-top:12px;font-size:13px}
 .print-help summary{color:var(--accent-2);cursor:pointer;width:max-content}
 .print-help ul{margin:8px 0 0;padding-left:20px}

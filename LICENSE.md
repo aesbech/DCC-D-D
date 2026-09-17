@@ -37,15 +37,25 @@ ret til at udgive teksten.** SRD 5.2.1 er en delmængde af D&D; Player's
 Handbook, Dungeon Master's Guide og alt fra Xanathar's og fremefter er ikke
 frigivet.
 
-`assets/data/` indeholder i dag **204 kort, hvis regeltekst hverken står i
-SRD'en eller er vores egen** — 132 magic items, 43 feats, 21 spells og 8 stykker
-udstyr. De må ikke ligge på en offentligt tilgængelig side.
+`assets/data/` indeholder **204 kort, hvis regeltekst hverken står i SRD'en
+eller er vores egen** — 132 magic items, 43 feats, 21 spells og 8 stykker
+udstyr.
 
-`docs/licens.md` har listen, navn for navn. Den laves med:
+De er ikke slettet, for ved dit eget bord er de fine. De er mærket med
+`"srd": false`, og under Indstillinger står **«Kun kort fra SRD 5.2.1»**, som
+holder dem ude af puljerne — også ude af de spells et scroll kan trække.
+Knappen er **slået til** i en ny browser, så det man kommer til, når man følger
+et link, er i orden fra starten. En opsætning der allerede lå i browseren får
+den slået fra, så ingens eget bord ændrer sig af at koden bliver opdateret.
+
+`docs/licens.md` har listen, navn for navn. Begge dele laves med:
 
 ```bash
-python3 scripts/check_srd.py docs/SRD_CC_v5.2.1.pdf.txt
+python3 scripts/check_srd.py docs/SRD_CC_v5.2.1.pdf.txt --mark
 ```
+
+**Slår man knappen fra og deler linket, er man tilbage i problemet.** Flaget er
+en hjælp, ikke en garanti.
 
 ## donjon — CC BY-NC 3.0
 

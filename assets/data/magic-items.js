@@ -1,5 +1,5 @@
 /* Auto-genereret fra magic_items.txt. Kør scripts/import_magic.py igen efter ændringer. */
-window.MAGIC_ITEMS_VERSION = "472c50e7b31c";
+window.MAGIC_ITEMS_VERSION = "87d8f58ade6c";
 window.MAGIC_ITEMS = [
  {
   "name": "Adamantine Armor",
@@ -42,7 +42,8 @@ window.MAGIC_ITEMS = [
    ],
    "excludeNames": []
   },
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Alchemy Jug",
@@ -53,7 +54,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "You can take a Magic action and name one liquid from the Alchemy Jug Liquids table to cause the jug to produce the chosen liquid. Afterward, you can uncork the jug as a Utilize action and pour that liquid out, up to 2 gallons per minute. The maximum amount of liquid the jug can produce depends on the liquid you named.",
   "source": "Dungeon Master's Guide",
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Ammunition +1",
@@ -93,7 +95,8 @@ window.MAGIC_ITEMS = [
    ],
    "excludeNames": []
   },
-  "rarity": "rare"
+  "rarity": "rare",
+  "srd": false
  },
  {
   "name": "Ammunition +3",
@@ -113,7 +116,8 @@ window.MAGIC_ITEMS = [
    ],
    "excludeNames": []
   },
-  "rarity": "very_rare"
+  "rarity": "very_rare",
+  "srd": false
  },
  {
   "name": "Ammunition of Slaying",
@@ -418,7 +422,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "A young dwarf prince set out to forge a weapon that would be regarded as a symbol of unity among his people. Venturing deep under the mountains, deeper than any dwarf had ever delved, the prince came to the blazing heart of a great volcano. With the aid of Moradin, a god of creation, he first crafted four mighty tools: the Starmetal Pick, the Earthheart Forge, the Anvil of Songs, and the Shaping Hammer. With these tools, he forged the Axe of the Dwarvish Lords.",
   "source": "Dungeon Master's Guide",
-  "rarity": "artifact"
+  "rarity": "artifact",
+  "srd": false
  },
  {
   "name": "Baba Yaga's Dancing Broom",
@@ -429,7 +434,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "The archfey Baba Yaga crafted many of these magic brooms. No two appear exactly alike. While holding the broom, you can take a Magic action to transform it into an Animated Broom under your control. The broom then moves into an unoccupied space as close to you as possible. The broom acts immediately after you on your Initiative count and remains animate until you take a Bonus Action and use a command word to render it inanimate.",
   "source": "Dungeon Master's Guide",
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Bag of Beans",
@@ -515,7 +521,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This flavorless, gelatinous bead dissolves in liquid, transforming up to a pint of the liquid into fresh, cold drinking water. The bead has no effect on magical liquids or harmful substances such as poison.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Belt of Cloud Giant Strength",
@@ -531,7 +538,8 @@ window.MAGIC_ITEMS = [
   "desc": "Six varieties of this belt exist, corresponding with and having rarity according to the six kinds of true giants. The belt of stone giant strength and the belt of frost giant strength look different, but they have the same effect.",
   "source": "Dungeon Master's Guide",
   "rarity": "legendary",
-  "variantOf": "Belt of Giant Strength"
+  "variantOf": "Belt of Giant Strength",
+  "srd": false
  },
  {
   "name": "Belt of Dwarvenkind",
@@ -569,7 +577,8 @@ window.MAGIC_ITEMS = [
   "desc": "Six varieties of this belt exist, corresponding with and having rarity according to the six kinds of true giants. The belt of stone giant strength and the belt of frost giant strength look different, but they have the same effect.",
   "source": "Dungeon Master's Guide",
   "rarity": "very_rare",
-  "variantOf": "Belt of Giant Strength"
+  "variantOf": "Belt of Giant Strength",
+  "srd": false
  },
  {
   "name": "Belt of Frost Giant Strength",
@@ -585,7 +594,8 @@ window.MAGIC_ITEMS = [
   "desc": "Six varieties of this belt exist, corresponding with and having rarity according to the six kinds of true giants. The belt of stone giant strength and the belt of frost giant strength look different, but they have the same effect.",
   "source": "Dungeon Master's Guide",
   "rarity": "very_rare",
-  "variantOf": "Belt of Giant Strength"
+  "variantOf": "Belt of Giant Strength",
+  "srd": false
  },
  {
   "name": "Belt of Hill Giant Strength",
@@ -601,7 +611,8 @@ window.MAGIC_ITEMS = [
   "desc": "Six varieties of this belt exist, corresponding with and having rarity according to the six kinds of true giants. The belt of stone giant strength and the belt of frost giant strength look different, but they have the same effect.",
   "source": "Dungeon Master's Guide",
   "rarity": "rare",
-  "variantOf": "Belt of Giant Strength"
+  "variantOf": "Belt of Giant Strength",
+  "srd": false
  },
  {
   "name": "Belt of Stone Giant Strength",
@@ -617,7 +628,8 @@ window.MAGIC_ITEMS = [
   "desc": "Six varieties of this belt exist, corresponding with and having rarity according to the six kinds of true giants. The belt of stone giant strength and the belt of frost giant strength look different, but they have the same effect.",
   "source": "Dungeon Master's Guide",
   "rarity": "very_rare",
-  "variantOf": "Belt of Giant Strength"
+  "variantOf": "Belt of Giant Strength",
+  "srd": false
  },
  {
   "name": "Belt of Storm Giant Strength",
@@ -633,7 +645,8 @@ window.MAGIC_ITEMS = [
   "desc": "Six varieties of this belt exist, corresponding with and having rarity according to the six kinds of true giants. The belt of stone giant strength and the belt of frost giant strength look different, but they have the same effect.",
   "source": "Dungeon Master's Guide",
   "rarity": "legendary",
-  "variantOf": "Belt of Giant Strength"
+  "variantOf": "Belt of Giant Strength",
+  "srd": false
  },
  {
   "name": "Berserker Axe",
@@ -681,7 +694,8 @@ window.MAGIC_ITEMS = [
     "Greatsword"
    ]
   },
-  "rarity": "artifact"
+  "rarity": "artifact",
+  "srd": false
  },
  {
   "name": "Book of Exalted Deeds",
@@ -698,7 +712,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Other creatures that peruse the book's open pages can read the text but glean no deeper meaning and reap no benefits. A Fiend, an Undead, or a servant of a god from the Lower Planes that tries to read from the book takes 24d6 Radiant damage. This damage ignores Resistance and Immunity, and it can't be reduced or avoided by any means. A creature reduced to 0 Hit Points by this damage disappears in a flash and is destroyed, leaving its possessions behind. The book then vanishes, and the creature's Attunement to it ends.",
   "source": "Dungeon Master's Guide",
-  "rarity": "artifact"
+  "rarity": "artifact",
+  "srd": false
  },
  {
   "name": "Book of Vile Darkness",
@@ -713,7 +728,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "The Book of Vile Darkness remains with you only as long as you strive to work evil in the world. If you fail to perform at least one evil act within the span of 10 days, or if you willingly perform a good act, the book disappears, your Attunement to it ends immediately, and you lose all benefits granted by it. If you die while attuned to the book, an entity of great evil claims your soul. You can't be restored to life by any means while your soul remains imprisoned.",
   "source": "Dungeon Master's Guide",
-  "rarity": "artifact"
+  "rarity": "artifact",
+  "srd": false
  },
  {
   "name": "Boomerang +1",
@@ -729,7 +745,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "The boomerang is a ranged weapon, and any creature proficient with the javelin is also proficient with this weapon.",
   "source": "Dungeon Master's Guide",
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Boomerang +2",
@@ -745,7 +762,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "The boomerang is a ranged weapon, and any creature proficient with the javelin is also proficient with this weapon.",
   "source": "Dungeon Master's Guide",
-  "rarity": "rare"
+  "rarity": "rare",
+  "srd": false
  },
  {
   "name": "Boomerang +3",
@@ -761,7 +779,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "The boomerang is a ranged weapon, and any creature proficient with the javelin is also proficient with this weapon.",
   "source": "Dungeon Master's Guide",
-  "rarity": "very_rare"
+  "rarity": "very_rare",
+  "srd": false
  },
  {
   "name": "Boots of Elvenkind",
@@ -791,7 +810,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "While wearing these boots, you can have them leave tracks like those of any kind of Humanoid of your size.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Boots of Levitation",
@@ -962,7 +982,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "The flame of this candle isn't extinguished when immersed in water. It gives off light and heat like a normal candle.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Cap of Water Breathing",
@@ -973,7 +994,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "While wearing this cap underwater, you can take a Magic action to create a bubble of air around your head. This bubble allows you to breathe normally underwater. This bubble stays with you until the cap is removed or you are no longer underwater.",
   "source": "Dungeon Master's Guide",
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Cape of the Mountebank",
@@ -1027,7 +1049,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "If you place the corpse of a Humanoid into the cauldron and cover the corpse with 200 pounds of salt (which costs 10 GP) for at least 8 hours, the salt is consumed and the creature returns to life as if by Raise Dead at the next dawn. Once used, this property can't be used again for 7 days.",
   "source": "Dungeon Master's Guide",
-  "rarity": "very_rare"
+  "rarity": "very_rare",
+  "srd": false
  },
  {
   "name": "Censer of Controlling Air Elementals",
@@ -1109,7 +1132,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "While wearing this cloak, you can take a Bonus Action to make it billow dramatically for 1 minute.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Cloak of Displacement",
@@ -1159,7 +1183,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "While wearing this cloak, you can take a Bonus Action to change the style, color, and apparent quality of the garment. The cloak's weight doesn't change. Regardless of its appearance, the cloak can't be anything but a cloak. Although it can duplicate the appearance of other magic cloaks, it doesn't gain their magical properties.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Cloak of Protection",
@@ -1219,7 +1244,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "This copper amulet contains tiny interlocking gears and is powered by magic from Mechanus, a plane of clockwork predictability. Faint ticking and whirring noises emanate from within.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Clothes of Mending",
@@ -1232,7 +1258,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "This elegant outfit of traveler's clothes magically mends itself to counteract daily wear and tear. Pieces of the outfit that are destroyed can't be repaired in this way.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Crystal Ball",
@@ -1313,7 +1340,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This Tiny cube looks like a jack-in-the-box. When you wind its crank as a Magic action, a merry tune emits from the box, the lid pops open, a creature appears in the nearest unoccupied space, and the lid closes. The lid can't otherwise be opened.",
   "source": "Dungeon Master's Guide",
-  "rarity": "rare"
+  "rarity": "rare",
+  "srd": false
  },
  {
   "name": "Cubic Gate",
@@ -1395,7 +1423,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Unknown Spell. As a Magic action, you can try to cast a cantrip that you don't know. The cantrip must be on the Warlock spell list and have a casting time of an action, and you make a DC 10 Intelligence (Arcana) check. On a successful check, you cast the spell. On a failed check, the spell fails, and the action used to cast it is wasted. In either case, you can't use this property again until you finish a Long Rest.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Decanter of Endless Water",
@@ -1483,7 +1512,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This treatise, composed by Iggwilv the archmage, documents the Abyss's layers and inhabitants and is widely regarded as the most thorough and blasphemous tome of demonology in the multiverse. The tome recounts both the oldest and most current profanities of the Abyss and demons. Demons have attempted to censor the text, and while sections have been ripped from the book's spine, the general chapters remain, ever revealing demonic secrets. Caged behind lines of script roils a secret piece of the Abyss itself, which keeps the book up-to-date, no matter how many pages are removed, and it longs to be more than mere reference material.",
   "source": "Dungeon Master's Guide",
-  "rarity": "artifact"
+  "rarity": "artifact",
+  "srd": false
  },
  {
   "name": "Dimensional Shackles",
@@ -1555,7 +1585,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "This fearsome steel helm makes your eyes glow red and hides the rest of your face in shadow while you wear it.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Driftglobe",
@@ -1566,7 +1597,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "You can issue another command as a Magic action to make the illuminated globe rise into the air and float no more than 5 feet off the ground. The globe hovers in this way until you or another creature grasps it. If you move more than 60 feet from the hovering globe, it follows you until it is within 60 feet of you. It takes the shortest route to do so. If prevented from moving, the globe sinks gently to the ground and becomes inactive, and its light winks out.",
   "source": "Dungeon Master's Guide",
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Dust of Disappearance",
@@ -1655,7 +1687,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "While held up to your ear, this horn suppresses the effects of the Deafened condition on you.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Efreeti Bottle",
@@ -1687,7 +1720,8 @@ window.MAGIC_ITEMS = [
     "Chain Shirt"
    ]
   },
-  "rarity": "legendary"
+  "rarity": "legendary",
+  "srd": false
  },
  {
   "name": "Elemental Gem",
@@ -1740,7 +1774,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This spellbook, along with anything written on its pages, can't be damaged by fire or immersion in water. In addition, the spellbook doesn't deteriorate with age.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Energy Bow",
@@ -1788,7 +1823,8 @@ window.MAGIC_ITEMS = [
    "Illusion"
   ],
   "spellSaveDC": "13",
-  "spellAttack": "+5"
+  "spellAttack": "+5",
+  "srd": false
  },
  {
   "name": "Enspelled Armor (2)",
@@ -1816,7 +1852,8 @@ window.MAGIC_ITEMS = [
    "Illusion"
   ],
   "spellSaveDC": "13",
-  "spellAttack": "+5"
+  "spellAttack": "+5",
+  "srd": false
  },
  {
   "name": "Enspelled Armor (3)",
@@ -1844,7 +1881,8 @@ window.MAGIC_ITEMS = [
    "Illusion"
   ],
   "spellSaveDC": "15",
-  "spellAttack": "+7"
+  "spellAttack": "+7",
+  "srd": false
  },
  {
   "name": "Enspelled Armor (4)",
@@ -1872,7 +1910,8 @@ window.MAGIC_ITEMS = [
    "Illusion"
   ],
   "spellSaveDC": "15",
-  "spellAttack": "+7"
+  "spellAttack": "+7",
+  "srd": false
  },
  {
   "name": "Enspelled Armor (5)",
@@ -1900,7 +1939,8 @@ window.MAGIC_ITEMS = [
    "Illusion"
   ],
   "spellSaveDC": "17",
-  "spellAttack": "+9"
+  "spellAttack": "+9",
+  "srd": false
  },
  {
   "name": "Enspelled Armor (6)",
@@ -1928,7 +1968,8 @@ window.MAGIC_ITEMS = [
    "Illusion"
   ],
   "spellSaveDC": "17",
-  "spellAttack": "+9"
+  "spellAttack": "+9",
+  "srd": false
  },
  {
   "name": "Enspelled Armor (7)",
@@ -1956,7 +1997,8 @@ window.MAGIC_ITEMS = [
    "Illusion"
   ],
   "spellSaveDC": "18",
-  "spellAttack": "+10"
+  "spellAttack": "+10",
+  "srd": false
  },
  {
   "name": "Enspelled Armor (8)",
@@ -1984,7 +2026,8 @@ window.MAGIC_ITEMS = [
    "Illusion"
   ],
   "spellSaveDC": "18",
-  "spellAttack": "+10"
+  "spellAttack": "+10",
+  "srd": false
  },
  {
   "name": "Enspelled Armor (Cantrip)",
@@ -2012,7 +2055,8 @@ window.MAGIC_ITEMS = [
    "Illusion"
   ],
   "spellSaveDC": "13",
-  "spellAttack": "+5"
+  "spellAttack": "+5",
+  "srd": false
  },
  {
   "name": "Enspelled Staff (1)",
@@ -2030,7 +2074,8 @@ window.MAGIC_ITEMS = [
   "spellLevel": 1,
   "spellName": "Enspelled Staff ({spell})",
   "spellSaveDC": "13",
-  "spellAttack": "+5"
+  "spellAttack": "+5",
+  "srd": false
  },
  {
   "name": "Enspelled Staff (2)",
@@ -2048,7 +2093,8 @@ window.MAGIC_ITEMS = [
   "spellLevel": 2,
   "spellName": "Enspelled Staff ({spell})",
   "spellSaveDC": "13",
-  "spellAttack": "+5"
+  "spellAttack": "+5",
+  "srd": false
  },
  {
   "name": "Enspelled Staff (3)",
@@ -2066,7 +2112,8 @@ window.MAGIC_ITEMS = [
   "spellLevel": 3,
   "spellName": "Enspelled Staff ({spell})",
   "spellSaveDC": "15",
-  "spellAttack": "+7"
+  "spellAttack": "+7",
+  "srd": false
  },
  {
   "name": "Enspelled Staff (4)",
@@ -2084,7 +2131,8 @@ window.MAGIC_ITEMS = [
   "spellLevel": 4,
   "spellName": "Enspelled Staff ({spell})",
   "spellSaveDC": "15",
-  "spellAttack": "+7"
+  "spellAttack": "+7",
+  "srd": false
  },
  {
   "name": "Enspelled Staff (5)",
@@ -2102,7 +2150,8 @@ window.MAGIC_ITEMS = [
   "spellLevel": 5,
   "spellName": "Enspelled Staff ({spell})",
   "spellSaveDC": "17",
-  "spellAttack": "+9"
+  "spellAttack": "+9",
+  "srd": false
  },
  {
   "name": "Enspelled Staff (6)",
@@ -2120,7 +2169,8 @@ window.MAGIC_ITEMS = [
   "spellLevel": 6,
   "spellName": "Enspelled Staff ({spell})",
   "spellSaveDC": "17",
-  "spellAttack": "+9"
+  "spellAttack": "+9",
+  "srd": false
  },
  {
   "name": "Enspelled Staff (7)",
@@ -2138,7 +2188,8 @@ window.MAGIC_ITEMS = [
   "spellLevel": 7,
   "spellName": "Enspelled Staff ({spell})",
   "spellSaveDC": "18",
-  "spellAttack": "+10"
+  "spellAttack": "+10",
+  "srd": false
  },
  {
   "name": "Enspelled Staff (8)",
@@ -2156,7 +2207,8 @@ window.MAGIC_ITEMS = [
   "spellLevel": 8,
   "spellName": "Enspelled Staff ({spell})",
   "spellSaveDC": "18",
-  "spellAttack": "+10"
+  "spellAttack": "+10",
+  "srd": false
  },
  {
   "name": "Enspelled Staff (Cantrip)",
@@ -2174,7 +2226,8 @@ window.MAGIC_ITEMS = [
   "spellLevel": 0,
   "spellName": "Enspelled Staff ({spell})",
   "spellSaveDC": "13",
-  "spellAttack": "+5"
+  "spellAttack": "+5",
+  "srd": false
  },
  {
   "name": "Enspelled Weapon (1)",
@@ -2209,7 +2262,8 @@ window.MAGIC_ITEMS = [
    "Transmutation"
   ],
   "spellSaveDC": "13",
-  "spellAttack": "+5"
+  "spellAttack": "+5",
+  "srd": false
  },
  {
   "name": "Enspelled Weapon (2)",
@@ -2244,7 +2298,8 @@ window.MAGIC_ITEMS = [
    "Transmutation"
   ],
   "spellSaveDC": "13",
-  "spellAttack": "+5"
+  "spellAttack": "+5",
+  "srd": false
  },
  {
   "name": "Enspelled Weapon (3)",
@@ -2279,7 +2334,8 @@ window.MAGIC_ITEMS = [
    "Transmutation"
   ],
   "spellSaveDC": "15",
-  "spellAttack": "+7"
+  "spellAttack": "+7",
+  "srd": false
  },
  {
   "name": "Enspelled Weapon (4)",
@@ -2314,7 +2370,8 @@ window.MAGIC_ITEMS = [
    "Transmutation"
   ],
   "spellSaveDC": "15",
-  "spellAttack": "+7"
+  "spellAttack": "+7",
+  "srd": false
  },
  {
   "name": "Enspelled Weapon (5)",
@@ -2349,7 +2406,8 @@ window.MAGIC_ITEMS = [
    "Transmutation"
   ],
   "spellSaveDC": "17",
-  "spellAttack": "+9"
+  "spellAttack": "+9",
+  "srd": false
  },
  {
   "name": "Enspelled Weapon (6)",
@@ -2384,7 +2442,8 @@ window.MAGIC_ITEMS = [
    "Transmutation"
   ],
   "spellSaveDC": "17",
-  "spellAttack": "+9"
+  "spellAttack": "+9",
+  "srd": false
  },
  {
   "name": "Enspelled Weapon (7)",
@@ -2419,7 +2478,8 @@ window.MAGIC_ITEMS = [
    "Transmutation"
   ],
   "spellSaveDC": "18",
-  "spellAttack": "+10"
+  "spellAttack": "+10",
+  "srd": false
  },
  {
   "name": "Enspelled Weapon (8)",
@@ -2454,7 +2514,8 @@ window.MAGIC_ITEMS = [
    "Transmutation"
   ],
   "spellSaveDC": "18",
-  "spellAttack": "+10"
+  "spellAttack": "+10",
+  "srd": false
  },
  {
   "name": "Enspelled Weapon (Cantrip)",
@@ -2489,7 +2550,8 @@ window.MAGIC_ITEMS = [
    "Transmutation"
   ],
   "spellSaveDC": "13",
-  "spellAttack": "+5"
+  "spellAttack": "+5",
+  "srd": false
  },
  {
   "name": "Ersatz Eye",
@@ -2500,7 +2562,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This magical eye replaces a real one that was lost or removed. While the Ersatz Eye is embedded in your eye socket, you can see through the tiny orb as though it were your natural eye. You can insert or remove the Ersatz Eye as a Magic action, and it can't be removed against your will while you are alive.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Eversmoking Bottle",
@@ -2535,7 +2598,8 @@ window.MAGIC_ITEMS = [
     "Handaxe"
    ]
   },
-  "rarity": "very_rare"
+  "rarity": "very_rare",
+  "srd": false
  },
  {
   "name": "Eye and Hand of Vecna",
@@ -2554,7 +2618,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Spellcasting. The eye has 8 charges and regains 1d4 + 4 expended charges daily at dawn. You can cast a spell on the Eye of Vecna Spells table from the eye (save DC 18). The table indicates how many charges you must expend to cast the spell. Each time you cast a spell from the eye, there is a 5 percent chance that Vecna tears your soul from your body, devours it, and then takes control of the body like a puppet. If that happens, you become an NPC under the DM's control.",
   "source": "Dungeon Master's Guide",
-  "rarity": "artifact"
+  "rarity": "artifact",
+  "srd": false
  },
  {
   "name": "Eyes of Charming",
@@ -2911,7 +2976,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "Creating a Hag Eye. Only a hag coven can craft this item, which is made from a real eye coated in varnish and often fitted to a pendant or another wearable item. A hag coven can have only one Hag Eye at a time, and creating a new one requires all three members of the coven to perform a special rite. This rite takes 1 hour, and the hags can't perform it if one or more of them has the Incapacitated condition. If the hags take any other actions during this rite, the rite fails and ends.",
   "source": "Dungeon Master's Guide",
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Hammer of Thunderbolts",
@@ -2971,7 +3037,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This hat has 3 charges. While holding the hat, you can take a Magic action to expend 1 charge and summon your choice of a Bat, a Frog, or a Rat. The summoned creature magically appears in the hat and tries to get away from you as quickly as possible. The creature is Indifferent toward you and other creatures, and it isn't under your control. It behaves as an ordinary creature of its kind and disappears after 1 hour or when it drops to 0 Hit Points. The hat regains all expended charges daily at dawn.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Hat of Wizardry",
@@ -2984,7 +3051,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Unknown Spell. As a Magic action, you can try to cast a cantrip that you don't know. The cantrip must be on the Wizard spell list and have a casting time of an action, and you make a DC 10 Intelligence (Arcana) check. On a successful check, you cast the spell. On a failed check, the spell fails, and the action used to cast the spell is wasted. In either case, you can't use this property again until you finish a Long Rest.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Headband of Intellect",
@@ -3076,7 +3144,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This belt pouch appears empty and has 10 charges. While holding the pouch, you can take a Magic action to expend 1 charge, name any nonmagical food seasoning (such as salt, pepper, saffron, or cilantro), and remove a pinch of the desired seasoning from the pouch. A pinch is enough to season a single meal. The pouch regains 1d6 + 4 expended charges daily at dawn.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Holy Avenger",
@@ -3124,7 +3193,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This horn has 4 charges and regains 1d4 expended charges daily at dawn. As a Magic action, you can blow the horn while expending 1 charge. One creature of your choice hears the horn's blare, provided that creature is within 600 feet of the horn. No other creature hears the horn.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Horseshoes of Speed",
@@ -3168,7 +3238,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "While you are playing this musical instrument, you can take a Magic action to create harmless, illusory visual effects within a 5-foot Emanation originating from the instrument. If you are a Bard, the size of the Emanation increases to 15 feet. Sample visual effects include luminous musical notes, a spectral dancer, butterflies, and gently falling snow. The magical effects have neither substance nor sound, and they are obviously illusory. The effects end when you stop playing.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Instrument of Scribing",
@@ -3179,7 +3250,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This musical instrument has 3 charges and regains all expended charges daily at dawn. While you are playing it, you can take a Magic action to expend 1 charge and write a magical message on a nonmagical object or surface that you can see within 30 feet of yourself. The message can be up to six words long and is written in a language you know. If you are a Bard, you can scribe an additional seven words and make the message glow faintly, allowing it to be seen in nonmagical Darkness. Casting the Dispel Magic spell on the message erases it. Otherwise, the message fades away after 24 hours.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Instrument of the Bards (Anstruth harp)",
@@ -3193,7 +3265,8 @@ window.MAGIC_ITEMS = [
   "desc": "An Instrument of the Bards is superior to an ordinary instrument in every way. Seven types of these instruments exist, each named after a bard college. The Instruments of the Bards table lists the spells common to all instruments, as well as the spells specific to each one and its rarity. A creature that attempts to play the instrument without being attuned to it must succeed on a DC 15 Wisdom saving throw or take 2d4 Psychic damage.",
   "source": "Dungeon Master's Guide",
   "rarity": "very_rare",
-  "variantOf": "Instrument of the Bards"
+  "variantOf": "Instrument of the Bards",
+  "srd": false
  },
  {
   "name": "Instrument of the Bards (Canaith mandolin)",
@@ -3207,7 +3280,8 @@ window.MAGIC_ITEMS = [
   "desc": "An Instrument of the Bards is superior to an ordinary instrument in every way. Seven types of these instruments exist, each named after a bard college. The Instruments of the Bards table lists the spells common to all instruments, as well as the spells specific to each one and its rarity. A creature that attempts to play the instrument without being attuned to it must succeed on a DC 15 Wisdom saving throw or take 2d4 Psychic damage.",
   "source": "Dungeon Master's Guide",
   "rarity": "rare",
-  "variantOf": "Instrument of the Bards"
+  "variantOf": "Instrument of the Bards",
+  "srd": false
  },
  {
   "name": "Instrument of the Bards (Cli lyre)",
@@ -3221,7 +3295,8 @@ window.MAGIC_ITEMS = [
   "desc": "An Instrument of the Bards is superior to an ordinary instrument in every way. Seven types of these instruments exist, each named after a bard college. The Instruments of the Bards table lists the spells common to all instruments, as well as the spells specific to each one and its rarity. A creature that attempts to play the instrument without being attuned to it must succeed on a DC 15 Wisdom saving throw or take 2d4 Psychic damage.",
   "source": "Dungeon Master's Guide",
   "rarity": "rare",
-  "variantOf": "Instrument of the Bards"
+  "variantOf": "Instrument of the Bards",
+  "srd": false
  },
  {
   "name": "Instrument of the Bards (Doss lute)",
@@ -3235,7 +3310,8 @@ window.MAGIC_ITEMS = [
   "desc": "An Instrument of the Bards is superior to an ordinary instrument in every way. Seven types of these instruments exist, each named after a bard college. The Instruments of the Bards table lists the spells common to all instruments, as well as the spells specific to each one and its rarity. A creature that attempts to play the instrument without being attuned to it must succeed on a DC 15 Wisdom saving throw or take 2d4 Psychic damage.",
   "source": "Dungeon Master's Guide",
   "rarity": "uncommon",
-  "variantOf": "Instrument of the Bards"
+  "variantOf": "Instrument of the Bards",
+  "srd": false
  },
  {
   "name": "Instrument of the Bards (Fochlucan bandore)",
@@ -3249,7 +3325,8 @@ window.MAGIC_ITEMS = [
   "desc": "An Instrument of the Bards is superior to an ordinary instrument in every way. Seven types of these instruments exist, each named after a bard college. The Instruments of the Bards table lists the spells common to all instruments, as well as the spells specific to each one and its rarity. A creature that attempts to play the instrument without being attuned to it must succeed on a DC 15 Wisdom saving throw or take 2d4 Psychic damage.",
   "source": "Dungeon Master's Guide",
   "rarity": "uncommon",
-  "variantOf": "Instrument of the Bards"
+  "variantOf": "Instrument of the Bards",
+  "srd": false
  },
  {
   "name": "Instrument of the Bards (Mac-Fuirmidh cittern)",
@@ -3263,7 +3340,8 @@ window.MAGIC_ITEMS = [
   "desc": "An Instrument of the Bards is superior to an ordinary instrument in every way. Seven types of these instruments exist, each named after a bard college. The Instruments of the Bards table lists the spells common to all instruments, as well as the spells specific to each one and its rarity. A creature that attempts to play the instrument without being attuned to it must succeed on a DC 15 Wisdom saving throw or take 2d4 Psychic damage.",
   "source": "Dungeon Master's Guide",
   "rarity": "uncommon",
-  "variantOf": "Instrument of the Bards"
+  "variantOf": "Instrument of the Bards",
+  "srd": false
  },
  {
   "name": "Instrument of the Bards (Ollamh harp)",
@@ -3277,7 +3355,8 @@ window.MAGIC_ITEMS = [
   "desc": "An Instrument of the Bards is superior to an ordinary instrument in every way. Seven types of these instruments exist, each named after a bard college. The Instruments of the Bards table lists the spells common to all instruments, as well as the spells specific to each one and its rarity. A creature that attempts to play the instrument without being attuned to it must succeed on a DC 15 Wisdom saving throw or take 2d4 Psychic damage.",
   "source": "Dungeon Master's Guide",
   "rarity": "legendary",
-  "variantOf": "Instrument of the Bards"
+  "variantOf": "Instrument of the Bards",
+  "srd": false
  },
  {
   "name": "Ioun Stone (Absorption)",
@@ -3500,7 +3579,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "As a Utilize action, you can swallow one dose of the ointment or apply it to a creature within 5 feet of yourself. The creature that receives it regains 2d8 + 2 Hit Points and ceases to have the Poisoned condition.",
   "source": "Dungeon Master's Guide",
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Lantern of Revealing",
@@ -3522,7 +3602,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This lock appears to be an ordinary Lock (of the type described in chapter 6 of the Player's Handbook) and comes with a single key. The tumblers in this lock magically adjust to thwart burglars. Dexterity checks made to pick the lock have Disadvantage.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Luck Blade",
@@ -3723,7 +3804,8 @@ window.MAGIC_ITEMS = [
    ],
    "excludeNames": []
   },
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Master's Amulet",
@@ -3734,7 +3816,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "A shield guardian's solitary focus is to protect the amulet's wearer. The amulet's wearer can command the guardian to attack its enemies or to guard the wielder against attack. If an attack threatens to injure the wearer, the construct can magically absorb the blow into its own body, even at a distance.",
   "source": "Dungeon Master's Guide",
-  "rarity": "rare"
+  "rarity": "rare",
+  "srd": false
  },
  {
   "name": "Medallion of Thoughts",
@@ -3806,7 +3889,8 @@ window.MAGIC_ITEMS = [
     "Shortsword"
    ]
   },
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Moonblade",
@@ -3829,7 +3913,8 @@ window.MAGIC_ITEMS = [
     "Shortsword"
    ]
   },
-  "rarity": "legendary"
+  "rarity": "legendary",
+  "srd": false
  },
  {
   "name": "Mystery Key",
@@ -3843,7 +3928,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "A question mark is worked into the head of this key. The key has a 5 percent chance of unlocking any lock into which it's inserted. Once it unlocks something, the key disappears.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Nature's Mantle",
@@ -3856,7 +3942,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "This cloak shifts color and texture to blend with the terrain surrounding you. While wearing the cloak, you can use it as a Spellcasting Focus for your Druid and Ranger spells.",
   "source": "Dungeon Master's Guide",
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Necklace of Adaptation",
@@ -3920,7 +4007,8 @@ window.MAGIC_ITEMS = [
     "Mace"
    ]
   },
-  "rarity": "very_rare"
+  "rarity": "very_rare",
+  "srd": false
  },
  {
   "name": "Nine Lives Stealer",
@@ -4025,7 +4113,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "While holding this orb, you can take a Magic action to determine which way is magnetic north. Nothing happens if the orb is used in a location that has no magnetic north.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Orb of Dragonkind",
@@ -4036,7 +4125,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "Long ago, in the Dragonlance setting, elves and humans waged a terrible war against chromatic dragons. When the world seemed doomed, the wizards of the Towers of High Sorcery came together and forged five Orbs of Dragonkind to help defeat the dragons. One orb was taken to each of the five towers, and there they were used to speed the war toward a victorious end. The wizards used the orbs to lure dragons to them, then destroyed the dragons with powerful magic.",
   "source": "Dungeon Master's Guide",
-  "rarity": "artifact"
+  "rarity": "artifact",
+  "srd": false
  },
  {
   "name": "Orb of Time",
@@ -4047,7 +4137,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "While holding the orb, you can take a Magic action to determine whether it is morning, afternoon, evening, or nighttime. This property functions only on the Material Plane.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Pearl of Power",
@@ -4074,7 +4165,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "This tiny vial contains magic perfume, enough for one use. You can take a Magic action to apply the perfume to yourself, and its effect lasts 1 hour. For the duration, you have Advantage on all Charisma (Deception and Persuasion) checks made to influence a creature within 5 feet of yourself.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Periapt of Health",
@@ -4137,7 +4229,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "While smoking this pipe, you can take a Magic action to exhale a puff of smoke that takes the form of a creature, such as a dragon, a flumph, or a slaad. The form must be small enough to fit in a 1-foot cube and loses its shape after a few seconds, becoming an ordinary puff of smoke.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Pipes of Haunting",
@@ -4190,7 +4283,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This item functions as a Pole. While holding it, you can take a Magic action to cause it to transform into a fishing pole with a hook, a line, and a reel, or have the fishing pole revert to a Pole.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Pole of Collapsing",
@@ -4201,7 +4295,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This item functions as a Pole. While holding it, you can take a Magic action to collapse it into a 1-foot-long rod for ease of storage (the pole's weight doesn't change) or cause the 1-foot-long rod to revert to a Pole. The rod elongates only as far as the surrounding space allows.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Portable Hole",
@@ -4223,7 +4318,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "If you plant an ordinary shrub in this 10-pound clay pot and let it grow for 30 days, the shrub magically transforms into an Awakened Shrub at the end of that time. When the shrub awakens, its roots break the pot, destroying it.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Potion of Animal Friendship",
@@ -4295,7 +4391,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "When you drink this potion, you gain the effect of the Comprehend Languages spell for 1 hour.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Potion of Diminution",
@@ -4324,7 +4421,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "After drinking this potion, you can take a Bonus Action to exhale fire at a target within 30 feet of yourself. The target makes a DC 13 Dexterity saving throw, taking 4d6 Fire damage on a failed save or half as much damage on a successful one. The effect ends after you exhale the fire three times or when 1 hour has passed.",
   "source": "Dungeon Master's Guide",
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Potion of Fire Giant Strength",
@@ -4589,7 +4687,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "After you drink this potion, each Unarmed Strike you make deals an extra 1d6 Force damage on a hit. This effect lasts 10 minutes.",
   "source": "Dungeon Master's Guide",
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Potion of Resistance",
@@ -4695,7 +4794,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This magic item replaces a lost limb—a hand, an arm, a foot, a leg, or a similar body part. While the prosthetic is attached, it functions identically to the part it replaces. You can detach or reattach it as a Magic action, and it can't be removed against your will while you are alive.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Quaal's Feather Token (Anchor)",
@@ -5115,7 +5215,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "This gold coin has a creature embossed on each side. The two depicted creatures must be famous rivals or enemies of each other. For example, a Rival Coin might show Iggwilv on one side and Mordenkainen on the other, or Venger on one side and Tiamat on the other. One of these figures is on the “heads” side of the coin, the other on the “tails” side.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Robe of Eyes",
@@ -5299,7 +5400,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This 50-foot coil of rope can repair itself when cut into any number of smaller pieces. As a Magic action, you can cause all pieces of the rope that are in contact with each other and not otherwise in use to knit back together. A Rope of Mending is forever shortened if a section of it is lost or destroyed.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Ruby of the War Mage",
@@ -5312,7 +5414,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Etched with eldritch runes, this 1-inch-diameter ruby allows you to use a Simple or Martial weapon as a Spellcasting Focus for your spells. For this property to work, you must attach the ruby to the weapon by pressing the ruby against it for at least 10 minutes. Thereafter, the ruby can't be removed unless you detach it as a Magic action, the weapon is destroyed, or your Attunement to the ruby ends.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Saddle of the Cavalier",
@@ -5327,7 +5430,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "While in this saddle on a mount, you can't be dismounted against your will if you're conscious, and attack rolls against the mount have disadvantage.",
   "source": "Dungeon Master's Guide",
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Scarab of Protection",
@@ -5376,7 +5480,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "Each Scroll of Protection works against creatures of a specific creature type chosen by the DM or determined by rolling on the following table.",
   "source": "Dungeon Master's Guide",
-  "rarity": "rare"
+  "rarity": "rare",
+  "srd": false
  },
  {
   "name": "Scroll of Titan Summoning",
@@ -5387,7 +5492,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "When you take a Magic action to read this scroll, a particular titan named in the scroll appears in an unoccupied space on the ground or in water that you can see within 1 mile of yourself. The DM picks a suitable titan or determines it randomly by rolling on the table below (see the Monster Manual for the creature's stat block).",
   "source": "Dungeon Master's Guide",
-  "rarity": "legendary"
+  "rarity": "legendary",
+  "srd": false
  },
  {
   "name": "Sending Stones",
@@ -5486,7 +5592,8 @@ window.MAGIC_ITEMS = [
    ],
    "excludeNames": []
   },
-  "rarity": "very_rare"
+  "rarity": "very_rare",
+  "srd": false
  },
  {
   "name": "Shield of Expression",
@@ -5506,7 +5613,8 @@ window.MAGIC_ITEMS = [
    ],
    "excludeNames": []
   },
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Shield of Missile Attraction",
@@ -5569,7 +5677,8 @@ window.MAGIC_ITEMS = [
    ],
    "excludeNames": []
   },
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Slippers of Spider Climbing",
@@ -5815,7 +5924,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This Spell Scroll bears the words of the Fireball spell, written in a mystical cipher. If Fireball is on your spell list, you can read the scroll and cast it without Material components. Otherwise, the scroll is unintelligible. Casting Fireball by reading the scroll requires it's normal casting time. Once cast, the scroll crumbles to dust. If the casting is interrupted, the scroll isn't lost.",
   "source": "Dungeon Master's Guide",
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Spellguard Shield",
@@ -5860,7 +5970,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This board has 3 charges and regains 1 expended charge daily at dawn. While touching the planchette, you can take 1 minute to cast one of the spells on the table below. The table indicates how many charges you must expend to cast the spell. As you cast the spell, you call on the spirits of the dead to help guide the planchette across the board's surface, answering your questions by pointing to the letters or words on the board.",
   "source": "Dungeon Master's Guide",
-  "rarity": "very_rare"
+  "rarity": "very_rare",
+  "srd": false
  },
  {
   "name": "Staff of Adornment",
@@ -5871,7 +5982,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "If you place a Tiny object weighing no more than 1 pound (such as a shard of crystal, an egg, or a stone) above the tip of this staff while holding it, the object floats an inch from the staff's tip and remains there until it is removed or until the staff is no longer in your possession. The staff can have up to three such objects floating over its tip at any given time. While holding the staff, you can make one or more of the objects slowly spin or turn in place.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Staff of Birdcalls",
@@ -5882,7 +5994,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This wooden staff is decorated with bird carvings. It has 10 charges. While holding it, you can take a Magic action to expend 1 charge from the staff and cause it to create one of the following sounds, which can be heard out to 120 feet: a finch's chirp, a raven's caw, a duck's quack, a chicken's cluck, a goose's honk, a loon's call, a turkey's gobble, a seagull's cry, an owl's hoot, or an eagle's shriek.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Staff of Charming",
@@ -5928,7 +6041,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This wooden staff has 10 charges. While holding it, you can take a Magic action to expend 1 charge from the staff and cause a flower to sprout from a patch of earth or soil within 5 feet of yourself, or from the staff itself. Unless you choose a specific kind of flower, the staff creates a mild-scented daisy. The flower is harmless and nonmagical, and it grows or withers as a normal flower would.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Staff of Frost",
@@ -6058,7 +6172,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "The snake head can be attacked while it is animate. It has AC 15, HP 20, and Immunity to Poison and Psychic damage. If the head drops to 0 Hit Points, the staff is destroyed. As long as it's not destroyed, the staff regains all lost Hit Points when it reverts to its inanimate form.",
   "source": "Dungeon Master's Guide",
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Staff of the Magi",
@@ -6172,7 +6287,8 @@ window.MAGIC_ITEMS = [
     "Longsword"
    ]
   },
-  "rarity": "legendary"
+  "rarity": "legendary",
+  "srd": false
  },
  {
   "name": "Sword of Kas",
@@ -6195,7 +6311,8 @@ window.MAGIC_ITEMS = [
     "Longsword"
    ]
   },
-  "rarity": "artifact"
+  "rarity": "artifact",
+  "srd": false
  },
  {
   "name": "Sword of Life Stealing",
@@ -6266,7 +6383,8 @@ window.MAGIC_ITEMS = [
     "Shortsword"
    ]
   },
-  "rarity": "uncommon"
+  "rarity": "uncommon",
+  "srd": false
  },
  {
   "name": "Sword of Wounding",
@@ -6310,7 +6428,8 @@ window.MAGIC_ITEMS = [
     "Spear"
    ]
   },
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Talisman of Pure Good",
@@ -6367,7 +6486,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "While this doll is within 5 feet of you, you can spend a Short Rest telling it to say up to six phrases, none of which can be more than six words long, and set a condition under which the doll speaks each phrase. You can also replace old phrases with new ones. Whatever the condition, it must occur within 5 feet of the doll to make it speak. For example, whenever someone picks up the doll, it might say, “I want a piece of candy.” The doll's phrases are lost when your Attunement to the doll ends.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Tankard of Sobriety",
@@ -6380,7 +6500,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "This tankard has a stern face sculpted into one side. You can drink ale, wine, or any other nonmagical alcoholic beverage poured into it without becoming inebriated. The tankard has no effect on magical liquids or harmful substances such as poison.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Tentacle Rod",
@@ -6393,7 +6514,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "This rod ends in three rubbery tentacles. While holding the rod, you can take a Magic action to direct the tentacles to stretch outward, each one attacking a creature you can see within 15 feet of yourself. For each tentacle, make a melee attack roll with a +9 bonus. A tentacle deals 1d6 Psychic damage on a hit. If you hit the same target with all three tentacles, the target must succeed on a DC 15 Dexterity saving throw or have the Restrained condition until you have the Incapacitated condition, until you take a Bonus Action to release the target, or until the target is no longer within 15 feet of you. While Restrained in this way, the target takes 3d6 Psychic damage at the start of each of its turns. At the end of each of its turns, the target repeats the save, ending the effect on itself on a success.",
   "source": "Dungeon Master's Guide",
-  "rarity": "rare"
+  "rarity": "rare",
+  "srd": false
  },
  {
   "name": "Thunderous Greatclub",
@@ -6626,7 +6748,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "This book has a desiccated tongue pinned to its front cover. Five of these tomes exist, and it's unknown which one is the original. The tongue on the first Tome of the Stilled Tongue belonged to a treacherous former servant of the lich Vecna. The tongues pinned to the covers of the four copies came from other spellcasters who crossed Vecna. The first few pages of each tome are filled with indecipherable scrawls. The remaining pages are blank.",
   "source": "Dungeon Master's Guide",
-  "rarity": "legendary"
+  "rarity": "legendary",
+  "srd": false
  },
  {
   "name": "Trident of Fish Command",
@@ -6671,7 +6794,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "As a Bonus Action, you can transform this walking cane into an ordinary Longsword or change the Longsword back into a walking cane. In either case, you must be holding the item.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Vicious Weapon",
@@ -6733,7 +6857,8 @@ window.MAGIC_ITEMS = [
    ],
    "excludeNames": []
   },
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Wand of Binding",
@@ -6755,7 +6880,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This wand has 3 charges. While holding it, you can take a Magic action to expend 1 charge and create orchestral music by waving it around. The music can be heard out to 120 feet and ends when you stop waving the wand.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Wand of Enemy Detection",
@@ -6840,7 +6966,8 @@ window.MAGIC_ITEMS = [
   ],
   "desc": "Spells. The wand has 7 charges and regains 1d4 + 3 expended charges daily at dawn. While holding the wand, you can cast one of the spells on the following table from it (save DC 18). The table indicates how many charges you must expend to cast the spell.",
   "source": "Dungeon Master's Guide",
-  "rarity": "artifact"
+  "rarity": "artifact",
+  "srd": false
  },
  {
   "name": "Wand of Paralysis",
@@ -6877,7 +7004,8 @@ window.MAGIC_ITEMS = [
   "tags": [],
   "desc": "This wand has 7 charges. While holding it, you can take a Magic action to expend 1 charge and create a harmless burst of multicolored light at a point you can see up to 120 feet away. The burst of light is accompanied by a crackling noise that can be heard up to 300 feet away. The light is as bright as a torch flame but lasts only a second.",
   "source": "Dungeon Master's Guide",
-  "rarity": "common"
+  "rarity": "common",
+  "srd": false
  },
  {
   "name": "Wand of Secrets",
@@ -7014,7 +7142,8 @@ window.MAGIC_ITEMS = [
    ],
    "excludeNames": []
   },
-  "rarity": "very_rare"
+  "rarity": "very_rare",
+  "srd": false
  },
  {
   "name": "Weapon of Warning",
@@ -7124,7 +7253,8 @@ window.MAGIC_ITEMS = [
   "desc": "While wearing these wraps, you have a bonus to attack rolls and damage rolls made with your Unarmed Strikes. The bonus is determined by the wraps' rarity, and those strikes deal your choice of Force damage or their normal damage type.",
   "source": "Dungeon Master's Guide",
   "rarity": "uncommon",
-  "variantOf": "Wraps of Unarmed Power"
+  "variantOf": "Wraps of Unarmed Power",
+  "srd": false
  },
  {
   "name": "Wraps of Unarmed Power +2",
@@ -7139,7 +7269,8 @@ window.MAGIC_ITEMS = [
   "desc": "While wearing these wraps, you have a bonus to attack rolls and damage rolls made with your Unarmed Strikes. The bonus is determined by the wraps' rarity, and those strikes deal your choice of Force damage or their normal damage type.",
   "source": "Dungeon Master's Guide",
   "rarity": "rare",
-  "variantOf": "Wraps of Unarmed Power"
+  "variantOf": "Wraps of Unarmed Power",
+  "srd": false
  },
  {
   "name": "Wraps of Unarmed Power +3",
@@ -7154,6 +7285,7 @@ window.MAGIC_ITEMS = [
   "desc": "While wearing these wraps, you have a bonus to attack rolls and damage rolls made with your Unarmed Strikes. The bonus is determined by the wraps' rarity, and those strikes deal your choice of Force damage or their normal damage type.",
   "source": "Dungeon Master's Guide",
   "rarity": "very_rare",
-  "variantOf": "Wraps of Unarmed Power"
+  "variantOf": "Wraps of Unarmed Power",
+  "srd": false
  }
 ];
