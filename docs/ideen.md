@@ -72,12 +72,14 @@ Det giver spillet en motor som en almindelig loot-tabel ikke har:
 - **Det giver DM'en et håndtag.** Skal holdet have bedre grej, findes der altid en bedrift
   de er tæt på.
 
-Listen ligger i [`achievements.md`](achievements.md). **Ingen af dem kræver at du tæller
-noget** — hver eneste udløses i ét øjeblik, og det øjeblik kan afgøres af det der ligger på
-bordet. Skal en belønning have en størrelse, kommer den fra monsterets CR, ikke fra en
-optælling. Det printbare ark i [`checklist.html`](checklist.html) er derfor en
-afkrydsningsliste og ikke et regnskab: hver bedrift står som én række med navn, udløser og
-præmie, og fire felter — ét pr. spiller — så man kan se hvem der har fået hvad.
+Listen ligger i [`achievements.md`](achievements.md) og rummer **216 bedrifter**. Ingen af
+dem kræver at du tæller noget — hver eneste udløses i ét øjeblik, og det øjeblik kan
+afgøres af det der ligger på bordet.
+
+Det printbare ark i [`checklist.html`](checklist.html) er derfor en afkrydsningsliste og
+ikke et regnskab: hver bedrift står som én række med navn og udløser, og fire felter — ét
+pr. spiller — så man kan se hvem der har fået hvad. Præmien står i sidens overskrift og
+ikke på hver række; papiret siger alligevel hvad pakken er.
 
 ## Sådan kører det ved bordet
 
@@ -96,9 +98,11 @@ første dør, første træf, første gang du tager skade — og de er skrevet s�
 selv. Ét rum med en dør, et lig og en fjende betaler typisk **tolv til seksten pakker**.
 Det er meningen: bronze er hverdagskost.
 
-**Beholdningen er reglen.** Der ligger 22 Bronze, 12 Sølv og 6 Guld af hver pakketype. Det
-er dét der sætter tempoet, ikke en regel om hvor tit man må dele ud. Bronze og Sølv er
-personlige; **Guld går til den første i hele kampagnen der gør det**, og så er den brugt.
+**Beholdningen er reglen.** Der ligger 22 Bronze, 12 Sølv og 6 Guld af hver pakketype — og
+der er præcis lige så mange bedrifter af hver slags. Blev hver eneste udløst én gang,
+ville kassen være tom og arket krydset af på samme tid. Det er dét der sætter tempoet,
+ikke en regel om hvor tit man må dele ud. Bronze og Sølv er personlige; **Guld går til den
+første i hele kampagnen der gør det**, og så er den brugt.
 
 **Anti-grind.** En bedrift kan kun opnås én gang pr. spiller, medmindre den er mærket som
 gentagelig. Og gør en spiller noget udelukkende for at udløse en bedrift, tæller det ikke —
@@ -122,4 +126,4 @@ Når det virker, føles en bedrift som at blive grebet i noget — og så få be
 | `README.md` | Generatoren: pakker, fordelinger, kort, print |
 | `docs/ideen.md` | Dette dokument |
 | `docs/achievements.md` | Bedrifterne og deres belønninger |
-| `docs/checklist.html` | Printbart afkrydsningsark — seks sider, fire spillerkolonner |
+| `docs/checklist.html` | Printbart afkrydsningsark — elleve sider, fire spillerkolonner |

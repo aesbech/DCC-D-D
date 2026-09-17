@@ -45,18 +45,17 @@ h2 .cnt{float:right;font-weight:400;color:#666;letter-spacing:0}
 .players label span{flex:1;display:block;border-bottom:.3mm solid #000;height:5mm}
 
 table{width:100%;border-collapse:collapse;font-size:8.5pt;margin:0}
-th,td{border:.25mm solid #9a9a9a;padding:1.4mm 1.8mm;text-align:left;vertical-align:top}
+th,td{border:.25mm solid #9a9a9a;padding:2mm 1.8mm;text-align:left;vertical-align:top}
 th{
   background:#eee;font-size:7pt;text-transform:uppercase;letter-spacing:.05em;
   padding:1.2mm 1.8mm;
 }
-td.name{width:42mm}
+td.name{width:46mm}
 td.name b{font-weight:700}
-td.prize{width:32mm;white-space:nowrap;font-size:8pt}
-th.p,td.p{width:8mm;text-align:center;background:#fafafa}
+th.p,td.p{width:9mm;text-align:center;background:#fafafa}
 th.p{background:#e4e4e4}
 /* Feltet skal være stort nok til et kryds med kuglepen. */
-td.p{height:7mm}
+td.p{height:8mm}
 tbody tr:nth-child(even) td{background:#f7f7f7}
 tbody tr:nth-child(even) td.p{background:#f2f2f2}
 .mk{font-style:normal;color:#777;font-weight:400}
@@ -88,17 +87,18 @@ tbody tr:nth-child(even) td.p{background:#f2f2f2}
 <body>
 
 <div class="no-print">
-  <b>Afkrydsningsark til DCC-D-D.</b> Én række pr. bedrift med navn, udløser og præmie,
-  og fire felter til spillerne. Tryk print — A4, 6 sider. Skriv spillernavnene
-  øverst på hver side. Se <a href="achievements.md">achievements.md</a> for reglerne bag.
+  <b>Afkrydsningsark til DCC-D-D.</b> Én række pr. bedrift med navn og udløser, og fire
+  felter til spillerne. Tryk print — A4, 11 sider. Skriv spillernavnene øverst
+  på hver side. Se <a href="achievements.md">achievements.md</a> for reglerne bag.
   Sæt skalering til 100 % og slå «print baggrundsgrafik» til, så kolonnerne kan ses.
 </div>
 
 <section class="sheet">
-  <h1>Bedrifter <span class="paper">— afkrydsningsark, 112 bedrifter</span></h1>
-  <p class="sub">Én række pr. bedrift: hvad den hedder, hvad der udløser den, og hvilken
-    pakke den giver. De fire felter til højre er spillerne — skriv navnene øverst på
-    hver side, og sæt kryds når pakken er givet. Der er intet at tælle.</p>
+  <h1>Bedrifter <span class="paper">— afkrydsningsark, 216 bedrifter</span></h1>
+  <p class="sub">Én række pr. bedrift: hvad den hedder, og hvad der udløser den. De fire
+    felter til højre er spillerne — skriv navnene øverst på hver side, og sæt kryds når
+    pakken er givet. Præmien står i overskriften, ikke på hver række: papiret siger
+    alligevel hvad pakken er. Der er intet at tælle.</p>
 
   <div class="players">
   <span class="lbl">Spillere</span>
@@ -108,69 +108,43 @@ tbody tr:nth-child(even) td.p{background:#f2f2f2}
   <label><i>4</i><span></span></label>
 </div>
 
-  <h2>CR-trappen</h2>
-  <p class="tiernote">Handler bedriften om at fælde noget, kommer størrelsen herfra.
-    Sammenlign monsterets CR med holdets level — ét fratrækningsstykke, og statblokken
-    ligger allerede fremme.</p>
-  <table class="ladder">
-    <thead><tr><th>CR i forhold til holdets level</th><th>Pakke</th></tr></thead>
-    <tbody>
-<tr><td>under holdets level</td><td>Bronze</td></tr>
-<tr><td>holdets level til +2</td><td>Sølv</td></tr>
-<tr><td>mere end +2 over</td><td>Guld</td></tr>
-    </tbody>
-  </table>
-
-  <h2>Efter vægtklasse <span class="cnt">4</span></h2>
-  <p class="tiernote">Størrelsen læses af CR-trappen på forsiden. Gentagelig, så felterne er til den første gang.</p>
-  <table>
-    <thead><tr>
-      <th class="name">Bedrift</th><th class="what">Udløses af</th>
-      <th class="prize">Præmie</th>
-      <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
-    </tr></thead>
-    <tbody>
-<tr><td class="name"><b>Punching Up</b> <i class="mk">↻</i></td><td class="what">Du giver dødsstødet til noget alene</td><td class="prize">CR-trappen</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Giant Slayer</b> <i class="mk">↻</i></td><td class="what">Du fælder noget mindst tre gange din størrelse</td><td class="prize">CR-trappen</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-    <tr><td class="name"><b>Boss Down</b> <i class="mk">⚑</i></td>
-        <td class="what">Holdet fælder etagens boss</td>
-        <td class="prize">CR-trappen, eget valg</td>
-        <td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-    <tr><td class="name"><b>Floor Cleared</b> <i class="mk">⚑ ↻</i></td>
-        <td class="what">Etagen er ryddet — trappen læses på etagens hårdeste fjende</td>
-        <td class="prize">CR-trappen, Adventurer</td>
-        <td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-    </tbody>
-  </table>
-
-<h2>Class Box <span class="cnt">8</span></h2>
+<h2>Class Box <span class="cnt">16</span></h2>
 <p class="tiernote">Ikke gradueret, og står uden for beholdningen.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Welcome to the Dungeon</b> <i class="mk">⚑</i></td><td class="what">Første skridt ned. Alle får den samtidig</td><td class="prize">Class Box</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Level Up</b> <i class="mk">↻</i></td><td class="what">Hver gang du stiger et level</td><td class="prize">Class Box</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Unarmed and Dangerous</b></td><td class="what">Du dræber noget med de bare næver</td><td class="prize">Class Box</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>New Friend</b></td><td class="what">Du får en fjende til at skifte side</td><td class="prize">Class Box</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Kingmaker</b> <i class="mk">★</i></td><td class="what">Du får noget dernede til at adlyde dig permanent</td><td class="prize">Class Box</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>The Long Game</b> <i class="mk">★</i></td><td class="what">En plan du lagde flere sessioner tidligere går op</td><td class="prize">Class Box</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Solo</b> <i class="mk">★</i></td><td class="what">Du vinder en kamp helt alene mens resten af holdet er ude af spil</td><td class="prize">Class Box</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Ascended</b></td><td class="what">Du forlader dungeon&#x27;et i live</td><td class="prize">Class Box</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Welcome to the Dungeon</b> <i class="mk">⚑</i></td><td class="what">Første skridt ned. Alle får den samtidig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Level Up</b> <i class="mk">↻</i></td><td class="what">Hver gang du stiger et level</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Subclass</b></td><td class="what">Du vælger din subclass</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Unarmed and Dangerous</b></td><td class="what">Du fælder noget med de bare næver</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Backstory</b></td><td class="what">Noget fra dit rigtige liv viser sig at være nyttigt dernede</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Mentor</b></td><td class="what">Du lærer en anden spiller noget din karakter kan</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>New Friend</b></td><td class="what">Du får en fjende til at skifte side</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Signature Move</b></td><td class="what">Du gør noget så karakteristisk at bordet giver det et navn</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Multiclass</b> <i class="mk">★</i></td><td class="what">Du tager et level i noget andet end det du startede med</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Rival</b> <i class="mk">★</i></td><td class="what">En anden spiller og du kappes om det samme, og du vinder</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Reputation</b> <i class="mk">★</i></td><td class="what">Noget dernede har hørt om dig før I mødes</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Sacrifice</b> <i class="mk">★</i></td><td class="what">Du giver afkald på noget du havde, for holdets skyld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Kingmaker</b> <i class="mk">★</i></td><td class="what">Du får noget dernede til at adlyde dig permanent</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>The Long Game</b> <i class="mk">★</i></td><td class="what">En plan du lagde flere sessioner tidligere går op</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Solo</b> <i class="mk">★</i></td><td class="what">Du vinder en kamp helt alene mens resten af holdet er ude af spil</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Ascended</b></td><td class="what">Du forlader dungeon&#x27;et i live</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
-  <p class="note"><b>Beholdningen er 22 Bronze, 12 Sølv og 6 Guld af hver pakketype.</b>
-    Der er ikke et felt til at tælle dem ned i — kassen er tælleren. Bronze og Sølv er
-    personlige, så alle fire felter kan krydses af. Guld går til den første i hele
-    kampagnen der gør det, så der bliver kun ét kryds pr. række.</p>
+  <p class="note"><b>Beholdningen er 22 Bronze, 12 Sølv og 6 Guld af hver pakketype — og
+    der er præcis lige så mange bedrifter af hver slags.</b> Blev hver eneste udløst én
+    gang, ville kassen være tom og arket krydset af på samme tid. Sådan går det ikke:
+    nogle rammer tre spillere, andre bliver aldrig til noget. Det er forholdet du kan
+    regne i hovedet. Der er ikke et felt til at tælle pakkerne ned i — kassen er
+    tælleren.</p>
   <p class="legend">★ skjult, læses ikke op før den udløses · ↻ gentagelig, højst én gang pr. session · ⚑ holdbedrift, alle får belønningen</p>
 </section>
 <section class="sheet" style="--ink:#d98324">
-  <h1>Adventurer <span class="paper">— orange papir · 20 bedrifter</span></h1>
+  <h1>Adventurer <span class="paper">— orange papir · Bronze · 22 bedrifter</span></h1>
 
   <div class="players">
   <span class="lbl">Spillere</span>
@@ -180,66 +154,96 @@ tbody tr:nth-child(even) td.p{background:#f2f2f2}
   <label><i>4</i><span></span></label>
 </div>
 
-<h2>Adventurer — Bronze <span class="cnt">11</span></h2>
-<p class="tiernote">Personlig. Hver spiller kan få sin egen.</p>
+<h2>Adventurer — Bronze <span class="cnt">22</span></h2>
+<p class="tiernote">Personlig — hver spiller kan få sin egen. 22 bedrifter, 22 pakker i kassen.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Try the Handle</b></td><td class="what">Den første dør du åbner</td><td class="prize">Adventurer · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Loot Goblin</b></td><td class="what">Det første lig eller den første kiste du gennemsøger</td><td class="prize">Adventurer · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Read the Room</b></td><td class="what">Dit første færdighedstjek uden for kamp der lykkes</td><td class="prize">Adventurer · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>I Know a Guy</b></td><td class="what">Første gang du taler med noget der ikke prøver at dræbe dig</td><td class="prize">Adventurer · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Picked</b></td><td class="what">Den første lås du dirker op</td><td class="prize">Adventurer · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Trapfinder</b></td><td class="what">Den første fælde du finder før den udløses</td><td class="prize">Adventurer · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Down the Hatch</b></td><td class="what">Du kravler frivilligt ned i noget mørkt og smalt</td><td class="prize">Adventurer · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Light Fingers</b></td><td class="what">Du stjæler noget uden at blive opdaget</td><td class="prize">Adventurer · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Inside Job</b></td><td class="what">Du åbner en dør for holdet fra den forkerte side</td><td class="prize">Adventurer · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Wave to the Camera</b> <i class="mk">★</i></td><td class="what">Du taler direkte til dem der ser med</td><td class="prize">Adventurer · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Wrong Way</b> <i class="mk">★</i></td><td class="what">Du går tilbage til et rum I har ryddet, og finder noget alligevel</td><td class="prize">Adventurer · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Try the Handle</b></td><td class="what">Den første dør du åbner</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Loot Goblin</b></td><td class="what">Det første lig eller den første kiste du gennemsøger</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Read the Room</b></td><td class="what">Dit første færdighedstjek uden for kamp der lykkes</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>I Know a Guy</b></td><td class="what">Første gang du taler med noget der ikke prøver at dræbe dig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Picked</b></td><td class="what">Den første lås du dirker op</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Trapfinder</b></td><td class="what">Den første fælde du finder før den udløses</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Torchbearer</b></td><td class="what">Du er den der bærer lyset ind i det første mørke rum</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Down the Hatch</b></td><td class="what">Du kravler frivilligt ned i noget mørkt og smalt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Light Fingers</b></td><td class="what">Du stjæler noget uden at blive opdaget</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Inside Job</b></td><td class="what">Du åbner en dør for holdet fra den forkerte side</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Ten Foot Pole</b></td><td class="what">Du rører ved noget mistænkeligt med noget andet end hånden</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Rope Solves It</b></td><td class="what">Du løser et problem med et stykke reb</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Map Maker</b></td><td class="what">Du tegner det første kort over et rum</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Eavesdropper</b></td><td class="what">Du hører noget nyttigt gennem en lukket dør</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Local Knowledge</b></td><td class="what">Du får en brugbar retningsanvisning ud af nogen dernede</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Shortcut</b></td><td class="what">Du finder en vej rundt om noget holdet troede de skulle igennem</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Bagman</b></td><td class="what">Du bærer holdets loot ud af et rum</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Wave to the Camera</b> <i class="mk">★</i></td><td class="what">Du taler direkte til dem der ser med</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Wrong Way</b> <i class="mk">★</i></td><td class="what">Du går tilbage til et rum I har ryddet, og finder noget alligevel</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Housekeeping</b> <i class="mk">★</i></td><td class="what">Du rydder op efter jer, og det viser sig at betale sig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Tourist</b> <i class="mk">★</i></td><td class="what">Du stopper op for at kigge på noget mens de andre skynder sig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Name Taken</b> <i class="mk">★</i></td><td class="what">Du giver noget dernede et navn, og det hænger ved</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
-<h2>Adventurer — Sølv <span class="cnt">6</span></h2>
-<p class="tiernote">Personlig. Hver spiller kan få sin egen.</p>
+  <p class="legend">★ skjult, læses ikke op før den udløses · ↻ gentagelig, højst én gang pr. session · ⚑ holdbedrift, alle får belønningen</p>
+</section>
+<section class="sheet" style="--ink:#d98324">
+  <h1>Adventurer <span class="paper">— orange papir · Sølv og Guld · 18 bedrifter</span></h1>
+
+  <div class="players">
+  <span class="lbl">Spillere</span>
+  <label><i>1</i><span></span></label>
+  <label><i>2</i><span></span></label>
+  <label><i>3</i><span></span></label>
+  <label><i>4</i><span></span></label>
+</div>
+
+<h2>Adventurer — Sølv <span class="cnt">12</span></h2>
+<p class="tiernote">Personlig — hver spiller kan få sin egen. 12 bedrifter, 12 pakker i kassen.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Diplomatic Immunity</b></td><td class="what">Du afværger en kamp helt med snak</td><td class="prize">Adventurer · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Silver Tongue</b></td><td class="what">Du overbeviser nogen om noget åbenlyst usandt</td><td class="prize">Adventurer · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Secret Handshake</b></td><td class="what">Du finder et hemmeligt rum</td><td class="prize">Adventurer · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Wearing His Face</b> <i class="mk">★</i></td><td class="what">Du kommer forbi noget ved at udgive dig for en anden</td><td class="prize">Adventurer · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Caught Red-Handed</b> <i class="mk">★</i></td><td class="what">Du bliver taget i at stjæle og slipper afsted med det alligevel</td><td class="prize">Adventurer · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Style Points</b></td><td class="what">Du løser et problem på den mest omstændelige måde der findes</td><td class="prize">Adventurer · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Floor Cleared</b> <i class="mk">⚑ ↻</i></td><td class="what">Etagen er ryddet</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Diplomatic Immunity</b></td><td class="what">Du afværger en kamp helt med snak</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Silver Tongue</b></td><td class="what">Du overbeviser nogen om noget åbenlyst usandt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Secret Handshake</b></td><td class="what">Du finder et hemmeligt rum</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Cat Burglar</b></td><td class="what">Du kommer ind et sted uden at bruge en dør</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>The Long Way Round</b></td><td class="what">Du kommer uden om en forhindring uden at løse den</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Bilingual</b></td><td class="what">Du kommunikerer med noget I ikke deler sprog med</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Style Points</b></td><td class="what">Du løser et problem på den mest omstændelige måde der findes</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Wearing His Face</b> <i class="mk">★</i></td><td class="what">Du kommer forbi noget ved at udgive dig for en anden</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Caught Red-Handed</b> <i class="mk">★</i></td><td class="what">Du bliver taget i at stjæle og slipper afsted med det alligevel</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>The Old Switcheroo</b> <i class="mk">★</i></td><td class="what">Du erstatter det du stjæler med noget værdiløst</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Insider Trading</b> <i class="mk">★</i></td><td class="what">Du sælger noget tilbage til den du tog det fra</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
-<h2>Adventurer — Guld <span class="cnt">3</span></h2>
-<p class="tiernote">Kapløb — går til den første i hele kampagnen der gør det.</p>
+<h2>Adventurer — Guld <span class="cnt">6</span></h2>
+<p class="tiernote">Kapløb — går til den første i hele kampagnen der gør det. Ét kryds pr. række.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Basement Level</b></td><td class="what">Du går en etage dybere end holdet var nødt til</td><td class="prize">Adventurer · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Speedrun</b> <i class="mk">⚑</i></td><td class="what">Etagen er ryddet inden pausen</td><td class="prize">Adventurer · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Broke the Dungeon</b> <i class="mk">★ ⚑</i></td><td class="what">Holdet løser noget på en måde DM&#x27;en ikke havde forudset</td><td class="prize">Adventurer · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Basement Level</b></td><td class="what">Du går en etage dybere end holdet var nødt til</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Speedrun</b> <i class="mk">⚑</i></td><td class="what">Etagen er ryddet inden pausen</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>No Stone Unturned</b> <i class="mk">⚑</i></td><td class="what">Hver kiste, hvert lig og hver skuffe er gennemsøgt når I går ned</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Cartographer</b> <i class="mk">⚑</i></td><td class="what">Holdet har tegnet en hel etage færdig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Front Door</b> <i class="mk">★</i></td><td class="what">Du går ind ad hovedindgangen et sted alle andre ville liste sig ind</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Broke the Dungeon</b> <i class="mk">★ ⚑</i></td><td class="what">Holdet løser noget på en måde DM&#x27;en ikke havde forudset</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
   <p class="legend">★ skjult, læses ikke op før den udløses · ↻ gentagelig, højst én gang pr. session · ⚑ holdbedrift, alle får belønningen</p>
 </section>
 <section class="sheet" style="--ink:#b23a35">
-  <h1>Weapons <span class="paper">— rødt papir · 20 bedrifter</span></h1>
+  <h1>Weapons <span class="paper">— rødt papir · Bronze · 22 bedrifter</span></h1>
 
   <div class="players">
   <span class="lbl">Spillere</span>
@@ -249,66 +253,96 @@ tbody tr:nth-child(even) td.p{background:#f2f2f2}
   <label><i>4</i><span></span></label>
 </div>
 
-<h2>Weapons — Bronze <span class="cnt">11</span></h2>
-<p class="tiernote">Personlig. Hver spiller kan få sin egen.</p>
+<h2>Weapons — Bronze <span class="cnt">22</span></h2>
+<p class="tiernote">Personlig — hver spiller kan få sin egen. 22 bedrifter, 22 pakker i kassen.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>First Blood</b></td><td class="what">Dit første angreb der rammer</td><td class="prize">Weapons · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>First Kill</b></td><td class="what">Din første nedlagte fjende</td><td class="prize">Weapons · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Double Digits</b></td><td class="what">Ét angreb der gør 10 eller mere i skade</td><td class="prize">Weapons · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Critical Thinker</b></td><td class="what">Din første naturlige 20 i kamp</td><td class="prize">Weapons · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Setup Man</b></td><td class="what">Du gør en anden spillers angreb muligt</td><td class="prize">Weapons · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Fully Loaded</b></td><td class="what">Du står med ammunition til hvert af dine ranged våben</td><td class="prize">Weapons · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Upgrade</b></td><td class="what">Du lægger dit startvåben fra dig til fordel for noget bedre</td><td class="prize">Weapons · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Intimidation Tactics</b></td><td class="what">Du får noget til at flygte uden at slå</td><td class="prize">Weapons · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>One-Liner</b></td><td class="what">Du siger noget godt lige før eller efter et drab</td><td class="prize">Weapons · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Held Item</b> <i class="mk">★</i></td><td class="what">Du taber dit våben midt i kamp</td><td class="prize">Weapons · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>The Hard Way</b> <i class="mk">★</i></td><td class="what">Du løser et problem ved at ødelægge det</td><td class="prize">Weapons · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>First Blood</b></td><td class="what">Dit første angreb der rammer</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>First Kill</b></td><td class="what">Din første nedlagte fjende</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Punching Up</b> <i class="mk">↻</i></td><td class="what">Du giver dødsstødet til noget alene</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Double Digits</b></td><td class="what">Ét angreb der gør 10 eller mere i skade</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Critical Thinker</b></td><td class="what">Din første naturlige 20 i kamp</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Opening Act</b></td><td class="what">Du fælder den første fjende i en kamp</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Finisher</b></td><td class="what">Du fælder den sidste fjende i en kamp</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Setup Man</b></td><td class="what">Du gør en anden spillers angreb muligt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Cover Fire</b></td><td class="what">Du holder noget tilbage uden at gøre skade på det</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Fully Loaded</b></td><td class="what">Du står med ammunition til hvert af dine ranged våben</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Upgrade</b></td><td class="what">Du lægger dit startvåben fra dig til fordel for noget bedre</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Two Handed</b></td><td class="what">Du skifter våben midt i en kamp og rammer med det nye</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Off Hand</b></td><td class="what">Du rammer med dit sekundære våben</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Thrown</b></td><td class="what">Du fælder noget med et kastet våben</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Point Blank</b></td><td class="what">Du skyder noget der står lige op ad dig, og rammer</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Reach Out</b></td><td class="what">Du rammer noget der troede det stod uden for rækkevidde</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Intimidation Tactics</b></td><td class="what">Du får noget til at flygte uden at slå</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>One-Liner</b></td><td class="what">Du siger noget godt lige før eller efter et drab</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Held Item</b> <i class="mk">★</i></td><td class="what">Du taber dit våben midt i kamp</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Broken</b> <i class="mk">★</i></td><td class="what">Dit våben går i stykker midt i et slag</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Out of Ammo</b> <i class="mk">★</i></td><td class="what">Du løber tør midt i en kamp</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>The Hard Way</b> <i class="mk">★</i></td><td class="what">Du løser et problem ved at ødelægge det</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
-<h2>Weapons — Sølv <span class="cnt">6</span></h2>
-<p class="tiernote">Personlig. Hver spiller kan få sin egen.</p>
+  <p class="legend">★ skjult, læses ikke op før den udløses · ↻ gentagelig, højst én gang pr. session · ⚑ holdbedrift, alle får belønningen</p>
+</section>
+<section class="sheet" style="--ink:#b23a35">
+  <h1>Weapons <span class="paper">— rødt papir · Sølv og Guld · 18 bedrifter</span></h1>
+
+  <div class="players">
+  <span class="lbl">Spillere</span>
+  <label><i>1</i><span></span></label>
+  <label><i>2</i><span></span></label>
+  <label><i>3</i><span></span></label>
+  <label><i>4</i><span></span></label>
+</div>
+
+<h2>Weapons — Sølv <span class="cnt">12</span></h2>
+<p class="tiernote">Personlig — hver spiller kan få sin egen. 12 bedrifter, 12 pakker i kassen.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Cleanup Crew</b></td><td class="what">Du nedlægger to fjender i samme tur</td><td class="prize">Weapons · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Improvised</b> <i class="mk">★</i></td><td class="what">Du dræber noget med en genstand der ikke er et våben</td><td class="prize">Weapons · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Return to Sender</b></td><td class="what">Du dræber en fjende med dens eget våben eller dens egen effekt</td><td class="prize">Weapons · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Environmental Hazard</b></td><td class="what">Du får omgivelserne til at dræbe noget — fald, ild, sten, vand</td><td class="prize">Weapons · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Sniper</b></td><td class="what">Et dræbende træf på over tredive meters afstand</td><td class="prize">Weapons · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Crowd Pleaser</b></td><td class="what">Du gør noget tydeligt mere spektakulært end nødvendigt</td><td class="prize">Weapons · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Boss Down</b> <i class="mk">⚑ ↻</i></td><td class="what">Holdet fælder etagens boss</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Cleanup Crew</b></td><td class="what">Du nedlægger to fjender i samme tur</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Overkill</b></td><td class="what">Fjenden dør med mindst det dobbelte af sine resterende HP i overskud</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Return to Sender</b></td><td class="what">Du fælder en fjende med dens eget våben eller dens egen effekt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Environmental Hazard</b></td><td class="what">Du får omgivelserne til at dræbe noget — fald, ild, sten, vand</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Sniper</b></td><td class="what">Et dræbende træf på over tredive meters afstand</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Silent but Deadly</b></td><td class="what">Du fælder noget uden at nogen anden fjende opdager det</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Disarmed</b></td><td class="what">Du tager en fjendes våben fra den</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Combo</b></td><td class="what">Du og en anden spiller kombinerer to effekter til noget større</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Crowd Pleaser</b></td><td class="what">Du gør noget tydeligt mere spektakulært end nødvendigt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Improvised</b> <i class="mk">★</i></td><td class="what">Du dræber noget med en genstand der ikke er et våben</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Executioner</b> <i class="mk">★</i></td><td class="what">Du gør det af med noget der havde overgivet sig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
-<h2>Weapons — Guld <span class="cnt">3</span></h2>
-<p class="tiernote">Kapløb — går til den første i hele kampagnen der gør det.</p>
+<h2>Weapons — Guld <span class="cnt">6</span></h2>
+<p class="tiernote">Kapløb — går til den første i hele kampagnen der gør det. Ét kryds pr. række.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Sweep the Leg</b></td><td class="what">Du nedlægger tre eller flere fjender i samme tur</td><td class="prize">Weapons · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Last One Standing</b></td><td class="what">Alle andre er nede, og du vinder kampen</td><td class="prize">Weapons · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Speedrun Any%</b> <i class="mk">⚑</i></td><td class="what">En boss nedlagt i første runde</td><td class="prize">Weapons · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Giant Slayer</b></td><td class="what">Du fælder noget mindst tre gange din størrelse</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Sweep the Leg</b></td><td class="what">Du nedlægger tre eller flere fjender i samme tur</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Last One Standing</b></td><td class="what">Alle andre er nede, og du vinder kampen</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Duelist</b></td><td class="what">Du vinder en kamp en mod en, uden at nogen blander sig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Speedrun Any%</b> <i class="mk">⚑</i></td><td class="what">En boss nedlagt i første runde</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Called Shot</b> <i class="mk">★</i></td><td class="what">Du siger hvor du rammer, inden du slår — og det gør du</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
   <p class="legend">★ skjult, læses ikke op før den udløses · ↻ gentagelig, højst én gang pr. session · ⚑ holdbedrift, alle får belønningen</p>
 </section>
 <section class="sheet" style="--ink:#3a5fa0">
-  <h1>Armor <span class="paper">— blåt papir · 20 bedrifter</span></h1>
+  <h1>Armor <span class="paper">— blåt papir · Bronze · 22 bedrifter</span></h1>
 
   <div class="players">
   <span class="lbl">Spillere</span>
@@ -318,66 +352,96 @@ tbody tr:nth-child(even) td.p{background:#f2f2f2}
   <label><i>4</i><span></span></label>
 </div>
 
-<h2>Armor — Bronze <span class="cnt">11</span></h2>
-<p class="tiernote">Personlig. Hver spiller kan få sin egen.</p>
+<h2>Armor — Bronze <span class="cnt">22</span></h2>
+<p class="tiernote">Personlig — hver spiller kan få sin egen. 22 bedrifter, 22 pakker i kassen.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Ouch</b></td><td class="what">Første gang du tager skade</td><td class="prize">Armor · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Suit Up</b></td><td class="what">Første gang du tager rustning på</td><td class="prize">Armor · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Fully Equipped</b></td><td class="what">Du står med våben, rustning og skjold på samtidig</td><td class="prize">Armor · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Better You Than Me</b></td><td class="what">Du tager skade der var rettet mod en anden spiller</td><td class="prize">Armor · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Down but Not Out</b></td><td class="what">Din første death save der lykkes</td><td class="prize">Armor · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Nine Lives</b> <i class="mk">↻</i></td><td class="what">Du ender på præcis 1 HP</td><td class="prize">Armor · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Shield Wall</b></td><td class="what">Du spærrer en vej med din egen krop, og noget bliver stoppet</td><td class="prize">Armor · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Human Ladder</b></td><td class="what">Holdet løser noget fysisk ved at bruge hinanden</td><td class="prize">Armor · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Naked and Afraid</b> <i class="mk">★</i></td><td class="what">Du står uden rustning midt i en kamp</td><td class="prize">Armor · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Trust Fall</b> <i class="mk">★</i></td><td class="what">Du gør noget dumt fordi en anden spiller bad dig om det</td><td class="prize">Armor · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>The Floor Is Also a Weapon</b> <i class="mk">★</i></td><td class="what">Du tager faldskade fra noget du selv satte i gang</td><td class="prize">Armor · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Ouch</b></td><td class="what">Første gang du tager skade</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Suit Up</b></td><td class="what">Første gang du tager rustning på</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Fully Equipped</b></td><td class="what">Du står med våben, rustning og skjold på samtidig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Helmet On</b></td><td class="what">Du tager noget på der ser fjollet ud, fordi det virker</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Better You Than Me</b></td><td class="what">Du tager skade der var rettet mod en anden spiller</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Bodyguard</b></td><td class="what">Du stiller dig mellem en fjende og en anden spiller</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Shield Wall</b></td><td class="what">Du spærrer en vej med din egen krop, og noget bliver stoppet</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Braced</b></td><td class="what">Du står imod noget der skulle have flyttet dig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Dug In</b></td><td class="what">Du bruger en tur på at gøre dig klar, og det betaler sig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Bounced</b></td><td class="what">Et angreb rammer forbi din rustning med præcis ét point</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Cushioned</b></td><td class="what">Du falder og tager ingen skade</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Down but Not Out</b></td><td class="what">Din første death save der lykkes</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Nine Lives</b> <i class="mk">↻</i></td><td class="what">Du ender på præcis 1 HP</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Sacrificial</b></td><td class="what">Et af dine kort ødelægges i stedet for dig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Human Ladder</b></td><td class="what">Holdet løser noget fysisk ved at bruge hinanden</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Second Skin</b></td><td class="what">Du sover i din rustning</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Naked and Afraid</b> <i class="mk">★</i></td><td class="what">Du står uden rustning midt i en kamp</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Trust Fall</b> <i class="mk">★</i></td><td class="what">Du gør noget dumt fordi en anden spiller bad dig om det</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>The Floor Is Also a Weapon</b> <i class="mk">★</i></td><td class="what">Du tager faldskade fra noget du selv satte i gang</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Face First</b> <i class="mk">★</i></td><td class="what">Du fejler en save og lander på noget hårdt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Slippery</b> <i class="mk">★</i></td><td class="what">Du undslipper noget der havde fat i dig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Scarred</b> <i class="mk">★</i></td><td class="what">Du får et mærke du beholder resten af kampagnen</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
-<h2>Armor — Sølv <span class="cnt">6</span></h2>
-<p class="tiernote">Personlig. Hver spiller kan få sin egen.</p>
+  <p class="legend">★ skjult, læses ikke op før den udløses · ↻ gentagelig, højst én gang pr. session · ⚑ holdbedrift, alle får belønningen</p>
+</section>
+<section class="sheet" style="--ink:#3a5fa0">
+  <h1>Armor <span class="paper">— blåt papir · Sølv og Guld · 18 bedrifter</span></h1>
+
+  <div class="players">
+  <span class="lbl">Spillere</span>
+  <label><i>1</i><span></span></label>
+  <label><i>2</i><span></span></label>
+  <label><i>3</i><span></span></label>
+  <label><i>4</i><span></span></label>
+</div>
+
+<h2>Armor — Sølv <span class="cnt">12</span></h2>
+<p class="tiernote">Personlig — hver spiller kan få sin egen. 12 bedrifter, 12 pakker i kassen.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Tank</b></td><td class="what">Ét angreb tager mere end halvdelen af dit maksimale HP, og du bliver stående</td><td class="prize">Armor · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Not Today</b></td><td class="what">Du overlever en tur hvor du burde være død</td><td class="prize">Armor · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Back from the Brink</b></td><td class="what">Du rejser dig fra 0 HP og nedlægger en fjende i samme tur</td><td class="prize">Armor · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Got Your Back</b></td><td class="what">Du redder en anden spiller fra 0 HP</td><td class="prize">Armor · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Designated Driver</b></td><td class="what">Du bærer eller trækker en bevidstløs kammerat i sikkerhed</td><td class="prize">Armor · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Hold the Line</b></td><td class="what">Du er den eneste der står mellem fjenden og resten af holdet, og de kommer ikke forbi</td><td class="prize">Armor · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Tank</b></td><td class="what">Ét angreb tager mere end halvdelen af dit maksimale HP, og du bliver stående</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Not Today</b></td><td class="what">Du overlever en tur hvor du burde være død</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Hard to Kill</b></td><td class="what">Du kommer gennem en hel kamp på encifret HP</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Back from the Brink</b></td><td class="what">Du rejser dig fra 0 HP og nedlægger en fjende i samme tur</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Still Here</b></td><td class="what">Du rejser dig efter at have været nede</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Got Your Back</b></td><td class="what">Du redder en anden spiller fra 0 HP</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Designated Driver</b></td><td class="what">Du bærer eller trækker en bevidstløs kammerat i sikkerhed</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Hold the Line</b></td><td class="what">Du er den eneste mellem fjenden og resten af holdet, og de kommer ikke forbi</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Anchor</b></td><td class="what">Du holder den samme position hele kampen igennem</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Two for One</b></td><td class="what">Et angreb rettet mod dig rammer noget andet i stedet</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Adrenaline</b> <i class="mk">★</i></td><td class="what">Du gør noget du ikke burde kunne, fordi du er ved at dø</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Carried</b> <i class="mk">★</i></td><td class="what">Du bliver reddet af den du selv havde reddet</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
-<h2>Armor — Guld <span class="cnt">3</span></h2>
-<p class="tiernote">Kapløb — går til den første i hele kampagnen der gør det.</p>
+<h2>Armor — Guld <span class="cnt">6</span></h2>
+<p class="tiernote">Kapløb — går til den første i hele kampagnen der gør det. Ét kryds pr. række.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Immovable</b></td><td class="what">En hel runde hvor fjenden kun gik efter dig, og intet ramte</td><td class="prize">Armor · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Prime Time</b> <i class="mk">⚑</i></td><td class="what">Holdet fælder en boss, og ingen er nede når den falder</td><td class="prize">Armor · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Not Even Close</b> <i class="mk">★</i></td><td class="what">Du overlever et angreb der var beregnet til at tage hele holdet</td><td class="prize">Armor · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Immovable</b></td><td class="what">En hel runde hvor fjenden kun gik efter dig, og intet ramte</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Unbreakable</b></td><td class="what">Du bliver stående gennem noget der lagde alle andre ned</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Prime Time</b> <i class="mk">⚑</i></td><td class="what">Holdet fælder en boss, og ingen er nede når den falder</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>The Wall</b> <i class="mk">⚑</i></td><td class="what">Holdet kommer helskindet gennem en kamp de ikke burde</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Not Even Close</b> <i class="mk">★</i></td><td class="what">Du overlever et angreb der var beregnet til at tage hele holdet</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Death&#x27;s Door</b> <i class="mk">★</i></td><td class="what">Du fejler to death saves og kommer tilbage alligevel</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
   <p class="legend">★ skjult, læses ikke op før den udløses · ↻ gentagelig, højst én gang pr. session · ⚑ holdbedrift, alle får belønningen</p>
 </section>
 <section class="sheet" style="--ink:#2f6b40">
-  <h1>Consumables <span class="paper">— mørkegrønt papir · 20 bedrifter</span></h1>
+  <h1>Consumables <span class="paper">— mørkegrønt papir · Bronze · 22 bedrifter</span></h1>
 
   <div class="players">
   <span class="lbl">Spillere</span>
@@ -387,66 +451,96 @@ tbody tr:nth-child(even) td.p{background:#f2f2f2}
   <label><i>4</i><span></span></label>
 </div>
 
-<h2>Consumables — Bronze <span class="cnt">11</span></h2>
-<p class="tiernote">Personlig. Hver spiller kan få sin egen.</p>
+<h2>Consumables — Bronze <span class="cnt">22</span></h2>
+<p class="tiernote">Personlig — hver spiller kan få sin egen. 22 bedrifter, 22 pakker i kassen.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Shopping Spree</b></td><td class="what">Din første handel i dungeon&#x27;et</td><td class="prize">Consumables · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Sommelier</b></td><td class="what">Du drikker en potion uden at vide hvad den gør</td><td class="prize">Consumables · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Nat One</b> <i class="mk">★</i></td><td class="what">Din første naturlige 1 på noget der betød noget</td><td class="prize">Consumables · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Friendly Fire</b> <i class="mk">★</i></td><td class="what">Du rammer en kammerat</td><td class="prize">Consumables · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Trapfinder, Eventually</b> <i class="mk">★</i></td><td class="what">Din første fælde fundet **efter** den er udløst</td><td class="prize">Consumables · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Locked Out</b> <i class="mk">★</i></td><td class="what">Du låser dig selv inde eller ude</td><td class="prize">Consumables · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Loud</b> <i class="mk">★</i></td><td class="what">Din listeplan bliver afsløret af noget du selv gjorde</td><td class="prize">Consumables · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Junk Collector</b> <i class="mk">★</i></td><td class="what">Du står med tre kort af det samme værdiløse grej</td><td class="prize">Consumables · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Trapped by a Trap You Found</b> <i class="mk">★</i></td><td class="what">Du udløser en fælde du selv havde opdaget</td><td class="prize">Consumables · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Zero Percent</b> <i class="mk">★</i></td><td class="what">Du prøver noget med nul chance for at lykkes, og prøver alligevel</td><td class="prize">Consumables · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Ate It</b> <i class="mk">★</i></td><td class="what">Du spiser noget du ikke burde spise</td><td class="prize">Consumables · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Shopping Spree</b></td><td class="what">Din første handel i dungeon&#x27;et</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>First Aid</b></td><td class="what">Din første helbredende genstand brugt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Sommelier</b></td><td class="what">Du drikker en potion uden at vide hvad den gør</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Sniff Test</b></td><td class="what">Du undersøger noget grundigt før du bruger det</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Bottoms Up</b></td><td class="what">Du drikker to potions i samme kamp</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Emergency Only</b></td><td class="what">Du bruger noget du havde gemt til senere</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Shared Supply</b></td><td class="what">Du giver en consumable væk til en anden spiller</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Rations</b></td><td class="what">Du deler din mad med nogen</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Nat One</b> <i class="mk">★</i></td><td class="what">Din første naturlige 1 på noget der betød noget</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Friendly Fire</b> <i class="mk">★</i></td><td class="what">Du rammer en kammerat</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Trapfinder, Eventually</b> <i class="mk">★</i></td><td class="what">Din første fælde fundet **efter** den er udløst</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Trapped by a Trap You Found</b> <i class="mk">★</i></td><td class="what">Du udløser en fælde du selv havde opdaget</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Locked Out</b> <i class="mk">★</i></td><td class="what">Du låser dig selv inde eller ude</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Loud</b> <i class="mk">★</i></td><td class="what">Din listeplan bliver afsløret af noget du selv gjorde</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Butterfingers</b> <i class="mk">★</i></td><td class="what">Du taber noget skrøbeligt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Wrong Order</b> <i class="mk">★</i></td><td class="what">Du gør tingene i den forkerte rækkefølge, og det koster</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Overpriced</b> <i class="mk">★</i></td><td class="what">Du betaler alt for meget for noget</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Junk Collector</b> <i class="mk">★</i></td><td class="what">Du står med tre kort af det samme værdiløse grej</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Hoarder</b> <i class="mk">★</i></td><td class="what">Du står med fem consumables du ikke har brugt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Waste of Good Rope</b> <i class="mk">★</i></td><td class="what">Du efterlader noget brugbart bag dig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Zero Percent</b> <i class="mk">★</i></td><td class="what">Du prøver noget med nul chance for at lykkes, og prøver alligevel</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Ate It</b> <i class="mk">★</i></td><td class="what">Du spiser noget du ikke burde spise</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
-<h2>Consumables — Sølv <span class="cnt">6</span></h2>
-<p class="tiernote">Personlig. Hver spiller kan få sin egen.</p>
+  <p class="legend">★ skjult, læses ikke op før den udløses · ↻ gentagelig, højst én gang pr. session · ⚑ holdbedrift, alle får belønningen</p>
+</section>
+<section class="sheet" style="--ink:#2f6b40">
+  <h1>Consumables <span class="paper">— mørkegrønt papir · Sølv og Guld · 18 bedrifter</span></h1>
+
+  <div class="players">
+  <span class="lbl">Spillere</span>
+  <label><i>1</i><span></span></label>
+  <label><i>2</i><span></span></label>
+  <label><i>3</i><span></span></label>
+  <label><i>4</i><span></span></label>
+</div>
+
+<h2>Consumables — Sølv <span class="cnt">12</span></h2>
+<p class="tiernote">Personlig — hver spiller kan få sin egen. 12 bedrifter, 12 pakker i kassen.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Down the Wrong Pipe</b> <i class="mk">★</i></td><td class="what">Du drikker den forkerte potion</td><td class="prize">Consumables · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Chemist</b> <i class="mk">★</i></td><td class="what">Du kombinerer to consumables til én effekt</td><td class="prize">Consumables · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Poisoned, Cursed, and Late for Dinner</b> <i class="mk">★</i></td><td class="what">Tre forskellige tilstande på dig samtidig</td><td class="prize">Consumables · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Well, That Was Expensive</b> <i class="mk">★</i></td><td class="what">Du ødelægger noget værdifuldt ved et uheld</td><td class="prize">Consumables · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Waste Not</b></td><td class="what">Du bruger et forbrugskort i det sidste øjeblik hvor det stadig nåede at virke</td><td class="prize">Consumables · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Made an Enemy</b> <i class="mk">★</i></td><td class="what">Noget i dungeon&#x27;et beslutter at det hader dig personligt</td><td class="prize">Consumables · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Field Medic</b></td><td class="what">Du bringer en anden spiller tilbage med en consumable</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Better Living Through Chemistry</b></td><td class="what">En consumable afgør en kamp</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Waste Not</b></td><td class="what">Du bruger et forbrugskort i det sidste øjeblik hvor det stadig nåede at virke</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Cut It Close</b></td><td class="what">Du bruger noget i den allersidste tur af en kamp</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Chemist</b> <i class="mk">★</i></td><td class="what">Du kombinerer to consumables til én effekt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Weaponised</b> <i class="mk">★</i></td><td class="what">Du bruger noget beregnet til at hjælpe som et våben</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Down the Wrong Pipe</b> <i class="mk">★</i></td><td class="what">Du drikker den forkerte potion</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Allergic</b> <i class="mk">★</i></td><td class="what">En consumable virker modsat på dig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Regret</b> <i class="mk">★</i></td><td class="what">Du fortryder noget du drak, højlydt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Poisoned, Cursed, and Late for Dinner</b> <i class="mk">★</i></td><td class="what">Tre forskellige tilstande på dig samtidig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Well, That Was Expensive</b> <i class="mk">★</i></td><td class="what">Du ødelægger noget værdifuldt ved et uheld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Made an Enemy</b> <i class="mk">★</i></td><td class="what">Noget i dungeon&#x27;et beslutter at det hader dig personligt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
-<h2>Consumables — Guld <span class="cnt">3</span></h2>
-<p class="tiernote">Kapløb — går til den første i hele kampagnen der gør det.</p>
+<h2>Consumables — Guld <span class="cnt">6</span></h2>
+<p class="tiernote">Kapløb — går til den første i hele kampagnen der gør det. Ét kryds pr. række.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Big Spender</b></td><td class="what">Du bruger alt hvad du ejer på ét køb</td><td class="prize">Consumables · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Terms and Conditions</b> <i class="mk">★</i></td><td class="what">Du indgår en aftale du ikke har læst helt</td><td class="prize">Consumables · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Full Party Wipe Avoided</b> <i class="mk">★ ⚑</i></td><td class="what">Holdet var ét slag fra at dø, og kom hjem</td><td class="prize">Consumables · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Big Spender</b></td><td class="what">Du bruger alt hvad du ejer på ét køb</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>The Last Potion</b> <i class="mk">⚑</i></td><td class="what">Holdets sidste helbredende genstand bliver brugt, og det rækker</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Full Party Wipe Avoided</b> <i class="mk">★ ⚑</i></td><td class="what">Holdet var ét slag fra at dø, og kom hjem</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Better Than Nothing</b> <i class="mk">★</i></td><td class="what">Du redder holdet med noget der burde være værdiløst</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Iron Stomach</b> <i class="mk">★</i></td><td class="what">Du overlever noget der skulle have slået dig ihjel at spise</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Terms and Conditions</b> <i class="mk">★</i></td><td class="what">Du indgår en aftale du ikke har læst helt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
   <p class="legend">★ skjult, læses ikke op før den udløses · ↻ gentagelig, højst én gang pr. session · ⚑ holdbedrift, alle får belønningen</p>
 </section>
 <section class="sheet" style="--ink:#7b62a8">
-  <h1>Magic <span class="paper">— lavendel papir · 20 bedrifter</span></h1>
+  <h1>Magic <span class="paper">— lavendel papir · Bronze · 22 bedrifter</span></h1>
 
   <div class="players">
   <span class="lbl">Spillere</span>
@@ -456,59 +550,89 @@ tbody tr:nth-child(even) td.p{background:#f2f2f2}
   <label><i>4</i><span></span></label>
 </div>
 
-<h2>Magic — Bronze <span class="cnt">11</span></h2>
-<p class="tiernote">Personlig. Hver spiller kan få sin egen.</p>
+<h2>Magic — Bronze <span class="cnt">22</span></h2>
+<p class="tiernote">Personlig — hver spiller kan få sin egen. 22 bedrifter, 22 pakker i kassen.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Abracadabra</b></td><td class="what">Din første spell castet</td><td class="prize">Magic · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Scroll Reader</b></td><td class="what">Din første spell scroll brugt</td><td class="prize">Magic · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Enchanted</b></td><td class="what">Dit første magic item</td><td class="prize">Magic · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Upcast</b></td><td class="what">Du caster en spell i et højere slot end nødvendigt, og det virker</td><td class="prize">Magic · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Ritualist</b></td><td class="what">Du bruger en spell som ritual for at spare et slot</td><td class="prize">Magic · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Utility Belt</b></td><td class="what">Du løser et problem uden for kamp med en spell der ikke gør skade</td><td class="prize">Magic · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Attunement Issues</b> <i class="mk">★</i></td><td class="what">Du står med tre attunede magic items samtidig</td><td class="prize">Magic · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Read the Label</b> <i class="mk">★</i></td><td class="what">Du bruger et magic item forkert</td><td class="prize">Magic · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Look Up</b> <i class="mk">★</i></td><td class="what">Du opdager noget vigtigt ved at kigge opad</td><td class="prize">Magic · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Don&#x27;t Read That</b> <i class="mk">★</i></td><td class="what">Du læser noget du ikke burde læse</td><td class="prize">Magic · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Sponsored Content</b> <i class="mk">★</i></td><td class="what">Du bruger et produkt der blev navngivet i en af systemets beskeder</td><td class="prize">Magic · Bronze</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Abracadabra</b></td><td class="what">Din første spell castet</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Cantrip Kid</b></td><td class="what">Du løser noget uden for kamp med en cantrip</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Light Source</b></td><td class="what">Du laver lys med magi for første gang</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Scroll Reader</b></td><td class="what">Din første spell scroll brugt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Enchanted</b></td><td class="what">Dit første magic item</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Upcast</b></td><td class="what">Du caster en spell i et højere slot end nødvendigt, og det virker</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Ritualist</b></td><td class="what">Du bruger en spell som ritual for at spare et slot</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Utility Belt</b></td><td class="what">Du løser et problem uden for kamp med en spell der ikke gør skade</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Detected</b></td><td class="what">Du finder noget skjult med en spell</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Concentration</b></td><td class="what">Du holder koncentrationen gennem et angreb</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Dispelled</b></td><td class="what">Du fjerner en magisk effekt</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Identified</b></td><td class="what">Du finder ud af hvad et magic item gør, før du bruger det</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Borrowed Power</b></td><td class="what">Du bruger et magic item der ikke er dit</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Second Opinion</b></td><td class="what">Du caster den samme spell to gange i træk, fordi den virkede</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Attunement Issues</b> <i class="mk">★</i></td><td class="what">Du står med tre attunede magic items samtidig</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Read the Label</b> <i class="mk">★</i></td><td class="what">Du bruger et magic item forkert</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Backfire</b> <i class="mk">★</i></td><td class="what">En spell rammer dig selv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Fizzled</b> <i class="mk">★</i></td><td class="what">Du bruger et slot på ingenting</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Cursed</b> <i class="mk">★</i></td><td class="what">Du finder ud af at noget er forbandet ved at bære det</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Look Up</b> <i class="mk">★</i></td><td class="what">Du opdager noget vigtigt ved at kigge opad</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Don&#x27;t Read That</b> <i class="mk">★</i></td><td class="what">Du læser noget du ikke burde læse</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Sponsored Content</b> <i class="mk">★</i></td><td class="what">Du bruger et produkt der blev navngivet i en af systemets beskeder</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
-<h2>Magic — Sølv <span class="cnt">6</span></h2>
-<p class="tiernote">Personlig. Hver spiller kan få sin egen.</p>
+  <p class="legend">★ skjult, læses ikke op før den udløses · ↻ gentagelig, højst én gang pr. session · ⚑ holdbedrift, alle får belønningen</p>
+</section>
+<section class="sheet" style="--ink:#7b62a8">
+  <h1>Magic <span class="paper">— lavendel papir · Sølv og Guld · 18 bedrifter</span></h1>
+
+  <div class="players">
+  <span class="lbl">Spillere</span>
+  <label><i>1</i><span></span></label>
+  <label><i>2</i><span></span></label>
+  <label><i>3</i><span></span></label>
+  <label><i>4</i><span></span></label>
+</div>
+
+<h2>Magic — Sølv <span class="cnt">12</span></h2>
+<p class="tiernote">Personlig — hver spiller kan få sin egen. 12 bedrifter, 12 pakker i kassen.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Bookworm</b></td><td class="what">Din første tome læst — en spell lært permanent</td><td class="prize">Magic · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Counterspell</b></td><td class="what">Du afbryder en fjendes magi</td><td class="prize">Magic · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Save or Suck</b></td><td class="what">Tre fjender fejler den samme save mod din spell</td><td class="prize">Magic · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Overkill, Arcane Edition</b></td><td class="what">En spell rammer fem eller flere fjender på én gang</td><td class="prize">Magic · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Out of Slots</b> <i class="mk">★</i></td><td class="what">Du bruger dit sidste spell slot, og vinder kampen alligevel</td><td class="prize">Magic · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Sharing Is Caring</b></td><td class="what">Du giver et magic item væk til en anden spiller</td><td class="prize">Magic · Sølv</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Bookworm</b></td><td class="what">Din første tome læst — en spell lært permanent</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Attuned</b></td><td class="what">Dit første attunement fuldført</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Counterspell</b></td><td class="what">Du afbryder en fjendes magi</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Save or Suck</b></td><td class="what">Tre fjender fejler den samme save mod din spell</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Overkill, Arcane Edition</b></td><td class="what">En spell rammer fem eller flere fjender på én gang</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Nowhere to Run</b></td><td class="what">En spell fanger noget der var på vej væk</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Turned</b></td><td class="what">Du får noget til at kæmpe for dig med magi</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Through the Wall</b></td><td class="what">Du kommer igennem noget fast ved hjælp af magi</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Sharing Is Caring</b></td><td class="what">Du giver et magic item væk til en anden spiller</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Out of Slots</b> <i class="mk">★</i></td><td class="what">Du bruger dit sidste spell slot, og vinder kampen alligevel</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Overcharged</b> <i class="mk">★</i></td><td class="what">Du presser et magic item længere end det burde kunne</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Deal with It</b> <i class="mk">★</i></td><td class="what">Du løser et problem med en spell der slet ikke var beregnet til det</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
-<h2>Magic — Guld <span class="cnt">3</span></h2>
-<p class="tiernote">Kapløb — går til den første i hele kampagnen der gør det.</p>
+<h2>Magic — Guld <span class="cnt">6</span></h2>
+<p class="tiernote">Kapløb — går til den første i hele kampagnen der gør det. Ét kryds pr. række.</p>
 <table>
   <thead><tr>
     <th class="name">Bedrift</th><th class="what">Udløses af</th>
-    <th class="prize">Præmie</th>
     <th class="p">1</th><th class="p">2</th><th class="p">3</th><th class="p">4</th>
   </tr></thead>
   <tbody>
-<tr><td class="name"><b>Legendary Bearer</b></td><td class="what">Dit første Legendary magic item</td><td class="prize">Magic · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Wild Magic</b> <i class="mk">★</i></td><td class="what">Magi går galt på en måde der ender med at hjælpe</td><td class="prize">Magic · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
-<tr><td class="name"><b>Patron</b> <i class="mk">★</i></td><td class="what">Noget dernede tilbyder dig en aftale, og du siger ja</td><td class="prize">Magic · Guld</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Archmage</b></td><td class="what">Din første spell på level 6 eller højere</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Legendary Bearer</b></td><td class="what">Dit første Legendary magic item</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Artifact</b> <i class="mk">★</i></td><td class="what">Du får fat i noget der har sit eget navn og sin egen vilje</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Wild Magic</b> <i class="mk">★</i></td><td class="what">Magi går galt på en måde der ender med at hjælpe</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Rewritten</b> <i class="mk">★</i></td><td class="what">Magi ændrer noget permanent ved dungeon&#x27;et</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
+<tr><td class="name"><b>Patron</b> <i class="mk">★</i></td><td class="what">Noget dernede tilbyder dig en aftale, og du siger ja</td><td class="p"></td><td class="p"></td><td class="p"></td><td class="p"></td></tr>
   </tbody>
 </table>
 
