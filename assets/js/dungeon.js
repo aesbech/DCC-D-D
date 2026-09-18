@@ -126,11 +126,69 @@
     };
   }
 
+  /* Kan budgettet ikke ligge i rummene uden at bryde loftet, mangler der rum.
+     Så laves etagen om med flere rumforsøg. Hjælper det ikke — fordi de nye
+     forsøg lander oven i de rum der allerede står — bliver gitteret større.
+     Loftet er der, fordi et krav kan være umuligt: beder man om ét level pr.
+     etage på level 4, skal der over ti High-kampe til, og på et tidspunkt er
+     svaret at sænke slack og ikke at blive ved med at vokse. */
+  var MAX_PASSES = 24;
+  var GRID_STEP = 6;
+  var GRID_MAX = 61;
+
   function create(opts) {
-    var d = {}, k;
+    var base = {}, k;
     var def = defaults();
-    for (k in def) d[k] = def[k];
-    for (k in (opts || {})) if (opts[k] !== undefined && opts[k] !== '') d[k] = opts[k];
+    for (k in def) base[k] = def[k];
+    for (k in (opts || {})) if (opts[k] !== undefined && opts[k] !== '') base[k] = opts[k];
+
+    var rows = base.n_rows, cols = base.n_cols;
+    var tries = 0;                     // 0 = donjons egen brøk
+    var d, best = null, prevRooms = -1, pass, grew = 0;
+
+    for (pass = 0; pass < MAX_PASSES; pass++) {
+      d = build(base, rows, cols, tries);
+      if (!best || d.xp.short < best.xp.short) best = d;
+      if (!d.xp.short) break;
+
+      /* Gav flere forsøg ikke flere rum, er pladsen brugt op. Så nytter det
+         ikke at prøve igen på det samme gitter. */
+      var stuck = (d.n_rooms <= prevRooms);
+      prevRooms = d.n_rooms;
+
+      if (stuck || tries === 0) {
+        if (stuck) {
+          if (rows >= GRID_MAX) break;
+          rows = Math.min(GRID_MAX, rows + GRID_STEP);
+          cols = Math.min(GRID_MAX, cols + GRID_STEP);
+          grew++;
+          prevRooms = -1;
+        }
+        tries = roomTries(rows, cols, base.room_max);
+      }
+      tries += Math.max(4, Math.ceil(tries * 0.5));
+    }
+
+    best.fit = {
+      passes: Math.min(pass + 1, MAX_PASSES),
+      grew: grew,
+      rows: best.n_rows, cols: best.n_cols,
+      asked_rows: Math.floor(base.n_rows / 2) * 2,
+      rooms: best.n_rooms
+    };
+    return best;
+  }
+
+  function roomTries(rows, cols, roomMax) {
+    return Math.floor((rows * cols) / (roomMax * roomMax));
+  }
+
+  function build(base, rows, cols, tries) {
+    var d = {}, k;
+    for (k in base) d[k] = base[k];
+    d.n_rows = rows;
+    d.n_cols = cols;
+    d.room_tries = tries;
 
     d.rand = rng(d.seed);
     d.n_i = Math.floor(d.n_rows / 2);
@@ -192,7 +250,10 @@
         }
       }
     } else {
-      var n = Math.floor((d.n_cols * d.n_rows) / (d.room_max * d.room_max));
+      /* Antallet er forsøg, ikke rum: et rum der kolliderer med et andet
+         bliver droppet. Derfor kan create() skrue op uden at det er sikkert
+         at der kommer flere ud af det — og det er netop det, den måler på. */
+      var n = d.room_tries || roomTries(d.n_rows, d.n_cols, d.room_max);
       for (i = 0; i < n; i++) emplaceRoom(d, null);
     }
   }

@@ -108,9 +108,15 @@
   </p>
   <p class="note" id="gNote">Samme seed giver samme etage. Lad feltet stå tomt, så
     finder den selv et — det står øverst på arket, så etagen kan laves igen hvis
-    printet forsvinder. Rumantallet kan du ikke sætte: det er en brøk af pladsen,
-    så små rum på en stor etage giver mange rum og store rum giver få. Hvor mange
-    det blev, står på arket.</p>
+    printet forsvinder. Rumantallet kan du ikke sætte: det følger af pladsen og af
+    budgettet — små rum giver mange, store rum giver få, og er der ikke rum nok til
+    XP'en, lægger generatoren selv flere til. <b>Størrelsen er derfor et udgangspunkt,
+    ikke et loft:</b> kan budgettet ikke ligge på det gitter du vælger, bliver det
+    større. Hvad det endte som, står på arket.</p>
+  <p class="note">Synes du der er for mange gange, er <b>Blindgyder</b> den knap der
+    flytter mest. Målt over 40 etager: med halvdelen af blindgyderne væk er 59 % af det
+    åbne areal gang; med dem alle væk er det 43 %. Små rum flytter mindre — de tager
+    det fra 59 % til 51 % — men de to sammen lander på 41 %.</p>
 
   <div id="sheetWrap" class="sheet-wrap" hidden><div class="dsheet" id="sheet"></div></div>
 
@@ -124,10 +130,12 @@
     Safe room står tomt, og bossen er præcis én kamp af den slags du har valgt.
     Monstrene kan slås op i <a href="SRD_CC_v5.2.1.pdf">SRD 5.2.1</a>, der ligger
     under Docs.</p>
-  <p class="note">Kan budgettet ikke ligge i rummene uden at bryde loftet, siger arket
-    hvor meget der er tilbage. Det sker fra omkring level 4, hvor ét level pr. etage
-    kræver over ti High-kampe. Læg resten i gangene, sænk slack, eller gør etagen
-    større.</p>
+  <p class="note">Kan budgettet ikke ligge i rummene uden at bryde loftet, <b>laver
+    generatoren etagen om</b>: først med flere rum på det samme gitter, og hjælper det
+    ikke — fordi de nye rum lander oven i dem der allerede står — med et større gitter.
+    Arket siger til, når det er sket. Målt over 600 etager på level 1 til 20 er der
+    ingen, der mangler budget; gitteret måtte vokse i 22 af dem. Går det helt i stå,
+    er kravet umuligt frem for svært, og så er svaret at sænke slack.</p>
 
   <script src="../assets/js/dungeon.js"></script>
   <script src="../assets/js/dungeon-map.js"></script>
@@ -177,12 +185,25 @@
       document.getElementById('gPrint').disabled = false;
       document.getElementById('gSave').disabled = false;
 
-      var xp = current.xp;
-      note.textContent = xp.short
-        ? 'Der var ' + xp.short.toLocaleString('da-DK') + ' XP der ikke kunne ligge '
-          + 'i rummene uden at bryde loftet. Læg dem i gangene, sænk slack, eller '
-          + 'gør etagen større.'
-        : 'Etagen er klar. Seed ' + seed + ' — skriv det ned, så kan den laves igen.';
+      var xp = current.xp, fit = current.fit;
+      if (xp.short) {
+        note.textContent = 'Der er ' + xp.short.toLocaleString('da-DK') + ' XP tilbage. '
+          + 'Etagen blev lavet om ' + fit.passes + ' gange og endte på '
+          + current.n_rows + ' × ' + current.n_cols + ' med ' + current.n_rooms
+          + ' rum, og budgettet kan stadig ikke ligge der uden at bryde loftet. '
+          + 'Sænk slack, eller hæv loftet pr. rum.';
+      } else if (fit.grew) {
+        note.textContent = 'Etagen blev gjort større — fra ' + fit.asked_rows + ' × '
+          + fit.asked_rows + ' til ' + current.n_rows + ' × ' + current.n_cols
+          + ' — for at der var rum nok til budgettet. ' + current.n_rooms + ' rum. '
+          + 'Seed ' + seed + '.';
+      } else if (fit.passes > 1) {
+        note.textContent = 'Etagen fik flere rum end sædvanligt (' + current.n_rooms
+          + '), så budgettet kunne ligge der. Seed ' + seed + '.';
+      } else {
+        note.textContent = 'Etagen er klar. Seed ' + seed
+          + ' — skriv det ned, så kan den laves igen.';
+      }
     }
 
     /* Printet skal vise arket og ikke resten af siden. */
@@ -243,6 +264,14 @@
         hårdere end det. Safe room står tomt, resten deles efter rummenes areal, og det
         et rum ikke kan rumme uden at bryde loftet, skæres af og fordeles til de andre.
         Med slack på 1,5 kan de springe en tredjedel over og stadig stige et level.</td>
+    </tr>
+    <tr>
+      <td><b>Etagen kunne være for lille til budgettet.</b> Et loft pr. rum gange
+        antallet af rum er et tag, og over det lå XP'en bare og manglede.</td>
+      <td>Rumantallet følger nu budgettet. Kan det ikke ligge der, laves etagen om med
+        <b>flere rum</b> — og er der ikke plads til flere, med et <b>større gitter</b>.
+        Det koster ingenting at prøve: en etage tager 3 ms i snit. Flere rum på den
+        samme plads betyder samtidig færre gange.</td>
     </tr>
   </table>
 
@@ -359,8 +388,11 @@
     gør bossen mildere med <code>boss_fight</code>.</p>
 
   <h2>Perl-udgaven</h2>
-  <p>Den samme generator findes som et Perl-script. Siden herover kan alt det samme,
-    så scriptet er mest til hvis du vil lave tyve etager i træk eller rode i koden.</p>
+  <p>Den samme geometri findes som et Perl-script, mest til hvis du vil lave tyve
+    etager i træk eller rode i koden.</p>
+  <p class="note"><b>Scriptet lægger ikke selv rum til.</b> Den del findes kun i
+    browseren; Perl-udgaven skriver stadig bare hvor meget budget der mangler, og så må
+    man selv skrue på <code>n_rows</code>. Siden er den, der bliver vedligeholdt.</p>
   <pre>perl tools/dungeon.pl</pre>
   <p>Den skriver et kort som <code>&lt;seed&gt;.gif</code> og en rapport i terminalen.
     Den kræver Perls GD-modul — <code>apt install libgd-perl</code> eller

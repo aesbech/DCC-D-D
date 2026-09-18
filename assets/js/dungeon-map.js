@@ -236,7 +236,8 @@
 
     out.push('<table class="drep">');
     out.push(row('Seed', '<b>' + d.seed + '</b> — samme seed giver samme etage'));
-    out.push(row('Etagen', d.n_rooms + ' rum · gitter ' + d.n_rows + ' × ' + d.n_cols));
+    out.push(row('Etagen', d.n_rooms + ' rum · gitter ' + d.n_rows + ' × ' + d.n_cols
+      + fitNote(d)));
     out.push(row('Indgang', d.entrance
       ? 'trappe op i en blindgang' : 'ingen — etagen har ingen blindgyder'));
     out.push(row('Bossrum', d.boss
@@ -281,6 +282,19 @@
     }
     out.push('</tbody></table>');
     return out.join('');
+  }
+
+  /* Etagen kan være lavet om undervejs for at få XP-budgettet til at ligge i
+     rummene. Det skal stå på arket — ellers undrer man sig over, hvorfor det
+     gitter man bad om ikke er det, man fik. */
+  function fitNote(d) {
+    var f = d.fit;
+    if (!f || f.passes < 2) return '';
+    if (f.grew) {
+      return '<br><i>gjort større fra ' + f.asked_rows + ' × ' + f.asked_rows
+        + ' — budgettet kunne ikke ligge i færre rum</i>';
+    }
+    return '<br><i>flere rum end sædvanligt, så budgettet kunne ligge der</i>';
   }
 
   function row(k, v) { return '<tr><th>' + k + '</th><td>' + v + '</td></tr>'; }
