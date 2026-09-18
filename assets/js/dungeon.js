@@ -114,12 +114,16 @@
   function defaults() {
     return {
       seed: Math.floor(Math.random() * 1e9),
-      n_rows: 39, n_cols: 39,
+      /* donjons standard er 39 × 39, spredte rum og halvdelen af blindgyderne
+         tilbage. Det giver en etage hvor 59 % af det åbne areal er gang, og
+         hvor holdet bruger aftenen på at gå. Her ligger rummene tæt og alle
+         blindgyder er væk: 13 % gang, og tre gange så mange rum. */
+      n_rows: 31, n_cols: 31,
       dungeon_layout: 'None',
       room_min: 3, room_max: 9,
-      room_layout: 'Scattered',
+      room_layout: 'Packed',
       corridor_layout: 'Bent',
-      remove_deadends: 50,
+      remove_deadends: 100,
       party_size: 4, party_level: 1,
       xp_slack: 1.5,
       boss_fight: 'high', room_cap: 'high'
@@ -803,14 +807,34 @@
     }
     if (bossId && d.room[bossId]) d.room[bossId].xp = bossXp;
 
-    var left = Math.max(0, floorXp - bossXp), round = 0, full = {};
+    /* Budgettet fordeles ikke ud over alle rum. Gør man det på en etage med
+       tyve rum, får hvert af dem halvtreds XP, og så er der ikke en eneste
+       rigtig kamp på etagen — bare tyve rum med en enkelt rotte i.
+
+       I stedet får et rum mindst en Low-kamp efter D&D 2024's tabel, og der
+       bruges kun så mange rum, som budgettet rækker til. Resten står tomme,
+       og det er meningen: et tomt rum er et sted at ånde, en skat, en fælde
+       eller en samtale, og det koster ingenting at gå igennem. */
+    var rest = Math.max(0, floorXp - bossXp);
+    var minXp = ENCOUNTER[level][0] * size;        // Low — den mindste rigtige kamp
+    var want = Math.max(1, Math.floor(rest / minXp));
+    want = Math.max(want, Math.ceil(rest / cap));  // skal kunne ligge under loftet
+    want = Math.min(want, rooms.length);
+
+    // De største rum får kampene. En stor kamp i et lille rum har ikke plads
+    // til at være en stor kamp.
+    var fight = rooms.slice().sort(function (a, b) {
+      return (b.area - a.area) || (a.id - b.id);
+    }).slice(0, want);
+
+    var left = rest, round = 0, full = {};
     while (left >= 1 && round < 25) {
       round++;
       var area = 0;
-      rooms.forEach(function (r) { if (!full[r.id]) area += r.area; });
+      fight.forEach(function (r) { if (!full[r.id]) area += r.area; });
       if (!area) break;
       var moved = 0;
-      rooms.forEach(function (r) {
+      fight.forEach(function (r) {
         if (full[r.id]) return;
         var add = left * r.area / area;
         if (r.xp + add >= cap) { add = cap - r.xp; full[r.id] = 1; }
@@ -821,7 +845,7 @@
       left -= moved;
     }
     var placed = bossXp;
-    rooms.forEach(function (r) { r.xp = Math.round(r.xp); placed += r.xp; });
+    fight.forEach(function (r) { r.xp = Math.round(r.xp); placed += r.xp; });
 
     /* Afrundingen pr. rum kan lande et par XP ved siden af budgettet. Det er
        ligegyldigt i spil, men et budget på 1800 der står som 1801 ligner en
@@ -829,7 +853,9 @@
     if (!(left >= 1) && placed !== floorXp) {
       var slop = floorXp - placed;
       var big = null;
-      rooms.forEach(function (r) {
+      // Kun blandt de rum der allerede har en kamp — et tomt rum skal blive
+      // tomt og ikke ende med syv XP, fordi et regnestykke gik ujævnt op.
+      fight.forEach(function (r) {
         if (r.xp + slop < 0 || r.xp + slop > cap) return;
         if (!big || r.area > big.area) big = r;
       });
@@ -843,6 +869,8 @@
       low: ENCOUNTER[level][0] * size,
       moderate: ENCOUNTER[level][1] * size,
       high: ENCOUNTER[level][2] * size,
+      fights: fight.length + (bossId ? 1 : 0),
+      empty: rooms.length - fight.length,
       short: (left >= 1) ? Math.round(left) : 0
     };
   }

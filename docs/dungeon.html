@@ -55,10 +55,10 @@
     </label>
     <label>Etagens størrelse
       <select id="gRows">
-        <option value="19">Lille — 18 × 18 felter</option>
-        <option value="25">Mellem — 24 × 24</option>
-        <option value="31">Stor — 30 × 30</option>
-        <option value="39" selected>Meget stor — 38 × 38</option>
+        <option value="19">Lille — 18 × 18 felter, ca. 8 rum</option>
+        <option value="25">Mellem — 24 × 24, ca. 13 rum</option>
+        <option value="31" selected>Stor — 30 × 30, ca. 20 rum</option>
+        <option value="39">Meget stor — 38 × 38, ca. 32 rum</option>
       </select>
     </label>
     <label>Rummene
@@ -66,6 +66,12 @@
         <option value="5">Små — 3 til 5 felter, mange af dem</option>
         <option value="7">Mellem — 3 til 7 felter</option>
         <option value="9" selected>Store — 3 til 9 felter, færre af dem</option>
+      </select>
+    </label>
+    <label>Rummene ligger
+      <select id="gLayout">
+        <option value="Packed" selected>Tæt — korte gange mellem dem</option>
+        <option value="Scattered">Spredt — donjons eget, lange gange</option>
       </select>
     </label>
     <label>Gange
@@ -77,8 +83,8 @@
     </label>
     <label>Blindgyder
       <select id="gDead">
-        <option value="100">Alle væk — kun gange der fører et sted hen</option>
-        <option value="50" selected>Halvdelen væk</option>
+        <option value="100" selected>Alle væk — kun gange der fører et sted hen</option>
+        <option value="50">Halvdelen væk</option>
         <option value="0">Alle beholdes</option>
       </select>
     </label>
@@ -113,10 +119,11 @@
     XP'en, lægger generatoren selv flere til. <b>Størrelsen er derfor et udgangspunkt,
     ikke et loft:</b> kan budgettet ikke ligge på det gitter du vælger, bliver det
     større. Hvad det endte som, står på arket.</p>
-  <p class="note">Synes du der er for mange gange, er <b>Blindgyder</b> den knap der
-    flytter mest. Målt over 40 etager: med halvdelen af blindgyderne væk er 59 % af det
-    åbne areal gang; med dem alle væk er det 43 %. Små rum flytter mindre — de tager
-    det fra 59 % til 51 % — men de to sammen lander på 41 %.</p>
+  <p class="note">Standarden er <b>ikke</b> donjons egen. Med spredte rum og halvdelen
+    af blindgyderne tilbage er <b>59 % af det åbne areal gang</b>, og holdet bruger
+    aftenen på at gå. Med rummene tæt og alle blindgyder væk er det <b>12 %</b>, og der
+    er tre gange så mange rum. Vil du have donjons oprindelige etage, så sæt
+    <i>Rummene ligger</i> til <i>Spredt</i>.</p>
 
   <div id="sheetWrap" class="sheet-wrap" hidden><div class="dsheet" id="sheet"></div></div>
 
@@ -127,7 +134,9 @@
     på etagen.</p>
   <p>XP-tallet pr. rum er <b>et budget, ikke en liste over monstre</b>. 157 XP er for
     eksempel seks CR 1/8 eller tre CR 1/4 — du vælger selv hvad der står i rummet.
-    Safe room står tomt, og bossen er præcis én kamp af den slags du har valgt.
+    Rum der står <b>tom</b> har ingen kamp; det er ikke et hul i budgettet, men plads
+    til alt det andet. Safe room står altid tomt, og bossen er præcis én kamp af den
+    slags du har valgt.
     Monstrene kan slås op i <a href="SRD_CC_v5.2.1.pdf">SRD 5.2.1</a>, der ligger
     under Docs.</p>
   <p class="note">Kan budgettet ikke ligge i rummene uden at bryde loftet, <b>laver
@@ -170,6 +179,7 @@
         seed: seed,
         n_rows: +val('gRows'), n_cols: +val('gRows'),
         room_max: +val('gRoom'),
+        room_layout: val('gLayout'),
         corridor_layout: val('gCorr'),
         remove_deadends: +val('gDead'),
         party_level: +val('gLevel'),
@@ -261,9 +271,17 @@
       <td><b>Ingen styring på XP.</b> Holdet skulle støvsuge etagen for at stige.</td>
       <td>Etagen får <code>party_size × XP-til-næste-level × xp_slack</code>.
         <b>Bossen er præcis én High-kamp</b> efter tabellen nedenfor, og intet rum må være
-        hårdere end det. Safe room står tomt, resten deles efter rummenes areal, og det
-        et rum ikke kan rumme uden at bryde loftet, skæres af og fordeles til de andre.
-        Med slack på 1,5 kan de springe en tredjedel over og stadig stige et level.</td>
+        hårdere end det. Resten deles ud efter rummenes areal, og det et rum ikke kan
+        rumme uden at bryde loftet, skæres af og fordeles til de andre. Med slack på 1,5
+        kan de springe en tredjedel over og stadig stige et level.</td>
+    </tr>
+    <tr>
+      <td><b>Budgettet blev smurt tyndt ud.</b> Delte man 1800 XP mellem tyve rum, fik
+        hvert af dem halvtreds — og så var der ikke én rigtig kamp på etagen.</td>
+      <td>Et rum med kamp i får <b>mindst en Low-kamp</b> efter tabellen nedenfor, og
+        der bruges kun så mange rum, som budgettet rækker til. <b>Resten står tomme</b>,
+        og det er meningen: et tomt rum er et sted at ånde, en skat, en fælde eller en
+        samtale. På level 1 bliver det otte rum med kamp og godt ti tomme.</td>
     </tr>
     <tr>
       <td><b>Etagen kunne være for lille til budgettet.</b> Et loft pr. rum gange
@@ -390,9 +408,11 @@
   <h2>Perl-udgaven</h2>
   <p>Den samme geometri findes som et Perl-script, mest til hvis du vil lave tyve
     etager i træk eller rode i koden.</p>
-  <p class="note"><b>Scriptet lægger ikke selv rum til.</b> Den del findes kun i
-    browseren; Perl-udgaven skriver stadig bare hvor meget budget der mangler, og så må
-    man selv skrue på <code>n_rows</code>. Siden er den, der bliver vedligeholdt.</p>
+  <p class="note"><b>Scriptet lægger ikke selv rum til</b>, og det smører stadig
+    budgettet ud over alle rum i stedet for at samle det i færre, rigtige kampe. Begge
+    dele findes kun i browseren, og scriptet starter desuden fra donjons egne
+    indstillinger — spredte rum, 39 × 39, halvdelen af blindgyderne. Siden er den, der
+    bliver vedligeholdt.</p>
   <pre>perl tools/dungeon.pl</pre>
   <p>Den skriver et kort som <code>&lt;seed&gt;.gif</code> og en rapport i terminalen.
     Den kræver Perls GD-modul — <code>apt install libgd-perl</code> eller
@@ -422,18 +442,25 @@
 'boss_fight'      =&gt; 'high',      # bossen er én kamp af denne slags
 'room_cap'        =&gt; 'high',      # intet rum må være hårdere end dette</pre>
 
-  <p><b>Rumantallet er ikke en indstilling — det er en brøk.</b>
-    <code>int(n_rows × n_cols / room_max²)</code>, og gitteret rundes først ned til et
-    lige tal. Og det er <i>forsøg</i>: et rum der kolliderer med et andet bliver stille
-    droppet, så du får altid færre.</p>
+  <p><b>Rumantallet er ikke en indstilling.</b> Med <i>Spredt</i> er det
+    <code>int(n_rows × n_cols / room_max²)</code> <i>forsøg</i> — et rum der kolliderer
+    med et andet bliver stille droppet, så man får altid færre. Med <i>Tæt</i> lægges
+    der et rum i hvert felt af gitteret der ikke allerede er optaget, og så er antallet
+    givet af pladsen. Oveni kan generatoren selv lægge rum til, hvis XP-budgettet ikke
+    kan ligge i dem der er.</p>
 
   <table>
-    <tr><th><code>n_rows</code></th><th>Gitter</th><th>Rumforsøg</th></tr>
-    <tr><td>19</td><td>18 × 18</td><td>4</td></tr>
-    <tr><td>25</td><td>24 × 24</td><td>7</td></tr>
-    <tr><td>31</td><td>30 × 30</td><td>11</td></tr>
-    <tr><td>39 (standard)</td><td>38 × 38</td><td>17</td></tr>
+    <tr><th>Gitter</th><th>Tæt</th><th>Spredt</th></tr>
+    <tr><td>18 × 18</td><td>8 rum · 15 % gang</td><td>7 rum · 36 % gang</td></tr>
+    <tr><td>24 × 24</td><td>13 rum · 14 %</td><td>7 rum · 37 %</td></tr>
+    <tr><td>30 × 30 (standard)</td><td>20 rum · 13 %</td><td>7 rum · 40 %</td></tr>
+    <tr><td>38 × 38</td><td>32 rum · 11 %</td><td>9 rum · 43 %</td></tr>
   </table>
+  <p class="note">Målt over 40 etager pr. felt, level 1, store rum, alle blindgyder væk.
+    <i>Spredt</i> står stille på syv rum, fordi det er dét XP-budgettet kræver på level 1
+    — generatoren lægger rum til, indtil det passer, og på et spredt layout er der ikke
+    grund til flere. <i>Tæt</i> fylder gitteret, og de rum der bliver til overs, står
+    tomme.</p>
   <p class="note">Sæt <code>seed</code> til et fast tal, så kan den samme etage
     genskabes — nyttigt hvis printet forsvinder.</p>
 

@@ -210,8 +210,12 @@
        væggene. Er der ikke plads til det hele, ryger XP-tallet først; det står
        alligevel i tabellen. Bogstavbredden er et skøn på 4,8 px ved 8,5 px skrift. */
     if (tall) {
-      var xpText = n(room.xp) + ' XP';
-      var tries = tag ? [tag + ' · ' + xpText, tag] : [xpText, ''];
+      /* Et tomt rum skriver «tom» og ikke «0 XP». Nul er et regnestykke;
+         tom er en oplysning om hvad der venter derinde. */
+      var xpText = room.xp > 0 ? n(room.xp) + ' XP' : 'tom';
+      var tries = tag
+        ? (room.xp > 0 ? [tag + ' · ' + xpText, tag] : [tag])
+        : [xpText, ''];
       var room_w = room.width * CELL - 2;
       var sub = '';
       for (var i = 0; i < tries.length; i++) {
@@ -261,6 +265,8 @@
     out.push(row('Bossen', n(xp.boss) + ' XP — én '
       + (TIER_DA[d.boss_fight] || d.boss_fight) + '-kamp'));
     out.push(row('Maks pr. rum', n(xp.cap) + ' XP'));
+    out.push(row('Kampe', xp.fights + ' rum med kamp i (bossen talt med) · '
+      + xp.empty + ' rum står tomme'));
     out.push(row('Lagt ud', n(xp.placed) + ' XP'
       + (xp.short ? ' — <b>' + n(xp.short) + ' XP kunne ikke ligge i rummene '
           + 'uden at bryde loftet.</b> Læg dem i gangene, eller sænk slack.' : '')));
@@ -274,6 +280,7 @@
       var note = [];
       if (d.boss && d.boss.id === id) note.push('BOSS + trappen ned');
       if (d.safe && d.safe.id === id) note.push('SAFE ROOM — står tomt');
+      else if (!room.xp) note.push('tomt');
       if (d.entrance && inRoom(room, d.entrance.row, d.entrance.col))
         note.push('indgang');
       out.push('<tr><td>' + id + '</td><td>' + room.width + ' × ' + room.height
