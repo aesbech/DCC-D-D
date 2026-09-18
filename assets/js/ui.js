@@ -115,7 +115,9 @@
     // 'skema' bumpes når itemformatet ændrer sig, ikke kun når datafilerne gør.
     // v6 slog magic items sammen med de andre items, og en gemt kopi fra før
     // det har dem liggende i en sideliste der ikke bruges længere.
-    return 'skema:7|dnd:' + (window.DND_ITEMS_VERSION || '?') +
+    // v8 gav kortene et srd-flag. Uden en ny seedning har en gemt kopi ikke
+    // flaget, og så ville «Kun kort fra SRD 5.2.1» stille gøre ingenting.
+    return 'skema:8|dnd:' + (window.DND_ITEMS_VERSION || '?') +
            '|class:' + (window.CLASS_CARDS_VERSION || '?') +
            '|magic:' + (window.MAGIC_ITEMS_VERSION || '?');
   }
@@ -290,7 +292,7 @@
         text: 'Magic item-chance pr. kort: ' +
               (chances.length === 1 ? chances[0] + ' %'
                                     : chances[0] + '–' + chances[chances.length - 1] + ' %') +
-              ' · ' + C.magicPoolFor(state.items, pack.filter).length + ' magic items i puljen'
+              ' · ' + C.magicPoolFor(state.items, pack.filter, state.cfg).length + ' magic items i puljen'
       }));
     }
     if (pack.note) {
@@ -539,6 +541,11 @@
                            'printes der med skalering — sæt den til 100 %, ikke "tilpas til side". ' +
                            'Kortene er 63 × 88 mm.' })
       ]));
+
+      /* Kortene gengiver tekst fra SRD 5.2.1, og CC BY 4.0 kræver kreditten
+         med. Der er ikke plads på et kort på 63 × 88 mm, så den står på arket
+         — én gang, med småt, i den ledige plads under de tre rækker. */
+      wrap.appendChild(el('div', { class: 'print-credit', text: C.SRD_NOTICE }));
     }
 
     state.results.forEach(function (box, idx) {
@@ -2034,6 +2041,14 @@
   $('#optNoDupes').addEventListener('change', function () {
     state.cfg.noDuplicates = this.checked; persist();
   });
+  /* Puljerne skifter størrelse med den her, så alt der tæller items skal
+     tegnes om — ellers står der et tal på generatorsiden der ikke passer. */
+  $('#optSrdOnly').addEventListener('change', function () {
+    state.cfg.srdOnly = this.checked;
+    renderGenControls(); renderPackList(); renderPackDetail();
+    renderItems(); renderMagicItems();
+    persist();
+  });
   $('#optFallback').addEventListener('change', function () {
     state.cfg.fallback = this.value; updateGenHint(); persist();
   });
@@ -2092,6 +2107,7 @@
 
   function renderAll() {
     $('#optNoDupes').checked = state.cfg.noDuplicates;
+    $('#optSrdOnly').checked = state.cfg.srdOnly !== false;
     $('#optFallback').value = state.cfg.fallback;
     renderScales();
     renderExcludeChips();

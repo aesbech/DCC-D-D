@@ -120,6 +120,28 @@ a{color:var(--accent-2)}
 #cOut td:last-child{width:46%;white-space:nowrap}
 #cOut tr:has(td:empty) td{border:0;padding:3px}
 
+/* Etagegeneratoren. Arket ligger på hvidt papir midt i en mørk side, så det
+   får en ramme og lidt luft — man skal kunne se hvor papiret slutter. */
+.gen{gap:12px 16px}
+.gen label{min-width:150px}
+.gen-actions{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 10px}
+.btn[disabled]{opacity:.45;cursor:default}
+.btn[disabled]:hover{border-color:var(--line);color:var(--text)}
+.sheet-wrap{
+  margin:18px 0 22px;border:1px solid var(--line);border-radius:10px;
+  overflow:hidden;background:#fff;
+}
+
+/* Kolofonen. Den står i HTML og ikke i JavaScript: en kredit der er et krav,
+   må ikke afhænge af at et script nåede at køre. */
+.colophon{
+  max-width:820px;margin:48px auto 0;padding:20px 20px 40px;
+  border-top:1px solid var(--line);
+  color:var(--muted);font-size:11.5px;line-height:1.6;
+}
+.colophon p{margin:0 0 8px;max-width:none}
+.colophon a{color:inherit}
+
 .topbar-right{color:var(--muted);font-size:12px}
 .save-state.flash{color:var(--ok)}
 
@@ -135,6 +157,9 @@ main{max-width:1180px;margin:0 auto;padding:20px}
 .spacer{flex:1}
 .hidden{display:none}
 .hint{color:var(--muted);font-size:13px;margin:8px 0 0}
+/* Står en forklaring mellem to felter, skal den have luft under sig — ellers
+   klæber den til etiketten på det næste felt og ligner en del af det. */
+.hint + .field,.hint + .check{margin-top:16px}
 .print-help{margin-top:12px;font-size:13px}
 .print-help summary{color:var(--accent-2);cursor:pointer;width:max-content}
 .print-help ul{margin:8px 0 0;padding-left:20px}
@@ -291,7 +316,7 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
 .box{background:var(--bg-2);border:1px solid var(--line);border-radius:var(--radius);padding:14px}
 /* Etiketten og målestregen hører til printet — på skærmen står pakkenavnet
    allerede i box-head, og en lineal på en skærm siger ingenting. */
-.box-label,.print-check,.cut-right{display:none}
+.box-label,.print-check,.print-credit,.cut-right{display:none}
 .box-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .box-title{font-weight:600}
 .box-sub{color:var(--muted);font-size:13px}
@@ -432,7 +457,22 @@ textarea{width:100%;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font
   @page{ size:A4 portrait; margin:6mm; }
 
   .topbar,.toast,.panel,.notice,#dataNotice,#itemPager,#magicPager,
-  .site-nav,.site-nav-wrap{display:none!important}
+  .site-nav,.site-nav-wrap,.colophon{display:none!important}
+
+  /* SRD-kreditten skal med på kortarket, for kortene gengiver SRD-tekst. Den
+     står med småt i den ledige plads under de tre rækker, sammen med
+     målestregen — ikke på kortene selv, der er der ikke plads. */
+  .print-credit{
+    display:block;
+    margin:1.5mm 0 0 6mm;max-width:190mm;
+    font-size:5.2pt;line-height:1.35;color:#555;
+  }
+
+  /* Dungeon-siden: når der trykkes Print, skal papiret være etagen og ikke
+     resten af siden. Arket har sin egen margen, så siden får ingen. */
+  body.printing-sheet .doc-main > *:not(#sheetWrap){display:none!important}
+  body.printing-sheet .doc-main,body.printing-sheet #sheetWrap{
+    margin:0;padding:0;border:0;border-radius:0}
   html,body{background:#fff;color:#000}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   main{max-width:none;margin:0;padding:0}

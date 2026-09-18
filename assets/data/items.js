@@ -1,5 +1,5 @@
 /* Auto-genereret fra dnd_items.xlsx. Redigér regnearket og kør scripts/import_xlsx.py igen. */
-window.DND_ITEMS_VERSION = "4eba91dc9580";
+window.DND_ITEMS_VERSION = "0e3e23f1a3f4";
 window.DND_ITEMS = [
  {
   "name": "Candle",
@@ -975,7 +975,8 @@ window.DND_ITEMS = [
    "Explosives"
   ],
   "desc": "As an action, you can either throw a grenade at a point up to 60 feet away or use a Grenade Launcher to propel the grenade to a point up to 1,000 feet away. The grenade explodes at that point, creating a particular effect in a 20-foot-radius Sphere. The area of the Sphere is Heavily Obscured by smoke for 1 minute. A strong wind (such as the Gust of Wind spell) disperses the smoke.",
-  "weight": 2
+  "weight": 2,
+  "srd": false
  },
  {
   "name": "Exotic Saddle",
@@ -1007,7 +1008,8 @@ window.DND_ITEMS = [
    "Explosives"
   ],
   "desc": "As an action, you can light a Bomb and throw it at a point up to 60 feet away, where it explodes. Each creature in a 5-foot-radius Sphere centered on that point makes a DC 12 Dexterity saving throw, taking 3d6 Fire damage on a failed save or half as much damage on a successful one.",
-  "weight": 1
+  "weight": 1,
+  "srd": false
  },
  {
   "name": "Magnifying Glass",
@@ -1074,7 +1076,8 @@ window.DND_ITEMS = [
    "Explosives"
   ],
   "desc": "An an action, you can light a Dynamite Stick and throw it at a point up to 60 feet away, where it explodes. Each creature in a 5-foot-radius Sphere centered on that point makes a DC 12 Dexterity saving throw, taking 3d6 Force damage on a failed save or half as much damage on a successful one. It takes 1 minute to bind two or more Dynamite Sticks together so they explode at the same time. Each stick after the first increases the damage by 1d6 (to a maximum of 10d6) and the effect’s radius by 5 feet (to a maximum of 20 feet). It takes 1 minute to rig dynamite with a longer fuse so it explodes after a longer period of time, such as 1 minute or 10 minutes.",
-  "weight": 1
+  "weight": 1,
+  "srd": false
  },
  {
   "name": "Fragmentation Grenade",
@@ -1090,7 +1093,8 @@ window.DND_ITEMS = [
    "Explosives"
   ],
   "desc": "As an action, you can either throw a grenade at a point up to 60 feet away or use a Grenade Launcher to propel the grenade to a point up to 1,000 feet away. The grenade explodes at that point, creating a particular effect in a 20-foot-radius Sphere. Each creature in the Sphere makes a DC 15 Dexterity saving throw, taking 17 (5d6) Piercing damage on a failed save or half as much damage on a successful one.",
-  "weight": 1
+  "weight": 1,
+  "srd": false
  },
  {
   "name": "Grenade Launcher",
@@ -1106,7 +1110,8 @@ window.DND_ITEMS = [
    "Explosives"
   ],
   "desc": "As an action, you can either throw a grenade at a point up to 60 feet away or use a Grenade Launcher to propel the grenade to a point up to 1,000 feet away. The grenade explodes at that point, creating a particular effect in a 20-foot-radius Sphere.",
-  "weight": 7
+  "weight": 7,
+  "srd": false
  },
  {
   "name": "Sling Bullets",
@@ -1171,7 +1176,8 @@ window.DND_ITEMS = [
    "Combat"
   ],
   "desc": "Futuristic firearms use Energy Cells that become depleted but could possibly be recharged with the proper equipment.",
-  "weight": 0.5
+  "weight": 0.5,
+  "srd": false
  },
  {
   "name": "Staff",
@@ -2330,7 +2336,8 @@ window.DND_ITEMS = [
   "desc": "Spiked armor is a rare type of medium armor made by dwarves. It consists of a leather coat and leggings covered with spikes that are usually made of metal.",
   "ac": "14 + Dex modifier (max 2)",
   "stealth": "Disadvantage",
-  "weight": 45
+  "weight": 45,
+  "srd": false
  },
  {
   "name": "Breastplate",
@@ -3788,6 +3795,7 @@ window.DND_ITEMS = [
    "Combat"
   ],
   "desc": "Crossbow bolts are used with a weapon that has the ammunition property to make a ranged attack. Each time you attack with the weapon, you expend one piece of ammunition. Drawing the ammunition from a quiver, case, or other container is part of the attack (you need a free hand to load a one-handed weapon). At the end of the battle, you can recover half your expended ammunition by taking a minute to search the battlefield. Sold in bundles of 20.",
-  "weight": 1.5
+  "weight": 1.5,
+  "srd": false
  }
 ];

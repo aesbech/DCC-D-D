@@ -1,5 +1,5 @@
 /* Auto-genereret fra spells.txt. Kør scripts/import_spells.py igen efter ændringer. */
-window.SPELLS_VERSION = "2a629f9c3f64";
+window.SPELLS_VERSION = "a670c6ac5062";
 window.SPELLS = [
  {
   "name": "Acid Splash",
@@ -201,7 +201,8 @@ window.SPELLS = [
    "Warlock",
    "Wizard"
   ],
-  "desc": "You try to temporarily sliver the mind of one creature you can see within range. The target must succeed on an Intelligence saving throw or take 1d6 Psychic damage and subtract 1d4 from the next saving throw it makes before the end of your next turn. Cantrip Upgrade. The damage increases by 1d6 when you reach levels 5 (2d6), 11 (3d6), and 17 (4d6)."
+  "desc": "You try to temporarily sliver the mind of one creature you can see within range. The target must succeed on an Intelligence saving throw or take 1d6 Psychic damage and subtract 1d4 from the next saving throw it makes before the end of your next turn. Cantrip Upgrade. The damage increases by 1d6 when you reach levels 5 (2d6), 11 (3d6), and 17 (4d6).",
+  "srd": false
  },
  {
   "name": "Minor Illusion",
@@ -423,7 +424,8 @@ window.SPELLS = [
    "Artificer",
    "Druid"
   ],
-  "desc": "You create a vine-like whip covered in thorns that lashes out at your command toward a creature in range. Make a melee spell attack against the target. On a hit, the target takes 1d6 Piercing damage, and if it is Large or smaller, you can pull it up to 10 feet closer to you. Cantrip Upgrade. The damage increases by 1d6 when you reach levels 5 (2d6), 11 (3d6), and 17 (4d6). * - (the stem of a plant with thorns)"
+  "desc": "You create a vine-like whip covered in thorns that lashes out at your command toward a creature in range. Make a melee spell attack against the target. On a hit, the target takes 1d6 Piercing damage, and if it is Large or smaller, you can pull it up to 10 feet closer to you. Cantrip Upgrade. The damage increases by 1d6 when you reach levels 5 (2d6), 11 (3d6), and 17 (4d6). * - (the stem of a plant with thorns)",
+  "srd": false
  },
  {
   "name": "Thunderclap",
@@ -460,7 +462,8 @@ window.SPELLS = [
    "Warlock",
    "Wizard"
   ],
-  "desc": "You point at one creature you can see within range, and the single chime of a dolorous bell is audible within 10 feet of the target. The target must succeed on a Wisdom saving throw or take 1d8 Necrotic damage. If the target is missing any of its Hit Points, it instead takes 1d12 Necrotic damage. Cantrip Upgrade. The damage increases by one die when you reach levels 5 (2d8 or 2d12), 11 (3d8 or 3d12), and 17 (4d8 or 4d12)."
+  "desc": "You point at one creature you can see within range, and the single chime of a dolorous bell is audible within 10 feet of the target. The target must succeed on a Wisdom saving throw or take 1d8 Necrotic damage. If the target is missing any of its Hit Points, it instead takes 1d12 Necrotic damage. Cantrip Upgrade. The damage increases by one die when you reach levels 5 (2d8 or 2d12), 11 (3d8 or 3d12), and 17 (4d8 or 4d12).",
+  "srd": false
  },
  {
   "name": "True Strike",
@@ -510,7 +513,8 @@ window.SPELLS = [
   "classes": [
    "Cleric"
   ],
-  "desc": "Burning radiance erupts from you in a 5-foot Emanation. Each creature of your choice that you can see in it must succeed on a Constitution saving throw or take 1d6 Radiant damage. Cantrip Upgrade. The damage increases by 1d6 when you reach levels 5 (2d6), 11 (3d6), and 17 (4d6). * - (a sunburst token)"
+  "desc": "Burning radiance erupts from you in a 5-foot Emanation. Each creature of your choice that you can see in it must succeed on a Constitution saving throw or take 1d6 Radiant damage. Cantrip Upgrade. The damage increases by 1d6 when you reach levels 5 (2d6), 11 (3d6), and 17 (4d6). * - (a sunburst token)",
+  "srd": false
  },
  {
   "name": "Animal Friendship",
@@ -542,7 +546,8 @@ window.SPELLS = [
   "classes": [
    "Warlock"
   ],
-  "desc": "Protective magical frost surrounds you. You gain 5 Temporary Hit Points. If a creature hits you with a melee attack roll before the spell ends, the creature takes 5 Cold damage. The spell ends early if you have no Temporary Hit Points. Using a Higher-Level Spell Slot. The Temporary Hit Points and the Cold damage both increase by 5 for each spell slot level above 1. * - (a shard of blue glass)"
+  "desc": "Protective magical frost surrounds you. You gain 5 Temporary Hit Points. If a creature hits you with a melee attack roll before the spell ends, the creature takes 5 Cold damage. The spell ends early if you have no Temporary Hit Points. Using a Higher-Level Spell Slot. The Temporary Hit Points and the Cold damage both increase by 5 for each spell slot level above 1. * - (a shard of blue glass)",
+  "srd": false
  },
  {
   "name": "Arms of Hadar",
@@ -557,7 +562,8 @@ window.SPELLS = [
   "classes": [
    "Warlock"
   ],
-  "desc": "Invoking Hadar, you cause tendrils to erupt from yourself. Each creature in a 10-foot Emanation originating from you makes a Strength saving throw. On a failed save, a target takes 2d6 Necrotic damage and can't take Reactions until the start of its next turn. On a successful save, a target takes half as much damage only. Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 1."
+  "desc": "Invoking Hadar, you cause tendrils to erupt from yourself. Each creature in a 10-foot Emanation originating from you makes a Strength saving throw. On a failed save, a target takes 2d6 Necrotic damage and can't take Reactions until the start of its next turn. On a successful save, a target takes half as much damage only. Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 1.",
+  "srd": false
  },
  {
   "name": "Burning Hands",
@@ -862,7 +868,8 @@ window.SPELLS = [
   "classes": [
    "Ranger"
   ],
-  "desc": "As you hit the creature, this spell creates a rain of thorns that sprouts from your Ranged weapon or ammunition. The target of the attack and each creature within 5 feet of it make a Dexterity saving throw, taking 1d10 Piercing damage on a failed save or half as much damage on a successful one. Using a Higher-Level Spell Slot. The damage increases by 1d10 for each spell slot level above 1. * - which you take immediately after hitting a creature with a Ranged weapon"
+  "desc": "As you hit the creature, this spell creates a rain of thorns that sprouts from your Ranged weapon or ammunition. The target of the attack and each creature within 5 feet of it make a Dexterity saving throw, taking 1d10 Piercing damage on a failed save or half as much damage on a successful one. Using a Higher-Level Spell Slot. The damage increases by 1d10 for each spell slot level above 1. * - which you take immediately after hitting a creature with a Ranged weapon",
+  "srd": false
  },
  {
   "name": "Healing Word",
@@ -1085,7 +1092,8 @@ window.SPELLS = [
   "classes": [
    "Paladin"
   ],
-  "desc": "Your strike rings with thunder that is audible within 300 feet of you, and the target takes an extra 2d6 Thunder damage from the attack. Additionally, if the target is a creature, it must succeed on a Strength saving throw or be pushed 10 feet away from you and have the Prone condition. Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 1. * - which you take immediately after hitting a target with a Melee weapon or an Unarmed Strike"
+  "desc": "Your strike rings with thunder that is audible within 300 feet of you, and the target takes an extra 2d6 Thunder damage from the attack. Additionally, if the target is a creature, it must succeed on a Strength saving throw or be pushed 10 feet away from you and have the Prone condition. Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 1. * - which you take immediately after hitting a target with a Melee weapon or an Unarmed Strike",
+  "srd": false
  },
  {
   "name": "Thunderwave",
@@ -1120,7 +1128,8 @@ window.SPELLS = [
    "Paladin",
    "Wizard"
   ],
-  "desc": "The target takes an extra 1d6 Necrotic damage from the attack, and it must succeed on a Wisdom saving throw or have the Frightened condition until the spell ends. At the end of each of its turns, the Frightened target repeats the save, ending the spell on itself on a success. Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 1. * - which you take immediately after hitting a creature with a Melee weapon or an Unarmed Strike"
+  "desc": "The target takes an extra 1d6 Necrotic damage from the attack, and it must succeed on a Wisdom saving throw or have the Frightened condition until the spell ends. At the end of each of its turns, the Frightened target repeats the save, ending the spell on itself on a success. Using a Higher-Level Spell Slot. The damage increases by 1d6 for each spell slot level above 1. * - which you take immediately after hitting a creature with a Melee weapon or an Unarmed Strike",
+  "srd": false
  },
  {
   "name": "Aid",
@@ -1175,7 +1184,8 @@ window.SPELLS = [
    "Sorcerer",
    "Wizard"
   ],
-  "desc": "Using a Higher-Level Spell Slot. The number of unexpended Hit Dice you can roll increases by one for each spell slot level above 2."
+  "desc": "Using a Higher-Level Spell Slot. The number of unexpended Hit Dice you can roll increases by one for each spell slot level above 2.",
+  "srd": false
  },
  {
   "name": "Barkskin",
@@ -1243,7 +1253,8 @@ window.SPELLS = [
   "classes": [
    "Ranger"
   ],
-  "desc": "You touch up to four nonmagical Arrows or Bolts and plant them in the ground in your space. Until the spell ends, the ammunition can't be physically uprooted, and whenever a creature other than you enters a space within 30 feet of the ammunition for the first time on a turn or ends its turn there, one piece of ammunition flies up to strike it. The creature must succeed on a Dexterity saving throw or take 2d4 Piercing damage. The piece of ammunition is then destroyed. The spell ends when none of the ammunition remains planted in the ground. When you cast this spell, you can designate any creatures you choose, and the spell ignores them. Using a Higher-Level Spell Slot. The amount of ammunition that can be affected increases by two for each spell slot level above 2. * - (four or more arrows or bolts)"
+  "desc": "You touch up to four nonmagical Arrows or Bolts and plant them in the ground in your space. Until the spell ends, the ammunition can't be physically uprooted, and whenever a creature other than you enters a space within 30 feet of the ammunition for the first time on a turn or ends its turn there, one piece of ammunition flies up to strike it. The creature must succeed on a Dexterity saving throw or take 2d4 Piercing damage. The piece of ammunition is then destroyed. The spell ends when none of the ammunition remains planted in the ground. When you cast this spell, you can designate any creatures you choose, and the spell ignores them. Using a Higher-Level Spell Slot. The amount of ammunition that can be affected increases by two for each spell slot level above 2. * - (four or more arrows or bolts)",
+  "srd": false
  },
  {
   "name": "Darkvision",
@@ -1604,7 +1615,8 @@ window.SPELLS = [
   "classes": [
    "Paladin"
   ],
-  "desc": "The target hit by the strike takes an extra 3d8 Radiant damage from the attack, and the target has the Blinded condition until the spell ends. At the end of each of its turns, the Blinded target makes a Constitution saving throw, ending the spell on itself on a success. Using a Higher-Level Spell Slot. The extra damage increases by 1d8 for each spell slot level above 3. * - which you take immediately after hitting a creature with a Melee weapon or an Unarmed Strike"
+  "desc": "The target hit by the strike takes an extra 3d8 Radiant damage from the attack, and the target has the Blinded condition until the spell ends. At the end of each of its turns, the Blinded target makes a Constitution saving throw, ending the spell on itself on a success. Using a Higher-Level Spell Slot. The extra damage increases by 1d8 for each spell slot level above 3. * - which you take immediately after hitting a creature with a Melee weapon or an Unarmed Strike",
+  "srd": false
  },
  {
   "name": "Blink",
@@ -1639,7 +1651,8 @@ window.SPELLS = [
    "Ranger",
    "Wizard"
   ],
-  "desc": "You brandish the weapon used to cast the spell and conjure similar spectral weapons (or ammunition appropriate to the weapon) that launch forward and then disappear. Each creature of your choice that you can see in a 60-foot Cone makes a Dexterity saving throw, taking 5d8 Force damage on a failed save or half as much damage on a successful one. Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 3. * - (a Melee or Ranged weapon worth at least 1 CP)"
+  "desc": "You brandish the weapon used to cast the spell and conjure similar spectral weapons (or ammunition appropriate to the weapon) that launch forward and then disappear. Each creature of your choice that you can see in a 60-foot Cone makes a Dexterity saving throw, taking 5d8 Force damage on a failed save or half as much damage on a successful one. Using a Higher-Level Spell Slot. The damage increases by 1d8 for each spell slot level above 3. * - (a Melee or Ranged weapon worth at least 1 CP)",
+  "srd": false
  },
  {
   "name": "Counterspell",
@@ -1751,7 +1764,8 @@ window.SPELLS = [
   "classes": [
    "Ranger"
   ],
-  "desc": "As your attack hits or misses the target, the weapon or ammunition you're using transforms into a lightning bolt. Instead of taking any damage or other effects from the attack, the target takes 4d8 Lightning damage on a hit or half as much damage on a miss. Each creature within 10 feet of the target then makes a Dexterity saving throw, taking 2d8 Lightning damage on a failed save or half as much damage on a successful one. The weapon or ammunition then returns to its normal form. Using a Higher-Level Spell Slot. The damage for both effects of the spell increases by 1d8 for each spell slot level above 3. * - which you take immediately after hitting or missing a target with a ranged attack using a weapon"
+  "desc": "As your attack hits or misses the target, the weapon or ammunition you're using transforms into a lightning bolt. Instead of taking any damage or other effects from the attack, the target takes 4d8 Lightning damage on a hit or half as much damage on a miss. Each creature within 10 feet of the target then makes a Dexterity saving throw, taking 2d8 Lightning damage on a failed save or half as much damage on a successful one. The weapon or ammunition then returns to its normal form. Using a Higher-Level Spell Slot. The damage for both effects of the spell increases by 1d8 for each spell slot level above 3. * - which you take immediately after hitting or missing a target with a ranged attack using a weapon",
+  "srd": false
  },
  {
   "name": "Lightning Bolt",
@@ -2204,7 +2218,8 @@ window.SPELLS = [
   "classes": [
    "Paladin"
   ],
-  "desc": "The target takes an extra 4d6 Psychic damage from the attack, and the target must succeed on a Wisdom saving throw or have the Stunned condition until the end of your next turn. Using a Higher-Level Spell Slot. The extra damage increases by 1d6 for each spell slot level above 4. * - which you take immediately after hitting a creature with a Melee weapon or an Unarmed Strike"
+  "desc": "The target takes an extra 4d6 Psychic damage from the attack, and the target must succeed on a Wisdom saving throw or have the Stunned condition until the end of your next turn. Using a Higher-Level Spell Slot. The extra damage increases by 1d6 for each spell slot level above 4. * - which you take immediately after hitting a creature with a Melee weapon or an Unarmed Strike",
+  "srd": false
  },
  {
   "name": "Stone Shape",
@@ -2303,7 +2318,8 @@ window.SPELLS = [
    "Warlock",
    "Wizard"
   ],
-  "desc": "You brandish the weapon used to cast the spell and choose a point within range. Hundreds of similar spectral weapons (or ammunition appropriate to the weapon) fall in a volley and then disappear. Each creature of your choice that you can see in a 40-foot-radius, 20-foot-high Cylinder centered on that point makes a Dexterity saving throw. A creature takes 8d8 Force damage on a failed save or half as much damage on a successful one. * - (a Melee or Ranged weapon worth at least 1 CP)"
+  "desc": "You brandish the weapon used to cast the spell and choose a point within range. Hundreds of similar spectral weapons (or ammunition appropriate to the weapon) fall in a volley and then disappear. Each creature of your choice that you can see in a 40-foot-radius, 20-foot-high Cylinder centered on that point makes a Dexterity saving throw. A creature takes 8d8 Force damage on a failed save or half as much damage on a successful one. * - (a Melee or Ranged weapon worth at least 1 CP)",
+  "srd": false
  },
  {
   "name": "Contagion",
@@ -2362,7 +2378,8 @@ window.SPELLS = [
    "Warlock",
    "Wizard"
   ],
-  "desc": "Destructive energy ripples outward from you in a 30-foot Emanation. Each creature you choose in the Emanation makes a Constitution saving throw. On a failed save, a target takes 5d6 Thunder damage and 5d6 Radiant or Necrotic damage (your choice) and has the Prone condition. On a successful save, a target takes half as much damage only."
+  "desc": "Destructive energy ripples outward from you in a 30-foot Emanation. Each creature you choose in the Emanation makes a Constitution saving throw. On a failed save, a target takes 5d6 Thunder damage and 5d6 Radiant or Necrotic damage (your choice) and has the Prone condition. On a successful save, a target takes half as much damage only.",
+  "srd": false
  },
  {
   "name": "Dream",
@@ -2594,7 +2611,8 @@ window.SPELLS = [
    "Sorcerer",
    "Wizard"
   ],
-  "desc": "You flourish the weapon used in the casting and then vanish to strike like the wind. Choose up to five creatures you can see within range. Make a melee spell attack against each target. On a hit, a target takes 6d10 Force damage. You then teleport to an unoccupied space you can see within 5 feet of one of the targets. * - (a Melee weapon worth 1+ SP)"
+  "desc": "You flourish the weapon used in the casting and then vanish to strike like the wind. Choose up to five creatures you can see within range. Make a melee spell attack against each target. On a hit, a target takes 6d10 Force damage. You then teleport to an unoccupied space you can see within 5 feet of one of the targets. * - (a Melee weapon worth 1+ SP)",
+  "srd": false
  },
  {
   "name": "Synaptic Static",
@@ -2612,7 +2630,8 @@ window.SPELLS = [
    "Warlock",
    "Wizard"
   ],
-  "desc": "You cause psychic energy to erupt at a point within range. Each creature in a 20-foot-radius Sphere centered on that point makes an Intelligence saving throw, taking 8d6 Psychic damage on a failed save or half as much damage on a successful one. On a failed save, a target also has muddled thoughts for 1 minute. During that time, it subtracts 1d6 from all its attack rolls and ability checks, as well as any Constitution saving throws to maintain Concentration. The target makes an Intelligence saving throw at the end of each of its turns, ending the effect on itself on a success."
+  "desc": "You cause psychic energy to erupt at a point within range. Each creature in a 20-foot-radius Sphere centered on that point makes an Intelligence saving throw, taking 8d6 Psychic damage on a failed save or half as much damage on a successful one. On a failed save, a target also has muddled thoughts for 1 minute. During that time, it subtracts 1d6 from all its attack rolls and ability checks, as well as any Constitution saving throws to maintain Concentration. The target makes an Intelligence saving throw at the end of each of its turns, ending the effect on itself on a success.",
+  "srd": false
  },
  {
   "name": "Teleportation Circle",
@@ -2903,7 +2922,8 @@ window.SPELLS = [
    "Warlock",
    "Wizard"
   ],
-  "desc": "The liquid in the cauldron duplicates the properties of a Common or an Uncommon potion of your choice (such as a Potion of Healing). As a Bonus Action, you or an ally can reach into the cauldron and withdraw one potion of that kind. The potion is contained in a vial that disappears when the potion is consumed. The cauldron can produce a number of these potions equal to your spellcasting ability modifier (minimum 1). When the last of these potions is withdrawn from the cauldron, the cauldron disappears, and the spell ends. Potions obtained from the cauldron that aren't consumed disappear when you cast this spell again. * - (a gilded ladle worth 500 + GP)"
+  "desc": "The liquid in the cauldron duplicates the properties of a Common or an Uncommon potion of your choice (such as a Potion of Healing). As a Bonus Action, you or an ally can reach into the cauldron and withdraw one potion of that kind. The potion is contained in a vial that disappears when the potion is consumed. The cauldron can produce a number of these potions equal to your spellcasting ability modifier (minimum 1). When the last of these potions is withdrawn from the cauldron, the cauldron disappears, and the spell ends. Potions obtained from the cauldron that aren't consumed disappear when you cast this spell again. * - (a gilded ladle worth 500 + GP)",
+  "srd": false
  },
  {
   "name": "Transport via Plants",
@@ -3116,7 +3136,8 @@ window.SPELLS = [
    "Bard",
    "Cleric"
   ],
-  "desc": "You fortify up to six creatures you can see within range. The spell bestows 120 Temporary Hit Points, which you divide among the spell's recipients."
+  "desc": "You fortify up to six creatures you can see within range. The spell bestows 120 Temporary Hit Points, which you divide among the spell's recipients.",
+  "srd": false
  },
  {
   "name": "Prismatic Spray",

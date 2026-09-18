@@ -35,6 +35,16 @@ window.LB = (function () {
      en vægt og en kortplads alle taler om det samme. */
   var MAGIC_CAT = 'Magic';
 
+  /* Kortenes regeltekst kommer fra SRD 5.2.1, der er frigivet under CC BY 4.0.
+     Licensen kræver denne sætning ordret, og SRD'en beder om at der ikke står
+     anden kredit til Wizards end netop den. Den står ét sted, så den ikke kan
+     nå at blive omskrevet i en af de tre-fire kopier den skal bruges i. */
+  var SRD_NOTICE = 'This work includes material from the System Reference '
+    + 'Document 5.2.1 ("SRD 5.2.1") by Wizards of the Coast LLC, available at '
+    + 'https://www.dndbeyond.com/srd. The SRD 5.2.1 is licensed under the '
+    + 'Creative Commons Attribution 4.0 International License, available at '
+    + 'https://creativecommons.org/licenses/by/4.0/legalcode.';
+
   function magicRarityLabel(key) {
     for (var i = 0; i < MAGIC_RARITIES.length; i++)
       if (MAGIC_RARITIES[i].key === key) return MAGIC_RARITIES[i].label;
@@ -531,9 +541,10 @@ window.LB = (function () {
     packs.forEach(function (p) { if (!p.weights) p.weights = {}; });
 
     return {
-      version: 9,
+      version: 10,
       scales: defaultScales(),
       noDuplicates: true,
+      srdOnly: true,
       fallback: 'nearest',
       excludeFromAll: ['Class', 'Feat', 'Skill', 'Perk'],
       magic: defaultMagic(),
@@ -853,7 +864,16 @@ window.LB = (function () {
       });
     }
 
-    cfg.version = 9;
+    /* v10 lagde et flag på de kort der gengiver regeltekst uden for SRD 5.2.1,
+       og slog dem fra som standard, så en side der deles med nogen er i orden
+       fra starten. En gemt opsætning er derimod et bord der kører: den får
+       flaget slået fra, så den beholder præcis de kort den havde i går. Vil
+       man have den sikre opsætning, står knappen under Indstillinger. */
+    if ((cfg.version || 0) < 10 && cfg.srdOnly === undefined) {
+      cfg.srdOnly = false;
+    }
+
+    cfg.version = 10;
     return cfg;
   }
 
@@ -949,7 +969,11 @@ window.LB = (function () {
                      'ac', 'strength', 'stealth', 'weight',
                      // Class-kort: kravet man skal opfylde, og kildens egen
                      // stikordsliste over hvad kortet gør.
-                     'prerequisite', 'summary'];
+                     'prerequisite', 'summary',
+                     // Sat af scripts/check_srd.py på kort hvis regeltekst
+                     // ikke står i SRD 5.2.1. Skal følge med hele vejen fra
+                     // datafilen til puljen, ellers kan den ikke filtreres.
+                     'srd'];
 
   function copyStats(from, to) {
     STAT_FIELDS.forEach(function (f) {
@@ -1067,6 +1091,18 @@ window.LB = (function () {
 
   /* Et tomt filter betyder "alt" — bortset fra kategorier på excludeFromAll,
      så Class-kort ikke lækker ind i Adventurer-pakken. */
+  /* Kort mærket `srd: false` gengiver regeltekst fra Player's Handbook eller
+     Dungeon Master's Guide. De må ikke ligge på en offentligt tilgængelig
+     side, men ved ens eget bord er de fine — derfor et flag og ikke en
+     sletning. Se LICENSE.md og docs/licens.md.
+
+     Standarden er til: en ny browser henter den sikre opsætning. Migreringen
+     slår den fra for dem der allerede har en gemt opsætning, så ingens eget
+     bord ændrer sig af at koden bliver opdateret. */
+  function srdOnly(cfg) {
+    return !cfg || cfg.srdOnly !== false;
+  }
+
   function poolFor(items, filter, cfg) {
     // Magi kan slås fra i ét greb under Indstillinger. Det er nemmere end at
     // gå seks pakkefiltre igennem, og pakkerne kan blive stående som de er.
@@ -1080,6 +1116,7 @@ window.LB = (function () {
       if (!i.rarity) return false;
       // Et item kan tages ud af spillet uden at blive slettet.
       if (i.enabled === false) return false;
+      if (srdOnly(cfg) && i.srd === false) return false;
       if (noMagic && i.category === MAGIC_CAT) return false;
       if (exclude.indexOf(i.category) >= 0) return false;
       if (cons === 'exclude' && i.consumable) return false;
@@ -1262,6 +1299,9 @@ window.LB = (function () {
     function ofLevel(strict) {
       return spells.filter(function (sp) {
         if (sp.level !== want) return false;
+        // Et scroll trykker spellens fulde tekst. Ligger den uden for SRD'en,
+        // gælder det samme her som for kortene selv.
+        if (srdOnly(cfg) && sp.srd === false) return false;
         if (strict && schools && schools.length && schools.indexOf(sp.school) < 0) return false;
         return true;
       });
@@ -1331,11 +1371,12 @@ window.LB = (function () {
   /* Magipuljen for et kort: alle magic items der matcher filterets krav om
      forbrugsvarer. Kategorier og tags i filteret gælder udstyrssiden — hvilke
      typer magi der må falde, styres af vægtene i trin 3. */
-  function magicPoolFor(items, filter) {
+  function magicPoolFor(items, filter, cfg) {
     var cons = (filter && filter.consumables) || 'all';
     return items.filter(function (i) {
       if (i.category !== MAGIC_CAT) return false;
       if (!i.rarity || i.enabled === false) return false;
+      if (srdOnly(cfg) && i.srd === false) return false;
       if (cons === 'exclude' && i.consumable) return false;
       if (cons === 'only' && !i.consumable) return false;
       return true;
@@ -1377,7 +1418,7 @@ window.LB = (function () {
 
       // Trin 1: bliver kortet magisk?
       var chance = magicOn ? magicChanceFor(pack, tierObj, c) : 0;
-      var mPool = chance > 0 ? magicPoolFor(items, f) : [];
+      var mPool = chance > 0 ? magicPoolFor(items, f, cfg) : [];
       var wantMagic = mPool.length && Math.random() * 100 < chance;
       // Et kort uden udstyr at trække — fx en plads der kun skal give magi —
       // bliver magisk uanset chancen, frem for at stå tomt.
@@ -1444,6 +1485,7 @@ window.LB = (function () {
         source: o.source || '',
         tags: tags,
         desc: o.desc || '',
+        srd: o.srd,
         // magi-specifikt
         attunement: !!o.attunement,
         typeLine: o.typeLine || '',
@@ -1477,7 +1519,7 @@ window.LB = (function () {
     MAGIC_RARITIES: MAGIC_RARITIES, MKEYS: MKEYS,
     magicRarityLabel: magicRarityLabel, magicToItems: magicToItems,
     emptyMagicDist: function () { return magicDist({}); },
-    magicTypesOf: magicTypesOf, MAGIC_CAT: MAGIC_CAT,
+    magicTypesOf: magicTypesOf, MAGIC_CAT: MAGIC_CAT, SRD_NOTICE: SRD_NOTICE,
     magicPoolFor: magicPoolFor, settingFor: settingFor,
     rarityLabel: rarityLabel,
     defaultConfig: defaultConfig,

@@ -1532,6 +1532,19 @@ sub dcc_xp {
   }
   $placed += $boss_xp;
 
+  # Afrundingen pr. rum kan lande et par XP ved siden af budgettet. Det er
+  # ligegyldigt i spil, men et budget på 1800 der står som 1801 ligner en fejl,
+  # så resten lægges på det største rum der har plads.
+  if ($left < 1 && $placed != $floor_xp) {
+    my $slop = $floor_xp - $placed;
+    my $big;
+    foreach $room (@rooms) {
+      next if ($room->{'xp'} + $slop < 0 || $room->{'xp'} + $slop > $cap);
+      $big = $room if (!$big || $room->{'area'} > $big->{'area'});
+    }
+    if ($big) { $big->{'xp'} += $slop; $placed = $floor_xp; }
+  }
+
   $dungeon->{'dcc_xp'} = {
     'need_each'  => $need,
     'need_party' => $need * $size,

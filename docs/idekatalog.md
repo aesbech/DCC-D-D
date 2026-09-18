@@ -230,6 +230,24 @@ Modstå fristelsen til at lave objekter ud af de her. De bliver dårligere af de
 
 # Del 5 — Dungeon'et
 
+## Hvor generatoren ligger nu
+
+Den findes to steder, med den samme logik i to sprog:
+
+- **Dungeon-siden** (`docs/dungeon.html` + `assets/js/dungeon.js`) kører i browseren. Man
+  vælger level, holdstørrelse, etagens form, og trykker Generér. Ud kommer et ark: kortet
+  som SVG på én A4 og rapporten på den næste. Det kan printes direkte eller hentes som én
+  HTML-fil der virker uden net.
+- **`tools/dungeon.pl`** gør det samme fra terminalen og skriver en GIF. Den er til når
+  man vil lave tyve etager i træk.
+
+Det samme seed giver **ikke** det samme kort de to steder — Perl og JavaScript har hver
+sin terning. Inden for hver af dem er et seed fuldstændig gentageligt, og det står øverst
+på arket, så en etage kan laves igen hvis printet forsvinder.
+
+Monstrene slås op i **SRD 5.2.1**, der ligger under Docs. Arket siger *hvor meget* der må
+stå i et rum, ikke *hvad*.
+
 ## donjon: hvad koden faktisk gør
 
 Du sendte kilden til `dungeon.pl`, og den afgør spørgsmålet. **Generatoren stokker ikke.**
@@ -562,7 +580,10 @@ Idéer der ikke er skrevet ind nogen steder endnu.
 - **En bedrift der afsløres halvt.** Systemet antyder at der er en præmie i nærheden —
   *«Der er en præmie i det her rum. Den er ikke til den forsigtige.»* — uden at sige
   hvilken. Det bryder ikke med at alt er skjult, men det gør et enkelt rum spændende.
-- **En stokketabel i generatoren.** `tools/dungeon.pl` ligger nu i repoet og giver
-  bossrum, safe room, to udveje ved trappen og et XP-budget pr. rum — men den siger
-  stadig ikke *hvad* der står i rummene. d12-tabellen ovenfor kunne skrives ind som en
-  kolonne i rapporten.
+- **En stokketabel i generatoren.** Etagegeneratoren giver bossrum, safe room, to udveje
+  ved trappen og et XP-budget pr. rum — men den siger stadig ikke *hvad* der står i
+  rummene. d12-tabellen ovenfor kunne skrives ind som en kolonne på arket.
+- **Monstre fra SRD'en direkte på arket.** SRD 5.2.1 ligger i Docs. Med CR og XP derfra
+  kunne hvert rums budget oversættes til et konkret forslag — «368 XP: fire hobgoblins
+  eller én ogre» — i stedet for et tal DM'en selv skal veksle. Samme data kunne på sigt
+  fodre kortene.
