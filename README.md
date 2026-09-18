@@ -1096,7 +1096,7 @@ en magi-fordeling giver artifacts vægt. `scale` er `gear`, `magic` eller `none`
 
 ## Dungeon-generatoren
 
-Etagerne laves to steder, af den samme kode i to sprog: `assets/js/dungeon.js` kører på
+Etagerne laves to steder, af den samme geometri i to sprog: `assets/js/dungeon.js` kører på
 [`docs/dungeon.html`](docs/dungeon.html) og giver et printbart ark, og `tools/dungeon.pl`
 gør det samme fra terminalen. Den er **donjons Random Dungeon Generator af drow**
 ([donjon.bin.sh](https://donjon.bin.sh/)), brugt og ændret under
@@ -1129,6 +1129,11 @@ Perl-udgaven skriver kortet som `<seed>.gif` og den samme rapport i terminalen, 
 mest til at lave mange etager i træk. **Det samme seed giver ikke det samme kort i de to
 udgaver** — Perl og JavaScript har hver sin `rand()`. Inden for hver af dem er et seed
 fuldstændig gentageligt.
+
+**De to er ikke længere ens.** Kan XP-budgettet ikke ligge i rummene, laver
+browserudgaven etagen om — først med flere rum på det samme gitter, og hjælper det ikke,
+med et større. Perl-scriptet skriver stadig bare hvor meget der mangler. Browserudgaven
+er den, der bliver vedligeholdt.
 
 Rummene er tegnet med `assets/js/dungeon-map.js`, som ikke hører til donjons kode.
 Arkets CSS kommer fra den samme fil som selve kortet, så det man ser på skærmen og det
