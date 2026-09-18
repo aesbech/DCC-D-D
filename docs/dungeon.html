@@ -190,9 +190,11 @@
         room_cap: val('gCap')
       });
 
+      /* Seedet skrives med vilje ikke tilbage i feltet. Gør man det, bliver
+         næste tryk på Generér den samme etage om igen, og det man som regel
+         vil, er en ny. Seedet står på arket. */
       out.innerHTML = DUNGEON.sheet(current);
       wrap.hidden = false;
-      document.getElementById('gSeed').value = seed;
       document.getElementById('gPrint').disabled = false;
       document.getElementById('gSave').disabled = false;
 
