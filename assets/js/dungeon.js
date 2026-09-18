@@ -804,29 +804,103 @@
     }
     cand.sort(function (a, b) { return a.dist - b.dist || a.room.id - b.room.id; });
 
-    /* Ét gennemløb, nærmest først. Der er sjældent mere end et par rum på en
-       etage der har én dør i forvejen, og de ligger hvor de ligger — som regel
-       langt ude. At mure en dør til i et rum tæt på indgangen giver et safe
-       room man faktisk kommer forbi, og det er hele pointen med det.
+    /* Ét gennemløb, nærmest først: rummet skæres ned til 3 × 3 med præcis én
+       dør. Tre gange tre er stort nok til at et hold på fire kan stå i det og
+       lille nok til at være et hul at trække sig ind i — og ved at skære til i
+       stedet for at lede efter et rum der allerede har den form, får man et
+       safe room tæt på indgangen i stedet for et tilfældigt sted langt ude.
 
-       Tilmuringen skal stadig holde bagefter: hele etagen skal kunne nås,
-       bossen skal beholde sine to udveje, og rummet må ikke ende bag bossen —
-       den dør man murer til, kan være netop den, der gjorde vejen udenom
-       mulig. */
+       Det skal stadig holde bagefter: hele etagen skal kunne nås, bossen skal
+       beholde sine to udveje, og rummet må ikke ende bag bossen — den væg man
+       lukker, kan være netop den, der gjorde vejen udenom mulig. */
     for (var i = 0; i < cand.length; i++) {
-      var pick = cand[i].room;
-      if (doorCount(d, pick) === 1) {
-        d.safe = { id: pick.id, sealed: 0, dist: cand[i].dist };
-        return;
-      }
-      var n = sealDoor(d, pick, (function (room) {
-        return function () { return reachableWithoutBoss(d, room); };
-      }(pick)));
+      var n = carveSafe(d, cand[i].room);
       if (n) {
-        d.safe = { id: pick.id, sealed: n, dist: cand[i].dist };
+        d.safe = { id: cand[i].room.id, sealed: n.sealed, dist: cand[i].dist,
+                   door: n.door };
         return;
       }
     }
+  }
+
+  /* Døren ind til safe roomet: enten låst eller ulåst, aldrig en fælde og
+     aldrig et faldgitter. Et hvilested skal man kunne lukke efter sig, ikke
+     blive fanget i eller såret af. */
+  function safeDoorType(d) {
+    return (d.rand() < 0.5) ? LOCKED : DOOR;
+  }
+
+  /* Skær rummet ned til et 3 × 3-hjørne med én dør. Prøver hvert muligt hjørne
+     og lader det stå ved det første der holder. Alt gemmes før det ændres, så
+     et mislykket forsøg kan lægges præcis tilbage. */
+  function carveSafe(d, room) {
+    var keeps = [];
+    for (var r = room.north; r + 2 <= room.south; r += 2)
+      for (var c = room.west; c + 2 <= room.east; c += 2) keeps.push([r, c]);
+    if (!keeps.length) return null;               // rummet er smallere end 3
+
+    for (var k = 0; k < keeps.length; k++) {
+      var got = tryCarve(d, room, keeps[k][0], keeps[k][1]);
+      if (got) return got;
+    }
+    return null;
+  }
+
+  function tryCarve(d, room, r0, c0) {
+    var save = [], r, c;
+    function set(rr, cc, v) { save.push([rr, cc, d.cell[rr][cc]]); d.cell[rr][cc] = v; }
+    function undo() { for (var i = save.length - 1; i >= 0; i--) d.cell[save[i][0]][save[i][1]] = save[i][2]; }
+
+    // Rummets celler uden for hjørnet bliver til klippe.
+    for (r = room.north; r <= room.south; r++)
+      for (c = room.west; c <= room.east; c++)
+        if (r < r0 || r > r0 + 2 || c < c0 || c > c0 + 2) set(r, c, NOTHING);
+
+    /* Dørene: kun dem der ligger op ad det, der bliver stående, kan overleve.
+       Af dem beholdes én — den der ligger tættest på indgangen. */
+    var cells = doorCells(room), live = [], dead = [];
+    cells.forEach(function (p) {
+      var rr = p[0], cc = p[1];
+      var touches = (rr === r0 - 1 && cc >= c0 && cc <= c0 + 2)
+                 || (rr === r0 + 3 && cc >= c0 && cc <= c0 + 2)
+                 || (cc === c0 - 1 && rr >= r0 && rr <= r0 + 2)
+                 || (cc === c0 + 3 && rr >= r0 && rr <= r0 + 2);
+      (touches && (d.cell[rr][cc] & OPENSPACE) ? live : dead).push(p);
+    });
+    if (!live.length) { undo(); return null; }
+
+    var fromDoor = dccBfs(d, d.entrance.row, d.entrance.col);
+    live.sort(function (a, b) {
+      var x = fromDoor[a[0] + ',' + a[1]], y = fromDoor[b[0] + ',' + b[1]];
+      return (x === undefined ? 1e9 : x) - (y === undefined ? 1e9 : y);
+    });
+    var keep = live[0];
+    live.slice(1).concat(dead).forEach(function (p) { set(p[0], p[1], NOTHING); });
+
+    // Døren skal være en dør: låst eller ulåst.
+    var t = safeDoorType(d);
+    set(keep[0], keep[1], (d.cell[keep[0]][keep[1]] & OPENSPACE) | t);
+
+    var sealed = cells.length - 1;
+    var box = { north: r0, south: r0 + 2, west: c0, east: c0 + 2, id: room.id };
+    if (!allReachable(d) || (d.boss && doorCount(d, d.room[d.boss.id]) < 2)
+        || !reachableWithoutBoss(d, box)) {
+      undo();
+      return null;
+    }
+
+    // Det holdt. Nu rettes rummets papirer til.
+    live.slice(1).concat(dead).forEach(function (p) { forgetDoor(d, p[0], p[1]); });
+    d.door.forEach(function (door) {
+      if (door.row !== keep[0] || door.col !== keep[1]) return;
+      door.key = DOOR_KIND[t].key;
+      door.type = DOOR_KIND[t].type;
+    });
+    room.north = r0; room.south = r0 + 2;
+    room.west = c0; room.east = c0 + 2;
+    room.row = r0; room.col = c0;
+    room.height = 3; room.width = 3; room.area = 9;
+    return { sealed: sealed, door: DOOR_KIND[t].type };
   }
 
   /* Bossrummet skal have døre, ikke huller i væggen. En åben portal er ikke en

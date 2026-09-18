@@ -133,13 +133,16 @@
     safe room er tonede, og nøglen under kortet viser kun de dørtyper der faktisk er
     på etagen. Rapporten siger hvor mange skridt der er til safe roomet og til bossen,
     så du kan se hvor langt inde de ligger.</p>
-  <p>XP-tallet pr. rum er <b>et budget, ikke en liste over monstre</b>. 157 XP er for
-    eksempel seks CR 1/8 eller tre CR 1/4 — du vælger selv hvad der står i rummet.
-    Rum der står <b>tom</b> har ingen kamp; det er ikke et hul i budgettet, men plads
+  <p>I <b>Noter</b> står et forslag til hvad der er i rummet — navne og antal, valgt
+    så de bruger rummets budget uden at gå over. Det er et forslag: byt ud som du vil,
+    <b>XP-tallet er facit</b>. Skabningerne slås op i
+    <a href="SRD_CC_v5.2.1.pdf">SRD 5.2.1</a>, der ligger under Docs.</p>
+  <p>Rum der står <b>tom</b> har ingen kamp; det er ikke et hul i budgettet, men plads
     til alt det andet. Safe room står altid tomt, og bossen er præcis én kamp af den
-    slags du har valgt.
-    Monstrene kan slås op i <a href="SRD_CC_v5.2.1.pdf">SRD 5.2.1</a>, der ligger
-    under Docs.</p>
+    slags du har valgt.</p>
+  <p class="note">Sammensætningen kender XP og skabningens slags — ikke hvor den bor.
+    Der kan godt lande en fiskestime i et tørt rum. Det er et af de steder, hvor du
+    bytter ud.</p>
   <p class="note">Kan budgettet ikke ligge i rummene uden at bryde loftet, <b>laver
     generatoren etagen om</b>: først med flere rum på det samme gitter, og hjælper det
     ikke — fordi de nye rum lander oven i dem der allerede står — med et større gitter.
@@ -147,7 +150,9 @@
     ingen, der mangler budget; gitteret måtte vokse i 22 af dem. Går det helt i stå,
     er kravet umuligt frem for svært, og så er svaret at sænke slack.</p>
 
+  <script src="../assets/data/monsters.js"></script>
   <script src="../assets/js/dungeon.js"></script>
+  <script src="../assets/js/encounters.js"></script>
   <script src="../assets/js/dungeon-map.js"></script>
   <script>
   (function () {
@@ -189,6 +194,12 @@
         boss_fight: val('gBoss'),
         room_cap: val('gCap')
       });
+
+      /* Fyld rummene ud med skabninger fra SRD'en. Etagen er den samme uanset
+         om den bliver stokket — det er kun noter der lægges oveni. */
+      if (window.ENCOUNTERS && window.MONSTERS) {
+        ENCOUNTERS.stock(current, window.MONSTERS);
+      }
 
       /* Seedet skrives med vilje ikke tilbage i feltet. Gør man det, bliver
          næste tryk på Generér den samme etage om igen, og det man som regel
@@ -273,15 +284,17 @@
     <tr>
       <td><b>Intet sted at puste ud</b> — og da der kom et, lå det tæt på bossen, hvor
         man ikke har brug for det, og nogle gange bag den.</td>
-      <td>Ét rum er <b>safe room</b>: præcis én dør, så man kun kan angribes fra én
-        retning, og det står tomt. Det vælges <b>så tæt på indgangen som muligt</b>, og
+      <td>Ét rum er <b>safe room</b>: skåret ned til <b>3 × 3 felter</b> med
+        <b>præcis én dør</b>, der altid er en rigtig dør — låst eller ulåst, aldrig en
+        fælde og aldrig et faldgitter. Et hvilested skal man kunne lukke efter sig, ikke
+        blive fanget i. Rummet står tomt. Det vælges <b>så tæt på indgangen som muligt</b>, og
         <b>vejen derhen går aldrig gennem bossrummet</b> — et hvilested man skal slå
         bossen for at nå er ikke et hvilested. Findes der ikke et rum med én dør, mures
-        døre til i et andet, men kun hvis hele etagen stadig kan nås, bossrummet beholder
-        sine to udveje, og rummet stadig kan nås udenom. Målt over 600 etager lykkedes
-        det 571 gange, og ingen af dem lå bag bossen; resten siger arket til om. Arket
-        siger også hvor mange skridt der er derhen — i snit halvt så langt inde som
-        bossen.</td>
+        resten af rummet til klippe. Det sker kun hvis hele etagen stadig kan nås,
+        bossrummet beholder sine to udveje, og rummet stadig kan nås udenom. Målt over
+        600 etager lykkedes det 567 gange, alle 3 × 3 med én dør, og ingen af dem lå
+        bag bossen; resten siger arket til om. Arket siger også hvor mange skridt der er
+        derhen — i snit en tredjedel af vejen ud, mod bossens fulde længde.</td>
     </tr>
     <tr>
       <td><b>Ingen styring på XP.</b> Holdet skulle støvsuge etagen for at stige.</td>
@@ -301,6 +314,17 @@
         hård som den første i alle sammen. <b>Resten står tomme</b>, og det er meningen:
         et tomt rum er et sted at ånde, en skat, en fælde eller en samtale. På level 1
         bliver det seks rum med kamp og ni tomme.</td>
+    </tr>
+    <tr>
+      <td><b>Budgettet sagde hvor meget, ikke hvad.</b> 307 XP er et tal, man selv
+        skulle veksle til monstre, rum for rum.</td>
+      <td>Rummene fyldes ud med skabninger fra <b>SRD 5.2.1</b> efter SRD'ens egne
+        regler: hver skabning har en XP-værdi, og der bruges så meget af budgettet som
+        muligt uden at gå over. Målt over 400 etager bruges <b>99 %</b> af budgettet, og
+        intet rum går over. SRD'ens ene advarsel — højst to skabninger pr. karakter —
+        er loftet. Etagen bygges over én slags skabning, så goblins og worgs hører
+        sammen, men budgettet vinder over temaet, hvis der ikke er noget stort nok.
+        <b>Forslagene står i Noter og er forslag</b>; XP-tallet er facit.</td>
     </tr>
     <tr>
       <td><b>Etagen kunne være for lille til budgettet.</b> Et loft pr. rum gange

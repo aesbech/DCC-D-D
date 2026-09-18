@@ -254,13 +254,12 @@
       ? 'inde i rum ' + d.boss.id + ', i den ende der ligger længst fra indgangen'
       : 'ingen'));
     out.push(row('Safe room', d.safe
-      ? 'rum ' + d.safe.id + ', én dør ind og ud'
-        + (d.safe.sealed ? ' (' + d.safe.sealed + ' dør'
-            + (d.safe.sealed > 1 ? 'e' : '') + ' muret til)' : '')
+      ? 'rum ' + d.safe.id + ', 3 × 3 felter med én '
+        + esc(String(d.safe.door || 'dør')).toLowerCase()
         + ' · ' + d.safe.dist + ' skridt fra indgangen, og vejen derhen går '
         + 'ikke gennem bossrummet'
-      : '<b>ingen</b> — intet rum kunne lukkes ned til én dør uden at spærre '
-        + 'etagen eller havne bag bossen'));
+      : '<b>ingen</b> — intet rum kunne skæres ned til 3 × 3 med én dør uden '
+        + 'at spærre etagen eller havne bag bossen'));
 
     out.push(gap());
     out.push(row('XP-budget', xp.size + ' spillere på level ' + xp.level
@@ -274,6 +273,13 @@
     out.push(row('Maks pr. rum', n(xp.cap) + ' XP'));
     out.push(row('Kampe', xp.fights + ' rum med kamp i (bossen talt med) · '
       + xp.empty + ' rum står tomme'));
+    if (d.stocked) {
+      out.push(row('Skabninger', (d.stocked.theme
+          ? 'etagen er bygget over <b>' + esc(d.stocked.theme) + '</b>, '
+          : '')
+        + 'højst ' + d.stocked.max + ' pr. rum — to pr. karakter, som SRD’en '
+        + 'anbefaler. Forslagene i Noter er forslag; XP-tallet er facit.'));
+    }
     out.push(row('Lagt ud', n(xp.placed) + ' XP'
       + (xp.short ? ' — <b>' + n(xp.short) + ' XP kunne ikke ligge i rummene '
           + 'uden at bryde loftet.</b> Læg dem i gangene, eller sænk slack.' : '')));
@@ -285,11 +291,18 @@
       var room = d.room[id];
       if (!room) continue;
       var note = [];
-      if (d.boss && d.boss.id === id) note.push('BOSS + trappen ned');
-      if (d.safe && d.safe.id === id) note.push('SAFE ROOM — står tomt');
+      if (d.boss && d.boss.id === id) note.push('<b>BOSS</b> + trappen ned');
+      if (d.safe && d.safe.id === id) note.push('<b>SAFE ROOM</b> — står tomt');
       else if (!room.xp) note.push('tomt');
       if (d.entrance && inRoom(room, d.entrance.row, d.entrance.col))
         note.push('indgang');
+      /* Forslaget til hvad der står i rummet. Det er et forslag — DM'en bytter
+         ud som hun vil, og XP-tallet ved siden af er stadig facit. */
+      if (room.encounter && room.encounter.parts.length) {
+        note.push(room.encounter.parts.map(function (p) {
+          return p.n + ' × ' + esc(p.name);
+        }).join(', '));
+      }
       out.push('<tr><td>' + id + '</td><td>' + room.width + ' × ' + room.height
         + '</td><td>' + doorsOf(d, room) + '</td><td>' + n(room.xp)
         + '</td><td>' + note.join(', ') + '</td></tr>');
