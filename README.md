@@ -1135,6 +1135,13 @@ browserudgaven etagen om — først med flere rum på det samme gitter, og hjæl
 med et større. Perl-scriptet skriver stadig bare hvor meget der mangler. Browserudgaven
 er den, der bliver vedligeholdt.
 
+**Rummene bliver fyldt ud.** `assets/js/encounters.js` foreslår hvad der står i hvert
+rum, efter SRD 5.2.1's egne regler for encounters: hver skabning har en XP-værdi, og
+der bruges så meget af rummets budget som muligt uden at gå over, med højst to
+skabninger pr. karakter. Skabningerne er trukket ud af SRD-PDF'en med
+`scripts/import_monsters.py`. Forslagene står i rapportens Noter-kolonne og er forslag
+— XP-tallet er facit.
+
 Rummene er tegnet med `assets/js/dungeon-map.js`, som ikke hører til donjons kode.
 Arkets CSS kommer fra den samme fil som selve kortet, så det man ser på skærmen og det
 man har på papiret ikke kan komme fra hinanden.
@@ -1208,6 +1215,8 @@ assets/js/core.js              datamodel, prisparsing, import, trækning
 assets/js/ui.js                UI og hændelser
 assets/js/dungeon.js           etagegeneratoren
 assets/js/dungeon-map.js       etagens kort og rapport som printbart ark
+assets/js/encounters.js        fylder rummene med skabninger fra SRD'en
+assets/data/monsters.js        SRD 5.2.1's skabninger med CR og XP
 assets/data/items.js           items fra regnearket
 assets/data/class-cards.js     Class-pakkens indhold (genereret)
 assets/data/magic-items.js     magic items
@@ -1215,6 +1224,7 @@ scripts/import_xlsx.py         regneark → items.js
 scripts/import_magic.py        magic_items.txt → magic-items.js
 scripts/import_class_cards.py  feats.txt + systematiske kort → class-cards.js
 scripts/check_srd.py           hvilke kort ligger uden for SRD 5.2.1?
+scripts/import_monsters.py     SRD-PDF'en → monsters.js
 data/dnd_items.xlsx            kilderegnearket
 data/magic_items.txt           kildeliste over magic items
 data/feats.txt                 kildeliste over feats

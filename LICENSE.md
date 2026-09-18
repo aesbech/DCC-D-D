@@ -10,6 +10,7 @@ ikke selv har.
 | Generatoren, siderne, korttyperne, bedrifterne, etagetilføjelserne | DCC-D-D | Vores eget. Ingen licens givet — skriv, hvis du vil bruge det |
 | Kortgeometrien i `tools/dungeon.pl` og `assets/js/dungeon.js` | drow, donjon.bin.sh | CC BY-NC 3.0 — **ikke kommerciel brug** |
 | Spells, magic items, udstyr og feats i `assets/data/` | Wizards of the Coast | CC BY 4.0, **men kun den del der står i SRD 5.2.1** |
+| Skabningerne i `assets/data/monsters.js` | Wizards of the Coast | CC BY 4.0 — trukket direkte ud af SRD 5.2.1, så her er alt dækket |
 
 ## SRD 5.2.1 — den påkrævede kredit
 
