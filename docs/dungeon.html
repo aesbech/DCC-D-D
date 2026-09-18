@@ -131,7 +131,8 @@
   <p>Kortet har ét felt pr. fem fod, så bevægelse kan tælles direkte på papiret.
     Rummene er nummererede, og under nummeret står rummets XP-budget. Bossrummet og
     safe room er tonede, og nøglen under kortet viser kun de dørtyper der faktisk er
-    på etagen.</p>
+    på etagen. Rapporten siger hvor mange skridt der er til safe roomet og til bossen,
+    så du kan se hvor langt inde de ligger.</p>
   <p>XP-tallet pr. rum er <b>et budget, ikke en liste over monstre</b>. 157 XP er for
     eksempel seks CR 1/8 eller tre CR 1/4 — du vælger selv hvad der står i rummet.
     Rum der står <b>tom</b> har ingen kamp; det er ikke et hul i budgettet, men plads
@@ -260,28 +261,44 @@
         ned.</td>
     </tr>
     <tr>
-      <td><b>Intet sted at puste ud.</b></td>
+      <td><b>Man kunne slentre ind til bossen.</b> Døren ind var lige så tit en åben
+        portal som noget andet — donjons tabel giver 15 låste ud af 110.</td>
+      <td>Bossrummets døre rulles om: <b>ingen åbne portaler, og 55 ud af 100 låste</b>.
+        Målt over 600 etager blev 56 % af dem låst. Hemmelige døre er med vilje ikke
+        med — trappen ned står i bossrummet, så et rum man kun finder ved et heldigt
+        tjek kan spærre for hele etagen.</td>
+    </tr>
+    <tr>
+      <td><b>Intet sted at puste ud</b> — og da der kom et, lå det tæt på bossen, hvor
+        man ikke har brug for det, og nogle gange bag den.</td>
       <td>Ét rum er <b>safe room</b>: præcis én dør, så man kun kan angribes fra én
-        retning. Det vælges så tæt på bossrummet som muligt og står tomt. Findes der ikke
-        et rum med én dør, mures døre til i et andet — men kun hvis hele etagen stadig
-        kan nås bagefter, og bossrummet beholder sine to udveje. Over 1000 etager lykkedes
-        det 990 gange; resten siger arket til om.</td>
+        retning, og det står tomt. Det vælges <b>så tæt på indgangen som muligt</b>, og
+        <b>vejen derhen går aldrig gennem bossrummet</b> — et hvilested man skal slå
+        bossen for at nå er ikke et hvilested. Findes der ikke et rum med én dør, mures
+        døre til i et andet, men kun hvis hele etagen stadig kan nås, bossrummet beholder
+        sine to udveje, og rummet stadig kan nås udenom. Målt over 600 etager lykkedes
+        det 571 gange, og ingen af dem lå bag bossen; resten siger arket til om. Arket
+        siger også hvor mange skridt der er derhen — i snit halvt så langt inde som
+        bossen.</td>
     </tr>
     <tr>
       <td><b>Ingen styring på XP.</b> Holdet skulle støvsuge etagen for at stige.</td>
       <td>Etagen får <code>party_size × XP-til-næste-level × xp_slack</code>.
         <b>Bossen er præcis én High-kamp</b> efter tabellen nedenfor, og intet rum må være
-        hårdere end det. Resten deles ud efter rummenes areal, og det et rum ikke kan
-        rumme uden at bryde loftet, skæres af og fordeles til de andre. Med slack på 1,5
-        kan de springe en tredjedel over og stadig stige et level.</td>
+        hårdere end det. Med slack på 1,5 kan de springe en tredjedel over og stadig
+        stige et level.</td>
     </tr>
     <tr>
-      <td><b>Budgettet blev smurt tyndt ud.</b> Delte man 1800 XP mellem tyve rum, fik
-        hvert af dem halvtreds — og så var der ikke én rigtig kamp på etagen.</td>
+      <td><b>Budgettet blev smurt tyndt ud — og efter rummenes areal.</b> Delte man
+        1800 XP mellem tyve rum, fik hvert af dem halvtreds. Og et stort rum er ikke en
+        svær kamp: seks goblins i et kosteskab er værre end seks goblins i en hal.</td>
       <td>Et rum med kamp i får <b>mindst en Low-kamp</b> efter tabellen nedenfor, og
-        der bruges kun så mange rum, som budgettet rækker til. <b>Resten står tomme</b>,
-        og det er meningen: et tomt rum er et sted at ånde, en skat, en fælde eller en
-        samtale. På level 1 bliver det otte rum med kamp og godt ti tomme.</td>
+        der bruges kun så mange rum, som budgettet rækker til. Det der er tilbage ud over
+        den bund, lægges oveni <b>efter afstanden fra indgangen</b>, så kampene vokser
+        jo længere inde man er. Målt over 600 etager er den sidste kamp mindst lige så
+        hård som den første i alle sammen. <b>Resten står tomme</b>, og det er meningen:
+        et tomt rum er et sted at ånde, en skat, en fælde eller en samtale. På level 1
+        bliver det seks rum med kamp og ni tomme.</td>
     </tr>
     <tr>
       <td><b>Etagen kunne være for lille til budgettet.</b> Et loft pr. rum gange

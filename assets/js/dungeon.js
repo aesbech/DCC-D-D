@@ -216,6 +216,9 @@
     cleanDungeon(d);
     dccBossExit(d);
     dccSafeRoom(d);
+    /* Efter safe roomet: tilmuringen dér kan fjerne en af bossens døre, og så
+       skulle den alligevel rulles om. */
+    dccBossDoors(d);
     dccXp(d);
     return d;
   }
@@ -614,8 +617,15 @@
     d.entrance = s;
   }
 
-  function dccBfs(d, r0, c0) {
+  /* Skridt gennem åbne felter. `avoid` er et rum man ikke må gå igennem —
+     bruges til at finde ud af, hvad der kun kan nås ved at gå gennem bossen. */
+  function dccBfs(d, r0, c0, avoid) {
     var dist = {}, queue = [[r0, c0]], head = 0;
+    function blocked(r, c) {
+      return avoid && r >= avoid.north && r <= avoid.south
+                   && c >= avoid.west && c <= avoid.east;
+    }
+    if (blocked(r0, c0)) return dist;
     dist[r0 + ',' + c0] = 0;
     while (head < queue.length) {
       var node = queue[head++];
@@ -624,6 +634,7 @@
         var nr = r + di[DIRS[k]], nc = c + dj[DIRS[k]];
         if (nr < 0 || nr > d.n_rows || nc < 0 || nc > d.n_cols) continue;
         if (!(d.cell[nr][nc] & OPENSPACE)) continue;
+        if (blocked(nr, nc)) continue;
         var key = nr + ',' + nc;
         if (dist[key] !== undefined) continue;
         dist[key] = dist[r + ',' + c] + 1;
@@ -676,7 +687,7 @@
     if (!boss) boss = fallback;
     if (!boss) return;
 
-    d.boss = { id: boss.id, doors: doorCount(d, boss) };
+    d.boss = { id: boss.id, doors: doorCount(d, boss), dist: Math.max(0, bossDist) };
 
     var sr = boss.north, sc = boss.west, best = -1;
     for (var r = boss.north; r <= boss.south; r++) {
@@ -708,12 +719,28 @@
     return true;
   }
 
-  function sealOk(d) {
+  function sealOk(d, extra) {
     if (!allReachable(d)) return false;
+    if (extra && !extra()) return false;
     if (!d.boss) return true;
     var boss = d.room[d.boss.id];
     if (!boss) return true;
     return doorCount(d, boss) >= 2;
+  }
+
+  /* Kan man nå rummet uden at gå gennem bossrummet? Et safe room bag bossen
+     er ikke et safe room — så skal man slå bossen for at få lov at hvile. */
+  function roomCell(room) {
+    return Math.floor((room.north + room.south) / 2) + ','
+         + Math.floor((room.west + room.east) / 2);
+  }
+
+  function reachableWithoutBoss(d, room) {
+    if (!d.entrance) return false;
+    var boss = d.boss ? d.room[d.boss.id] : null;
+    if (boss && room.id === boss.id) return false;
+    var dist = dccBfs(d, d.entrance.row, d.entrance.col, boss);
+    return dist[roomCell(room)] !== undefined;
   }
 
   function forgetDoor(d, r, c) {
@@ -732,7 +759,7 @@
 
   /* Mur til én ad gangen indtil der er én dør tilbage. Dørlisterne røres først
      når det er lykkedes, så fortrydelse blot er at lægge felterne tilbage. */
-  function sealDoor(d, room) {
+  function sealDoor(d, room, extra) {
     var doors = doorCells(room);
     if (doors.length < 2) return 0;
     var sealed = [], i;
@@ -742,7 +769,7 @@
       var r = doors[i][0], c = doors[i][1];
       var save = d.cell[r][c];
       d.cell[r][c] = NOTHING;
-      if (sealOk(d)) sealed.push([r, c, save]);
+      if (sealOk(d, extra)) sealed.push([r, c, save]);
       else d.cell[r][c] = save;
     }
     if (doors.length - sealed.length === 1) {
@@ -753,37 +780,102 @@
     return 0;
   }
 
+  /* Safe roomet skal ligge tæt på indgangen, ikke tæt på bossen. Man har brug
+     for et sted at samle sig på vej ind, og et rum man først når efter at have
+     kæmpet sig gennem hele etagen er et hvilested man aldrig bruger.
+
+     Og vejen derhen må aldrig gå gennem bossrummet. Et safe room bag bossen er
+     ikke et safe room; så skal man slå bossen for at få lov at hvile. Det er
+     derfor kandidaterne måles med en BFS der ikke må gå gennem bossen —
+     kan den ikke nå rummet, ligger rummet bagved. */
   function dccSafeRoom(d) {
     if (!d.entrance) return;
     var bossId = d.boss ? d.boss.id : 0;
-    var fromBoss = null;
-    if (bossId && d.room[bossId]) {
-      var b = d.room[bossId];
-      fromBoss = dccBfs(d, Math.floor((b.north + b.south) / 2),
-                           Math.floor((b.west + b.east) / 2));
-    }
+    var boss = bossId ? d.room[bossId] : null;
+    var fromDoor = dccBfs(d, d.entrance.row, d.entrance.col, boss);
+
     var cand = [];
     for (var id = 1; id <= d.n_rooms; id++) {
       var room = d.room[id];
       if (!room || room.id === bossId) continue;
-      cand.push(room);
+      var v = fromDoor[roomCell(room)];
+      if (v === undefined) continue;            // kun nåeligt gennem bossen
+      cand.push({ room: room, dist: v });
     }
-    cand.sort(function (a, b) {
-      return roomDist(a, fromBoss) - roomDist(b, fromBoss);
-    });
+    cand.sort(function (a, b) { return a.dist - b.dist || a.room.id - b.room.id; });
 
-    var i;
-    for (i = 0; i < cand.length; i++) {
-      if (doorCount(d, cand[i]) === 1) {
-        d.safe = { id: cand[i].id, sealed: 0 };
+    /* Ét gennemløb, nærmest først. Der er sjældent mere end et par rum på en
+       etage der har én dør i forvejen, og de ligger hvor de ligger — som regel
+       langt ude. At mure en dør til i et rum tæt på indgangen giver et safe
+       room man faktisk kommer forbi, og det er hele pointen med det.
+
+       Tilmuringen skal stadig holde bagefter: hele etagen skal kunne nås,
+       bossen skal beholde sine to udveje, og rummet må ikke ende bag bossen —
+       den dør man murer til, kan være netop den, der gjorde vejen udenom
+       mulig. */
+    for (var i = 0; i < cand.length; i++) {
+      var pick = cand[i].room;
+      if (doorCount(d, pick) === 1) {
+        d.safe = { id: pick.id, sealed: 0, dist: cand[i].dist };
+        return;
+      }
+      var n = sealDoor(d, pick, (function (room) {
+        return function () { return reachableWithoutBoss(d, room); };
+      }(pick)));
+      if (n) {
+        d.safe = { id: pick.id, sealed: n, dist: cand[i].dist };
         return;
       }
     }
-    cand.sort(function (a, b) { return doorCount(d, a) - doorCount(d, b); });
-    for (i = 0; i < cand.length; i++) {
-      var n = sealDoor(d, cand[i]);
-      if (n) { d.safe = { id: cand[i].id, sealed: n }; return; }
-    }
+  }
+
+  /* Bossrummet skal have døre, ikke huller i væggen. En åben portal er ikke en
+     dør, man kan lytte ved, banke på eller finde låst — og bossen er etagens
+     ene sted hvor det bør koste noget at komme ind.
+
+     Hemmelige døre er med vilje ikke med: trappen ned står i bossrummet, så et
+     rum man kun kan finde ved et heldigt tjek kan spærre for hele etagen.
+
+     Ud af 110 lodder giver donjons egen tabel 15 låste. Her er det 55. */
+  var BOSS_DOORS = [
+    [55, LOCKED],
+    [15, TRAPPED],
+    [15, PORTC],
+    [15, DOOR]
+  ];
+
+  function dccBossDoors(d) {
+    if (!d.boss) return;
+    var boss = d.room[d.boss.id];
+    if (!boss) return;
+    var locked = 0, total = 0;
+
+    doorCells(boss).forEach(function (p) {
+      var r = p[0], c = p[1];
+      if (!(d.cell[r][c] & OPENSPACE)) return;      // muret til
+      total++;
+
+      var roll = Math.floor(d.rand() * 100), acc = 0, t = LOCKED;
+      for (var i = 0; i < BOSS_DOORS.length; i++) {
+        acc += BOSS_DOORS[i][0];
+        if (roll < acc) { t = BOSS_DOORS[i][1]; break; }
+      }
+      if (t === LOCKED) locked++;
+
+      d.cell[r][c] &= ~DOORSPACE;
+      d.cell[r][c] |= t;
+
+      /* Dørobjektet deles af begge rum og af d.door, så det er nok at rette
+         det ét sted — fixDoors lagde den samme reference i alle tre lister. */
+      d.door.forEach(function (door) {
+        if (door.row !== r || door.col !== c) return;
+        door.key = DOOR_KIND[t].key;
+        door.type = DOOR_KIND[t].type;
+      });
+    });
+
+    d.boss.doors = total;
+    d.boss.locked = locked;
   }
 
   function dccXp(d) {
@@ -811,32 +903,61 @@
        tyve rum, får hvert af dem halvtreds XP, og så er der ikke en eneste
        rigtig kamp på etagen — bare tyve rum med en enkelt rotte i.
 
-       I stedet får et rum mindst en Low-kamp efter D&D 2024's tabel, og der
-       bruges kun så mange rum, som budgettet rækker til. Resten står tomme,
+       Og det fordeles ikke efter rummenes areal. Et stort rum er ikke en svær
+       kamp; seks goblins i et kosteskab er værre end seks goblins i en hal.
+       Det der betyder noget, er hvor langt inde på etagen man er: kampene
+       vokser med afstanden fra indgangen, målt i skridt gennem åbne felter.
+
+       Hvert kamprum får mindst en Low-kamp efter D&D 2024's tabel. Det der er
+       tilbage ud over den bund, lægges oveni efter dybde, så det sidste rum før
+       bossen er mærkbart hårdere end det første. Resten af rummene står tomme,
        og det er meningen: et tomt rum er et sted at ånde, en skat, en fælde
        eller en samtale, og det koster ingenting at gå igennem. */
     var rest = Math.max(0, floorXp - bossXp);
     var minXp = ENCOUNTER[level][0] * size;        // Low — den mindste rigtige kamp
-    var want = Math.max(1, Math.floor(rest / minXp));
+
+    /* Der skal være luft over bunden at trappe med, ellers bliver alle kampe
+       ens. En fjerdedel er nok til at gøre den sidste mærkbart værre end den
+       første, uden at det koster for mange kampe. */
+    var want = Math.max(1, Math.floor(rest / (minXp * 1.25)));
     want = Math.max(want, Math.ceil(rest / cap));  // skal kunne ligge under loftet
     want = Math.min(want, rooms.length);
 
-    // De største rum får kampene. En stor kamp i et lille rum har ikke plads
-    // til at være en stor kamp.
-    var fight = rooms.slice().sort(function (a, b) {
-      return (b.area - a.area) || (a.id - b.id);
-    }).slice(0, want);
+    var fromDoor = d.entrance
+      ? dccBfs(d, d.entrance.row, d.entrance.col) : {};
+    var order = rooms.slice().sort(function (a, b) {
+      var da = fromDoor[roomCell(a)], db = fromDoor[roomCell(b)];
+      if (da === undefined) da = 1e9;
+      if (db === undefined) db = 1e9;
+      return da - db || a.id - b.id;
+    });
 
-    var left = rest, round = 0, full = {};
+    /* Kampene spredes ud over dybden i stedet for at ligge i den fjerneste
+       ende. Ellers er den halve etage tom, og så begynder den. */
+    var fight = [], i;
+    for (i = 0; i < want; i++) fight.push(order[Math.floor(i * order.length / want)]);
+
+    /* Bunden først: hver kamp er en rigtig kamp. Den kan ikke sættes højere
+       end budgettet rækker til — er loftet lavt nok til at tvinge flere rum
+       frem end bunden kan betale for, er det budgettet der bestemmer. */
+    var base = fight.length
+      ? Math.max(0, Math.min(minXp, cap, Math.floor(rest / fight.length))) : 0;
+    fight.forEach(function (r) { r.xp = base; });
+    var left = Math.max(0, rest - base * fight.length), round = 0, full = {};
+    fight.forEach(function (r, k) {
+      r._ramp = k + 1;                            // dybderang: 1 er nærmest døren
+      if (r.xp >= cap) full[r.id] = 1;
+    });
+
     while (left >= 1 && round < 25) {
       round++;
-      var area = 0;
-      fight.forEach(function (r) { if (!full[r.id]) area += r.area; });
-      if (!area) break;
+      var w = 0;
+      fight.forEach(function (r) { if (!full[r.id]) w += r._ramp; });
+      if (!w) break;
       var moved = 0;
       fight.forEach(function (r) {
         if (full[r.id]) return;
-        var add = left * r.area / area;
+        var add = left * r._ramp / w;
         if (r.xp + add >= cap) { add = cap - r.xp; full[r.id] = 1; }
         if (add <= 0) return;
         r.xp += add; moved += add;
@@ -845,7 +966,9 @@
       left -= moved;
     }
     var placed = bossXp;
-    fight.forEach(function (r) { r.xp = Math.round(r.xp); placed += r.xp; });
+    fight.forEach(function (r) {
+      r.xp = Math.round(r.xp); placed += r.xp; delete r._ramp;
+    });
 
     /* Afrundingen pr. rum kan lande et par XP ved siden af budgettet. Det er
        ligegyldigt i spil, men et budget på 1800 der står som 1801 ligner en
@@ -857,10 +980,12 @@
       // tomt og ikke ende med syv XP, fordi et regnestykke gik ujævnt op.
       fight.forEach(function (r) {
         if (r.xp + slop < 0 || r.xp + slop > cap) return;
-        if (!big || r.area > big.area) big = r;
+        if (!big || r.xp > big.xp) big = r;
       });
       if (big) { big.xp += slop; placed = floorXp; }
     }
+
+    var real = fight.filter(function (r) { return r.xp > 0; }).length;
 
     d.xp = {
       level: level, size: size,
@@ -869,8 +994,8 @@
       low: ENCOUNTER[level][0] * size,
       moderate: ENCOUNTER[level][1] * size,
       high: ENCOUNTER[level][2] * size,
-      fights: fight.length + (bossId ? 1 : 0),
-      empty: rooms.length - fight.length,
+      fights: real + (bossId ? 1 : 0),
+      empty: rooms.length - real,
       short: (left >= 1) ? Math.round(left) : 0
     };
   }
