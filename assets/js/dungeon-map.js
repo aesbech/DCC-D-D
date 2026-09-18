@@ -245,7 +245,11 @@
     out.push(row('Indgang', d.entrance
       ? 'trappe op i en blindgang' : 'ingen — etagen har ingen blindgyder'));
     out.push(row('Bossrum', d.boss
-      ? 'rum ' + d.boss.id + ', ' + d.boss.doors + ' døre ud' : 'ingen'));
+      ? 'rum ' + d.boss.id + ', ' + d.boss.doors + ' døre ud'
+        + (d.boss.locked ? ' — heraf ' + d.boss.locked + ' låst'
+            + (d.boss.locked > 1 ? 'e' : '') : '')
+        + ' · ' + d.boss.dist + ' skridt fra indgangen'
+      : 'ingen'));
     out.push(row('Trappen ned', d.boss
       ? 'inde i rum ' + d.boss.id + ', i den ende der ligger længst fra indgangen'
       : 'ingen'));
@@ -253,7 +257,10 @@
       ? 'rum ' + d.safe.id + ', én dør ind og ud'
         + (d.safe.sealed ? ' (' + d.safe.sealed + ' dør'
             + (d.safe.sealed > 1 ? 'e' : '') + ' muret til)' : '')
-      : '<b>ingen</b> — intet rum kunne lukkes ned til én dør'));
+        + ' · ' + d.safe.dist + ' skridt fra indgangen, og vejen derhen går '
+        + 'ikke gennem bossrummet'
+      : '<b>ingen</b> — intet rum kunne lukkes ned til én dør uden at spærre '
+        + 'etagen eller havne bag bossen'));
 
     out.push(gap());
     out.push(row('XP-budget', xp.size + ' spillere på level ' + xp.level
