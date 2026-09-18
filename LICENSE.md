@@ -57,6 +57,23 @@ python3 scripts/check_srd.py docs/SRD_CC_v5.2.1.pdf.txt --mark
 **Slår man knappen fra og deler linket, er man tilbage i problemet.** Flaget er
 en hjælp, ikke en garanti.
 
+### Det knappen ikke gør
+
+Knappen styrer, hvad generatoren trækker. Den styrer ikke, hvad serveren
+udleverer. To ting ligger stadig åbent:
+
+- **Repoet er offentligt.** `data/magic_items.txt`, `data/spells.txt` og
+  `data/feats.txt` er 872 KB rå regeltekst, som hvem som helst kan hente uden
+  login. De er kun input til importscriptene — siden indlæser dem aldrig — så de
+  kan fjernes uden at noget går i stykker. Git-historikken holder dem dog stadig.
+- **`pages.yml` uploader `path: .`**, altså hele repoet. Deployet udstiller
+  derfor de samme filer, og `assets/data/*.js` indeholder de 204 korts tekst,
+  uanset hvad knappen står på.
+
+Det er et bevidst valg indtil videre: siden er til privat brug, og linket deles
+ikke bredt. **Skal linket ud til flere, skal det her ryddes op først** — filerne
+ud af repoet, og et trin i `pages.yml` der kun publicerer SRD-sikre datafiler.
+
 ## donjon — CC BY-NC 3.0
 
 Kortgeometrien er **Random Dungeon Generator af drow**
