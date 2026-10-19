@@ -12,6 +12,7 @@ ikke selv har.
 | Spells, magic items, udstyr og feats i `assets/data/` | Wizards of the Coast | CC BY 4.0, **men kun den del der står i SRD 5.2.1** |
 | Skabningerne i `assets/data/monsters.js` | Wizards of the Coast | CC BY 4.0 — trukket direkte ud af SRD 5.2.1, så her er alt dækket |
 | Fælderne i `assets/data/traps.js` | Wizards of the Coast | CC BY 4.0 — samme sted, samme vilkår |
+| Fælderne i `assets/data/traps-dcc.js` | DCC-D-D | Vores eget. Skrevet til spillet, ikke taget fra nogen bog — de bruger spillets begreber, og dem ejer ingen |
 
 ## SRD 5.2.1 — den påkrævede kredit
 

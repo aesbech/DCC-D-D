@@ -6,9 +6,9 @@ grad — Nuisance eller Deadly — og et niveauspænd, ikke en XP-værdi, så en
 fælde trækker ikke på etagens XP-budget. Det er med vilje: en fælde koster
 ressourcer og tid, ikke erfaring.
 
-Der er kun otte af dem i SRD'en. Det er få til en etage med flere fælder, så
-de vil gentage sig; de står med deres udløser, så den samme fælde kan
-beskrives forskelligt to steder.
+Der er kun otte af dem i SRD'en. Det er for få til en etage med flere fælder,
+så vores egne ligger i assets/data/traps-dcc.js og lægges oveni — de to lister
+har samme felter, og `srd` siger hvilken der er hvilken.
 
     python3 scripts/import_traps.py docs/SRD_CC_v5.2.1.pdf.txt
 
@@ -36,6 +36,21 @@ TRAP = re.compile(
 # Sidehovedet står midt i teksten, fordi en PDF ikke ved hvad en side er.
 HEADER = re.compile(r"\s*System Reference Document [\d.]+\s*\d*\s*")
 
+# Hvor fælden kan sidde. Det står ikke i SRD'en — den beskriver fælder, ikke
+# hvor en generator må lægge dem — så det er læst af udløseren i hånden. En
+# nål i en lås hører til på en dør; en rullende sten gør ikke. 'both' er de to
+# der udløses af en snubletråd: den kan spændes over en døråbning.
+WHERE = {
+    "Collapsing Roof": "both",
+    "Falling Net": "both",
+    "Fire-Casting Statue": "room",
+    "Hidden Pit": "room",
+    "Poisoned Darts": "room",
+    "Poisoned Needle": "door",
+    "Rolling Stone": "room",
+    "Spiked Pit": "room",
+}
+
 
 def clean_name(raw):
     """Alle syv fælder i SRD'en hedder noget på præcis to ord.
@@ -61,6 +76,8 @@ def main():
         out.append({
             "name": name,
             "severity": m.group(2),
+            "where": WHERE.get(name, "room"),
+            "srd": True,
             "min": int(m.group(3)),
             "max": int(m.group(5) or m.group(4)),
             "trigger": re.sub(r"\s+", " ", m.group(6)).strip().rstrip("."),
@@ -73,7 +90,8 @@ def main():
         "/* Auto-genereret fra SRD 5.2.1 af scripts/import_traps.py.\n"
         "   System Reference Document 5.2.1 af Wizards of the Coast LLC,\n"
         "   CC BY 4.0 — den fulde kredit står i kolofonen og i LICENSE.md.\n"
-        "   Fælder har ingen XP-værdi; de trækker ikke på etagens budget. */\n"
+        "   Fælder har ingen XP-værdi; de trækker ikke på etagens budget.\n"
+        "   Vores egne fælder ligger i traps-dcc.js og lægges oveni. */\n"
         'window.TRAPS_VERSION = "%s";\n'
         "window.TRAPS = %s;\n" % (version, payload),
         encoding="utf-8")

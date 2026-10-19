@@ -157,10 +157,21 @@
     så du kan se hvor langt inde de ligger.</p>
   <p>I <b>Noter</b> står et forslag til hvad der er i rummet — navne og antal, valgt
     så de bruger rummets budget uden at gå over. Et rum mærket <b>FÆLDE</b> har en fælde
-    i stedet; hvilke fælder der er på etagen, og hvad der udløser dem, står samlet i
-    rapporten. SRD'en har kun otte fælder, så de gentager sig på en etage med mange. Det er et forslag: byt ud som du vil,
-    <b>XP-tallet er facit</b>. Skabningerne slås op i
-    <a href="SRD_CC_v5.2.1.pdf">SRD 5.2.1</a>, der ligger under Docs.</p>
+    i stedet. Det er et forslag: byt ud som du vil, <b>XP-tallet er facit</b>.
+    Skabningerne slås op i <a href="SRD_CC_v5.2.1.pdf">SRD 5.2.1</a>, der ligger under
+    Docs.</p>
+  <p><b>Fælderne står i deres egen tabel</b> efter rummene, med grad, udløser, virkning
+    og hvordan de findes og uskadeliggøres — også dem der sidder på en dør. En fældedør
+    er tegnet på kortet, og tabellen siger hvilke to rum den sidder imellem, så den kan
+    findes igen. Dørkolonnen i rumtabellen siger hvor mange af rummets døre der er
+    fælder.</p>
+  <p>Posen rummer 36 fælder. <b>De otte med engelsk navn er SRD'ens</b> og slås op i
+    PDF'en — deres fulde tekst og skaleringstabel er Wizards', ikke vores at trykke her.
+    <b>De 28 på dansk er vores egne</b>, skrevet til formålet, og de står på arket med
+    det hele: otte er for få til tyve etager, og en dør skal have en fælde der kan sidde
+    på en dør. Vores skalerer selv til holdets level i fire trin — 1-4, 5-10, 11-16,
+    17-20 — så DC og skade på arket passer allerede. Den samme fælde kommer ikke to
+    gange på en etage, medmindre der er flere fælder end der findes i alt.</p>
   <p>Rum der står <b>tom</b> har ingen kamp; det er ikke et hul i budgettet, men plads
     til alt det andet. Safe room står altid tomt, og bossen er præcis én kamp af den
     slags du har valgt.</p>
@@ -176,6 +187,7 @@
 
   <script src="../assets/data/monsters.js"></script>
   <script src="../assets/data/traps.js"></script>
+  <script src="../assets/data/traps-dcc.js"></script>
   <script src="../assets/js/dungeon.js"></script>
   <script src="../assets/js/encounters.js"></script>
   <script src="../assets/js/dungeon-map.js"></script>
@@ -235,11 +247,14 @@
         safe_rooms: +val('gSafes')
       });
 
-      /* Fyld rummene ud med skabninger og fælder fra SRD'en. Etagen er den
-         samme uanset om den bliver stokket — det er kun noter der lægges
-         oveni. */
+      /* Fyld rummene og dørene ud. Skabningerne er SRD'ens; fælderne er
+         SRD'ens otte plus vores egne, som ligger i traps-dcc.js — otte er
+         for få, og en dør skal have en fælde der kan sidde på en dør.
+         Etagen er den samme uanset om den bliver stokket: det er kun noter
+         der lægges oveni. */
       if (window.ENCOUNTERS && window.MONSTERS) {
-        ENCOUNTERS.stock(current, window.MONSTERS, window.TRAPS);
+        ENCOUNTERS.stock(current, window.MONSTERS,
+          (window.TRAPS || []).concat(window.TRAPS_DCC || []));
       }
 
       /* Seedet skrives med vilje ikke tilbage i feltet. Gør man det, bliver
@@ -392,6 +407,19 @@
         <b>fem ud af seks etager</b>; på resten er rummet for enden af gangen etagens
         eneste gennemgang, og så kan det ikke lukkes ned til én dør. Arket siger det,
         og en ny etage plejer at løse det.</td>
+    </tr>
+    <tr>
+      <td><b>En fældedør var bare en fældedør.</b> Kortet sagde at der var en fælde i
+        døren; hvad den gjorde, sagde ingen. Og SRD'ens otte fælder gentog sig
+        allerede på den anden etage.</td>
+      <td>Hver fældedør har nu <b>en bestemt fælde</b>, valgt blandt dem der kan sidde
+        på en dør — en nål i en lås kan, en rullende sten kan ikke. Den står i
+        fældetabellen med udløser, virkning og hvordan den findes, og med de to rum den
+        sidder imellem, så den kan findes på kortet. Dertil <b>28 fælder vi selv har
+        skrevet</b>, fordi otte er for få: de skalerer selv til holdets level i fire
+        trin, og de står på arket med det hele. Posen rummer 36, og den samme fælde
+        kommer ikke to gange på en etage, medmindre der er flere fælder end der findes
+        i alt.</td>
     </tr>
     <tr>
       <td><b>Nogle etager kunne man ikke komme igennem.</b> donjon lover ikke at hele
