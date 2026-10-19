@@ -45,8 +45,8 @@
       + '" height="' + (H + P * 2) + '" fill="#fff"/>');
 
     /* Bossrum og safe room får en tone, så de kan ses på et skridt. */
-    out.push(tint(d, d.boss && d.boss.id, '#e6eaf4'));
-    out.push(tint(d, d.safe && d.safe.id, '#e7f0e7'));
+    (d.bosses || []).forEach(function (b) { out.push(tint(d, b.id, '#e6eaf4')); });
+    (d.safes || []).forEach(function (s) { out.push(tint(d, s.id, '#e7f0e7')); });
 
     /* Gittret — ét felt er fem fod, så man kan tælle bevægelse på papiret. */
     var grid = [];
@@ -197,8 +197,8 @@
     var cx = (room.west + room.width / 2) * CELL;
     var cy = (room.north + room.height / 2) * CELL;
     var tall = room.height >= 3;
-    var tag = (d.boss && d.boss.id === id) ? 'BOSS'
-            : (d.safe && d.safe.id === id) ? 'SAFE' : '';
+    var tag = bossOf(d, id) ? 'BOSS' : safeOf(d, id) ? 'SAFE'
+            : room.trap ? 'FÆLDE' : '';
     var g = [];
 
     g.push('<text x="' + cx + '" y="' + (cy + (tall ? 0 : 5)) + '" '
@@ -244,22 +244,29 @@
       + fitNote(d)));
     out.push(row('Indgang', d.entrance
       ? 'trappe op i en blindgang' : 'ingen — etagen har ingen blindgyder'));
-    out.push(row('Bossrum', d.boss
-      ? 'rum ' + d.boss.id + ', ' + d.boss.doors + ' døre ud'
-        + (d.boss.locked ? ' — heraf ' + d.boss.locked + ' låst'
-            + (d.boss.locked > 1 ? 'e' : '') : '')
-        + ' · ' + d.boss.dist + ' skridt fra indgangen'
+    var bosses = d.bosses || [];
+    out.push(row(bosses.length > 1 ? 'Bossrum' : 'Bossrum', bosses.length
+      ? bosses.map(function (b) {
+          return 'rum ' + b.id + ', ' + b.doors + ' døre ud'
+            + (b.locked ? ' — heraf ' + b.locked + ' låst'
+                + (b.locked > 1 ? 'e' : '') : '')
+            + ' · ' + steps(b.dist)
+            + (b.stairs ? ' · <b>trappen ned</b>' : '');
+        }).join('<br>')
       : 'ingen'));
     out.push(row('Trappen ned', d.boss
       ? 'inde i rum ' + d.boss.id + ', i den ende der ligger længst fra indgangen'
       : 'ingen'));
-    out.push(row('Safe room', d.safe
-      ? 'rum ' + d.safe.id + ', 3 × 3 felter med én '
-        + esc(String(d.safe.door || 'dør')).toLowerCase()
-        + ' · ' + d.safe.dist + ' skridt fra indgangen, og vejen derhen går '
-        + 'ikke gennem bossrummet'
+
+    var safes = d.safes || [];
+    out.push(row(safes.length > 1 ? 'Safe rooms' : 'Safe room', safes.length
+      ? safes.map(function (s) {
+          return 'rum ' + s.id + ', 3 × 3 felter med én '
+            + esc(String(s.door || 'dør')).toLowerCase() + ' · ' + steps(s.dist);
+        }).join('<br>')
+        + '<br><i>ingen af dem ligger bag et bossrum</i>'
       : '<b>ingen</b> — intet rum kunne skæres ned til 3 × 3 med én dør uden '
-        + 'at spærre etagen eller havne bag bossen'));
+        + 'at spærre etagen eller havne bag en boss'));
 
     out.push(gap());
     out.push(row('XP-budget', xp.size + ' spillere på level ' + xp.level
@@ -268,11 +275,30 @@
       + ' slack = <b>' + n(xp.floor) + ' XP på etagen</b>'));
     out.push(row('Kampbudget', 'Low ' + n(xp.low) + ' · Moderate ' + n(xp.moderate)
       + ' · High ' + n(xp.high) + ' (for hele holdet)'));
-    out.push(row('Bossen', n(xp.boss) + ' XP — én '
-      + (TIER_DA[d.boss_fight] || d.boss_fight) + '-kamp'));
+    out.push(row(xp.bosses > 1 ? 'Bosserne' : 'Bossen',
+      (xp.bosses > 1 ? xp.bosses + ' × ' : '') + n(xp.boss) + ' XP — '
+      + (xp.bosses > 1 ? 'hver en ' : 'én ')
+      + (TIER_DA[d.boss_fight] || d.boss_fight) + '-kamp'
+      + (xp.bosses > 1 ? ', ' + n(xp.boss_total) + ' XP i alt' : '')));
     out.push(row('Maks pr. rum', n(xp.cap) + ' XP'));
-    out.push(row('Kampe', xp.fights + ' rum med kamp i (bossen talt med) · '
-      + xp.empty + ' rum står tomme'));
+    out.push(row('Mætning', xp.saturation + ' % af rummene har noget i sig: '
+      + xp.fights + ' med kamp (bosserne talt med), ' + xp.traps + ' med fælde, '
+      + xp.empty + ' tomme'
+      + (xp.smallest && xp.smallest < xp.low
+          ? '<br><i>mindste kamp er ' + n(xp.smallest) + ' XP — under en Low på '
+            + n(xp.low) + '. Sænk mætningen, hvis kampene skal være større.</i>'
+          : '')));
+    var used = trapsUsed(d);
+    if (used.length) {
+      out.push(row('Fælderne', used.map(function (x) {
+        /* Udløseren står med SRD'ens egne ord, i citat. Resten af arket er
+           dansk, men det her er en regeltekst man slår op — og en oversættelse
+           ville være mine ord om Wizards' regel. */
+        return '<b>' + esc(x.name) + '</b> (' + esc(x.severity) + ') — \u00ab'
+          + esc(x.trigger) + '\u00bb';
+      }).join('<br>') + '<br><i>SRD\u2019en har otte fælder i alt, så de gentager '
+        + 'sig på en etage med mange. De skaleres med holdets level.</i>'));
+    }
     if (d.stocked) {
       out.push(row('Skabninger', (d.stocked.theme
           ? 'etagen er bygget over <b>' + esc(d.stocked.theme) + '</b>, '
@@ -291,15 +317,22 @@
       var room = d.room[id];
       if (!room) continue;
       var note = [];
-      if (d.boss && d.boss.id === id) note.push('<b>BOSS</b> + trappen ned');
-      if (d.safe && d.safe.id === id) note.push('<b>SAFE ROOM</b> — står tomt');
+      var b = bossOf(d, id);
+      if (b) note.push('<b>BOSS</b>' + (b.stairs ? ' + trappen ned' : ''));
+      if (safeOf(d, id)) note.push('<b>SAFE ROOM</b> — står tomt');
+      else if (room.trap) note.push('<b>FÆLDE</b>');
       else if (!room.xp) note.push('tomt');
       if (d.entrance && inRoom(room, d.entrance.row, d.entrance.col))
         note.push('indgang');
       /* Forslaget til hvad der står i rummet. Det er et forslag — DM'en bytter
-         ud som hun vil, og XP-tallet ved siden af er stadig facit. */
-      if (room.encounter && room.encounter.parts.length) {
-        note.push(room.encounter.parts.map(function (p) {
+         ud som hun vil, og XP-tallet ved siden af er stadig facit. En fælde
+         får sin udløser med: der er kun otte i SRD'en, så den samme fælde
+         kommer igen, og udløseren er det man beskriver den ud fra. */
+      var enc = room.encounter;
+      if (enc && enc.trap) {
+        note.push(esc(enc.trap.name) + ' <i>(' + esc(enc.trap.severity) + ')</i>');
+      } else if (enc && enc.parts.length) {
+        note.push(enc.parts.map(function (p) {
           return p.n + ' × ' + esc(p.name);
         }).join(', '));
       }
@@ -325,6 +358,40 @@
   }
 
   function row(k, v) { return '<tr><th>' + k + '</th><td>' + v + '</td></tr>'; }
+
+  /* En afstand på null betyder at rummet ikke kan nås fra indgangen. Det bør
+     ikke ske — create() kasserer etager hvor trappen ned ligger bag en lukket
+     lomme — men står det på arket, er det bedre end et 0 der ligner nærhed. */
+  function steps(v) {
+    return (v === null || v === undefined)
+      ? '<b>kan ikke nås fra indgangen</b>'
+      : v + ' skridt fra indgangen';
+  }
+
+  /* Hvilke fælder er faktisk i brug på etagen, hver kun én gang. */
+  function trapsUsed(d) {
+    var seen = {}, out = [];
+    for (var id = 1; id <= d.n_rooms; id++) {
+      var r = d.room[id];
+      if (!r || !r.encounter || !r.encounter.trap) continue;
+      var x = r.encounter.trap;
+      if (seen[x.name]) continue;
+      seen[x.name] = 1; out.push(x);
+    }
+    return out;
+  }
+
+  function bossOf(d, id) {
+    var list = d.bosses || [];
+    for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+    return null;
+  }
+
+  function safeOf(d, id) {
+    var list = d.safes || [];
+    for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
+    return null;
+  }
   function gap() { return '<tr class="gap"><th></th><td></td></tr>'; }
 
   function inRoom(room, r, c) {
@@ -367,8 +434,8 @@
     var kinds = {}, out = [];
     d.door.forEach(function (x) { if (open(d, x.row, x.col)) kinds[x.key] = x.type; });
 
-    if (d.boss) out.push('<li><span class="lg sw sw-boss"></span>Bossrum</li>');
-    if (d.safe) out.push('<li><span class="lg sw sw-safe"></span>Safe room</li>');
+    if ((d.bosses || []).length) out.push('<li><span class="lg sw sw-boss"></span>Bossrum</li>');
+    if ((d.safes || []).length) out.push('<li><span class="lg sw sw-safe"></span>Safe room</li>');
     out.push('<li>' + stairSwatch(1) + 'Trappe — <b>OP</b> ind på etagen, '
       + '<b>NED</b> til den næste</li>');
     Object.keys(kinds).sort().forEach(function (k) {

@@ -1135,6 +1135,13 @@ browserudgaven etagen om — først med flere rum på det samme gitter, og hjæl
 med et større. Perl-scriptet skriver stadig bare hvor meget der mangler. Browserudgaven
 er den, der bliver vedligeholdt.
 
+**Mætning styrer hvor meget der er på etagen.** En procent siger hvor mange af rummene
+der har noget i sig, og en anden deler det indhold mellem fælder og monstre. En fælde
+koster ikke XP — SRD'en giver fælder en grad og et niveauspænd, ikke en XP-værdi — så en
+høj fældeandel presser budgettet sammen i færre kamprum. Antallet af **bossrum** og
+**safe rooms** kan sættes op til fire af hver; bosserne lægges spredt og alle dybt inde,
+og trappen ned står i den fjerneste.
+
 **Rummene bliver fyldt ud.** `assets/js/encounters.js` foreslår hvad der står i hvert
 rum, efter SRD 5.2.1's egne regler for encounters: hver skabning har en XP-værdi, og
 der bruges så meget af rummets budget som muligt uden at gå over, med højst to
@@ -1217,6 +1224,7 @@ assets/js/dungeon.js           etagegeneratoren
 assets/js/dungeon-map.js       etagens kort og rapport som printbart ark
 assets/js/encounters.js        fylder rummene med skabninger fra SRD'en
 assets/data/monsters.js        SRD 5.2.1's skabninger med CR og XP
+assets/data/traps.js           SRD 5.2.1's fælder med grad og udløser
 assets/data/items.js           items fra regnearket
 assets/data/class-cards.js     Class-pakkens indhold (genereret)
 assets/data/magic-items.js     magic items
@@ -1225,6 +1233,7 @@ scripts/import_magic.py        magic_items.txt → magic-items.js
 scripts/import_class_cards.py  feats.txt + systematiske kort → class-cards.js
 scripts/check_srd.py           hvilke kort ligger uden for SRD 5.2.1?
 scripts/import_monsters.py     SRD-PDF'en → monsters.js
+scripts/import_traps.py        SRD-PDF'en → traps.js
 data/dnd_items.xlsx            kilderegnearket
 data/magic_items.txt           kildeliste over magic items
 data/feats.txt                 kildeliste over feats
