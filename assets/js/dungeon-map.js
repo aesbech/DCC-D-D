@@ -260,9 +260,19 @@
     out.push(row(safes.length > 1 ? 'Safe rooms' : 'Safe room', safes.length
       ? safes.map(function (s) {
           return 'rum ' + s.id + ', 3 × 3 felter med én '
-            + esc(String(s.door || 'dør')).toLowerCase() + ' · ' + steps(s.dist);
+            + esc(String(s.door || 'dør')).toLowerCase() + ' · ' + steps(s.dist)
+            + (s.adjacent
+                ? ' · <b>kun gange fra starttrappen</b>'
+                : '');
         }).join('<br>')
-        + '<br><i>ingen af dem ligger bag et bossrum</i>'
+        + '<br><i>ingen af dem ligger bag et bossrum.'
+        + (d.near_entrance
+            ? ' Man kan gå tilbage til starttrappen og hvile uden at skulle '
+              + 'gennem et rum.'
+            : ' <b>Ingen af dem støder op til starttrappen</b> — det rum der '
+              + 'ligger for enden af gangen derfra er etagens gennemgang og kan '
+              + 'ikke lukkes ned til én dør. Lav etagen om, hvis det skal være.')
+        + '</i>'
       : '<b>ingen</b> — intet rum kunne skæres ned til 3 × 3 med én dør uden '
         + 'at spærre etagen eller havne bag en boss'));
 

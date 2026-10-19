@@ -1148,7 +1148,13 @@ høj fældeandel presser budgettet sammen i færre kamprum, og dermed gør etage
 
 Antallet af **bossrum** og **safe rooms** kan sættes op til fire af hver. Bosserne lægges
 spredt og alle dybt inde, og **hvert bossrum har sin egen trappe ned**, så holdet kan
-vælge hvilken boss de vil forbi. Mindst ét safe room søges lagt nær indgangstrappen.
+vælge hvilken boss de vil forbi.
+
+**Ét safe room støder op til starttrappen**, så holdet kan gå tilbage og tage en long
+rest uden at skulle gennem et rum — kun gange imellem. Selve trappen vælges med det for
+øje: blandt blindgyderne tages den, hvis gang ender i et rum der kan undværes, målt på om
+etagen stadig hænger sammen uden det. Det lykkes på fem ud af seks etager; på resten er
+rummet for enden af gangen etagens eneste gennemgang, og arket siger det.
 
 **Lommer uden vej til skæres væk.** donjon lover ikke at hele etagen hænger sammen, og
 lå trappen ned i en lukket lomme, var etagen ubrugelig. Nu beholdes den største del, og
