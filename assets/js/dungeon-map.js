@@ -250,12 +250,10 @@
           return 'rum ' + b.id + ', ' + b.doors + ' døre ud'
             + (b.locked ? ' — heraf ' + b.locked + ' låst'
                 + (b.locked > 1 ? 'e' : '') : '')
-            + ' · ' + steps(b.dist)
-            + (b.stairs ? ' · <b>trappen ned</b>' : '');
+            + ' · ' + steps(b.dist);
         }).join('<br>')
-      : 'ingen'));
-    out.push(row('Trappen ned', d.boss
-      ? 'inde i rum ' + d.boss.id + ', i den ende der ligger længst fra indgangen'
+        + '<br><i>hvert bossrum har sin egen trappe ned, i den ende der ligger '
+        + 'længst fra indgangen — så man skal tværs gennem rummet for at nå den</i>'
       : 'ingen'));
 
     var safes = d.safes || [];
@@ -347,14 +345,25 @@
   /* Etagen kan være lavet om undervejs for at få XP-budgettet til at ligge i
      rummene. Det skal stå på arket — ellers undrer man sig over, hvorfor det
      gitter man bad om ikke er det, man fik. */
+  /* Etagens størrelse er regnet ud af indstillingerne, ikke valgt. Står der
+     ikke hvad der blev regnet med, ligner et gitter på 60 × 60 en fejl — og
+     det er det ikke, det er hvad ét level pr. etage koster på level 8. */
   function fitNote(d) {
     var f = d.fit;
-    if (!f || f.passes < 2) return '';
-    if (f.grew) {
-      return '<br><i>gjort større fra ' + f.asked_rows + ' × ' + f.asked_rows
-        + ' — budgettet kunne ikke ligge i færre rum</i>';
+    if (!f) return '';
+    var out = [];
+    if (f.auto) {
+      out.push('størrelsen er regnet ud af indstillingerne: '
+        + f.planned + ' rum skulle der til');
     }
-    return '<br><i>flere rum end sædvanligt, så budgettet kunne ligge der</i>';
+    if (f.grew) {
+      out.push('gitteret måtte vokse undervejs — budgettet kunne ikke ligge '
+        + 'i færre rum');
+    }
+    if (d.pruned) {
+      out.push(d.pruned + ' felter uden vej til er skåret væk');
+    }
+    return out.length ? '<br><i>' + out.join('; ') + '</i>' : '';
   }
 
   function row(k, v) { return '<tr><th>' + k + '</th><td>' + v + '</td></tr>'; }

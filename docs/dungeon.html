@@ -53,14 +53,6 @@
         <option value="2">2,0 — de kan springe halvdelen over</option>
       </select>
     </label>
-    <label>Etagens størrelse
-      <select id="gRows">
-        <option value="19">Lille — 18 × 18 felter, ca. 8 rum</option>
-        <option value="25">Mellem — 24 × 24, ca. 13 rum</option>
-        <option value="31" selected>Stor — 30 × 30, ca. 20 rum</option>
-        <option value="39">Meget stor — 38 × 38, ca. 32 rum</option>
-      </select>
-    </label>
     <label>Rummene
       <select id="gRoom">
         <option value="5">Små — 3 til 5 felter, mange af dem</option>
@@ -137,11 +129,13 @@
   </p>
   <p class="note" id="gNote">Samme seed giver samme etage. Lad feltet stå tomt, så
     finder den selv et — det står øverst på arket, så etagen kan laves igen hvis
-    printet forsvinder. Rumantallet kan du ikke sætte: det følger af pladsen og af
-    budgettet — små rum giver mange, store rum giver få, og er der ikke rum nok til
-    XP'en, lægger generatoren selv flere til. <b>Størrelsen er derfor et udgangspunkt,
-    ikke et loft:</b> kan budgettet ikke ligge på det gitter du vælger, bliver det
-    større. Hvad det endte som, står på arket.</p>
+    printet forsvinder.</p>
+  <p class="note"><b>Etagens størrelse kan du ikke sætte — den regnes ud.</b> Af
+    budgettet følger hvor mange kamprum der skal til; af fældeandelen hvor mange rum der
+    skal lægges oveni; og af mætningen hvor mange tomme rum der skal til for at
+    procenten passer. Summen er rumantallet, og derfra følger gitteret. Vil du have en
+    stor etage, så sæt mætningen ned eller fældeandelen op — ikke flere felter. Hvad den
+    blev regnet til, og hvad den endte på, står på arket.</p>
   <p class="note"><b>Mætning</b> er hvor stor en del af rummene der har noget i sig, og
     <b>heraf fælder</b> deler det indhold op mellem fælder og monstre. En fælde koster
     ikke XP — SRD'en giver fælder en grad og et niveauspænd, ikke en XP-værdi — så en høj
@@ -226,7 +220,6 @@
 
       current = DUNGEON.create({
         seed: seed,
-        n_rows: +val('gRows'), n_cols: +val('gRows'),
         room_max: +val('gRoom'),
         room_layout: val('gLayout'),
         corridor_layout: val('gCorr'),
@@ -238,7 +231,7 @@
         room_cap: val('gCap'),
         saturation: +val('gSat'),
         trap_share: +val('gTrap'),
-        bosses: +val('gBosses'),
+        boss_rooms: +val('gBosses'),
         safe_rooms: +val('gSafes')
       });
 
@@ -258,22 +251,23 @@
       document.getElementById('gSave').disabled = false;
 
       var xp = current.xp, fit = current.fit;
+      var size = current.n_rows + ' × ' + current.n_cols + ' med '
+        + current.n_rooms + ' rum';
       if (xp.short) {
         note.textContent = 'Der er ' + xp.short.toLocaleString('da-DK') + ' XP tilbage. '
-          + 'Etagen blev lavet om ' + fit.passes + ' gange og endte på '
-          + current.n_rows + ' × ' + current.n_cols + ' med ' + current.n_rooms
-          + ' rum, og budgettet kan stadig ikke ligge der uden at bryde loftet. '
-          + 'Sænk slack, eller hæv loftet pr. rum.';
-      } else if (fit.grew) {
-        note.textContent = 'Etagen blev gjort større — fra ' + fit.asked_rows + ' × '
-          + fit.asked_rows + ' til ' + current.n_rows + ' × ' + current.n_cols
-          + ' — for at der var rum nok til budgettet. ' + current.n_rooms + ' rum. '
-          + 'Seed ' + seed + '.';
-      } else if (fit.passes > 1) {
-        note.textContent = 'Etagen fik flere rum end sædvanligt (' + current.n_rooms
-          + '), så budgettet kunne ligge der. Seed ' + seed + '.';
+          + 'Etagen er regnet til ' + fit.planned + ' rum og endte på ' + size
+          + ', og budgettet kan stadig ikke ligge der uden at bryde loftet. '
+          + 'Sænk slack, hæv loftet pr. rum, eller sæt mætningen op.';
+      } else if (!current.near_entrance && (current.safes || []).length) {
+        note.textContent = 'Etagen er klar — ' + size + '. Det nærmeste safe room '
+          + 'ligger ' + current.safes[0].dist + ' skridt inde; tættere på kunne ikke '
+          + 'lade sig gøre med de her rum. Seed ' + seed + '.';
+      } else if (!(current.safes || []).length && current.safe_rooms) {
+        note.textContent = 'Etagen er klar — ' + size + ', men uden safe room: intet '
+          + 'rum kunne skæres ned til 3 × 3 med én dør. Prøv igen. Seed ' + seed + '.';
       } else {
-        note.textContent = 'Etagen er klar. Seed ' + seed
+        note.textContent = 'Etagen er klar — ' + size + '. Størrelsen er regnet ud af '
+          + 'indstillingerne (' + fit.planned + ' rum skulle der til). Seed ' + seed
           + ' — skriv det ned, så kan den laves igen.';
       }
     }
@@ -381,18 +375,29 @@
       <td><b>Mætning</b> sætter hvor mange rum der har noget i sig, og <b>fældeandelen</b>
         deler det mellem fælder og monstre. <b>Bossrum</b> og <b>safe rooms</b> kan sættes
         op til fire af hver. Flere bosser lægges spredt og alle dybt inde — mindst to
-        tredjedele så langt inde som den dybeste — og trappen ned står i den fjerneste.
-        Hver boss er én kamp af den valgte slags, så fire bosser deler budgettet i fire,
-        og arket siger hvad hver af dem er værd.</td>
+        tredjedele så langt inde som den dybeste — og <b>hvert bossrum har sin egen
+        trappe ned</b>, så holdet kan vælge hvilken boss de vil forbi for at komme
+        videre. Hver boss er én kamp af den valgte slags, så fire bosser deler budgettet
+        i fire, og arket siger hvad hver af dem er værd. <b>Mindst ét safe room søges
+        lagt nær indgangstrappen</b> — det lykkes i knap ni ud af ti etager; resten
+        siger arket hvor langt inde det nærmeste ligger.</td>
     </tr>
     <tr>
       <td><b>Nogle etager kunne man ikke komme igennem.</b> donjon lover ikke at hele
-        etagen hænger sammen, og lå trappen ned i en lukket lomme, var etagen ubrugelig.
-        Det skete på 2-3 % af dem.</td>
-      <td>Etagen måles til sidst: kan trappen ned ikke nås fra indgangen, kasseres den og
-        der laves en ny. Målt over 700 etager: <b>0 ubrugelige</b>. Afstandene på arket
-        måles samme sted, efter at safe roomene er skåret ud — før rettelsen stod der tal
-        der var op til et halvt dusin skridt forkerte.</td>
+        etagen hænger sammen. Lå trappen ned i en lukket lomme, var etagen ubrugelig.</td>
+      <td>Lommerne <b>skæres væk</b>: alt uden vej til bliver til klippe, og de rum der lå
+        der findes ikke længere. Den største del er etagen — det er ikke nok at beholde
+        den del indgangen ligger i, for indgangen kan selv ligge i lommen. Oprydningen
+        kunne desuden mure selve indgangstrappen inde; nu er trapper fredede. Målt over
+        700 etager: <b>0 ubrugelige, 0 uden indgang</b>.</td>
+    </tr>
+    <tr>
+      <td><b>Alt lå fast i størrelsen.</b> Man valgte et gitter, og så måtte resten
+        passe sig ind.</td>
+      <td>Rumantallet <b>regnes baglæns</b> fra budget, mætning, fældeandel og antal
+        boss- og safe rooms, og gitteret følger af rumantallet — rum pr. felt i anden er
+        målt for hver kombination af layout og rumstørrelse. Målt over ni opsætninger
+        rammer den inden for et par rum af det planlagte hver gang.</td>
     </tr>
     <tr>
       <td><b>Etagen kunne være for lille til budgettet.</b> Et loft pr. rum gange
