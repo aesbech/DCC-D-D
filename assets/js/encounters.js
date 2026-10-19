@@ -10,6 +10,10 @@
  * end to skabninger pr. karakter, skal de være skrøbelige — så det er loftet.
  *
  * Skabningerne kommer fra assets/data/monsters.js, trukket ud af SRD'en.
+ * Fælderne kommer fra to steder: SRD'ens otte i assets/data/traps.js og vores
+ * egne 28 i assets/data/traps-dcc.js. De sidste er vores, fordi otte er for få
+ * til tyve etager, og fordi en dør skal kunne have en fælde der passer til en
+ * dør.
  */
 (function (global) {
   'use strict';
@@ -122,20 +126,74 @@
     };
   }
 
-  /* Fælderne. SRD'en har otte, alle med en grad — Nuisance eller Deadly — og
-     et niveauspænd. De fleste står som level 1-4, men SRD'en giver dem en
-     tabel over hvordan de skaleres opad, så de kan bruges hele vejen. Ligger
-     etagens level uden for spændet, tages de alligevel; det er skaleringen
-     der gør arbejdet, ikke udvalget.
+  /* Fælderne. To slags ligger i posen: SRD'ens otte, som har et niveauspænd og
+     en skaleringstabel i bogen, og vores egne fra traps-dcc.js, som har DC og
+     skade for hvert af de fire trin og derfor kan bruges hele vejen op.
 
-     Otte er ikke mange. Vil man have tre fælder på en etage, gentager de sig,
-     så udløseren står med — den samme faldgrube kan beskrives som et hul i
-     gulvet ét sted og en rådden lem et andet. */
-  function trapFor(rand, traps, level) {
+     En fælde skal passe til stedet. En nål i en lås hører på en dør, en
+     rullende sten hører i et rum, og en snubletråd kan begge steder — det er
+     `where` der siger hvad der er hvad. Der slækkes aldrig på det: en
+     faldgrube i en dørkarm er ikke en svær fælde, det er en der ikke giver
+     mening. Niveauet slækkes der til gengæld på, hvis båndet er tomt — SRD'en
+     har en tabel for hvordan dens egne skaleres opad. */
+  var BANDS = [[1, 4], [5, 10], [11, 16], [17, 20]];
+
+  function bandOf(level) {
+    for (var i = 0; i < BANDS.length; i++)
+      if (level <= BANDS[i][1]) return i;
+    return BANDS.length - 1;
+  }
+
+  function placeable(t, where) {
+    var w = t.where || 'room';
+    return w === where || w === 'both';
+  }
+
+  /* Et kort over de fælder der faktisk er lagt ud, så den samme ikke kommer
+     igen, før hele posen er brugt. Med fem fælder i rummene og fem på dørene
+     var det ellers oftere end man tror: fødselsdagsparadokset gælder også
+     for faldgruber. */
+  function trapFor(rand, traps, level, where, used) {
     if (!traps || !traps.length) return null;
-    var band = traps.filter(function (t) { return level >= t.min && level <= t.max; });
-    var t = pick(rand, band.length ? band : traps);
-    return { trap: t, parts: [], spent: 0, left: 0, count: 0 };
+    var here = traps.filter(function (t) { return placeable(t, where); });
+    if (!here.length) return null;
+
+    var band = here.filter(function (t) {
+      if (t.dc) return true;                   /* vores egne skalerer selv */
+      return level >= t.min && level <= t.max;
+    });
+    if (!band.length) band = here;
+
+    var fresh = band.filter(function (t) { return !used[t.name]; });
+    /* Er posen tom, vendes den om og tælles forfra. Det kan ske: med fuld
+       mætning og tre fjerdedele fælder er der flere fælder på etagen end der
+       findes i alt. Så gentager de sig — men jævnt, og ikke tre gange i træk
+       fordi terningen var i humør til det. */
+    if (!fresh.length) {
+      band.forEach(function (t) { delete used[t.name]; });
+      fresh = band;
+    }
+    var t = pick(rand, fresh);
+    used[t.name] = 1;
+    return scale(t, level);
+  }
+
+  /* Vores egne fælder står med {dc} og {dmg} i teksten og en liste med et tal
+     for hvert trin. Her bliver de til én fælde med tallene skrevet ind, så
+     arket ikke skal kende til trin. SRD'ens går uberørt igennem: deres
+     skalering står i bogen, og den er ikke min at skrive om. */
+  function scale(t, level) {
+    if (!t.dc) return t;
+    var i = bandOf(level);
+    var dc = t.dc[Math.min(i, t.dc.length - 1)];
+    var dmg = t.dmg ? t.dmg[Math.min(i, t.dmg.length - 1)] : '';
+    var out = { band: BANDS[i][0] + '-' + BANDS[i][1] };
+    Object.keys(t).forEach(function (k) {
+      out[k] = (typeof t[k] === 'string')
+        ? t[k].replace(/\{dc\}/g, dc).replace(/\{dmg\}/g, dmg)
+        : t[k];
+    });
+    return out;
   }
 
   /* Læg et forslag i hvert rum der har noget i sig. Rummene røres ikke ud over
@@ -147,20 +205,36 @@
     var pool = bestiary(rand, monsters, d.xp ? d.xp.cap : 1e9);
     if (!pool) return d;
     var level = d.xp ? d.xp.level : 1;
+    var used = {};
 
     for (var id = 1; id <= d.n_rooms; id++) {
       var room = d.room[id];
       if (!room) continue;
       if (room.trap) {
-        var t = trapFor(rand, traps, level);
-        if (t) room.encounter = t;
+        var t = trapFor(rand, traps, level, 'room', used);
+        if (t) room.encounter = { trap: t, parts: [], spent: 0, left: 0, count: 0 };
         continue;
       }
       if (!(room.xp > 0)) continue;
       room.encounter = best(rand, pool, room.xp, maxN, isBossRoom(d, id));
     }
+
+    /* Fældedørene. Generatoren siger at døren har en fælde; her bliver den til
+       en bestemt fælde. Dørobjekterne deles af begge rum — fixDoors lagde den
+       samme reference i to lister — så det er nok at sætte den ét sted. */
+    var doors = 0;
+    (d.door || []).forEach(function (door) {
+      if (door.key !== 'trap' || door.trap) return;
+      var t = trapFor(rand, traps, level, 'door', used);
+      if (t) { door.trap = t; doors++; }
+    });
+
     d.stocked = { theme: pool.name || null, max: maxN,
-                  traps: traps ? traps.length : 0 };
+                  traps: traps ? traps.length : 0,
+                  srd_traps: (traps || []).filter(function (t) {
+                    return t.srd;
+                  }).length,
+                  door_traps: doors };
     return d;
   }
 

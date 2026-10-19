@@ -1150,6 +1150,20 @@ Antallet af **bossrum** og **safe rooms** kan sættes op til fire af hver. Bosse
 spredt og alle dybt inde, og **hvert bossrum har sin egen trappe ned**, så holdet kan
 vælge hvilken boss de vil forbi.
 
+**Fældedørene siger hvad fælden er.** En dør med en fælde fik før kun et tegn på kortet;
+nu får den en bestemt fælde, valgt blandt dem der kan sidde på en dør — en nål i en lås
+kan, en rullende sten kan ikke. Den står i fældetabellen på arket med udløser, virkning
+og hvordan den findes, og med de to rum den sidder imellem, så den kan findes på kortet
+igen.
+
+**Fælderne kommer fra to poser.** SRD'ens otte står med navn og udløser og slås op i
+PDF'en; deres fulde tekst er Wizards', ikke vores at trykke. Dertil 28 vi selv har
+skrevet i `assets/data/traps-dcc.js`, fordi otte er for få til tyve etager og fordi en
+dør skal have noget der kan sidde på en dør. Vores står på arket med det hele og
+skalerer selv til holdets level i fire trin — 1-4, 5-10, 11-16, 17-20 — i samme
+inddeling som SRD'ens egne skaleringstabeller. Den samme fælde kommer ikke to gange på
+en etage, medmindre der er flere fælder på etagen end der findes i alt.
+
 **Ét safe room støder op til starttrappen**, så holdet kan gå tilbage og tage en long
 rest uden at skulle gennem et rum — kun gange imellem. Selve trappen vælges med det for
 øje: blandt blindgyderne tages den, hvis gang ender i et rum der kan undværes, målt på om
@@ -1240,9 +1254,10 @@ assets/js/core.js              datamodel, prisparsing, import, trækning
 assets/js/ui.js                UI og hændelser
 assets/js/dungeon.js           etagegeneratoren
 assets/js/dungeon-map.js       etagens kort og rapport som printbart ark
-assets/js/encounters.js        fylder rummene med skabninger fra SRD'en
+assets/js/encounters.js        fylder rum og døre med skabninger og fælder
 assets/data/monsters.js        SRD 5.2.1's skabninger med CR og XP
-assets/data/traps.js           SRD 5.2.1's fælder med grad og udløser
+assets/data/traps.js           SRD 5.2.1's otte fælder med grad og udløser
+assets/data/traps-dcc.js       vores egne 28 fælder, med fuld tekst og skalering
 assets/data/items.js           items fra regnearket
 assets/data/class-cards.js     Class-pakkens indhold (genereret)
 assets/data/magic-items.js     magic items

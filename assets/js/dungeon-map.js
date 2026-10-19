@@ -298,14 +298,18 @@
           : '')));
     var used = trapsUsed(d);
     if (used.length) {
-      out.push(row('Fælderne', used.map(function (x) {
-        /* Udløseren står med SRD'ens egne ord, i citat. Resten af arket er
-           dansk, men det her er en regeltekst man slår op — og en oversættelse
-           ville være mine ord om Wizards' regel. */
-        return '<b>' + esc(x.name) + '</b> (' + esc(x.severity) + ') — \u00ab'
-          + esc(x.trigger) + '\u00bb';
-      }).join('<br>') + '<br><i>SRD\u2019en har otte fælder i alt, så de gentager '
-        + 'sig på en etage med mange. De skaleres med holdets level.</i>'));
+      var inRooms = 0, onDoors = 0;
+      used.forEach(function (x) {
+        inRooms += x.rooms.length; onDoors += x.doors.length;
+      });
+      out.push(row('Fælderne', inRooms + ' i rummene'
+        + (onDoors ? ' og ' + onDoors + ' på dørene' : '')
+        + ' — ' + used.length + ' forskellige, med udløser og virkning i '
+        + 'tabellen efter rummene'
+        + '<br><i>De med engelsk navn står i SRD 5.2.1 og slås op dér; resten '
+        + 'er vores egne og står her med det hele, skaleret til level '
+        + xp.level + '. Er der flere fælder på etagen end der findes i alt, '
+        + 'gentager de sig — sænk «Heraf fælder», hvis de skal være unikke.</i>'));
     }
     if (d.stocked) {
       out.push(row('Skabninger', (d.stocked.theme
@@ -334,8 +338,8 @@
         note.push('indgang');
       /* Forslaget til hvad der står i rummet. Det er et forslag — DM'en bytter
          ud som hun vil, og XP-tallet ved siden af er stadig facit. En fælde
-         får sin udløser med: der er kun otte i SRD'en, så den samme fælde
-         kommer igen, og udløseren er det man beskriver den ud fra. */
+         står med navn og grad; udløser og virkning står i fældetabellen
+         nedenfor, hvor der er plads til hele regelteksten. */
       var enc = room.encounter;
       if (enc && enc.trap) {
         note.push(esc(enc.trap.name) + ' <i>(' + esc(enc.trap.severity) + ')</i>');
@@ -345,10 +349,11 @@
         }).join(', '));
       }
       out.push('<tr><td>' + id + '</td><td>' + room.width + ' × ' + room.height
-        + '</td><td>' + doorsOf(d, room) + '</td><td>' + n(room.xp)
+        + '</td><td>' + doorCell(d, room) + '</td><td>' + n(room.xp)
         + '</td><td>' + note.join(', ') + '</td></tr>');
     }
     out.push('</tbody></table>');
+    out.push(trapTable(d));
     return out.join('');
   }
 
@@ -387,17 +392,113 @@
       : v + ' skridt fra indgangen';
   }
 
-  /* Hvilke fælder er faktisk i brug på etagen, hver kun én gang. */
+  /* Hvilke fælder er i brug på etagen, og hvor. Både rummenes og dørenes —
+     det er den samme slags oplysning, og de skal stå i den samme tabel, så
+     DM'en kun har ét sted at slå op. */
+  /* Hver fælde står én gang, med alle de steder den er lagt. En etage med
+     fuld mætning og mange fælder bruger den samme fælde to eller tre gange,
+     og regelteksten behøver ikke stå tre gange. */
   function trapsUsed(d) {
-    var seen = {}, out = [];
+    var byName = {}, out = [];
+
+    function at(t) {
+      var e = byName[t.name];
+      if (!e) {
+        e = byName[t.name] = { trap: t, rooms: [], doors: [] };
+        out.push(e);
+      }
+      return e;
+    }
+
     for (var id = 1; id <= d.n_rooms; id++) {
       var r = d.room[id];
       if (!r || !r.encounter || !r.encounter.trap) continue;
-      var x = r.encounter.trap;
-      if (seen[x.name]) continue;
-      seen[x.name] = 1; out.push(x);
+      at(r.encounter.trap).rooms.push('rum ' + id);
     }
+    var sides = doorSides(d);
+    (d.door || []).forEach(function (x) {
+      if (!x.trap || !open(d, x.row, x.col)) return;
+      at(x.trap).doors.push(doorAt(sides, x));
+    });
     return out;
+  }
+
+  /* En dør står mellem to rum, eller mellem et rum og en gang. Kortet viser
+     hvilke døre der er fælder — tegnet er det samme i nøglen — så det er nok
+     at sige hvad den sidder imellem for at finde den igen. */
+  function doorSides(d) {
+    var map = {};
+    for (var id = 1; id <= d.n_rooms; id++) {
+      var room = d.room[id];
+      if (!room) continue;
+      Object.keys(room.door || {}).forEach(function (dir) {
+        room.door[dir].forEach(function (x) {
+          var k = x.row + ',' + x.col;
+          var list = map[k] || (map[k] = []);
+          if (list.indexOf(id) < 0) list.push(id);
+        });
+      });
+    }
+    return map;
+  }
+
+  function doorAt(sides, door) {
+    var ids = (sides[door.row + ',' + door.col] || []).slice().sort(
+      function (a, b) { return a - b; });
+    if (!ids.length) return 'i en gang';
+    return ids.map(function (x) { return 'rum ' + x; }).join(' ↔ ')
+      + (ids.length < 2 ? ' ↔ gang' : '');
+  }
+
+  /* Hvor mange af rummets døre der er fælder. Står det i dørkolonnen, kan man
+     læse rummets række og vide at der er noget på vejen ind. */
+  function trappedDoors(d, room) {
+    var seen = {}, n = 0;
+    Object.keys(room.door || {}).forEach(function (dir) {
+      room.door[dir].forEach(function (x) {
+        var k = x.row + ',' + x.col;
+        if (seen[k] || !x.trap || !open(d, x.row, x.col)) return;
+        seen[k] = 1; n++;
+      });
+    });
+    return n;
+  }
+
+  /* Fældetabellen. Vores egne står med det hele — der er ikke andet sted at
+     slå dem op. SRD'ens står med navn og udløser og en henvisning: deres
+     fulde tekst og skaleringstabel er Wizards', ikke vores at trykke. */
+  function trapTable(d) {
+    var used = trapsUsed(d);
+    if (!used.length) return '';
+    var out = ['<table class="dtraps"><thead><tr><th>Fælde</th><th>Hvor</th>'
+      + '<th>Udløser og virkning</th></tr></thead><tbody>'];
+    used.forEach(function (u) {
+      var t = u.trap, cell = [], where = [];
+      if (u.rooms.length) where.push(u.rooms.join(', '));
+      if (u.doors.length) {
+        /* «rum 8 ↔ rum 9» må ikke brække midt over — pilen alene på en linje
+           ligner ikke noget. Ordet «dør» står for sig selv ovenover. */
+        where.push('<b>dør</b><br><span class="dnw">'
+          + u.doors.map(esc).join('</span><br><span class="dnw">') + '</span>');
+      }
+      /* Udløseren står med SRD'ens egne ord, i citat. Resten af arket er
+         dansk, men det her er en regeltekst man slår op — og en oversættelse
+         ville være mine ord om Wizards' regel. Vores egne er skrevet på
+         dansk fra starten og står uden citationstegn. */
+      cell.push('<i>' + (t.srd ? '«' + esc(t.trigger) + '»'
+                               : esc(t.trigger) + '.') + '</i>');
+      if (t.effect) cell.push(esc(t.effect));
+      if (t.detect) cell.push('<b>Find og uskadeliggør:</b> ' + esc(t.detect));
+      if (t.srd) {
+        cell.push('Fælden står i SRD 5.2.1 med fuld tekst, og med en tabel '
+          + 'over hvordan den skaleres til level ' + d.xp.level + '.');
+      }
+      out.push('<tr><td><b>' + esc(t.name) + '</b><br><span class="dgrade">'
+        + esc(t.severity) + '</span></td><td>' + where.join('<br>')
+        + '</td><td>' + cell.join(' ') + '</td></tr>');
+    });
+    out.push('</tbody></table>');
+    return out.join('');
   }
 
   function bossOf(d, id) {
@@ -428,6 +529,12 @@
       });
     });
     return count;
+  }
+
+  function doorCell(d, room) {
+    var t = trappedDoors(d, room);
+    return doorsOf(d, room) + (t ? ' <span class="dsmall">· ' + t
+      + ' fælde' + (t > 1 ? 'r' : '') + '</span>' : '');
   }
 
   /* Nøglen. Dørene i den tegnes af den samme kode som kortet — et lille
@@ -496,6 +603,17 @@
     '.dsheet .drooms td{border-bottom:1px solid #e2e4ea}',
     '.dsheet .drooms td:nth-child(4),.dsheet .drooms th:nth-child(4){',
     'text-align:right;padding-right:22px}',
+    /* Fældetabellen. Virkningen er en hel regeltekst, så den får plads, og
+       navn og sted står smalt ved siden af. */
+    '.dsheet .dtraps{margin-top:18px}',
+    '.dsheet .dtraps th{border-bottom:1.5px solid #14161c;padding-bottom:4px}',
+    '.dsheet .dtraps td{border-bottom:1px solid #e2e4ea;padding:5px 10px 5px 0}',
+    '.dsheet .dtraps td:first-child,.dsheet .dtraps th:first-child{width:112px}',
+    '.dsheet .dtraps td:nth-child(2),.dsheet .dtraps th:nth-child(2){width:116px}',
+    '.dsheet .dnw{white-space:nowrap}',
+    '.dsheet .dgrade{color:#60656f;font-size:11px;letter-spacing:0.3px;',
+    'text-transform:uppercase}',
+    '.dsheet .dsmall{color:#60656f;font-size:11px}',
     '.dsheet footer{margin-top:16px;font-size:10.5px;color:#7a7f88}',
     '.dsheet footer a{color:inherit}',
     '@media print{.dsheet{padding:10mm}',
@@ -503,7 +621,8 @@
        midt over, og så kan man hverken lægge den ved siden af kortet eller
        læse den færdig. */
     '.dsheet .drep{page-break-before:always}',
-    '.dsheet .drooms{page-break-inside:avoid}}'
+    '.dsheet .drooms{page-break-inside:avoid}',
+    '.dsheet .dtraps tr{page-break-inside:avoid}}'
   ].join('');
 
   var CREDIT = 'Kortet er lavet med DCC-D-D’s etagegenerator, bygget på '
