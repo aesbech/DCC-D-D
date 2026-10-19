@@ -257,12 +257,11 @@
     return d.reachable && d.near_entrance && !d.xp.short;
   }
 
-  /* Et hvilested nær indgangen er et ønske, ikke en lov. Om det kan lade sig
-     gøre afhænger af hvor rummene ligger: et rum lige inden for døren er et
-     knudepunkt med mange døre, og et safe room skal have én. Derfor tæller
-     det i score() og kan få løkken til at prøve igen — men det stopper ikke
-     en etage der ellers er god. */
-  var NEAR_SHARE = 0.5;
+  /* Et hvilested ved selve trappen er et ønske, ikke en lov. Om det kan lade
+     sig gøre afhænger af hvad der ligger for enden af gangen fra trappen: er
+     det eneste rum dér porten til resten af etagen, kan det ikke lukkes ned
+     til én dør uden at spærre alt. Derfor tæller det i score() og får løkken
+     til at prøve igen — men det stopper ikke en etage der ellers er god. */
 
   function roomTries(rows, cols, roomMax) {
     return Math.floor((rows * cols) / (roomMax * roomMax));
@@ -718,7 +717,7 @@
        trappe midt i en gang er ikke så pæn, men den virker. */
     if (!list.length) list = enclosedCells(d);
     if (!list.length) return;
-    var s = list[Math.floor(d.rand() * list.length)];
+    var s = pickEntrance(d, list);
     d.cell[s.row][s.col] |= STAIR_UP;
     s.key = 'up';
     d.stair.push(s);
@@ -785,6 +784,64 @@
       d.entrance = null;
       dccEntrance(d);
     }
+  }
+
+  /* Hvilken blindgyde trappen står i, er ikke ligegyldigt. Safe roomet skal
+     ligge for enden af en gang fra den — uden et rum imellem — og det rum skal
+     kunne skæres ned til 3 × 3 med én dør uden at lukke etagen af. Et rum med
+     mange døre er porten til resten af etagen og kan ikke lukkes.
+
+     Så vælges trappen blandt de blindgyder der vender ud mod et rum med få
+     døre. Det koster ingenting i spil hvilken blindgyde man kommer op ad, og
+     det er forskellen på et hvilested ved indgangen og ingen. */
+  var ENTRANCE_TRIES = 10;
+
+  function pickEntrance(d, list) {
+    var pool = shuffle(d, list.slice()).slice(0, ENTRANCE_TRIES);
+    var best = null, bestScore = 1e9;
+
+    for (var i = 0; i < pool.length; i++) {
+      var touch = roomsOffCorridors(d, pool[i]).rooms;
+      var low = 1e9;
+      Object.keys(touch).forEach(function (id) {
+        var room = d.room[+id];
+        if (!room) return;
+        if (room.width < 3 || room.height < 3) return;   // kan ikke rumme 3 × 3
+        /* Dørantallet er ikke det der afgør det. Det der afgør det, er om
+           etagen hænger sammen uden rummet: er det gennemgangen, kan det
+           aldrig blive et safe room, uanset hvor få døre det har. */
+        var n = standsAlone(d, room) ? 0 : 2;
+        if (n < low) low = n;
+      });
+      if (low < bestScore) { bestScore = low; best = pool[i]; }
+      if (bestScore === 0) break;
+    }
+    return best || pool[0];
+  }
+
+  /* Hænger etagen sammen, hvis rummet skæres ud af den? Er svaret nej, er
+     rummet den eneste vej mellem to dele, og så kan det ikke lukkes ned til
+     én dør. Det måles uden om indgangen, for det er netop indgangen vi er i
+     gang med at vælge. */
+  function standsAlone(d, room) {
+    var start = null, total = 0, r, c;
+    for (r = 0; r <= d.n_rows && !start; r++)
+      for (c = 0; c <= d.n_cols && !start; c++) {
+        if (!(d.cell[r][c] & OPENSPACE)) continue;
+        if (r >= room.north && r <= room.south && c >= room.west && c <= room.east) continue;
+        start = [r, c];
+      }
+    if (!start) return true;
+
+    var dist = dccBfs(d, start[0], start[1], room);
+    for (r = 0; r <= d.n_rows; r++)
+      for (c = 0; c <= d.n_cols; c++) {
+        if (!(d.cell[r][c] & OPENSPACE)) continue;
+        if (r >= room.north && r <= room.south && c >= room.west && c <= room.east) continue;
+        total++;
+        if (dist[r + ',' + c] === undefined) return false;
+      }
+    return total > 0;
   }
 
   /* De felter med færrest åbne naboer, som noget man kan komme op ad. */
@@ -1083,20 +1140,54 @@
     d.safes = [];
     if (!want) return;
 
+    /* Det første skal støde op til starttrappen: man skal kunne gå tilbage og
+       tage en long rest uden at skulle igennem et rum undervejs. Kun gange
+       imellem, og gangen må gerne være lang. Lykkes det ikke, tages det
+       nærmeste i stedet, og arket siger at det ikke er lige ved trappen. */
     for (var k = 0; k < want; k++) {
-      var got = oneSafeRoom(d);
+      var got = (k === 0) ? oneSafeRoom(d, true) : null;
+      if (!got) got = oneSafeRoom(d, false);
       if (!got) break;
       d.safes.push(got);
     }
     d.safe = d.safes[0] || null;
   }
 
-  function oneSafeRoom(d) {
+  /* Hvilke rum ligger for enden af en gang fra indgangen — altså uden et
+     andet rum imellem? Der gås kun på gangfelter; rammer man et rumfelt, er
+     det rum noteret, og dér stopper den vej. */
+  function roomsOffCorridors(d, from) {
+    var touch = {}, seen = {};
+    var start = from || d.entrance;
+    if (!start) return { rooms: touch, cells: seen };
+    var q = [[start.row, start.col]], h = 0;
+    seen[start.row + ',' + start.col] = 1;
+
+    while (h < q.length) {
+      var n = q[h++];
+      for (var i = 0; i < DIRS.length; i++) {
+        var r = n[0] + di[DIRS[i]], c = n[1] + dj[DIRS[i]];
+        if (r < 0 || r > d.n_rows || c < 0 || c > d.n_cols) continue;
+        var cell = d.cell[r][c];
+        if (!(cell & OPENSPACE)) continue;
+        if (cell & ROOM) { touch[(cell & ROOM_ID) >> 6] = 1; continue; }
+        var key = r + ',' + c;
+        if (seen[key]) continue;
+        seen[key] = 1;
+        q.push([r, c]);
+      }
+    }
+    return { rooms: touch, cells: seen };
+  }
+
+  function oneSafeRoom(d, adjacent) {
     var fromDoor = dccBfs(d, d.entrance.row, d.entrance.col, bossRooms(d));
+    var near = adjacent ? roomsOffCorridors(d) : null;
     var cand = [];
     for (var id = 1; id <= d.n_rooms; id++) {
       var room = d.room[id];
       if (!room || isBoss(d, room.id) || isSafe(d, room.id)) continue;
+      if (near && !near.rooms[room.id]) continue;
       var v = fromDoor[roomCell(room)];
       if (v === undefined) continue;            // kun nåeligt gennem en boss
       cand.push({ room: room, dist: v });
@@ -1104,13 +1195,170 @@
     cand.sort(function (a, b) { return a.dist - b.dist || a.room.id - b.room.id; });
 
     for (var i = 0; i < cand.length; i++) {
-      var n = carveSafe(d, cand[i].room);
+      /* Udskæringen flytter døren, så det skal tjekkes bagefter: den dør der
+         bliver tilbage, skal stadig vende ud mod en gang der går til trappen. */
+      var check = adjacent
+        ? (function (room) {
+            return function () { return !!roomsOffCorridors(d).rooms[room.id]; };
+          }(cand[i].room))
+        : null;
+      var prefer = adjacent ? near.cells : null;
+
+      var n = carveSafe(d, cand[i].room, check, prefer);
       if (n) {
         return { id: cand[i].room.id, sealed: n.sealed, dist: cand[i].dist,
-                 door: n.door };
+                 door: n.door, adjacent: !!adjacent };
+      }
+
+      /* Kan rummet ikke skæres ned, fordi det er porten til resten af etagen,
+         kan det måske deles i stedet: et 3 × 3 i den ene ende bliver safe
+         room, en væg imellem, og resten bliver ved med at være det rum det
+         var — med sine døre i behold. Det virker kun på rum der er tre felter
+         brede eller høje, for ellers bliver resten ikke en firkant. */
+      if (adjacent) {
+        var sp = splitSafe(d, cand[i].room, prefer);
+        if (sp) {
+          return { id: sp.id, sealed: sp.sealed, dist: cand[i].dist,
+                   door: sp.door, adjacent: true, split: true };
+        }
       }
     }
     return null;
+  }
+
+  /* Del et aflangt rum i to: et 3 × 3 i den ene ende, en væg, og resten.
+     Begge dele bliver firkanter, og det er derfor kun rum der er præcis tre
+     felter i den ene retning og mindst fem i den anden der kan deles — ellers
+     ville resten blive et L, og rummodellen kender kun kasser. */
+  function splitSafe(d, room, prefer) {
+    var short = Math.min(room.width, room.height);
+    var long = Math.max(room.width, room.height);
+    if (short !== 3 || long < 5) return null;
+    var vertical = (room.width === 3);        // deles langs rækkerne
+
+    for (var end = 0; end < 2; end++) {
+      var got = trySplit(d, room, vertical, end, prefer);
+      if (got) return got;
+    }
+    return null;
+  }
+
+  function trySplit(d, room, vertical, end, prefer) {
+    var box, wall;
+    if (vertical) {
+      var r0 = end ? room.south - 2 : room.north;
+      box = { north: r0, south: r0 + 2, west: room.west, east: room.east };
+      wall = { north: end ? r0 - 1 : r0 + 3, south: end ? r0 - 1 : r0 + 3,
+               west: room.west, east: room.east };
+    } else {
+      var c0 = end ? room.east - 2 : room.west;
+      box = { north: room.north, south: room.south, west: c0, east: c0 + 2 };
+      wall = { north: room.north, south: room.south,
+               west: end ? c0 - 1 : c0 + 3, east: end ? c0 - 1 : c0 + 3 };
+    }
+
+    var save = [], r, c;
+    function set(rr, cc, v) { save.push([rr, cc, d.cell[rr][cc]]); d.cell[rr][cc] = v; }
+    function undo() {
+      for (var i = save.length - 1; i >= 0; i--) d.cell[save[i][0]][save[i][1]] = save[i][2];
+    }
+    function inBox(b, rr, cc) {
+      return rr >= b.north && rr <= b.south && cc >= b.west && cc <= b.east;
+    }
+
+    for (r = wall.north; r <= wall.south; r++)
+      for (c = wall.west; c <= wall.east; c++) set(r, c, NOTHING);
+
+    /* Dørene fordeles efter hvilken side de ligger op ad. En dør der kun
+       rører væggen imellem, fører ingen steder hen og mures til. */
+    var cells = doorCells(room), mine = [], theirs = [], dead = [];
+    cells.forEach(function (p) {
+      if (!(d.cell[p[0]][p[1]] & OPENSPACE)) return;
+      var touchBox = false, touchRest = false;
+      for (var k = 0; k < DIRS.length; k++) {
+        var nr = p[0] + di[DIRS[k]], nc = p[1] + dj[DIRS[k]];
+        if (inBox(box, nr, nc)) touchBox = true;
+        else if (inBox(room, nr, nc) && !inBox(wall, nr, nc)) touchRest = true;
+      }
+      if (touchBox) mine.push(p);
+      else if (touchRest) theirs.push(p);
+      else dead.push(p);
+    });
+    if (!mine.length) { undo(); return null; }
+
+    if (prefer) {
+      mine.sort(function (a, b) {
+        return (prefer[a[0] + ',' + a[1]] ? 0 : 1) - (prefer[b[0] + ',' + b[1]] ? 0 : 1);
+      });
+    }
+    var keep = mine[0];
+    var sealed = mine.slice(1).concat(dead);
+    sealed.forEach(function (p) { set(p[0], p[1], NOTHING); });
+
+    var tp = safeDoorType(d);
+    set(keep[0], keep[1], (d.cell[keep[0]][keep[1]] & OPENSPACE) | tp);
+
+    if (!allReachable(d) || !bossesStillOpen(d) || !safesStillFree(d)
+        || !reachableWithoutBoss(d, box)) { undo(); return null; }
+
+    /* Det nye rum skal findes, før naboskabet kan måles — men hvis målingen
+       falder ud, skal alt kunne lægges tilbage. Derfor sættes id'et først, og
+       rulles tilbage sammen med felterne. */
+    var id = d.n_rooms + 1;
+    for (r = box.north; r <= box.south; r++)
+      for (c = box.west; c <= box.east; c++)
+        set(r, c, (d.cell[r][c] & ~ROOM_ID) | (id << 6));
+
+    d.n_rooms = id;
+    d.room[id] = {
+      id: id, row: box.north, col: box.west,
+      north: box.north, south: box.south, west: box.west, east: box.east,
+      height: 3, width: 3, area: 9, door: {}, xp: 0
+    };
+    if (!roomsOffCorridors(d).rooms[id]) {
+      d.room[id] = null; d.n_rooms = id - 1; undo(); return null;
+    }
+
+    // Det holdt. Papirerne rettes til.
+    sealed.forEach(function (p) { forgetDoor(d, p[0], p[1]); });
+    moveDoor(d, room, d.room[id], keep, box, tp);
+    if (vertical) {
+      room.north = (box.north === room.north) ? wall.south + 1 : room.north;
+      room.south = (box.south === room.south) ? wall.north - 1 : room.south;
+      room.height = room.south - room.north + 1;
+    } else {
+      room.west = (box.west === room.west) ? wall.east + 1 : room.west;
+      room.east = (box.east === room.east) ? wall.west - 1 : room.east;
+      room.width = room.east - room.west + 1;
+    }
+    room.row = room.north; room.col = room.west;
+    room.area = room.width * room.height;
+
+    return { id: id, sealed: sealed.length, door: DOOR_KIND[tp].type };
+  }
+
+  /* Flyt dørobjektet fra det gamle rum til det nye, og ret dens type. */
+  function moveDoor(d, from, to, cell, box, type) {
+    Object.keys(from.door).forEach(function (dir) {
+      from.door[dir] = from.door[dir].filter(function (x) {
+        return x.row !== cell[0] || x.col !== cell[1];
+      });
+      if (!from.door[dir].length) delete from.door[dir];
+    });
+    var dir = (cell[0] < box.north) ? 'north'
+            : (cell[0] > box.south) ? 'south'
+            : (cell[1] < box.west) ? 'west' : 'east';
+    var door = null;
+    d.door.forEach(function (x) {
+      if (x.row === cell[0] && x.col === cell[1]) door = x;
+    });
+    if (!door) {
+      door = { row: cell[0], col: cell[1] };
+      d.door.push(door);
+    }
+    door.key = DOOR_KIND[type].key;
+    door.type = DOOR_KIND[type].type;
+    (to.door[dir] || (to.door[dir] = [])).push(door);
   }
 
   /* Døren ind til safe roomet: enten låst eller ulåst, aldrig en fælde og
@@ -1123,20 +1371,20 @@
   /* Skær rummet ned til et 3 × 3-hjørne med én dør. Prøver hvert muligt hjørne
      og lader det stå ved det første der holder. Alt gemmes før det ændres, så
      et mislykket forsøg kan lægges præcis tilbage. */
-  function carveSafe(d, room) {
+  function carveSafe(d, room, extra, prefer) {
     var keeps = [];
     for (var r = room.north; r + 2 <= room.south; r += 2)
       for (var c = room.west; c + 2 <= room.east; c += 2) keeps.push([r, c]);
     if (!keeps.length) return null;               // rummet er smallere end 3
 
     for (var k = 0; k < keeps.length; k++) {
-      var got = tryCarve(d, room, keeps[k][0], keeps[k][1]);
+      var got = tryCarve(d, room, keeps[k][0], keeps[k][1], extra, prefer);
       if (got) return got;
     }
     return null;
   }
 
-  function tryCarve(d, room, r0, c0) {
+  function tryCarve(d, room, r0, c0, extra, prefer) {
     var save = [], r, c;
     function set(rr, cc, v) { save.push([rr, cc, d.cell[rr][cc]]); d.cell[rr][cc] = v; }
     function undo() { for (var i = save.length - 1; i >= 0; i--) d.cell[save[i][0]][save[i][1]] = save[i][2]; }
@@ -1159,8 +1407,16 @@
     });
     if (!live.length) { undo(); return null; }
 
+    /* Hvilken dør der bliver tilbage, afgør om rummet stadig vender ud mod
+       gangen fra trappen. Er der en liste over gangfelter, kommer de døre der
+       ligger på den først; ellers er det bare den nærmeste. */
     var fromDoor = dccBfs(d, d.entrance.row, d.entrance.col);
     live.sort(function (a, b) {
+      if (prefer) {
+        var pa = prefer[a[0] + ',' + a[1]] ? 0 : 1;
+        var pb = prefer[b[0] + ',' + b[1]] ? 0 : 1;
+        if (pa !== pb) return pa - pb;
+      }
       var x = fromDoor[a[0] + ',' + a[1]], y = fromDoor[b[0] + ',' + b[1]];
       return (x === undefined ? 1e9 : x) - (y === undefined ? 1e9 : y);
     });
@@ -1176,7 +1432,7 @@
     /* Også de safe rooms der allerede ligger der: den væg vi lukker nu, kan
        have været vejen udenom bossen til et af dem. */
     if (!allReachable(d) || !bossesStillOpen(d) || !reachableWithoutBoss(d, box)
-        || !safesStillFree(d)) {
+        || !safesStillFree(d) || (extra && !extra())) {
       undo();
       return null;
     }
@@ -1288,13 +1544,11 @@
       return b.exit && dist[b.exit.row + ',' + b.exit.col] !== undefined;
     });
 
-    /* Mindst ét safe room skal ligge tæt på trappen man kommer ind ad. Det er
-       dér man samler sig før man går ind, og dér man løber hen når det går
-       galt. «Tæt på» er en tredjedel af vejen ud til det fjerneste punkt. */
-    var deep = 0;
-    Object.keys(dist).forEach(function (k) { if (dist[k] > deep) deep = dist[k]; });
+    /* Mindst ét safe room skal støde op til trappen man kommer ind ad: man
+       skal kunne gå tilbage og tage en long rest uden at skulle igennem et rum
+       undervejs. Kun gange imellem — gangen må gerne være lang. */
     d.near_entrance = !(d.safes || []).length || (d.safes || []).some(function (s) {
-      return s.dist !== null && s.dist <= Math.max(6, deep * NEAR_SHARE);
+      return s.adjacent;
     });
   }
 

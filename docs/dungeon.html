@@ -259,9 +259,11 @@
           + ', og budgettet kan stadig ikke ligge der uden at bryde loftet. '
           + 'Sænk slack, hæv loftet pr. rum, eller sæt mætningen op.';
       } else if (!current.near_entrance && (current.safes || []).length) {
-        note.textContent = 'Etagen er klar — ' + size + '. Det nærmeste safe room '
-          + 'ligger ' + current.safes[0].dist + ' skridt inde; tættere på kunne ikke '
-          + 'lade sig gøre med de her rum. Seed ' + seed + '.';
+        note.textContent = 'Etagen er klar — ' + size + ', men intet safe room støder '
+          + 'op til starttrappen: rummet for enden af gangen derfra er etagens '
+          + 'gennemgang og kan ikke lukkes ned til én dør. Tryk Generér igen, så '
+          + 'kommer der en anden etage — det lykkes på omkring fem ud af seks. '
+          + 'Seed ' + seed + '.';
       } else if (!(current.safes || []).length && current.safe_rooms) {
         note.textContent = 'Etagen er klar — ' + size + ', men uden safe room: intet '
           + 'rum kunne skæres ned til 3 × 3 med én dør. Prøv igen. Seed ' + seed + '.';
@@ -378,9 +380,18 @@
         tredjedele så langt inde som den dybeste — og <b>hvert bossrum har sin egen
         trappe ned</b>, så holdet kan vælge hvilken boss de vil forbi for at komme
         videre. Hver boss er én kamp af den valgte slags, så fire bosser deler budgettet
-        i fire, og arket siger hvad hver af dem er værd. <b>Mindst ét safe room søges
-        lagt nær indgangstrappen</b> — det lykkes i knap ni ud af ti etager; resten
-        siger arket hvor langt inde det nærmeste ligger.</td>
+        i fire, og arket siger hvad hver af dem er værd.</td>
+    </tr>
+    <tr>
+      <td><b>Man kunne ikke gå tilbage og hvile.</b> Safe roomet lå hvor der var plads,
+        og vejen tilbage til starttrappen gik gennem andre rum.</td>
+      <td>Ét safe room skal <b>støde op til starttrappen</b>: kun gange imellem, ingen
+        rum. Gangen må gerne være lang. Selve trappen vælges med det for øje — blandt
+        blindgyderne tages den, hvis gang ender i et rum der kan undværes, og det måles
+        ved at se om etagen stadig hænger sammen uden det rum. Det lykkes på
+        <b>fem ud af seks etager</b>; på resten er rummet for enden af gangen etagens
+        eneste gennemgang, og så kan det ikke lukkes ned til én dør. Arket siger det,
+        og en ny etage plejer at løse det.</td>
     </tr>
     <tr>
       <td><b>Nogle etager kunne man ikke komme igennem.</b> donjon lover ikke at hele
