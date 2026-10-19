@@ -1135,12 +1135,24 @@ browserudgaven etagen om — først med flere rum på det samme gitter, og hjæl
 med et større. Perl-scriptet skriver stadig bare hvor meget der mangler. Browserudgaven
 er den, der bliver vedligeholdt.
 
+**Etagens størrelse er ikke et valg — den regnes ud.** Af budgettet følger hvor mange
+kamprum der skal til; af fældeandelen hvor mange rum der skal lægges oveni; og af
+mætningen hvor mange tomme rum der skal til for at procenten passer. Summen er
+rumantallet, og gitteret følger af det — rum pr. felt i anden er målt for hver
+kombination af layout og rumstørrelse.
+
 **Mætning styrer hvor meget der er på etagen.** En procent siger hvor mange af rummene
 der har noget i sig, og en anden deler det indhold mellem fælder og monstre. En fælde
 koster ikke XP — SRD'en giver fælder en grad og et niveauspænd, ikke en XP-værdi — så en
-høj fældeandel presser budgettet sammen i færre kamprum. Antallet af **bossrum** og
-**safe rooms** kan sættes op til fire af hver; bosserne lægges spredt og alle dybt inde,
-og trappen ned står i den fjerneste.
+høj fældeandel presser budgettet sammen i færre kamprum, og dermed gør etagen større.
+
+Antallet af **bossrum** og **safe rooms** kan sættes op til fire af hver. Bosserne lægges
+spredt og alle dybt inde, og **hvert bossrum har sin egen trappe ned**, så holdet kan
+vælge hvilken boss de vil forbi. Mindst ét safe room søges lagt nær indgangstrappen.
+
+**Lommer uden vej til skæres væk.** donjon lover ikke at hele etagen hænger sammen, og
+lå trappen ned i en lukket lomme, var etagen ubrugelig. Nu beholdes den største del, og
+resten bliver til klippe.
 
 **Rummene bliver fyldt ud.** `assets/js/encounters.js` foreslår hvad der står i hvert
 rum, efter SRD 5.2.1's egne regler for encounters: hver skabning har en XP-værdi, og

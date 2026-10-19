@@ -131,7 +131,7 @@
          der er fælder frem for monstre. En fælde koster ikke XP, så en høj
          fældeandel presser budgettet sammen i færre kamprum. */
       saturation: 45, trap_share: 25,
-      bosses: 1, safe_rooms: 1
+      boss_rooms: 1, safe_rooms: 1
     };
   }
 
@@ -143,7 +143,68 @@
      svaret at sænke slack og ikke at blive ved med at vokse. */
   var MAX_PASSES = 24;
   var GRID_STEP = 6;
+  var GRID_MIN = 15;
   var GRID_MAX = 61;
+
+  /* Rum pr. felt i anden. Målt over 40 etager pr. punkt, på gitre fra 14 til
+     60 felter: forholdet er stabilt, fordi rummene fylder arealet ud, så
+     antallet vokser med kvadratet på gitterets side. Tallene er målte, ikke
+     udledte — donjons rumplacering har ingen formel man kan vende om. */
+  var ROOM_DENSITY = {
+    Packed:    { 5: 0.0360, 7: 0.0275, 9: 0.0213 },
+    Scattered: { 5: 0.0160, 7: 0.0093, 9: 0.0060 }
+  };
+
+  /* Hvor mange rum etagen skal have, regnet baglæns fra det den skal rumme.
+     Etagens størrelse er ikke et valg man træffer; den følger af alt det
+     andet. Vil man have en stor etage, skal man bede om lav mætning eller
+     mange fælder — ikke om flere felter. */
+  function planRooms(o) {
+    var level = Math.max(1, Math.min(20, +o.party_level));
+    var size = Math.max(1, +o.party_size);
+    var need = XP_TO_NEXT[level < 20 ? level : 19];
+    var floorXp = Math.round(need * size * o.xp_slack);
+    var cap = ENCOUNTER[level][TIER[o.room_cap]] * size;
+    var minXp = ENCOUNTER[level][0] * size;
+
+    var nBoss = Math.max(1, Math.min(8, Math.round(+o.boss_rooms || 1)));
+    var nSafe = Math.max(0, Math.min(8, Math.round(
+      o.safe_rooms === undefined ? 1 : +o.safe_rooms)));
+
+    var bossXp = Math.min(ENCOUNTER[level][TIER[o.boss_fight]] * size, floorXp);
+    var rest = Math.max(0, floorXp - Math.min(nBoss * bossXp, floorXp));
+
+    /* Kamprum nok til at hver kamp er lidt over en Low — ellers bliver de alle
+       ens — og nok til at budgettet kan ligge under loftet. */
+    var fights = rest > 0
+      ? Math.max(Math.max(1, Math.floor(rest / (minXp * 1.25))), Math.ceil(rest / cap))
+      : 0;
+
+    var sat = clampPct(o.saturation, 45) / 100;
+    var trapPct = clampPct(o.trap_share, 25) / 100;
+
+    /* Fælderne koster ikke XP, så de lægges oveni kamprummene. Og mætningen
+       siger hvor stor en del af rummene der overhovedet har noget i sig, så
+       resten er tomme rum der skal være der for at procenten passer. */
+    var content = (trapPct >= 0.95) ? fights + 1
+      : Math.ceil(fights / (1 - trapPct));
+    var eligible = sat > 0 ? Math.ceil(content / sat) : content;
+
+    return {
+      rooms: Math.max(nBoss + nSafe + 1, eligible + nBoss + nSafe),
+      fights: fights, content: content
+    };
+  }
+
+  function gridFor(target, o) {
+    var table = ROOM_DENSITY[o.room_layout] || ROOM_DENSITY.Packed;
+    var rm = null;
+    Object.keys(table).forEach(function (key) {
+      if (rm === null || Math.abs(key - o.room_max) < Math.abs(rm - o.room_max)) rm = +key;
+    });
+    var g = Math.round(Math.sqrt(target / table[rm])) | 1;   // ulige
+    return Math.max(GRID_MIN, Math.min(GRID_MAX, g));
+  }
 
   function create(opts) {
     var base = {}, k;
@@ -151,47 +212,57 @@
     for (k in def) base[k] = def[k];
     for (k in (opts || {})) if (opts[k] !== undefined && opts[k] !== '') base[k] = opts[k];
 
-    var rows = base.n_rows, cols = base.n_cols;
+    /* Gitteret regnes ud, medmindre nogen beder om et bestemt. Perl-udgaven og
+       testene sætter det; siden gør ikke. */
+    var asked = !!(opts && opts.n_rows);
+    var plan = planRooms(base);
+    var rows = asked ? base.n_rows : gridFor(plan.rooms, base);
+    var cols = rows;
     var tries = 0;                     // 0 = donjons egen brøk
-    var d, best = null, prevRooms = -1, pass, grew = 0;
+    var d, best = null, pass, grew = 0;
 
     for (pass = 0; pass < MAX_PASSES; pass++) {
       d = build(base, rows, cols, tries);
       if (!best || score(d) > score(best)) best = d;
-      if (d.reachable && !d.xp.short) break;
-      /* Er mætningen det der holder kamprummene nede, kan flere rum ikke
-         hjælpe — der ville bare komme flere tomme. Så stopper vi med det
-         samme i stedet for at vokse etagen forgæves. Men kan trappen ned ikke
-         nås, er etagen ubrugelig, og så skal der laves en ny uanset hvad. */
-      if (d.reachable && !d.xp.room_bound) break;
+      if (good(d)) break;
 
-      /* Gav flere forsøg ikke flere rum, er pladsen brugt op. Så nytter det
-         ikke at prøve igen på det samme gitter. */
-      var stuck = (d.n_rooms <= prevRooms);
-      prevRooms = d.n_rooms;
-
-      if (stuck || tries === 0) {
-        if (stuck) {
-          if (rows >= GRID_MAX) break;
-          rows = Math.min(GRID_MAX, rows + GRID_STEP);
-          cols = Math.min(GRID_MAX, cols + GRID_STEP);
-          grew++;
-          prevRooms = -1;
-        }
-        tries = roomTries(rows, cols, base.room_max);
+      /* Mangler der plads til budgettet, og er det rummene der holder igen,
+         vokser etagen. Er det mætningen, hjælper flere rum ikke — der ville
+         bare komme flere tomme — men de andre krav kan stadig nås med en
+         anden etage, så der rulles om. */
+      if (d.xp.short && d.xp.room_bound && rows < GRID_MAX) {
+        rows = cols = Math.min(GRID_MAX, rows + GRID_STEP);
+        grew++;
+        tries = 0;
       }
-      tries += Math.max(4, Math.ceil(tries * 0.5));
+      tries = tries
+        ? tries + Math.max(4, Math.ceil(tries * 0.5))
+        : roomTries(rows, cols, base.room_max) + 4;
     }
 
     best.fit = {
       passes: Math.min(pass + 1, MAX_PASSES),
       grew: grew,
       rows: best.n_rows, cols: best.n_cols,
-      asked_rows: Math.floor(base.n_rows / 2) * 2,
+      auto: !asked,
+      planned: plan.rooms,
       rooms: best.n_rooms
     };
     return best;
   }
+
+  /* En etage duer, når man kan komme igennem den, der er et hvilested nær
+     indgangen, og budgettet ligger i rummene. */
+  function good(d) {
+    return d.reachable && d.near_entrance && !d.xp.short;
+  }
+
+  /* Et hvilested nær indgangen er et ønske, ikke en lov. Om det kan lade sig
+     gøre afhænger af hvor rummene ligger: et rum lige inden for døren er et
+     knudepunkt med mange døre, og et safe room skal have én. Derfor tæller
+     det i score() og kan få løkken til at prøve igen — men det stopper ikke
+     en etage der ellers er god. */
+  var NEAR_SHARE = 0.5;
 
   function roomTries(rows, cols, roomMax) {
     return Math.floor((rows * cols) / (roomMax * roomMax));
@@ -199,8 +270,11 @@
 
   /* En etage man kan komme igennem slår alt andet; derefter tæller det hvor
      meget af budgettet der mangler. */
+  /* Rangordnet efter hvad der betyder mest: en etage man kan komme igennem,
+     så et hvilested nær indgangen, og til sidst hvor meget af budgettet der
+     mangler. Den bedste af forsøgene vinder, hvis ingen af dem er perfekt. */
   function score(d) {
-    return (d.reachable ? 1e9 : 0) - d.xp.short;
+    return (d.reachable ? 4e9 : 0) + (d.near_entrance ? 2e9 : 0) - d.xp.short;
   }
 
   function build(base, rows, cols, tries) {
@@ -230,6 +304,7 @@
     corridors(d);
     dccEntrance(d);
     cleanDungeon(d);
+    dccPrune(d);
     dccBossExit(d);
     dccSafeRoom(d);
     /* Efter safe roomet: tilmuringen dér kan fjerne en af bossens døre, og så
@@ -558,13 +633,24 @@
     if (!(d.cell[r][c] & OPENSPACE)) return;
     for (var k = 0; k < DIRS.length; k++) {
       var xc = closeEnd[DIRS[k]];
-      if (checkTunnel(d, r, c, xc)) {
-        for (var i = 0; i < xc.close.length; i++) {
-          var p = xc.close[i];
-          d.cell[r + p[0]][c + p[1]] = NOTHING;
-        }
-        if (xc.recurse) collapse(d, r + xc.recurse[0], c + xc.recurse[1]);
+      if (!checkTunnel(d, r, c, xc)) continue;
+
+      /* En trappe må ikke mures inde. cleanDungeon springer selv over felter
+         med trapper, men collapse spiser videre ind i naboerne, og indgangen
+         ligger netop for enden af en blindgyde — den sad tilbage som et felt
+         uden vej til, og alt derefter så etagen som uopnåelig. */
+      var i, p, keep = false;
+      for (i = 0; i < xc.close.length && !keep; i++) {
+        p = xc.close[i];
+        if (d.cell[r + p[0]][c + p[1]] & STAIRS) keep = true;
       }
+      if (keep) continue;
+
+      for (i = 0; i < xc.close.length; i++) {
+        p = xc.close[i];
+        d.cell[r + p[0]][c + p[1]] = NOTHING;
+      }
+      if (xc.recurse) collapse(d, r + xc.recurse[0], c + xc.recurse[1]);
     }
   }
 
@@ -626,6 +712,11 @@
 
   function dccEntrance(d) {
     var list = stairEnds(d);
+    /* Normalt står indgangen for enden af en blindgyde. Skal den flyttes,
+       fordi den lå i en lomme der blev skåret væk, er blindgyderne som regel
+       allerede ryddet — så tages det mest lukkede felt der er tilbage. En
+       trappe midt i en gang er ikke så pæn, men den virker. */
+    if (!list.length) list = enclosedCells(d);
     if (!list.length) return;
     var s = list[Math.floor(d.rand() * list.length)];
     d.cell[s.row][s.col] |= STAIR_UP;
@@ -637,6 +728,92 @@
   /* Skridt gennem åbne felter. `avoid` er et rum eller en liste af rum man
      ikke må gå igennem — bruges til at finde ud af, hvad der kun kan nås ved
      at gå gennem bosserne. */
+  /* donjon lover ikke at hele etagen hænger sammen. Der kan ligge lommer uden
+     vej til — rum og gange man aldrig kan nå. Før blev etagen kasseret og
+     lavet om, men det er at smide en god etage væk på grund af et hjørne.
+     Lommerne skæres i stedet bort: de bliver til klippe, og de rum der lå i
+     dem findes ikke længere. Bagefter er alt på kortet noget man kan gå hen
+     til, og bosser, safe rooms og XP ser kun det der er tilbage. */
+  function dccPrune(d) {
+    var seen = {}, comps = [], r, c;
+
+    for (r = 0; r <= d.n_rows; r++)
+      for (c = 0; c <= d.n_cols; c++) {
+        if (!(d.cell[r][c] & OPENSPACE)) continue;
+        if (seen[r + ',' + c]) continue;
+        var dist = dccBfs(d, r, c), cells = Object.keys(dist);
+        cells.forEach(function (k) { seen[k] = 1; });
+        comps.push(cells);
+      }
+    if (comps.length < 2) return;
+
+    /* Den største del er etagen; resten er lommer. Det er ikke nok at beholde
+       den del indgangen ligger i — indgangen kan selv ligge i en lille lomme,
+       og så ville alt det rigtige blive skåret væk. */
+    var keep = comps[0];
+    comps.forEach(function (x) { if (x.length > keep.length) keep = x; });
+    var keepSet = {};
+    keep.forEach(function (k) { keepSet[k] = 1; });
+
+    var cut = 0;
+    for (r = 0; r <= d.n_rows; r++)
+      for (c = 0; c <= d.n_cols; c++) {
+        if (!(d.cell[r][c] & OPENSPACE)) continue;
+        if (keepSet[r + ',' + c]) continue;
+        if (d.cell[r][c] & DOORSPACE) forgetDoor(d, r, c);
+        d.cell[r][c] = NOTHING;
+        cut++;
+      }
+    if (!cut) return;
+    d.pruned = cut;
+
+    for (var id = 1; id <= d.n_rooms; id++) {
+      var room = d.room[id];
+      if (!room) continue;
+      var alive = false;
+      for (r = room.north; r <= room.south && !alive; r++)
+        for (c = room.west; c <= room.east && !alive; c++)
+          if (d.cell[r][c] & OPENSPACE) alive = true;
+      if (!alive) d.room[id] = null;
+    }
+
+    /* Lå indgangen i en af lommerne, er den væk nu, og der skal findes en ny
+       blandt det der er tilbage. */
+    if (d.entrance && !keepSet[d.entrance.row + ',' + d.entrance.col]) {
+      var gone = d.entrance;
+      d.stair = d.stair.filter(function (s) { return s !== gone; });
+      d.entrance = null;
+      dccEntrance(d);
+    }
+  }
+
+  /* De felter med færrest åbne naboer, som noget man kan komme op ad. */
+  function enclosedCells(d) {
+    var best = 5, out = [];
+    for (var r = 1; r < d.n_rows; r++)
+      for (var c = 1; c < d.n_cols; c++) {
+        if (!(d.cell[r][c] & OPENSPACE)) continue;
+        if (d.cell[r][c] & DOORSPACE) continue;
+        var n = 0, k, nr, nc;
+        for (k = 0; k < DIRS.length; k++) {
+          nr = r + di[DIRS[k]]; nc = c + dj[DIRS[k]];
+          if (d.cell[nr] && (d.cell[nr][nc] & OPENSPACE)) n++;
+        }
+        if (!n) continue;
+        if (n < best) { best = n; out = []; }
+        if (n === best) {
+          var dir = null;
+          for (k = 0; k < DIRS.length && !dir; k++) {
+            nr = r + di[DIRS[k]]; nc = c + dj[DIRS[k]];
+            if (d.cell[nr] && (d.cell[nr][nc] & OPENSPACE)) dir = DIRS[k];
+          }
+          out.push({ row: r, col: c,
+                     next_row: r + di[dir], next_col: c + dj[dir] });
+        }
+      }
+    return out;
+  }
+
   function dccBfs(d, r0, c0, avoid) {
     var dist = {}, queue = [[r0, c0]], head = 0;
     var box = !avoid ? [] : (avoid.length === undefined ? [avoid] : avoid);
@@ -698,8 +875,13 @@
      ligger længst fra dem der allerede er valgt, så to bosser ikke ender som
      naboer. Trappen ned står i det første, altså det fjerneste. */
   function dccBossExit(d) {
+    /* Sættes først, så d.bosses altid er en liste. Optionen hedder
+       boss_rooms og ikke bosses netop derfor: et tal og en liste under samme
+       navn gav en etage hvor d.bosses stadig var tallet 1, hvis bossvalget
+       faldt igennem. */
+    d.bosses = [];
     var dist = d.entrance ? dccBfs(d, d.entrance.row, d.entrance.col) : null;
-    var want = Math.max(1, Math.min(8, Math.round(+d.bosses || 1)));
+    var want = Math.max(1, Math.min(8, Math.round(+d.boss_rooms || 1)));
     var cand = [], fallback = null, id;
 
     for (id = 1; id <= d.n_rooms; id++) {
@@ -737,31 +919,38 @@
       chosen.push(pool.splice(bestI, 1)[0]);
     }
 
-    d.bosses = chosen.map(function (c, k) {
+    d.bosses = chosen.map(function (c) {
       return { id: c.room.id, doors: doorCount(d, c.room),
-               dist: Math.max(0, c.dist), stairs: k === 0 };
+               dist: Math.max(0, c.dist), stairs: true };
     });
-    d.boss = d.bosses[0];                 // den med trappen
+    d.boss = d.bosses[0];                 // den dybeste
 
-    /* Trappen ned i den ende af det fjerneste bossrum der ligger længst fra
-       indgangen, så man skal tværs gennem rummet for at komme ned. */
-    var boss = d.room[d.boss.id];
-    var sr = boss.north, sc = boss.west, best = -1;
-    for (var r = boss.north; r <= boss.south; r++) {
-      for (var c = boss.west; c <= boss.east; c++) {
-        if (d.cell[r][c] & STAIRS) continue;
-        var v = dist ? dist[r + ',' + c] : 0;
-        v = (v === undefined) ? 0 : v;
-        if (v > best) { sr = r; sc = c; best = v; }
+    /* Hvert bossrum har sin egen trappe ned. Flere veje videre betyder at
+       holdet kan vælge hvilken boss de vil slås med for at komme ned — og at
+       en boss de ikke kan klare ikke spærrer hele etagen.
+
+       Trappen står i den ende af rummet der ligger længst fra indgangen, så
+       man skal tværs gennem bossrummet for at nå den. */
+    d.bosses.forEach(function (entry) {
+      var boss = d.room[entry.id];
+      var sr = boss.north, sc = boss.west, best = -1;
+      for (var r = boss.north; r <= boss.south; r++) {
+        for (var c = boss.west; c <= boss.east; c++) {
+          if (d.cell[r][c] & STAIRS) continue;
+          var v = dist ? dist[r + ',' + c] : 0;
+          v = (v === undefined) ? 0 : v;
+          if (v > best) { sr = r; sc = c; best = v; }
+        }
       }
-    }
-    d.cell[sr][sc] |= STAIR_DN;
-    d.stair.push({
-      row: sr, col: sc,
-      next_row: (sr > boss.north) ? sr - 1 : sr + 1, next_col: sc,
-      key: 'down'
+      d.cell[sr][sc] |= STAIR_DN;
+      d.stair.push({
+        row: sr, col: sc,
+        next_row: (sr > boss.north) ? sr - 1 : sr + 1, next_col: sc,
+        key: 'down'
+      });
+      entry.exit = { row: sr, col: sc };
     });
-    d.exit = { row: sr, col: sc };
+    d.exit = d.bosses[0].exit;
   }
 
   /* Afstanden mellem to rum i felter, målt mellem kasserne og ikke mellem
@@ -1092,7 +1281,21 @@
        lomme uden vej til. Ligger trappen ned i sådan en, er etagen ubrugelig —
        man kan ikke komme videre. Det måles her, og create() kasserer etagen
        og laver en ny. */
-    d.reachable = !!(d.exit && dist[d.exit.row + ',' + d.exit.col] !== undefined);
+    /* Alle trapper ned skal kunne nås. Én ubrugelig udgang er én boss man
+       aldrig møder, og ligger de alle bag en lukket lomme, er etagen blind. */
+    var list = d.bosses || [];
+    d.reachable = list.length > 0 && list.every(function (b) {
+      return b.exit && dist[b.exit.row + ',' + b.exit.col] !== undefined;
+    });
+
+    /* Mindst ét safe room skal ligge tæt på trappen man kommer ind ad. Det er
+       dér man samler sig før man går ind, og dér man løber hen når det går
+       galt. «Tæt på» er en tredjedel af vejen ud til det fjerneste punkt. */
+    var deep = 0;
+    Object.keys(dist).forEach(function (k) { if (dist[k] > deep) deep = dist[k]; });
+    d.near_entrance = !(d.safes || []).length || (d.safes || []).some(function (s) {
+      return s.dist !== null && s.dist <= Math.max(6, deep * NEAR_SHARE);
+    });
   }
 
   function dccXp(d) {
