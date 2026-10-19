@@ -122,23 +122,52 @@
     };
   }
 
-  /* Læg et forslag i hvert rum der har XP. Rummene røres ikke ud over det —
-     etagen er den samme, uanset om den er stokket eller ej. */
-  function stock(d, monsters) {
+  /* Fælderne. SRD'en har otte, alle med en grad — Nuisance eller Deadly — og
+     et niveauspænd. De fleste står som level 1-4, men SRD'en giver dem en
+     tabel over hvordan de skaleres opad, så de kan bruges hele vejen. Ligger
+     etagens level uden for spændet, tages de alligevel; det er skaleringen
+     der gør arbejdet, ikke udvalget.
+
+     Otte er ikke mange. Vil man have tre fælder på en etage, gentager de sig,
+     så udløseren står med — den samme faldgrube kan beskrives som et hul i
+     gulvet ét sted og en rådden lem et andet. */
+  function trapFor(rand, traps, level) {
+    if (!traps || !traps.length) return null;
+    var band = traps.filter(function (t) { return level >= t.min && level <= t.max; });
+    var t = pick(rand, band.length ? band : traps);
+    return { trap: t, parts: [], spent: 0, left: 0, count: 0 };
+  }
+
+  /* Læg et forslag i hvert rum der har noget i sig. Rummene røres ikke ud over
+     det — etagen er den samme, uanset om den er stokket eller ej. */
+  function stock(d, monsters, traps) {
     if (!d || !monsters || !monsters.length) return d;
     var rand = rng(d.seed ^ 0x5f3759df);
     var maxN = Math.max(2, 2 * (d.xp ? d.xp.size : 4));
     var pool = bestiary(rand, monsters, d.xp ? d.xp.cap : 1e9);
     if (!pool) return d;
+    var level = d.xp ? d.xp.level : 1;
 
-    var bossId = d.boss ? d.boss.id : 0;
     for (var id = 1; id <= d.n_rooms; id++) {
       var room = d.room[id];
-      if (!room || !(room.xp > 0)) continue;
-      room.encounter = best(rand, pool, room.xp, maxN, room.id === bossId);
+      if (!room) continue;
+      if (room.trap) {
+        var t = trapFor(rand, traps, level);
+        if (t) room.encounter = t;
+        continue;
+      }
+      if (!(room.xp > 0)) continue;
+      room.encounter = best(rand, pool, room.xp, maxN, isBossRoom(d, id));
     }
-    d.stocked = { theme: pool.name || null, max: maxN };
+    d.stocked = { theme: pool.name || null, max: maxN,
+                  traps: traps ? traps.length : 0 };
     return d;
+  }
+
+  function isBossRoom(d, id) {
+    if (!d.bosses) return d.boss && d.boss.id === id;
+    for (var i = 0; i < d.bosses.length; i++) if (d.bosses[i].id === id) return true;
+    return false;
   }
 
   /* Egen terning, så et rum kan stokkes uden at flytte kortet. Samme mulberry32
@@ -154,7 +183,9 @@
   }
 
   function text(enc) {
-    if (!enc || !enc.parts.length) return '';
+    if (!enc) return '';
+    if (enc.trap) return enc.trap.name + ' (' + enc.trap.severity + ')';
+    if (!enc.parts.length) return '';
     return enc.parts.map(function (p) {
       return p.n + ' × ' + p.name;
     }).join(', ');

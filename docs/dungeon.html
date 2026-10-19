@@ -102,6 +102,29 @@
         <option value="low">Low</option>
       </select>
     </label>
+    <label>Mætning
+      <select id="gSat">
+        <option value="25">25 % — meget tomt</option>
+        <option value="45" selected>45 % — knap halvdelen har noget</option>
+        <option value="65">65 % — de fleste rum</option>
+        <option value="85">85 % — næsten alle</option>
+        <option value="100">100 % — hvert eneste rum</option>
+      </select>
+    </label>
+    <label>Heraf fælder
+      <select id="gTrap">
+        <option value="0">Ingen — kun monstre</option>
+        <option value="25" selected>25 % — hver fjerde</option>
+        <option value="50">50 % — halvdelen</option>
+        <option value="75">75 % — mest fælder</option>
+      </select>
+    </label>
+    <label>Bossrum
+      <select id="gBosses"></select>
+    </label>
+    <label>Safe rooms
+      <select id="gSafes"></select>
+    </label>
     <label>Seed
       <input type="text" id="gSeed" inputmode="numeric" placeholder="tilfældigt">
     </label>
@@ -119,6 +142,11 @@
     XP'en, lægger generatoren selv flere til. <b>Størrelsen er derfor et udgangspunkt,
     ikke et loft:</b> kan budgettet ikke ligge på det gitter du vælger, bliver det
     større. Hvad det endte som, står på arket.</p>
+  <p class="note"><b>Mætning</b> er hvor stor en del af rummene der har noget i sig, og
+    <b>heraf fælder</b> deler det indhold op mellem fælder og monstre. En fælde koster
+    ikke XP — SRD'en giver fælder en grad og et niveauspænd, ikke en XP-værdi — så en høj
+    fældeandel presser hele budgettet sammen i færre kamprum. Bliver der for få til at
+    rumme det, laver generatoren om på fordelingen og lægger om nødvendigt rum til.</p>
   <p class="note">Standarden er <b>ikke</b> donjons egen. Med spredte rum og halvdelen
     af blindgyderne tilbage er <b>59 % af det åbne areal gang</b>, og holdet bruger
     aftenen på at gå. Med rummene tæt og alle blindgyder væk er det <b>12 %</b>, og der
@@ -134,7 +162,9 @@
     på etagen. Rapporten siger hvor mange skridt der er til safe roomet og til bossen,
     så du kan se hvor langt inde de ligger.</p>
   <p>I <b>Noter</b> står et forslag til hvad der er i rummet — navne og antal, valgt
-    så de bruger rummets budget uden at gå over. Det er et forslag: byt ud som du vil,
+    så de bruger rummets budget uden at gå over. Et rum mærket <b>FÆLDE</b> har en fælde
+    i stedet; hvilke fælder der er på etagen, og hvad der udløser dem, står samlet i
+    rapporten. SRD'en har kun otte fælder, så de gentager sig på en etage med mange. Det er et forslag: byt ud som du vil,
     <b>XP-tallet er facit</b>. Skabningerne slås op i
     <a href="SRD_CC_v5.2.1.pdf">SRD 5.2.1</a>, der ligger under Docs.</p>
   <p>Rum der står <b>tom</b> har ingen kamp; det er ikke et hul i budgettet, men plads
@@ -151,6 +181,7 @@
     er kravet umuligt frem for svært, og så er svaret at sænke slack.</p>
 
   <script src="../assets/data/monsters.js"></script>
+  <script src="../assets/data/traps.js"></script>
   <script src="../assets/js/dungeon.js"></script>
   <script src="../assets/js/encounters.js"></script>
   <script src="../assets/js/dungeon-map.js"></script>
@@ -163,6 +194,18 @@
       if (i === 1) o.selected = true;
       lvl.appendChild(o);
     }
+
+    /* Antal bossrum og safe rooms. Fire er rigeligt: en etage med fem bosser
+       deler det samme budget ud i fem dele, og så er ingen af dem en boss. */
+    [['gBosses', 1, 1], ['gSafes', 0, 1]].forEach(function (spec) {
+      var sel = document.getElementById(spec[0]);
+      for (var k = spec[1]; k <= 4; k++) {
+        var o = document.createElement('option');
+        o.value = k; o.textContent = k;
+        if (k === spec[2]) o.selected = true;
+        sel.appendChild(o);
+      }
+    });
 
     /* Arkets CSS kommer fra generatoren selv, så siden og den hentede fil
        viser det samme. */
@@ -192,13 +235,18 @@
         party_size: Math.max(1, Math.min(8, +val('gSize') || 4)),
         xp_slack: +val('gSlack'),
         boss_fight: val('gBoss'),
-        room_cap: val('gCap')
+        room_cap: val('gCap'),
+        saturation: +val('gSat'),
+        trap_share: +val('gTrap'),
+        bosses: +val('gBosses'),
+        safe_rooms: +val('gSafes')
       });
 
-      /* Fyld rummene ud med skabninger fra SRD'en. Etagen er den samme uanset
-         om den bliver stokket — det er kun noter der lægges oveni. */
+      /* Fyld rummene ud med skabninger og fælder fra SRD'en. Etagen er den
+         samme uanset om den bliver stokket — det er kun noter der lægges
+         oveni. */
       if (window.ENCOUNTERS && window.MONSTERS) {
-        ENCOUNTERS.stock(current, window.MONSTERS);
+        ENCOUNTERS.stock(current, window.MONSTERS, window.TRAPS);
       }
 
       /* Seedet skrives med vilje ikke tilbage i feltet. Gør man det, bliver
@@ -284,7 +332,7 @@
     <tr>
       <td><b>Intet sted at puste ud</b> — og da der kom et, lå det tæt på bossen, hvor
         man ikke har brug for det, og nogle gange bag den.</td>
-      <td>Ét rum er <b>safe room</b>: skåret ned til <b>3 × 3 felter</b> med
+      <td>Et eller flere rum er <b>safe room</b>: skåret ned til <b>3 × 3 felter</b> med
         <b>præcis én dør</b>, der altid er en rigtig dør — låst eller ulåst, aldrig en
         fælde og aldrig et faldgitter. Et hvilested skal man kunne lukke efter sig, ikke
         blive fanget i. Rummet står tomt. Det vælges <b>så tæt på indgangen som muligt</b>, og
@@ -292,8 +340,9 @@
         bossen for at nå er ikke et hvilested. Findes der ikke et rum med én dør, mures
         resten af rummet til klippe. Det sker kun hvis hele etagen stadig kan nås,
         bossrummet beholder sine to udveje, og rummet stadig kan nås udenom. Målt over
-        600 etager lykkedes det 567 gange, alle 3 × 3 med én dør, og ingen af dem lå
-        bag bossen; resten siger arket til om. Arket siger også hvor mange skridt der er
+        700 etager med blandede indstillinger lykkedes det 688 gange, alle 3 × 3 med én
+        dør, og ingen af dem lå bag et bossrum — heller ikke når der er flere safe rooms,
+        hvor det ene kan komme til at ligge bag det andet. Resten siger arket til om. Arket siger også hvor mange skridt der er
         derhen — i snit en tredjedel af vejen ud, mod bossens fulde længde.</td>
     </tr>
     <tr>
@@ -325,6 +374,25 @@
         er loftet. Etagen bygges over én slags skabning, så goblins og worgs hører
         sammen, men budgettet vinder over temaet, hvis der ikke er noget stort nok.
         <b>Forslagene står i Noter og er forslag</b>; XP-tallet er facit.</td>
+    </tr>
+    <tr>
+      <td><b>Alt lå fast.</b> Én boss, ét safe room, og et rumantal der kun fulgte
+        budgettet.</td>
+      <td><b>Mætning</b> sætter hvor mange rum der har noget i sig, og <b>fældeandelen</b>
+        deler det mellem fælder og monstre. <b>Bossrum</b> og <b>safe rooms</b> kan sættes
+        op til fire af hver. Flere bosser lægges spredt og alle dybt inde — mindst to
+        tredjedele så langt inde som den dybeste — og trappen ned står i den fjerneste.
+        Hver boss er én kamp af den valgte slags, så fire bosser deler budgettet i fire,
+        og arket siger hvad hver af dem er værd.</td>
+    </tr>
+    <tr>
+      <td><b>Nogle etager kunne man ikke komme igennem.</b> donjon lover ikke at hele
+        etagen hænger sammen, og lå trappen ned i en lukket lomme, var etagen ubrugelig.
+        Det skete på 2-3 % af dem.</td>
+      <td>Etagen måles til sidst: kan trappen ned ikke nås fra indgangen, kasseres den og
+        der laves en ny. Målt over 700 etager: <b>0 ubrugelige</b>. Afstandene på arket
+        måles samme sted, efter at safe roomene er skåret ud — før rettelsen stod der tal
+        der var op til et halvt dusin skridt forkerte.</td>
     </tr>
     <tr>
       <td><b>Etagen kunne være for lille til budgettet.</b> Et loft pr. rum gange
