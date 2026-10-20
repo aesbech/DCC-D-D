@@ -45,6 +45,11 @@
       + '" height="' + (H + P * 2) + '" fill="#fff"/>');
 
     /* Bossrum og safe room får en tone, så de kan ses på et skridt. */
+    /* Forkammeret tones lysere end bossrummet, så parret læses som ét sted på
+       kortet, og så man kan se hvilken vej man kommer ind. */
+    (d.bosses || []).forEach(function (b) {
+      if (b.ante) out.push(tint(d, b.ante, '#f1f3f9'));
+    });
     (d.bosses || []).forEach(function (b) { out.push(tint(d, b.id, '#e6eaf4')); });
     (d.safes || []).forEach(function (s) { out.push(tint(d, s.id, '#e7f0e7')); });
 
@@ -182,7 +187,13 @@
     var dr = (st.next_row === undefined ? st.row : st.next_row) - st.row;
     var dc = (st.next_col === undefined ? st.col : st.next_col) - st.col;
     var label = (st.key === 'down') ? 'NED' : 'OP';
-    var ly = (st.row < d.n_rows / 2) ? y - 4 : y + CELL + 11;
+    /* Skiltet lægges modsat den vej trappen vender — altså væk fra rummet
+       eller gangen den står for enden af. Bossrummene er blevet mindre, siden
+       de fik et forkammer, og lå skiltet ind over rummet, lagde det sig oven i
+       rummets nummer. */
+    var ly = (dr > 0) ? y - 4
+           : (dr < 0) ? y + CELL + 11
+           : (st.row < d.n_rows / 2) ? y - 4 : y + CELL + 11;
 
     return stairGlyph(x, y, dr, dc)
       + '<text x="' + (x + CELL / 2) + '" y="' + ly + '" text-anchor="middle" '
@@ -198,7 +209,10 @@
     var cy = (room.north + room.height / 2) * CELL;
     var tall = room.height >= 3;
     var tag = bossOf(d, id) ? 'BOSS' : safeOf(d, id) ? 'SAFE'
-            : room.trap ? 'FÆLDE' : '';
+            : anteOf(d, id) ? 'FORKAMMER' : room.trap ? 'FÆLDE' : '';
+    /* Et forkammer er tit smalt, og «FORKAMMER» er et langt ord. Er der ikke
+       plads, prøves den korte form, før teksten helt forsvinder. */
+    var short = (tag === 'FORKAMMER') ? 'FORK.' : tag;
     var g = [];
 
     g.push('<text x="' + cx + '" y="' + (cy + (tall ? 0 : 5)) + '" '
@@ -214,7 +228,8 @@
          tom er en oplysning om hvad der venter derinde. */
       var xpText = room.xp > 0 ? n(room.xp) + ' XP' : 'tom';
       var tries = tag
-        ? (room.xp > 0 ? [tag + ' · ' + xpText, tag] : [tag])
+        ? (room.xp > 0 ? [tag + ' · ' + xpText, tag, short + ' · ' + xpText, short]
+                       : [tag, short])
         : [xpText, ''];
       var room_w = room.width * CELL - 2;
       var sub = '';
@@ -245,15 +260,27 @@
     out.push(row('Indgang', d.entrance
       ? 'trappe op i en blindgang' : 'ingen — etagen har ingen blindgyder'));
     var bosses = d.bosses || [];
+    var whole = bosses.filter(function (b) { return !b.ante; }).length;
     out.push(row(bosses.length > 1 ? 'Bossrum' : 'Bossrum', bosses.length
       ? bosses.map(function (b) {
-          return 'rum ' + b.id + ', ' + b.doors + ' døre ud'
+          return 'rum ' + b.id + (b.ante ? ' bag forkammer <b>rum ' + b.ante + '</b>' : '')
+            + ', ' + b.doors + (b.doors === 1 ? ' dør ' : ' døre ') + 'ind'
             + (b.locked ? ' — heraf ' + b.locked + ' låst'
                 + (b.locked > 1 ? 'e' : '') : '')
             + ' · ' + steps(b.dist);
         }).join('<br>')
-        + '<br><i>hvert bossrum har sin egen trappe ned, i den ende der ligger '
-        + 'længst fra indgangen — så man skal tværs gennem rummet for at nå den</i>'
+        + '<br><i>Hvert bossrum har sin egen trappe ned, i den ende der ligger '
+        + 'længst fra indgangen — så man skal tværs gennem rummet for at nå den. '
+        + 'Bossen sidder bag sit forkammer med én dør imellem og er dermed en '
+        + 'blindgyde: en boss holdet ikke kan klare spærrer ikke for resten af '
+        + 'etagen. Forkammeret bærer de andre veje videre og er et rum som alle '
+        + 'andre — det kan have fælde og monstre.'
+        + (whole
+            ? ' <b>' + whole + ' af dem er ikke delt</b> — rummet var for lille, '
+              + 'eller det kunne ikke lukkes ned til én dør uden at skære etagen '
+              + 'over. De har deres døre som før.'
+            : '')
+        + '</i>'
       : 'ingen'));
 
     var safes = d.safes || [];
@@ -266,6 +293,11 @@
                 : '');
         }).join('<br>')
         + '<br><i>ingen af dem ligger bag et bossrum.'
+        + (safes.length > 1
+            ? ' Kun det første skal ligge ved starttrappen; de øvrige lægges så '
+              + 'langt fra det og fra hinanden som etagen tillader, så der også '
+              + 'er et hvilested inde på etagen.'
+            : '')
         + (d.near_entrance
             ? ' Man kan gå tilbage til starttrappen og hvile uden at skulle '
               + 'gennem et rum.'
@@ -330,7 +362,12 @@
       if (!room) continue;
       var note = [];
       var b = bossOf(d, id);
-      if (b) note.push('<b>BOSS</b>' + (b.stairs ? ' + trappen ned' : ''));
+      if (b) {
+        note.push('<b>BOSS</b>' + (b.stairs ? ' + trappen ned' : '')
+          + (b.ante ? ', ind fra rum ' + b.ante : ''));
+      }
+      var a = anteOf(d, id);
+      if (a) note.push('<b>FORKAMMER</b> til rum ' + a.id);
       if (safeOf(d, id)) note.push('<b>SAFE ROOM</b> — står tomt');
       else if (room.trap) note.push('<b>FÆLDE</b>');
       else if (!room.xp) note.push('tomt');
@@ -512,6 +549,13 @@
     for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i];
     return null;
   }
+  /* Forkammeret til et bossrum. Det er et rum som alle andre — det må gerne
+     have fælde og monstre — men det er værd at vide hvad der ligger bag. */
+  function anteOf(d, id) {
+    var list = d.bosses || [];
+    for (var i = 0; i < list.length; i++) if (list[i].ante === id) return list[i];
+    return null;
+  }
   function gap() { return '<tr class="gap"><th></th><td></td></tr>'; }
 
   function inRoom(room, r, c) {
@@ -561,6 +605,9 @@
     d.door.forEach(function (x) { if (open(d, x.row, x.col)) kinds[x.key] = x.type; });
 
     if ((d.bosses || []).length) out.push('<li><span class="lg sw sw-boss"></span>Bossrum</li>');
+    if ((d.bosses || []).some(function (b) { return !!b.ante; })) {
+      out.push('<li><span class="lg sw sw-ante"></span>Forkammer</li>');
+    }
     if ((d.safes || []).length) out.push('<li><span class="lg sw sw-safe"></span>Safe room</li>');
     out.push('<li>' + stairSwatch(1) + 'Trappe — <b>OP</b> ind på etagen, '
       + '<b>NED</b> til den næste</li>');
@@ -590,6 +637,7 @@
     '.dsheet .lg{flex:none;display:inline-block;vertical-align:middle}',
     '.dsheet .sw{width:16px;height:12px;border:1.4px solid #14161c}',
     '.dsheet .sw-boss{background:#e6eaf4;border-color:#9aa6c2}',
+    '.dsheet .sw-ante{background:#f1f3f9;border-color:#b9c1d4}',
     '.dsheet .sw-safe{background:#e7f0e7;border-color:#9ac29a}',
     '.dsheet table{border-collapse:collapse;width:100%;margin:14px 0 0;',
     'font-size:12.5px;background:none}',
