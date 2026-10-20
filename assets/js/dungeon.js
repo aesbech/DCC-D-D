@@ -941,13 +941,19 @@
     var want = Math.max(1, Math.min(8, Math.round(+d.boss_rooms || 1)));
     var cand = [], fallback = null, id;
 
+    /* Et bossrum må gerne være en blindgyde — det er faktisk det, det helst
+       skal være. Før skulle det have mindst to døre, og så lå bossen midt i
+       en gennemgang og spærrede for resten af etagen, hvis holdet ikke kunne
+       klare den. Nu deles rummet i et forkammer og selve bossrummet, og det
+       er forkammeret der har de mange døre. */
     for (id = 1; id <= d.n_rooms; id++) {
       var room = d.room[id];
       if (!room) continue;
       var doors = doorCount(d, room);
       if (!fallback || doors > doorCount(d, fallback)) fallback = room;
-      if (doors < 2) continue;
-      cand.push({ room: room, dist: roomDist(room, dist) });
+      if (!doors) continue;                     // helt afskåret
+      cand.push({ room: room, dist: roomDist(room, dist),
+                  split: Math.max(room.width, room.height) >= 5 });
     }
     if (!cand.length && fallback) cand.push({ room: fallback, dist: 0 });
     if (!cand.length) return;
@@ -961,24 +967,72 @@
     var deepest = cand[0].dist;
     var pool = cand.filter(function (c) { return c.dist >= deepest * 0.66; });
     while (pool.length < want && pool.length < cand.length) pool.push(cand[pool.length]);
-    var chosen = [pool.shift()];
 
-    while (chosen.length < want && pool.length) {
-      var bestI = 0, bestGap = -1;
-      for (var i = 0; i < pool.length; i++) {
-        var gap = 1e9;
-        chosen.forEach(function (c) {
-          var g = boxGap(pool[i].room, c.room);
-          if (g < gap) gap = g;
-        });
-        if (gap > bestGap) { bestGap = gap; bestI = i; }
+    /* De rum der kan deles i et forkammer og et bossrum kommer forrest. Et
+       bossrum skal helst være todelt, og det kræver at rummet er mindst fem
+       felter langt den ene vej. */
+    var wide = pool.filter(function (c) { return c.split; });
+    if (wide.length) {
+      pool = wide.concat(pool.filter(function (c) { return !c.split; }));
+    }
+    /* Hvert bossrum deles i to: et forkammer, holdet kommer ind i, og selve
+       bossrummet bagved med én dør imellem. Så er bossen en blindgyde, og det
+       er forkammeret der bærer de andre veje videre.
+
+       Delingen afgør valget og ikke omvendt. Kan et rum ikke deles — det er
+       for lille, eller det er selv etagens gennemgang, så dets øvrige døre
+       ikke kan mures til uden at skære etagen over — lægges det til side, og
+       det næste prøves. Netop det rum, der ikke kan lukkes ned til én dør, er
+       jo det rum hvor en boss ville spærre for resten.
+
+       Rækker de delelige ikke til, tages de henlagte alligevel: hellere et
+       udelt bossrum end et bossrum for lidt. Arket siger hvilke der er delt. */
+    var chosen = [], spare = [], tries = 0;
+
+    while (chosen.length < want && pool.length && tries < BOSS_TRIES) {
+      var bestI = 0;
+      if (chosen.length) {
+        var bestGap = -1;
+        for (var i = 0; i < pool.length; i++) {
+          var gap = 1e9;
+          chosen.forEach(function (c) {
+            var g = boxGap(pool[i].room, c.room);
+            if (g < gap) gap = g;
+          });
+          if (gap > bestGap) { bestGap = gap; bestI = i; }
+        }
       }
-      chosen.push(pool.splice(bestI, 1)[0]);
+      var take = pool.splice(bestI, 1)[0];
+      var got = splitBoss(d, take.room, dist);
+      if (got) {
+        take.id = got.boss; take.ante = got.ante;
+        chosen.push(take);
+      } else {
+        spare.push(take);
+        tries++;
+      }
     }
 
+    while (chosen.length < want && spare.length) {
+      var rest = spare.shift();
+      rest.id = rest.room.id; rest.ante = null;
+      chosen.push(rest);
+    }
+    while (chosen.length < want && pool.length) {
+      var last = pool.shift();
+      last.id = last.room.id; last.ante = null;
+      chosen.push(last);
+    }
+    if (!chosen.length) return;
+
+    /* Delingen murede døre til, så afstandene skal måles igen, inden trapperne
+       lægges i den ende der ligger længst inde. */
+    dist = d.entrance ? dccBfs(d, d.entrance.row, d.entrance.col) : null;
+
     d.bosses = chosen.map(function (c) {
-      return { id: c.room.id, doors: doorCount(d, c.room),
-               dist: Math.max(0, c.dist), stairs: true };
+      var boss = d.room[c.id];
+      return { id: c.id, ante: c.ante, doors: doorCount(d, boss),
+               dist: Math.max(0, roomDist(boss, dist)), stairs: true };
     });
     d.boss = d.bosses[0];                 // den dybeste
 
@@ -1010,6 +1064,180 @@
     d.exit = d.bosses[0].exit;
   }
 
+  /* ---------- bossrummets forkammer ----------
+   *
+   * Et bossrum skal være todelt: et forkammer man kommer ind i, og selve
+   * bossrummet bagved med én dør imellem. Forkammeret må gerne have flere ind-
+   * og udgange — det er meningen. Bossrummet har kun den ene, og er dermed en
+   * blindgyde, så en boss holdet ikke kan klare aldrig spærrer for resten af
+   * etagen.
+   *
+   * Rummet deles på langs med en væg, præcis som safe roomet kan deles. Væggen
+   * skal ligge på et lige felt, for at begge dele bliver firkanter med ulige
+   * sider — det er sådan donjons rum er skruet sammen — og den del der ligger
+   * længst fra indgangen bliver bossens.
+   */
+  /* Hvor mange rum der må prøves forgæves, før et udelt bossrum er godt nok.
+     Hvert forsøg koster en gennemgang af etagen pr. mulig væg, så det er ikke
+     gratis — men over 700 etager er det tolvte forsøg aldrig blevet brugt. */
+  var BOSS_TRIES = 12;
+
+  function splitBoss(d, room, dist) {
+    var plans = bossPlans(d, room, dist);
+    for (var i = 0; i < plans.length; i++) {
+      var got = tryBossSplit(d, room, plans[i]);
+      if (got) return got;
+    }
+    return null;
+  }
+
+  function sliceBox(room, vertical, from, to) {
+    return vertical
+      ? { north: from, south: to, west: room.west, east: room.east }
+      : { north: room.north, south: room.south, west: from, east: to };
+  }
+
+  /* Hvor langt er der ind til kassens nærmeste felt? Den af de to dele der
+     ligger nærmest indgangen bliver forkammer. */
+  function boxDist(box, dist) {
+    if (!dist) return 0;
+    var best = 1e9;
+    for (var r = box.north; r <= box.south; r++)
+      for (var c = box.west; c <= box.east; c++) {
+        var v = dist[r + ',' + c];
+        if (v !== undefined && v < best) best = v;
+      }
+    return best;
+  }
+
+  function bossPlans(d, room, dist) {
+    var out = [];
+    [true, false].forEach(function (vertical) {
+      var len = vertical ? room.height : room.width;
+      var lo = vertical ? room.north : room.west;
+      if (len < 5) return;                      // der er ikke to dele i det
+
+      for (var w = lo + 1; w <= lo + len - 2; w += 2) {
+        var a = sliceBox(room, vertical, lo, w - 1);
+        var b = sliceBox(room, vertical, w + 1, lo + len - 1);
+        var first = boxDist(a, dist) <= boxDist(b, dist);
+        var ante = first ? a : b, boss = first ? b : a;
+        var anteLen = first ? w - lo : lo + len - 1 - w;
+        var bossLen = len - 1 - anteLen;
+        if (bossLen < 3) continue;              // der skal være plads til en boss
+
+        /* Et forkammer på tre felter er et rum; på ét felt er det en sluse.
+           Begge dele dur, men rummet er pænest, og bossen må gerne være den
+           største af de to. */
+        out.push({ vertical: vertical, ante: ante, boss: boss,
+                   wall: sliceBox(room, vertical, w, w),
+                   rank: (anteLen === 3 ? 0 : anteLen === 1 ? 1 : 2) * 10
+                         + Math.max(0, anteLen - bossLen) });
+      }
+    });
+    out.sort(function (x, y) { return x.rank - y.rank; });
+    return out;
+  }
+
+  /* Felterne i væggen, midten først: en dør midt for en væg læses bedst på et
+     kort, og ligger den i hjørnet, ser det ud som om den mangler. */
+  function wallSlots(wall) {
+    var cells = [];
+    for (var r = wall.north; r <= wall.south; r++)
+      for (var c = wall.west; c <= wall.east; c++) cells.push([r, c]);
+    var mid = (cells.length - 1) / 2;
+    return cells
+      .map(function (p, i) { return { p: p, off: Math.abs(i - mid) }; })
+      .sort(function (a, b) { return a.off - b.off; })
+      .map(function (x) { return x.p; });
+  }
+
+  function tryBossSplit(d, room, plan) {
+    var save = [], r, c;
+    function set(rr, cc, v) { save.push([rr, cc, d.cell[rr][cc]]); d.cell[rr][cc] = v; }
+    function rollback(to) {
+      for (var i = save.length - 1; i >= to; i--)
+        d.cell[save[i][0]][save[i][1]] = save[i][2];
+      save.length = to;
+    }
+    function inBox(b, rr, cc) {
+      return rr >= b.north && rr <= b.south && cc >= b.west && cc <= b.east;
+    }
+
+    for (r = plan.wall.north; r <= plan.wall.south; r++)
+      for (c = plan.wall.west; c <= plan.wall.east; c++) set(r, c, NOTHING);
+
+    /* Bossrummets egne døre mures til: den eneste vej ind skal være gennem
+       forkammeret. Forkammeret beholder sine, og det må gerne have flere. */
+    var kept = [], sealed = [];
+    doorCells(room).forEach(function (p) {
+      if (!(d.cell[p[0]][p[1]] & OPENSPACE)) return;
+      var toAnte = false;
+      for (var k = 0; k < DIRS.length; k++) {
+        if (inBox(plan.ante, p[0] + di[DIRS[k]], p[1] + dj[DIRS[k]])) toAnte = true;
+      }
+      (toAnte ? kept : sealed).push(p);
+    });
+    if (!kept.length) { rollback(0); return null; }
+    sealed.forEach(function (p) { set(p[0], p[1], NOTHING); });
+
+    var slots = wallSlots(plan.wall);
+    for (var s = 0; s < slots.length; s++) {
+      var mark = save.length;
+      set(slots[s][0], slots[s][1], CORRIDOR | DOOR);
+      if (allReachable(d)) return commitBossSplit(d, room, plan, slots[s], sealed);
+      rollback(mark);
+    }
+    rollback(0);
+    return null;
+  }
+
+  function commitBossSplit(d, room, plan, cell, sealed) {
+    sealed.forEach(function (p) { forgetDoor(d, p[0], p[1]); });
+
+    var id = d.n_rooms + 1, r, c;
+    for (r = plan.boss.north; r <= plan.boss.south; r++)
+      for (c = plan.boss.west; c <= plan.boss.east; c++)
+        d.cell[r][c] = (d.cell[r][c] & ~ROOM_ID) | (id << 6);
+
+    d.n_rooms = id;
+    d.room[id] = {
+      id: id, row: plan.boss.north, col: plan.boss.west,
+      north: plan.boss.north, south: plan.boss.south,
+      west: plan.boss.west, east: plan.boss.east,
+      height: plan.boss.south - plan.boss.north + 1,
+      width: plan.boss.east - plan.boss.west + 1,
+      area: (plan.boss.south - plan.boss.north + 1)
+          * (plan.boss.east - plan.boss.west + 1),
+      door: {}, xp: 0
+    };
+
+    /* Det gamle rum er nu forkammeret, og det er skrumpet. */
+    room.north = plan.ante.north; room.south = plan.ante.south;
+    room.west = plan.ante.west; room.east = plan.ante.east;
+    room.row = room.north; room.col = room.west;
+    room.height = room.south - room.north + 1;
+    room.width = room.east - room.west + 1;
+    room.area = room.width * room.height;
+
+    linkDoor(d, room, d.room[id], cell, DOOR);
+    return { boss: id, ante: room.id, sealed: sealed.length };
+  }
+
+  /* En dør der hører til to rum. Objektet deles, som fixDoors ville have gjort
+     det, så en rettelse ét sted slår igennem begge steder. */
+  function linkDoor(d, a, b, cell, type) {
+    var door = { row: cell[0], col: cell[1],
+                 key: DOOR_KIND[type].key, type: DOOR_KIND[type].type };
+    d.door.push(door);
+    [a, b].forEach(function (room) {
+      var dir = (cell[0] < room.north) ? 'north'
+              : (cell[0] > room.south) ? 'south'
+              : (cell[1] < room.west) ? 'west' : 'east';
+      (room.door[dir] || (room.door[dir] = [])).push(door);
+    });
+  }
+
   /* Afstanden mellem to rum i felter, målt mellem kasserne og ikke mellem
      midterne — to lange rum side om side er naboer, uanset hvor midten er. */
   function boxGap(a, b) {
@@ -1028,6 +1256,25 @@
     if (!d.safes) return false;
     for (var i = 0; i < d.safes.length; i++) if (d.safes[i].id === id) return true;
     return false;
+  }
+
+  function isAnte(d, id) {
+    if (!d.bosses) return false;
+    for (var i = 0; i < d.bosses.length; i++) if (d.bosses[i].ante === id) return true;
+    return false;
+  }
+
+  /* Hvor langt er der fra rummet til det nærmeste safe room der allerede
+     ligger der? Målt mellem kasserne, som bosserne spredes med. */
+  function safeGap(d, room) {
+    var list = (d.safes || []), gap = 1e9;
+    for (var i = 0; i < list.length; i++) {
+      var other = d.room[list[i].id];
+      if (!other) continue;
+      var g = boxGap(room, other);
+      if (g < gap) gap = g;
+    }
+    return (gap === 1e9) ? 0 : gap;
   }
 
   function allReachable(d) {
@@ -1143,10 +1390,14 @@
     /* Det første skal støde op til starttrappen: man skal kunne gå tilbage og
        tage en long rest uden at skulle igennem et rum undervejs. Kun gange
        imellem, og gangen må gerne være lang. Lykkes det ikke, tages det
-       nærmeste i stedet, og arket siger at det ikke er lige ved trappen. */
+       nærmeste i stedet, og arket siger at det ikke er lige ved trappen.
+
+       Reglen gælder kun det første. De næste skal tværtimod ligge langt væk —
+       ellers lå de alle sammen inden for døren, og et hvilested inde på
+       etagen er netop det man har flere af dem til. */
     for (var k = 0; k < want; k++) {
-      var got = (k === 0) ? oneSafeRoom(d, true) : null;
-      if (!got) got = oneSafeRoom(d, false);
+      var got = (k === 0) ? oneSafeRoom(d, true, false) : null;
+      if (!got) got = oneSafeRoom(d, false, k > 0);
       if (!got) break;
       d.safes.push(got);
     }
@@ -1180,19 +1431,25 @@
     return { rooms: touch, cells: seen };
   }
 
-  function oneSafeRoom(d, adjacent) {
+  function oneSafeRoom(d, adjacent, spread) {
     var fromDoor = dccBfs(d, d.entrance.row, d.entrance.col, bossRooms(d));
     var near = adjacent ? roomsOffCorridors(d) : null;
     var cand = [];
     for (var id = 1; id <= d.n_rooms; id++) {
       var room = d.room[id];
       if (!room || isBoss(d, room.id) || isSafe(d, room.id)) continue;
+      if (isAnte(d, room.id)) continue;         // forkammeret hører til bossen
       if (near && !near.rooms[room.id]) continue;
       var v = fromDoor[roomCell(room)];
       if (v === undefined) continue;            // kun nåeligt gennem en boss
-      cand.push({ room: room, dist: v });
+      cand.push({ room: room, dist: v, gap: spread ? safeGap(d, room) : 0 });
     }
-    cand.sort(function (a, b) { return a.dist - b.dist || a.room.id - b.room.id; });
+    /* Det første safe room tages så tæt på trappen som muligt. De næste tages
+       så langt fra dem der allerede ligger der som muligt — samme greb som
+       bosserne spredes med — og dybt inde, hvis der er flere lige gode. */
+    cand.sort(spread
+      ? function (a, b) { return b.gap - a.gap || b.dist - a.dist || a.room.id - b.room.id; }
+      : function (a, b) { return a.dist - b.dist || a.room.id - b.room.id; });
 
     for (var i = 0; i < cand.length; i++) {
       /* Udskæringen flytter døren, så det skal tjekkes bagefter: den dør der
@@ -1475,9 +1732,13 @@
     return true;
   }
 
+  /* Et bossrum skal have en vej ind. Før var kravet to døre, fordi et bossrum
+     med én var en blindgyde — nu er blindgyden meningen: bossen sidder bag sit
+     forkammer med netop én dør imellem. Kravet er derfor kun, at den ene dør
+     ikke må mures til. */
   function bossesStillOpen(d) {
     var list = bossRooms(d);
-    for (var i = 0; i < list.length; i++) if (doorCount(d, list[i]) < 2) return false;
+    for (var i = 0; i < list.length; i++) if (doorCount(d, list[i]) < 1) return false;
     return true;
   }
 

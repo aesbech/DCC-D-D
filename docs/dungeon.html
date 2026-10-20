@@ -32,7 +32,8 @@
   <h1>Dungeon</h1>
   <p class="lead">Etagerne kommer fra donjons kortgenerator med fire tilføjelser, så en
     etage kan bruges som den er: trappen ned har mere end én udvej, der er et bossrum
-    foran den, der er et safe room, og der ligger XP nok til at stige et level.</p>
+    med forkammer foran den, der er et safe room ved starttrappen, og der ligger XP nok
+    til at stige et level.</p>
 
   <h2>Generér en etage</h2>
   <p>Den kører her på siden. Ud kommer et ark du kan printe eller gemme: kortet på
@@ -152,9 +153,10 @@
   <h3>Hvad der står på arket</h3>
   <p>Kortet har ét felt pr. fem fod, så bevægelse kan tælles direkte på papiret.
     Rummene er nummererede, og under nummeret står rummets XP-budget. Bossrummet og
-    safe room er tonede, og nøglen under kortet viser kun de dørtyper der faktisk er
-    på etagen. Rapporten siger hvor mange skridt der er til safe roomet og til bossen,
-    så du kan se hvor langt inde de ligger.</p>
+    safe room er tonede, og bossens <b>forkammer</b> er tonet lysere, så parret læses
+    som ét sted. Nøglen under kortet viser kun de dørtyper der faktisk er på etagen.
+    Rapporten siger hvor mange skridt der er til safe roomet og til bossen, så du kan
+    se hvor langt inde de ligger.</p>
   <p>I <b>Noter</b> står et forslag til hvad der er i rummet — navne og antal, valgt
     så de bruger rummets budget uden at gå over. Et rum mærket <b>FÆLDE</b> har en fælde
     i stedet. Det er et forslag: byt ud som du vil, <b>XP-tallet er facit</b>.
@@ -174,7 +176,10 @@
     gange på en etage, medmindre der er flere fælder end der findes i alt.</p>
   <p>Rum der står <b>tom</b> har ingen kamp; det er ikke et hul i budgettet, men plads
     til alt det andet. Safe room står altid tomt, og bossen er præcis én kamp af den
-    slags du har valgt.</p>
+    slags du har valgt. Et rum mærket <b>FORKAMMER</b> er vejen ind til et bossrum og
+    er ellers et rum som alle andre — det kan have fælde og monstre, og det må gerne
+    have flere ind- og udgange. Selve bossrummet har kun den ene dør ind fra
+    forkammeret.</p>
   <p class="note">Sammensætningen kender XP og skabningens slags — ikke hvor den bor.
     Der kan godt lande en fiskestime i et tørt rum. Det er et af de steder, hvor du
     bytter ud.</p>
@@ -328,9 +333,8 @@
     <tr>
       <td><b>Ingen boss.</b></td>
       <td>Bossrummet er det rum der ligger længst fra indgangen målt i skridt gennem
-        åbne felter, blandt dem med to døre. Trappen ned står i den ende af rummet der
-        ligger længst fra indgangen, så man skal tværs gennem bossrummet for at komme
-        ned.</td>
+        åbne felter. Trappen ned står i den ende af rummet der ligger længst fra
+        indgangen, så man skal tværs gennem bossrummet for at komme ned.</td>
     </tr>
     <tr>
       <td><b>Man kunne slentre ind til bossen.</b> Døren ind var lige så tit en åben
@@ -346,15 +350,15 @@
       <td>Et eller flere rum er <b>safe room</b>: skåret ned til <b>3 × 3 felter</b> med
         <b>præcis én dør</b>, der altid er en rigtig dør — låst eller ulåst, aldrig en
         fælde og aldrig et faldgitter. Et hvilested skal man kunne lukke efter sig, ikke
-        blive fanget i. Rummet står tomt. Det vælges <b>så tæt på indgangen som muligt</b>, og
-        <b>vejen derhen går aldrig gennem bossrummet</b> — et hvilested man skal slå
-        bossen for at nå er ikke et hvilested. Findes der ikke et rum med én dør, mures
-        resten af rummet til klippe. Det sker kun hvis hele etagen stadig kan nås,
-        bossrummet beholder sine to udveje, og rummet stadig kan nås udenom. Målt over
-        700 etager med blandede indstillinger lykkedes det 688 gange, alle 3 × 3 med én
-        dør, og ingen af dem lå bag et bossrum — heller ikke når der er flere safe rooms,
-        hvor det ene kan komme til at ligge bag det andet. Resten siger arket til om. Arket siger også hvor mange skridt der er
-        derhen — i snit en tredjedel af vejen ud, mod bossens fulde længde.</td>
+        blive fanget i. Rummet står tomt. <b>Det første</b> vælges så tæt på indgangen
+        som muligt, og <b>vejen derhen går aldrig gennem bossrummet</b> — et hvilested
+        man skal slå bossen for at nå er ikke et hvilested. Findes der ikke et rum med
+        én dør, mures resten af rummet til klippe. Det sker kun hvis hele etagen stadig
+        kan nås, bossrummet beholder sin vej ind, og rummet stadig kan nås udenom. Målt
+        over 700 etager med blandede indstillinger lykkedes det 681 gange, alle 3 × 3
+        med én dør, og ingen af dem lå bag et bossrum — heller ikke når der er flere
+        safe rooms, hvor det ene kan komme til at ligge bag det andet. Resten siger
+        arket til om, og arket siger også hvor mange skridt der er derhen.</td>
     </tr>
     <tr>
       <td><b>Ingen styring på XP.</b> Holdet skulle støvsuge etagen for at stige.</td>
@@ -407,6 +411,28 @@
         <b>fem ud af seks etager</b>; på resten er rummet for enden af gangen etagens
         eneste gennemgang, og så kan det ikke lukkes ned til én dør. Arket siger det,
         og en ny etage plejer at løse det.</td>
+    </tr>
+    <tr>
+      <td><b>Bossen kunne spærre for etagen.</b> Et bossrum skulle have mindst to døre,
+        og så lå den midt i en gennemgang: kunne holdet ikke klare den, kom de ingen
+        vegne.</td>
+      <td>Bossrummet er nu <b>todelt</b>. Rummet deles på langs med en væg: holdet
+        kommer ind i et <b>forkammer</b>, og bagved ligger selve bossrummet med
+        <b>én dør imellem</b>. Bossrummets egne døre mures til, så det er en blindgyde
+        — en boss man går uden om spærrer ikke længere for noget. Forkammeret bærer de
+        andre veje videre og må gerne have flere; det er et rum som alle andre og kan
+        have fælde og monstre. Delingen afgør valget: kan et rum ikke lukkes ned til én
+        dør uden at skære etagen over, er det netop dér en boss ville spærre, og så
+        prøves det næste. Målt over 700 etager blev <b>1.627 af 1.750 bossrum delt</b>;
+        resten var for små, og arket siger hvilke.</td>
+    </tr>
+    <tr>
+      <td><b>Alle safe rooms lå ved indgangen.</b> Reglen om at ligge tæt på starten
+        gjaldt dem alle, så to safe rooms lå side om side inden for døren.</td>
+      <td>Kun <b>det første</b> skal ligge ved starttrappen. De øvrige lægges så langt
+        fra det og fra hinanden som etagen tillader — samme greb som bosserne spredes
+        med — så der også er et hvilested inde på etagen. Målt over 700 etager ligger
+        der i snit <b>38 felter</b> mellem det første og de næste.</td>
     </tr>
     <tr>
       <td><b>En fældedør var bare en fældedør.</b> Kortet sagde at der var en fælde i

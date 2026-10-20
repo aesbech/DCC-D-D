@@ -1150,6 +1150,22 @@ Antallet af **bossrum** og **safe rooms** kan sættes op til fire af hver. Bosse
 spredt og alle dybt inde, og **hvert bossrum har sin egen trappe ned**, så holdet kan
 vælge hvilken boss de vil forbi.
 
+**Et bossrum er todelt.** Rummet deles på langs med en væg: holdet kommer ind i et
+**forkammer**, og bagved ligger selve bossrummet med **én dør imellem**. Bossrummets
+egne døre mures til, så det er en blindgyde — før skulle et bossrum have mindst to
+døre, og så lå bossen midt i en gennemgang og spærrede for resten af etagen, hvis
+holdet ikke kunne klare den. Forkammeret bærer de andre veje videre og må gerne have
+flere; det er et rum som alle andre og kan have fælde og monstre.
+
+Delingen afgør valget og ikke omvendt: kan et rum ikke lukkes ned til én dør uden at
+skære etagen over, er det netop dér en boss ville spærre, og så prøves det næste rum.
+Målt over 700 etager blev 1.627 af 1.750 bossrum delt; resten var for små, og arket
+siger hvilke.
+
+**Kun det første safe room skal ligge ved starttrappen.** De øvrige lægges så langt fra
+det og fra hinanden som etagen tillader — samme greb som bosserne spredes med — så der
+også er et hvilested inde på etagen. I snit ligger der 38 felter imellem.
+
 **Fældedørene siger hvad fælden er.** En dør med en fælde fik før kun et tegn på kortet;
 nu får den en bestemt fælde, valgt blandt dem der kan sidde på en dør — en nål i en lås
 kan, en rullende sten kan ikke. Den står i fældetabellen på arket med udløser, virkning
