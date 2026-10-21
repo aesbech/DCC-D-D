@@ -1197,6 +1197,23 @@ skabninger pr. karakter. Skabningerne er trukket ud af SRD-PDF'en med
 `scripts/import_monsters.py`. Forslagene står i rapportens Noter-kolonne og er forslag
 — XP-tallet er facit.
 
+**Et rum er ét tema og kun ét.** Alle 291 skabninger har et tema: 21 grupper efter hvem
+der holder til sammen — goblinoider, drager, udøde, djævle, havet, urtidsdyr, småkravl
+og så videre. Det står i `scripts/monster_themes.py` og er skrevet i hånden, for det
+står ikke i SRD'en. SRD'ens egen inddeling er *typen*, og den er god til regler og
+ubrugelig til et rum: «Beast» rummer både en rotte og en tyrannosaurus, «Fey» både en
+dryade og en hobgoblin-kaptajn.
+
+Reglen i rummet er: **træk én skabning, og fyld resten op med dens eget folk.** Etagen
+vælger tre temaer at trække fra — uden det ville etagen blive goblins i ét rum, engle i
+det næste og slim i det tredje — og mindst ét af dem skal kunne bære bossen, målt som
+den største skabning gange hvor mange der må være i rummet. Et **bossrums forkammer får
+bossens tema**, og det foretrækkes når indholdet fordeles, så et forværelse til et
+bossrum sjældent står tomt.
+
+Rækker temaet ikke til rummets budget, bliver rummet lettere. Det er med vilje: et let
+rum der hænger sammen er bedre end et dyrt rum der ikke gør.
+
 Rummene er tegnet med `assets/js/dungeon-map.js`, som ikke hører til donjons kode.
 Arkets CSS kommer fra den samme fil som selve kortet, så det man ser på skærmen og det
 man har på papiret ikke kan komme fra hinanden.
@@ -1271,7 +1288,7 @@ assets/js/ui.js                UI og hændelser
 assets/js/dungeon.js           etagegeneratoren
 assets/js/dungeon-map.js       etagens kort og rapport som printbart ark
 assets/js/encounters.js        fylder rum og døre med skabninger og fælder
-assets/data/monsters.js        SRD 5.2.1's skabninger med CR og XP
+assets/data/monsters.js        SRD 5.2.1's skabninger med CR, XP og tema
 assets/data/traps.js           SRD 5.2.1's otte fælder med grad og udløser
 assets/data/traps-dcc.js       vores egne 28 fælder, med fuld tekst og skalering
 assets/data/items.js           items fra regnearket
@@ -1282,6 +1299,7 @@ scripts/import_magic.py        magic_items.txt → magic-items.js
 scripts/import_class_cards.py  feats.txt + systematiske kort → class-cards.js
 scripts/check_srd.py           hvilke kort ligger uden for SRD 5.2.1?
 scripts/import_monsters.py     SRD-PDF'en → monsters.js
+scripts/monster_themes.py      hvem holder til sammen (vores inddeling)
 scripts/import_traps.py        SRD-PDF'en → traps.js
 data/dnd_items.xlsx            kilderegnearket
 data/magic_items.txt           kildeliste over magic items

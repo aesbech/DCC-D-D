@@ -157,11 +157,23 @@
     som ét sted. Nøglen under kortet viser kun de dørtyper der faktisk er på etagen.
     Rapporten siger hvor mange skridt der er til safe roomet og til bossen, så du kan
     se hvor langt inde de ligger.</p>
-  <p>I <b>Noter</b> står et forslag til hvad der er i rummet — navne og antal, valgt
-    så de bruger rummets budget uden at gå over. Et rum mærket <b>FÆLDE</b> har en fælde
-    i stedet. Det er et forslag: byt ud som du vil, <b>XP-tallet er facit</b>.
+  <p>I <b>Noter</b> står et forslag til hvad der er i rummet — tema, navne og antal,
+    valgt så de bruger rummets budget uden at gå over. Et rum mærket <b>FÆLDE</b> har
+    en fælde i stedet. Det er et forslag: byt ud som du vil, <b>XP-tallet er facit</b>.
     Skabningerne slås op i <a href="SRD_CC_v5.2.1.pdf">SRD 5.2.1</a>, der ligger under
     Docs.</p>
+  <p><b>Et rum er ét tema og kun ét.</b> Skabningerne er delt i 21 temaer — goblinoider,
+    drager, udøde, elementarer, havet, urtidsdyr og så videre. Det er en redaktionel
+    inddeling og ikke SRD'ens type: «Beast» rummer både en rotte og en tyrannosaurus,
+    og et rum sat sammen efter type bliver et zoologisk udsnit frem for et sted nogen
+    bor. Reglen er enkel: <b>først trækkes én skabning, og så fyldes resten af rummet
+    med dens eget folk</b>. Etagen vælger tre temaer, som rummene trækker fra, så den
+    hænger sammen uden at være ens hele vejen. Et <b>bossrums forkammer får bossens
+    tema</b> — det er hendes forværelse.</p>
+  <p class="note">Rækker temaet ikke til rummets budget, bliver rummet lettere.
+    Goblinoiderne topper ved 700 XP, og otte goblin bosses er 5.600 — men et tema som
+    småkravlet kan ikke fylde et stort rum, og så lader vi være. Et let rum der hænger
+    sammen er bedre end et dyrt rum der ikke gør.</p>
   <p><b>Fælderne står i deres egen tabel</b> efter rummene, med grad, udløser, virkning
     og hvordan de findes og uskadeliggøres — også dem der sidder på en dør. En fældedør
     er tegnet på kortet, og tabellen siger hvilke to rum den sidder imellem, så den kan
@@ -384,11 +396,26 @@
         skulle veksle til monstre, rum for rum.</td>
       <td>Rummene fyldes ud med skabninger fra <b>SRD 5.2.1</b> efter SRD'ens egne
         regler: hver skabning har en XP-værdi, og der bruges så meget af budgettet som
-        muligt uden at gå over. Målt over 400 etager bruges <b>99 %</b> af budgettet, og
+        muligt uden at gå over. Målt over 400 etager bruges <b>98 %</b> af budgettet, og
         intet rum går over. SRD'ens ene advarsel — højst to skabninger pr. karakter —
-        er loftet. Etagen bygges over én slags skabning, så goblins og worgs hører
-        sammen, men budgettet vinder over temaet, hvis der ikke er noget stort nok.
-        <b>Forslagene står i Noter og er forslag</b>; XP-tallet er facit.</td>
+        er loftet. <b>Forslagene står i Noter og er forslag</b>; XP-tallet er facit.</td>
+    </tr>
+    <tr>
+      <td><b>Rummene var zoologiske udsnit.</b> Etagen blev bygget over én af SRD'ens
+        typer, og «Beast» rummer både en rotte og en tyrannosaurus. Så kunne der stå
+        fem flagermus og en kæmpeabe i det samme rum — og gik budgettet ikke op, vandt
+        budgettet over temaet, så der kom noget helt fjerde ind.</td>
+      <td>Alle 291 skabninger har fået et <b>tema</b>: 21 grupper efter hvem der holder
+        til sammen — goblinoider, drager, udøde, djævle, havet, urtidsdyr, småkravl og
+        så videre. Det er skrevet i hånden i
+        <code>scripts/monster_themes.py</code>, for det står ikke i SRD'en, og ingen
+        regel i databladene kan regne ud at en worg hører til hos goblins og en pegasus
+        ikke gør. Reglen i rummet er: <b>træk én skabning, og fyld resten op med dens
+        eget folk</b>. Etagen vælger tre temaer at trække fra, og et bossrums forkammer
+        får bossens tema. Målt over 400 etager: <b>0 rum ud af 4.275 med blandede
+        temaer</b>, og alle 640 befolkede forkamre med bossens eget folk.
+        Budgetforbruget står stille på <b>98 %</b> — den snævrere pulje koster ikke
+        noget, fordi søgningen efter det bedste rum nu også søger over temaer.</td>
     </tr>
     <tr>
       <td><b>Alt lå fast.</b> Én boss, ét safe room, og et rumantal der kun fulgte
