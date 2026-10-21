@@ -132,8 +132,9 @@
     finder den selv et — det står øverst på arket, så etagen kan laves igen hvis
     printet forsvinder.</p>
   <p class="note"><b>Indstillingerne huskes</b> i browseren, så de står som du satte
-    dem næste gang du åbner siden. Seedet er ikke med: det er ikke en indstilling, og
-    huskede vi det, ville Generér give den samme etage hver gang.</p>
+    dem næste gang du åbner siden — også seedet. Siden skriver aldrig selv i
+    seedfeltet, så står der noget, har du tastet det. Husk at rydde feltet, hvis du
+    vil have en ny etage i stedet for den samme igen.</p>
   <p class="note"><b>Etagens størrelse kan du ikke sætte — den regnes ud.</b> Af
     budgettet følger hvor mange kamprum der skal til; af fældeandelen hvor mange rum der
     skal lægges oveni; og af mætningen hvor mange tomme rum der skal til for at
@@ -247,12 +248,16 @@
     function val(id) { return document.getElementById(id).value; }
 
     /* Indstillingerne huskes i browseren, så man ikke skal sætte det hele op
-       igen efter en opdatering. Seedet er med vilje ikke med: det er ikke en
-       indstilling, det er ét bestemt kort — og huskede vi det, ville Generér
-       give den samme etage igen efter hver opdatering. */
+       igen efter en opdatering.
+
+       Seedet er med — også selv om et husket seed betyder, at Generér giver
+       den samme etage igen. Feltet skrives aldrig af siden selv, så står der
+       noget, er det tastet med vilje, og så er det værd at beholde. Vil man
+       have en ny etage, rydder man feltet. */
     var K_GEN = 'dccdd.dungeon.v1';
     var FIELDS = ['gLevel', 'gSize', 'gSlack', 'gRoom', 'gLayout', 'gCorr',
-                  'gDead', 'gBoss', 'gCap', 'gSat', 'gTrap', 'gBosses', 'gSafes'];
+                  'gDead', 'gBoss', 'gCap', 'gSat', 'gTrap', 'gBosses',
+                  'gSafes', 'gSeed'];
 
     function saveSettings() {
       var out = {};

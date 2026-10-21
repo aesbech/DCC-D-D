@@ -1122,11 +1122,12 @@ rapporten på den næste; *Hent som fil* gemmer det hele som én HTML-fil, der v
 net og uden JavaScript.
 
 Indstillingerne huskes i browserens `localStorage` under `dccdd.dungeon.v1`, så de står
-som man satte dem næste gang. Seedet er med vilje ikke med: det er ikke en indstilling,
-men ét bestemt kort, og huskede vi det, ville *Generér etage* give den samme etage hver
-gang. En gemt værdi der ikke findes som mulighed længere springes over, så feltet falder
-tilbage til standarden i stedet for at stå tomt — og er lageret lukket, husker siden
-bare ikke noget.
+som man satte dem næste gang. Seedet er med: siden skriver aldrig selv i feltet, så står
+der noget, er det tastet med vilje, og så er det værd at beholde — men et husket seed
+betyder også, at *Generér etage* giver den samme etage igen, indtil feltet ryddes. En
+gemt værdi der ikke findes som mulighed længere springes over, så feltet falder tilbage
+til standarden i stedet for at stå tomt, og er lageret lukket, husker siden bare ikke
+noget.
 
 ```bash
 perl tools/dungeon.pl     # kræver Perls GD-modul: apt install libgd-perl
