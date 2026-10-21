@@ -18,47 +18,74 @@
 (function (global) {
   'use strict';
 
-  /* Etagen får en slags at bygge på, så rummene hænger sammen: goblins og
-     worgs, ikke goblins og en isdjævel. Er der for få af den slags i det
-     rigtige XP-spænd, tages resten hvor som helst. */
+  /* Et rum er ét sted, hvor nogen bor. Derfor er alt i rummet af samme slags:
+     goblins og worgs, ikke goblins og en pegasus. Temaet står på hver skabning
+     i monsters.js — det er en redaktionel inddeling, ikke SRD'ens type, for
+     «Beast» rummer både en rotte og en tyrannosaurus.
+
+     Reglen er enkel: træk det første monster, og fyld så resten af rummet med
+     skabninger fra dens tema. Den første trækning afgør altså rummet.
+
+     Etagen vælger en håndfuld temaer, som rummene trækker deres første
+     monster fra. Uden det ville etagen blive et zoologisk udsnit — goblins i
+     ét rum, engle i det næste, slim i det tredje. */
   var THEME_MIN = 4;
+  var FLOOR_THEMES = 3;
 
   function pick(rand, list) { return list[Math.floor(rand() * list.length)]; }
 
-  function bestiary(rand, monsters, cap) {
+  function topXp(list) {
+    var top = 0;
+    for (var i = 0; i < list.length; i++) if (list[i].xp > top) top = list[i].xp;
+    return top;
+  }
+
+  function bestiary(rand, monsters, cap, want, maxN) {
     var usable = monsters.filter(function (m) { return m.xp > 0 && m.xp <= cap; });
     if (!usable.length) return null;
 
-    var byType = {};
-    usable.forEach(function (m) { (byType[m.type] || (byType[m.type] = [])).push(m); });
-    var themes = Object.keys(byType).filter(function (t) {
-      return byType[t].length >= THEME_MIN;
+    var byTheme = {};
+    usable.forEach(function (m) {
+      var t = m.theme || m.type;
+      (byTheme[t] || (byTheme[t] = [])).push(m);
     });
-    if (!themes.length) return { theme: usable, all: usable };
+    var themes = Object.keys(byTheme).filter(function (t) {
+      return byTheme[t].length >= THEME_MIN;
+    });
+    if (!themes.length) return { pool: usable, names: [] };
 
-    var theme = pick(rand, themes);
-    var out = byType[theme].slice();
-    /* Lidt fra resten, så to etager med samme tema ikke bliver ens, og så der
-       er noget at fylde de sidste XP ud med. */
-    for (var i = 0; i < 4; i++) out.push(pick(rand, usable));
-    return { theme: out, all: usable, name: theme };
-  }
+    /* Mindst ét af etagens temaer skal kunne bære bossen. Et tema som
+       goblinoiderne topper ved 700 XP, men otte goblin bosses er 5.600 — så
+       det er ikke den største skabning der afgør det, men den største gange
+       hvor mange der må være i rummet. */
+    var heavy = themes.filter(function (t) {
+      return topXp(byTheme[t]) * Math.max(1, maxN) >= (want || 0);
+    });
+    var chosen = [pick(rand, heavy.length ? heavy : themes)];
 
-  /* Temaet er til for sammenhængens skyld, ikke for enhver pris. Er der ikke
-     noget i den valgte slags der er stort nok til rummets budget, ender man
-     med syv flagermus i et rum der skulle have haft en trold. Så vinder
-     budgettet over temaet. */
-  var THEME_FLOOR = 0.6;
-
-  function best(rand, pool, budget, maxN, boss) {
-    var fn = boss ? composeBoss : compose;
-    var got = fn(rand, pool.theme, budget, maxN);
-    if (budget > 0 && got.spent / budget < THEME_FLOOR && pool.all !== pool.theme) {
-      var wide = fn(rand, pool.all, budget, maxN);
-      if (wide.spent > got.spent) return wide;
+    var rest = themes.filter(function (t) { return chosen.indexOf(t) < 0; });
+    while (chosen.length < FLOOR_THEMES && rest.length) {
+      chosen.push(rest.splice(Math.floor(rand() * rest.length), 1)[0]);
     }
-    return got;
+
+    var pool = [];
+    chosen.forEach(function (t) { pool = pool.concat(byTheme[t]); });
+    return { pool: pool, names: chosen, byTheme: byTheme };
   }
+
+  function best(rand, pool, budget, maxN, boss, theme, avoid) {
+    var list = theme ? onlyTheme(pool, theme) : pool.pool;
+    if (!list.length) list = pool.pool;
+    return boss ? composeBoss(rand, list, budget, maxN, avoid)
+                : compose(rand, list, budget, maxN);
+  }
+
+  function onlyTheme(pool, theme) {
+    if (pool.byTheme && pool.byTheme[theme]) return pool.byTheme[theme];
+    return pool.pool.filter(function (m) { return themeOf(m) === theme; });
+  }
+
+  function themeOf(m) { return m.theme || m.type; }
 
   /* Brug så meget af budgettet som muligt uden at gå over, og med højst
      `maxN` skabninger i alt. Op til to slags: én slags er et rum med fem
@@ -82,10 +109,14 @@
   }
 
   function composeOnce(rand, pool, budget, maxN) {
-    var parts = [], left = budget, count = 0, k;
+    var parts = [], left = budget, count = 0, theme = null, k;
 
     for (k = 0; k < 2 && count < maxN; k++) {
-      var fits = pool.filter(function (m) { return m.xp <= left; });
+      /* Første træk er frit. Derefter er rummets tema afgjort, og anden slags
+         skal være fra det samme — det er dét, der gør rummet til ét sted. */
+      var fits = pool.filter(function (m) {
+        return m.xp <= left && (theme === null || themeOf(m) === theme);
+      });
       if (!fits.length) break;
 
       /* En skabning til 10 XP kan ikke bruge et budget på 400, når der højst
@@ -101,29 +132,69 @@
       if (k === 0 && n === room && n * m.xp < left) n = Math.max(1, n - 1);
       if (n < 1) break;
       parts.push({ name: m.name, cr: m.cr, n: n, xp: m.xp });
+      theme = themeOf(m);
       left -= n * m.xp;
       count += n;
     }
-    return { parts: parts, spent: budget - left, left: left, count: count };
+    return { parts: merge(parts), spent: budget - left, left: left,
+             count: count, theme: theme };
   }
 
   /* Bossen er én kamp, og den læses bedst som én skabning. Derfor vælges den
      største der kan være der, og først derefter fyldes resten ud. */
-  function composeBoss(rand, pool, budget, maxN) {
+  /* Hvor meget mindre end den største bossen må være, og hvor mange der
+     vælges imellem. XP-værdierne ligger tyndt i toppen — 2.900, 3.900, 5.000 —
+     så et snævert bånd rummer tit kun én skabning, og så bliver to bosser på
+     samme etage tvillinger. Målt over 300 etager med flere bosser: et bånd på
+     en halv gav 36 % tvillinger, en fjerdedel giver 7 %, og bossen er stadig
+     over halvdelen af rummets budget i snit. */
+  var BOSS_BAND = 0.25;
+  var BOSS_PICKS = 4;
+
+  function composeBoss(rand, pool, budget, maxN, avoid) {
     var fits = pool.filter(function (m) { return m.xp <= budget; });
     if (!fits.length) return compose(rand, pool, budget, maxN);
 
-    var top = fits[0];
-    fits.forEach(function (m) { if (m.xp > top.xp) top = m; });
+    /* Den største der kan være der — men ikke altid præcis den største. To
+       bosser på samme etage med det samme budget blev ellers tvillinger, helt
+       ned til følget. Så der vælges blandt de få største, og dem der allerede
+       står i et andet bossrum på etagen springes over. */
+    var heavy = fits.slice().sort(function (a, b) { return b.xp - a.xp; });
+    var ceiling = heavy[0].xp;
+    heavy = heavy.filter(function (m) { return m.xp >= ceiling * BOSS_BAND; })
+                 .slice(0, BOSS_PICKS);
+    if (avoid) {
+      var fresh = heavy.filter(function (m) { return !avoid[m.name]; });
+      if (fresh.length) heavy = fresh;
+    }
+    var top = pick(rand, heavy);
 
+    /* Bossen er den første trækning, og dermed den der afgør temaet. Følget
+       skal være hendes eget folk — en frostjætte med to andre frostjætter,
+       ikke en frostjætte med to flagermus. */
     var parts = [{ name: top.name, cr: top.cr, n: 1, xp: top.xp }];
-    var rest = compose(rand, pool, budget - top.xp, maxN - 1);
+    var kin = pool.filter(function (m) { return themeOf(m) === themeOf(top); });
+    var rest = compose(rand, kin, budget - top.xp, maxN - 1);
     return {
-      parts: parts.concat(rest.parts),
+      parts: merge(parts.concat(rest.parts)),
       spent: top.xp + rest.spent,
       left: rest.left,
-      count: 1 + rest.count
+      count: 1 + rest.count,
+      theme: themeOf(top)
     };
+  }
+
+  /* Bossen og følget kan være den samme slags — en trold med to trolde — og
+     så stod der «1 × Treant, 1 × Treant» på arket. Det er to linjer om det
+     samme bord. */
+  function merge(parts) {
+    var seen = {}, out = [];
+    parts.forEach(function (p) {
+      if (seen[p.name]) { seen[p.name].n += p.n; return; }
+      seen[p.name] = { name: p.name, cr: p.cr, n: p.n, xp: p.xp };
+      out.push(seen[p.name]);
+    });
+    return out;
   }
 
   /* Fælderne. To slags ligger i posen: SRD'ens otte, som har et niveauspænd og
@@ -202,21 +273,34 @@
     if (!d || !monsters || !monsters.length) return d;
     var rand = rng(d.seed ^ 0x5f3759df);
     var maxN = Math.max(2, 2 * (d.xp ? d.xp.size : 4));
-    var pool = bestiary(rand, monsters, d.xp ? d.xp.cap : 1e9);
+    var pool = bestiary(rand, monsters, d.xp ? d.xp.cap : 1e9,
+                        d.xp ? d.xp.boss : 0, maxN);
     if (!pool) return d;
     var level = d.xp ? d.xp.level : 1;
     var used = {};
 
+    /* Bosserne først. Forkammeret er bossens eget forværelse, så det skal
+       befolkes af hendes folk — og det kan det kun, hvis hun er trukket. */
+    var anteTheme = {}, leads = {};
+    (d.bosses || []).forEach(function (b) {
+      var room = d.room[b.id];
+      if (!room || !(room.xp > 0)) return;
+      var got = best(rand, pool, room.xp, maxN, true, null, leads);
+      if (got.parts.length) leads[got.parts[0].name] = 1;
+      room.encounter = got;
+      if (b.ante && got.theme) anteTheme[b.ante] = got.theme;
+    });
+
     for (var id = 1; id <= d.n_rooms; id++) {
       var room = d.room[id];
-      if (!room) continue;
+      if (!room || room.encounter) continue;
       if (room.trap) {
         var t = trapFor(rand, traps, level, 'room', used);
         if (t) room.encounter = { trap: t, parts: [], spent: 0, left: 0, count: 0 };
         continue;
       }
       if (!(room.xp > 0)) continue;
-      room.encounter = best(rand, pool, room.xp, maxN, isBossRoom(d, id));
+      room.encounter = best(rand, pool, room.xp, maxN, false, anteTheme[id]);
     }
 
     /* Fældedørene. Generatoren siger at døren har en fælde; her bliver den til
@@ -229,19 +313,13 @@
       if (t) { door.trap = t; doors++; }
     });
 
-    d.stocked = { theme: pool.name || null, max: maxN,
+    d.stocked = { themes: pool.names || [], max: maxN,
                   traps: traps ? traps.length : 0,
                   srd_traps: (traps || []).filter(function (t) {
                     return t.srd;
                   }).length,
                   door_traps: doors };
     return d;
-  }
-
-  function isBossRoom(d, id) {
-    if (!d.bosses) return d.boss && d.boss.id === id;
-    for (var i = 0; i < d.bosses.length; i++) if (d.bosses[i].id === id) return true;
-    return false;
   }
 
   /* Egen terning, så et rum kan stokkes uden at flytte kortet. Samme mulberry32

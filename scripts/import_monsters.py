@@ -28,6 +28,8 @@ import re
 import sys
 from pathlib import Path
 
+from monster_themes import by_name as themes_by_name
+
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "assets" / "data" / "monsters.js"
 
@@ -75,6 +77,20 @@ def main():
     out = [x for x in out if x["xp"] > 0]
     out.sort(key=lambda x: (x["xp"], x["name"]))
 
+    # Temaet er redaktionelt og står i monster_themes.py. Her tjekkes kun, at
+    # de to lister passer sammen: ingen skabning uden tema, intet tema uden
+    # skabning. Sker der noget med udtrækket, siger det fra med det samme.
+    themes = themes_by_name()
+    missing = sorted(x["name"] for x in out if x["name"] not in themes)
+    if missing:
+        sys.exit("Uden tema i scripts/monster_themes.py: " + ", ".join(missing))
+    extra = sorted(set(themes) - {x["name"] for x in out})
+    if extra:
+        sys.exit("Står i monster_themes.py, men findes ikke i SRD-udtrækket: "
+                 + ", ".join(extra))
+    for x in out:
+        x["theme"] = themes[x["name"]]
+
     payload = json.dumps(out, ensure_ascii=False, indent=1)
     version = hashlib.sha1(payload.encode("utf-8")).hexdigest()[:12]
     OUT.write_text(
@@ -91,6 +107,16 @@ def main():
     print("  brugbare på level 1 (op til 100 XP): %d" % len(lo))
     print("  billigste:", ", ".join("%s %d" % (x["name"], x["xp"]) for x in out[:5]))
     print("  dyreste:  ", ", ".join("%s %d" % (x["name"], x["xp"]) for x in out[-3:]))
+
+    print("\n  Temaer — antal, og hvor stort et rum de kan fylde:")
+    seen = {}
+    for x in out:
+        seen.setdefault(x["theme"], []).append(x)
+    for theme in sorted(seen, key=lambda t: -max(x["xp"] for x in seen[t])):
+        bunch = seen[theme]
+        print("    %-24s %2d skabninger  %6d-%s XP"
+              % (theme, len(bunch), min(x["xp"] for x in bunch),
+                 "{:,}".format(max(x["xp"] for x in bunch)).replace(",", ".")))
 
 
 if __name__ == "__main__":

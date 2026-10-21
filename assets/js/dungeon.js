@@ -1898,7 +1898,19 @@
        ende. Ellers er den halve etage tom, og så begynder den. */
     var chosen = [], i;
     var total = Math.min(want + traps, order.length);
-    for (i = 0; i < total; i++) chosen.push(order[Math.floor(i * order.length / total)]);
+    for (i = 0; i < total; i++) {
+      var from = Math.floor(i * order.length / total);
+      var to = Math.max(from + 1, Math.floor((i + 1) * order.length / total));
+      /* Inden for hvert spring foretrækkes et bossrums forkammer. Et tomt
+         forværelse til et bossrum er en skuffelse, og det koster ingenting:
+         der lægges lige så meget ud, det ligger bare her i stedet for hos
+         naboen i samme dybde. */
+      var slot = order[from];
+      for (var j = from; j < to && j < order.length; j++) {
+        if (isAnte(d, order[j].id)) { slot = order[j]; break; }
+      }
+      chosen.push(slot);
+    }
 
     /* Fælderne lægges forrest. En fælde er billigere at møde end en kamp, og
        den hører til dér hvor man endnu ikke ved hvad etagen er for en. */

@@ -344,11 +344,18 @@
         + 'gentager de sig — sænk «Heraf fælder», hvis de skal være unikke.</i>'));
     }
     if (d.stocked) {
-      out.push(row('Skabninger', (d.stocked.theme
-          ? 'etagen er bygget over <b>' + esc(d.stocked.theme) + '</b>, '
+      var themes = d.stocked.themes || [];
+      out.push(row('Skabninger', (themes.length
+          ? 'etagen er bygget over <b>' + themes.map(esc).join('</b>, <b>')
+            + '</b>. '
           : '')
-        + 'højst ' + d.stocked.max + ' pr. rum — to pr. karakter, som SRD’en '
-        + 'anbefaler. Forslagene i Noter er forslag; XP-tallet er facit.'));
+        + 'Højst ' + d.stocked.max + ' pr. rum — to pr. karakter, som SRD’en '
+        + 'anbefaler. Forslagene i Noter er forslag; XP-tallet er facit.'
+        + '<br><i>Hvert rum er ét af de temaer og kun ét: først trækkes en '
+        + 'skabning, og resten af rummet fyldes med dens eget folk. Et '
+        + 'bossrums forkammer får bossens tema. Rækker temaet ikke til '
+        + 'budgettet, bliver rummet lettere — det er bedre end et rum der ikke '
+        + 'hænger sammen.</i>'));
     }
     out.push(row('Lagt ud', n(xp.placed) + ' XP'
       + (xp.short ? ' — <b>' + n(xp.short) + ' XP kunne ikke ligge i rummene '
@@ -381,9 +388,13 @@
       if (enc && enc.trap) {
         note.push(esc(enc.trap.name) + ' <i>(' + esc(enc.trap.severity) + ')</i>');
       } else if (enc && enc.parts.length) {
-        note.push(enc.parts.map(function (p) {
-          return p.n + ' × ' + esc(p.name);
-        }).join(', '));
+        /* Temaet står foran navnene. Det er tit til at se på navnene alene,
+           men ikke altid — og det er temaet DM'en bytter ud efter. */
+        note.push((enc.theme ? '<span class="dsmall">' + esc(enc.theme)
+                               + '</span> ' : '')
+          + enc.parts.map(function (p) {
+              return p.n + ' × ' + esc(p.name);
+            }).join(', '));
       }
       out.push('<tr><td>' + id + '</td><td>' + room.width + ' × ' + room.height
         + '</td><td>' + doorCell(d, room) + '</td><td>' + n(room.xp)
