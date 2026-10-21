@@ -131,6 +131,9 @@
   <p class="note" id="gNote">Samme seed giver samme etage. Lad feltet stå tomt, så
     finder den selv et — det står øverst på arket, så etagen kan laves igen hvis
     printet forsvinder.</p>
+  <p class="note"><b>Indstillingerne huskes</b> i browseren, så de står som du satte
+    dem næste gang du åbner siden. Seedet er ikke med: det er ikke en indstilling, og
+    huskede vi det, ville Generér give den samme etage hver gang.</p>
   <p class="note"><b>Etagens størrelse kan du ikke sætte — den regnes ud.</b> Af
     budgettet følger hvor mange kamprum der skal til; af fældeandelen hvor mange rum der
     skal lægges oveni; og af mætningen hvor mange tomme rum der skal til for at
@@ -242,6 +245,48 @@
     var current = null;
 
     function val(id) { return document.getElementById(id).value; }
+
+    /* Indstillingerne huskes i browseren, så man ikke skal sætte det hele op
+       igen efter en opdatering. Seedet er med vilje ikke med: det er ikke en
+       indstilling, det er ét bestemt kort — og huskede vi det, ville Generér
+       give den samme etage igen efter hver opdatering. */
+    var K_GEN = 'dccdd.dungeon.v1';
+    var FIELDS = ['gLevel', 'gSize', 'gSlack', 'gRoom', 'gLayout', 'gCorr',
+                  'gDead', 'gBoss', 'gCap', 'gSat', 'gTrap', 'gBosses', 'gSafes'];
+
+    function saveSettings() {
+      var out = {};
+      FIELDS.forEach(function (id) { out[id] = val(id); });
+      /* Lageret kan være lukket — privat vindue, eller en browser der ikke
+         giver file:// adgang. Så huskes der bare ikke; siden virker. */
+      try { localStorage.setItem(K_GEN, JSON.stringify(out)); } catch (e) { }
+    }
+
+    function loadSettings() {
+      var saved = null;
+      try { saved = JSON.parse(localStorage.getItem(K_GEN) || 'null'); }
+      catch (e) { return; }
+      if (!saved) return;
+      FIELDS.forEach(function (id) {
+        var el = document.getElementById(id), v = saved[id];
+        if (!el || v === undefined || v === null) return;
+        /* En gemt værdi kan være en mulighed der ikke findes længere. Sætter
+           man den alligevel, står feltet tomt — og et tomt felt er værre end
+           standarden. */
+        if (el.tagName === 'SELECT') {
+          var ok = Array.prototype.some.call(el.options, function (o) {
+            return o.value === v;
+          });
+          if (!ok) return;
+        }
+        el.value = v;
+      });
+    }
+
+    loadSettings();
+    var form = document.getElementById('gen');
+    form.addEventListener('change', saveSettings);
+    form.addEventListener('input', saveSettings);
 
     function run() {
       var seed = parseInt(val('gSeed'), 10);
