@@ -20,6 +20,16 @@
  * `where` siger hvor fælden kan sidde: 'door' på en dør eller en lås, 'room'
  * i et rum, 'both' begge steder. En snubletråd virker i en døråbning; en
  * roterende gulvskive gør ikke.
+ *
+ * `blocks` siger, at fælden efterlader døren ubrugelig. Den slags lægges kun
+ * på en dør, der ikke er etagens eneste vej til rummet bagved — ellers ville
+ * etagen spærre sig selv. Generatoren måler det (se dccDoorRisk) og springer
+ * de døre over.
+ *
+ * `severity` er den samme skala som SRD'ens: Nuisance eller Deadly, og den
+ * siger hvad fælden koster holdet *på dens eget niveau* — ikke hvor mange
+ * terninger der står i teksten. SRD'en viser det selv: Rolling Stone er
+ * Deadly på level 11-16 og Nuisance på 17-20. Det er den samme sten.
  */
 window.TRAPS_DCC_VERSION = "1";
 window.TRAPS_DCC = [
@@ -114,6 +124,38 @@ window.TRAPS_DCC = [
     "dc": [12, 13, 14, 15]
   },
   {
+    "name": "Smeltelås",
+    "severity": "Nuisance",
+    "where": "door",
+    "blocks": true,
+    "trigger": "Låsen dirkes, eller der drejes med den forkerte nøgle",
+    "effect": "Låsen løber ud i hvidglødende metal og størkner i karmen. Den der holder i den, gør et DC {dc} Dexterity saving throw og tager ved fejl {dmg} Fire damage. Værre er, at døren ikke kan åbnes igen — lås, hængsler og karm er ét stykke jern. Den skal brydes ned — AC 17, 60 hit points, Immunity over for Poison og Psychic — eller man går uden om.",
+    "detect": "DC {dc} Wisdom (Perception) — karmen er sod-sort omkring nøglehullet, og metallet er varmt.",
+    "dc": [12, 14, 15, 16],
+    "dmg": ["2 (1d4)", "3 (1d6)", "5 (1d10)", "7 (2d6)"]
+  },
+  {
+    "name": "Faldbom",
+    "severity": "Nuisance",
+    "where": "door",
+    "blocks": true,
+    "trigger": "Døren åbnes og slippes igen",
+    "effect": "En jernbom falder ned bag døren og kiler sig fast i gulvet. Ingen skade — men døren er lukket for altid fra begge sider, og bommen kan ikke nås. Den skal brydes ned (AC 15, 40 hit points), eller holdet må finde den anden vej rundt.",
+    "detect": "DC {dc} Intelligence (Investigation) — der er en lodret fals i karmen og et hul i gulvet under den.",
+    "dc": [12, 14, 15, 16]
+  },
+  {
+    "name": "Styrtet dørkarm",
+    "severity": "Deadly",
+    "where": "door",
+    "blocks": true,
+    "trigger": "Døren åbnes helt",
+    "effect": "Overliggeren er savet over, og loftet over døråbningen styrter ned. Den der åbner, gør et DC {dc} Dexterity saving throw og tager ved fejl {dmg} Bludgeoning damage og har Prone-tilstanden; ved held er skaden halv, og den springer tilbage. Døråbningen er derefter fyldt med sten og skal graves fri — en time pr. person der graver — eller man går uden om.",
+    "detect": "DC {dc} Wisdom (Perception) — der drysser støv fra sprækken over døren.",
+    "dc": [13, 15, 16, 18],
+    "dmg": ["10 (3d6)", "21 (6d6)", "35 (10d6)", "52 (15d6)"]
+  },
+  {
     "name": "Sjælelås",
     "severity": "Deadly",
     "where": "door",
@@ -184,6 +226,25 @@ window.TRAPS_DCC = [
     "effect": "Under hver tredje flise hænger en klokke. Ingen skade, men alt levende inden for 90 fod ved nu hvor holdet er, og beboerne i det nærmeste rum er fremme om 1d4 runder. Går man på fliserne med vilje, kan man slå en melodi an; hvad den gør, bestemmer DM'en.",
     "detect": "DC {dc} Wisdom (Perception) — fliserne vipper en smule.",
     "dc": [12, 13, 14, 15]
+  },
+  {
+    "name": "Sæbegulv",
+    "severity": "Nuisance",
+    "where": "room",
+    "trigger": "Nogen går ind i rummet i mere end gåtempo",
+    "effect": "Gulvet er smurt i fedt under et lag støv. Enhver skabning der bevæger sig mere end halv Speed i rummet, gør et DC {dc} Dexterity (Acrobatics) check og har ved fejl Prone-tilstanden og glider 10 fod videre i samme retning. Ingen skade — men en kamp i rummet er noget andet, og det er rummet bygget til.",
+    "detect": "DC {dc} Wisdom (Perception) — støvet ligger for jævnt, og der er en ren stribe langs væggen hvor beboerne går.",
+    "dc": [12, 13, 14, 15]
+  },
+  {
+    "name": "Sodsky",
+    "severity": "Nuisance",
+    "where": "room",
+    "trigger": "Nogen bærer åben ild ind i rummet",
+    "effect": "Loftet er dækket af fint sod, og varmen løsner det. Rummet fyldes med en sky der slukker al åben ild og gør området Heavily Obscured i 1 minut. Hver skabning i rummet gør et DC {dc} Constitution saving throw og har ved fejl Blinded-tilstanden indtil slutningen af sin næste tur. {dmg} Fire damage til den der bar flammen.",
+    "detect": "DC {dc} Wisdom (Perception) — loftet er sort, og gulvet er det ikke.",
+    "dc": [12, 13, 15, 16],
+    "dmg": ["2 (1d4)", "3 (1d6)", "7 (2d6)", "10 (3d6)"]
   },
   {
     "name": "Tornenet",
