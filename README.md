@@ -1174,6 +1174,30 @@ siger hvilke.
 det og fra hinanden som etagen tillader — samme greb som bosserne spredes med — så der
 også er et hvilested inde på etagen. I snit ligger der 38 felter imellem.
 
+**Hvornår er en fælde Deadly?** For SRD'ens otte er det ikke en vurdering: graden står
+i databladet og læses ordret af PDF'en — «Spiked Pit *Deadly Trap* (Levels 1–4)». SRD
+5.2.1 har to grader, Nuisance og Deadly, og intet derimellem.
+
+For vores egne 33 er det en vurdering. Målestokken er SRD'ens egen, og den handler ikke
+om hvor mange terninger der står i teksten, men om hvad fælden koster holdet *på dens
+eget niveau*: **Nuisance** er besvær — en alarm, en tilstand, et par hit points, noget
+der koster tid og ressourcer. **Deadly** er noget der kan tage en karakter ud af kampen
+med ét rul. SRD'en viser selv at det er niveauet og ikke tallene der afgør det:
+*Rolling Stone* er Deadly på level 11-16 og Nuisance på level 17-20 — den samme sten med
+de samme 10d10.
+
+Derfor kan man sætte et **loft over graden**. En Deadly fælde på level 1-4 gør 9 (2d8)
+eller 10 (3d6), og en karakter på level 1 har omkring ti hit points; SRD'ens *Spiked
+Pit* gør 3 (1d6) plus 9 (2d8) helt uden et saving throw. Står `trap_grade` på
+`nuisance`, kommer der ingen fælde på etagen der kan vælte en karakter af sig selv.
+Monstrene er uberørte.
+
+**Nogle dørfælder ødelægger døren.** Smeltelås gør lås, hængsler og karm til ét stykke
+jern; Faldbom kiler en jernbom fast bagved; Styrtet dørkarm lader loftet falde ned i
+åbningen. Det kræver at der *er* en anden vej: før fælderne lægges ud, måles hver dør
+ved at lukke den og tælle om alt det andet stadig kan nås fra indgangen. Er døren
+etagens eneste vej til rummet bagved, kommer der aldrig en spærrende fælde på den.
+
 **Fældedørene siger hvad fælden er.** En dør med en fælde fik før kun et tegn på kortet;
 nu får den en bestemt fælde, valgt blandt dem der kan sidde på en dør — en nål i en lås
 kan, en rullende sten kan ikke. Den står i fældetabellen på arket med udløser, virkning
@@ -1181,7 +1205,7 @@ og hvordan den findes, og med de to rum den sidder imellem, så den kan findes p
 igen.
 
 **Fælderne kommer fra to poser.** SRD'ens otte står med navn og udløser og slås op i
-PDF'en; deres fulde tekst er Wizards', ikke vores at trykke. Dertil 28 vi selv har
+PDF'en; deres fulde tekst er Wizards', ikke vores at trykke. Dertil 33 vi selv har
 skrevet i `assets/data/traps-dcc.js`, fordi otte er for få til tyve etager og fordi en
 dør skal have noget der kan sidde på en dør. Vores står på arket med det hele og
 skalerer selv til holdets level i fire trin — 1-4, 5-10, 11-16, 17-20 — i samme
@@ -1298,7 +1322,7 @@ assets/js/dungeon-map.js       etagens kort og rapport som printbart ark
 assets/js/encounters.js        fylder rum og døre med skabninger og fælder
 assets/data/monsters.js        SRD 5.2.1's skabninger med CR, XP og tema
 assets/data/traps.js           SRD 5.2.1's otte fælder med grad og udløser
-assets/data/traps-dcc.js       vores egne 28 fælder, med fuld tekst og skalering
+assets/data/traps-dcc.js       vores egne 33 fælder, med fuld tekst og skalering
 assets/data/items.js           items fra regnearket
 assets/data/class-cards.js     Class-pakkens indhold (genereret)
 assets/data/magic-items.js     magic items

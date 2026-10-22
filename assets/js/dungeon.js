@@ -131,6 +131,11 @@
          der er fælder frem for monstre. En fælde koster ikke XP, så en høj
          fældeandel presser budgettet sammen i færre kamprum. */
       saturation: 45, trap_share: 25,
+      /* Loftet over hvor slem en fælde må være. SRD'en har to grader —
+         Nuisance og Deadly — og en Deadly fælde kan vælte en karakter på
+         level 1 med ét rul. 'all' tillader begge; 'nuisance' holder det til
+         besvær. */
+      trap_grade: 'all',
       boss_rooms: 1, safe_rooms: 1
     };
   }
@@ -239,6 +244,12 @@
         ? tries + Math.max(4, Math.ceil(tries * 0.5))
         : roomTries(rows, cols, base.room_max) + 4;
     }
+
+    /* Først her, og kun på den etage der bliver til noget. Målingen afgør
+       ikke om etagen dur — den siger bare hvilke døre der tåler en fælde der
+       ødelægger dem. Lå den inde i build(), blev den betalt for hvert af de
+       op til 24 forsøg. */
+    dccDoorRisk(best);
 
     best.fit = {
       passes: Math.min(pass + 1, MAX_PASSES),
@@ -1782,6 +1793,77 @@
      ud, og den udskæring lukker felter — så en afstand målt undervejs kan være
      et halvt dusin skridt forkert, når etagen står færdig. Det er tallet på
      arket, så det skal passe med kortet ved siden af. */
+  /* Hvilke døre er etagens eneste vej? En fælde kan være, at døren ender med
+     at være ubrugelig — låsen smelter, en bom falder ned — og den slags kan
+     kun sidde, hvor der er en anden vej hen til det rum den beskytter.
+     Ellers er etagen spærret af sin egen fælde.
+
+     Spørgsmålet er det samme for hver dør: er dét felt det eneste der binder
+     to dele af etagen sammen? Det er en snitknude i grafen over de åbne
+     felter, og dem findes alle sammen på én gennemgang (Tarjan). Den lige
+     metode — luk døren, og tæl om resten stadig kan nås — giver det samme
+     svar på alle 7.110 døre i en prøve, men koster 77 ms pr. etage. Den her
+     koster ikke noget der kan måles. */
+  function dccDoorRisk(d) {
+    var list = d.door || [];
+    if (!d.entrance) {
+      list.forEach(function (door) { door.vital = true; });
+      return;
+    }
+    var got = cutCells(d, d.entrance.row, d.entrance.col);
+    list.forEach(function (door) {
+      if (!(d.cell[door.row][door.col] & OPENSPACE)) { door.vital = false; return; }
+      var key = door.row + ',' + door.col;
+      /* Et felt uden for gennemgangen kan ikke nås fra indgangen. Det bør
+         ikke ske, og gør det, er døren ikke en vi tør ødelægge. */
+      door.vital = !!got.cut[key] || !got.seen[key];
+    });
+  }
+
+  /* Snitknuderne i etagens åbne felter: de felter hvor etagen falder i to,
+     hvis man lukker dem. Dybde-først, iterativt — en gang gennem en etage kan
+     være hundreder af felter lang, og en rekursiv udgave ville vælte stakken,
+     ligesom donjons egen tunnel() gjorde. */
+  function cutCells(d, r0, c0) {
+    var disc = {}, low = {}, cut = {}, seen = {}, timer = 1;
+    var root = r0 + ',' + c0, rootKids = 0;
+    var stack = [[r0, c0, null, 0]];
+    disc[root] = low[root] = timer++;
+    seen[root] = 1;
+
+    while (stack.length) {
+      var top = stack[stack.length - 1];
+      var r = top[0], c = top[1], parent = top[2], me = r + ',' + c;
+
+      if (top[3] < DIRS.length) {
+        var k = top[3]++;
+        var nr = r + di[DIRS[k]], nc = c + dj[DIRS[k]];
+        if (nr < 0 || nr > d.n_rows || nc < 0 || nc > d.n_cols) continue;
+        if (!(d.cell[nr][nc] & OPENSPACE)) continue;
+        var nk = nr + ',' + nc;
+        if (nk === parent) continue;
+        if (disc[nk] !== undefined) {
+          if (disc[nk] < low[me]) low[me] = disc[nk];
+          continue;
+        }
+        disc[nk] = low[nk] = timer++;
+        seen[nk] = 1;
+        if (me === root) rootKids++;
+        stack.push([nr, nc, me, 0]);
+        continue;
+      }
+
+      stack.pop();
+      if (parent === null) continue;
+      if (low[me] < low[parent]) low[parent] = low[me];
+      /* Roden er et særtilfælde: den er kun en snitknude, hvis den har mere
+         end én gren under sig. */
+      if (parent !== root && low[me] >= disc[parent]) cut[parent] = 1;
+    }
+    if (rootKids > 1) cut[root] = 1;
+    return { cut: cut, seen: seen };
+  }
+
   function dccDistances(d) {
     d.reachable = false;
     if (!d.entrance) return;

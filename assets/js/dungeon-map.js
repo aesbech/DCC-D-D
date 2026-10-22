@@ -334,10 +334,20 @@
       used.forEach(function (x) {
         inRooms += x.rooms.length; onDoors += x.doors.length;
       });
+      var blocked = (d.stocked && d.stocked.blocked_doors) || 0;
       out.push(row('Fælderne', inRooms + ' i rummene'
         + (onDoors ? ' og ' + onDoors + ' på dørene' : '')
         + ' — ' + used.length + ' forskellige, med udløser og virkning i '
         + 'tabellen efter rummene'
+        + (d.trap_grade === 'nuisance'
+            ? '<br><b>Kun Nuisance</b> — ingen fælde på etagen kan vælte en '
+              + 'karakter af sig selv.'
+            : '')
+        + (blocked
+            ? '<br><b>' + blocked + ' af fældedørene ødelægger døren</b> for '
+              + 'altid. De sidder kun, hvor der er en anden vej hen til rummet '
+              + 'bagved — etagen kan altså stadig gås igennem.'
+            : '')
         + '<br><i>De med engelsk navn står i SRD 5.2.1 og slås op dér; resten '
         + 'er vores egne og står her med det hele, skaleret til level '
         + xp.level + '. Er der flere fælder på etagen end der findes i alt, '
@@ -542,7 +552,8 @@
           + 'over hvordan den skaleres til level ' + d.xp.level + '.');
       }
       out.push('<tr><td><b>' + esc(t.name) + '</b><br><span class="dgrade">'
-        + esc(t.severity) + '</span></td><td>' + where.join('<br>')
+        + esc(t.severity) + (t.blocks ? ' · spærrer' : '')
+        + '</span></td><td>' + where.join('<br>')
         + '</td><td>' + cell.join(' ') + '</td></tr>');
     });
     out.push('</tbody></table>');

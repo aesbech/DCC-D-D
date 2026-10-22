@@ -224,9 +224,18 @@
      igen, før hele posen er brugt. Med fem fælder i rummene og fem på dørene
      var det ellers oftere end man tror: fødselsdagsparadokset gælder også
      for faldgruber. */
-  function trapFor(rand, traps, level, where, used) {
+  function trapFor(rand, traps, level, where, used, grade, mayBlock) {
     if (!traps || !traps.length) return null;
-    var here = traps.filter(function (t) { return placeable(t, where); });
+    var here = traps.filter(function (t) {
+      if (!placeable(t, where)) return false;
+      /* Loftet over graden. SRD'en har to, og en Deadly fælde kan vælte en
+         karakter på level 1 med ét rul — derfor kan man sætte den fra. */
+      if (grade === 'nuisance' && t.severity !== 'Nuisance') return false;
+      /* En fælde der efterlader døren ubrugelig kan kun sidde, hvor der er
+         en anden vej ind. Ellers spærrer etagen sig selv. */
+      if (t.blocks && !mayBlock) return false;
+      return true;
+    });
     if (!here.length) return null;
 
     var band = here.filter(function (t) {
@@ -277,6 +286,7 @@
                         d.xp ? d.xp.boss : 0, maxN);
     if (!pool) return d;
     var level = d.xp ? d.xp.level : 1;
+    var grade = (d.trap_grade === 'nuisance') ? 'nuisance' : 'all';
     var used = {};
 
     /* Bosserne først. Forkammeret er bossens eget forværelse, så det skal
@@ -295,7 +305,7 @@
       var room = d.room[id];
       if (!room || room.encounter) continue;
       if (room.trap) {
-        var t = trapFor(rand, traps, level, 'room', used);
+        var t = trapFor(rand, traps, level, 'room', used, grade, false);
         if (t) room.encounter = { trap: t, parts: [], spent: 0, left: 0, count: 0 };
         continue;
       }
@@ -306,11 +316,13 @@
     /* Fældedørene. Generatoren siger at døren har en fælde; her bliver den til
        en bestemt fælde. Dørobjekterne deles af begge rum — fixDoors lagde den
        samme reference i to lister — så det er nok at sætte den ét sted. */
-    var doors = 0;
+    var doors = 0, blocked = 0;
     (d.door || []).forEach(function (door) {
       if (door.key !== 'trap' || door.trap) return;
-      var t = trapFor(rand, traps, level, 'door', used);
-      if (t) { door.trap = t; doors++; }
+      var t = trapFor(rand, traps, level, 'door', used, grade, !door.vital);
+      if (!t) return;
+      door.trap = t; doors++;
+      if (t.blocks) blocked++;
     });
 
     d.stocked = { themes: pool.names || [], max: maxN,
@@ -318,7 +330,8 @@
                   srd_traps: (traps || []).filter(function (t) {
                     return t.srd;
                   }).length,
-                  door_traps: doors };
+                  door_traps: doors, blocked_doors: blocked,
+                  grade: grade };
     return d;
   }
 

@@ -112,6 +112,12 @@
         <option value="75">75 % — mest fælder</option>
       </select>
     </label>
+    <label>Fældernes grad
+      <select id="gGrade">
+        <option value="all" selected>Op til Deadly — kan vælte en karakter</option>
+        <option value="nuisance">Kun Nuisance — besvær, ikke død</option>
+      </select>
+    </label>
     <label>Bossrum
       <select id="gBosses"></select>
     </label>
@@ -183,13 +189,47 @@
     er tegnet på kortet, og tabellen siger hvilke to rum den sidder imellem, så den kan
     findes igen. Dørkolonnen i rumtabellen siger hvor mange af rummets døre der er
     fælder.</p>
-  <p>Posen rummer 36 fælder. <b>De otte med engelsk navn er SRD'ens</b> og slås op i
+  <p>Posen rummer 41 fælder. <b>De otte med engelsk navn er SRD'ens</b> og slås op i
     PDF'en — deres fulde tekst og skaleringstabel er Wizards', ikke vores at trykke her.
-    <b>De 28 på dansk er vores egne</b>, skrevet til formålet, og de står på arket med
+    <b>De 33 på dansk er vores egne</b>, skrevet til formålet, og de står på arket med
     det hele: otte er for få til tyve etager, og en dør skal have en fælde der kan sidde
     på en dør. Vores skalerer selv til holdets level i fire trin — 1-4, 5-10, 11-16,
     17-20 — så DC og skade på arket passer allerede. Den samme fælde kommer ikke to
     gange på en etage, medmindre der er flere fælder end der findes i alt.</p>
+
+  <h3>Hvornår er en fælde Deadly?</h3>
+  <p><b>For SRD'ens otte er det ikke en vurdering.</b> Graden står i databladet, og den
+    læses ordret af PDF'en: «Spiked Pit <i>Deadly Trap</i> (Levels 1–4)». Der er to
+    grader i SRD 5.2.1, Nuisance og Deadly, og der er ikke noget derimellem.</p>
+  <p><b>For vores egne 33 er det en vurdering — min.</b> Målestokken er SRD'ens egen,
+    og den handler ikke om hvor mange terninger der står i teksten, men om hvad fælden
+    koster holdet <i>på dens eget niveau</i>: <b>Nuisance</b> er besvær — en alarm, en
+    tilstand, et par hit points, noget der koster tid og ressourcer. <b>Deadly</b> er
+    noget der kan tage en karakter ud af kampen med ét rul.</p>
+  <p>SRD'en viser selv at det er niveauet og ikke tallene der afgør det:
+    <i>Rolling Stone</i> er <b>Deadly</b> på level 11-16 og <b>Nuisance</b> på level
+    17-20. Det er den samme sten med de samme 10d10. Derfor kan Rustpust gøre 24 (7d6)
+    og stadig være en Nuisance — på level 17-20 er det en ærgerlig runde, ikke en
+    begravelse.</p>
+  <p class="note">Og det er netop derfor loftet er værd at have. En Deadly fælde på
+    level 1-4 gør 9 (2d8) eller 10 (3d6), og en karakter på level 1 har omkring ti hit
+    points — så ét uheldigt rul kan vælte hende. SRD'ens <i>Spiked Pit</i> er værre
+    endnu: 3 (1d6) for faldet plus 9 (2d8) for spyddene, <b>uden et saving throw</b>.
+    Sæt <b>Fældernes grad</b> til <b>Kun Nuisance</b>, så kommer der ingen fælde på
+    etagen der kan vælte en karakter af sig selv. Monstrene er uberørte — det er kun
+    fælderne.</p>
+
+  <h3>Fælder der ødelægger døren</h3>
+  <p>En dørfælde behøver ikke gøre skade for at koste noget. <b>Smeltelås</b> løber ud
+    i hvidglødende metal og gør lås, hængsler og karm til ét stykke jern; <b>Faldbom</b>
+    kiler en jernbom fast bag døren; <b>Styrtet dørkarm</b> lader loftet falde ned i
+    åbningen. Derefter er døren ikke en dør mere — den skal brydes ned, eller holdet må
+    finde den anden vej rundt.</p>
+  <p>Det kræver at der <i>er</i> en anden vej. Før fælderne lægges ud, måles hver eneste
+    dør: den lukkes, og der tælles om alt det andet stadig kan nås fra indgangen. Er
+    døren etagens eneste vej til rummet bagved, kommer der aldrig en spærrende fælde på
+    den. Arket siger hvor mange af fældedørene der er af den slags, og fældetabellen
+    mærker dem <b>spærrer</b>.</p>
   <p>Rum der står <b>tom</b> har ingen kamp; det er ikke et hul i budgettet, men plads
     til alt det andet. Safe room står altid tomt, og bossen er præcis én kamp af den
     slags du har valgt. Et rum mærket <b>FORKAMMER</b> er vejen ind til et bossrum og
@@ -256,8 +296,8 @@
        have en ny etage, rydder man feltet. */
     var K_GEN = 'dccdd.dungeon.v1';
     var FIELDS = ['gLevel', 'gSize', 'gSlack', 'gRoom', 'gLayout', 'gCorr',
-                  'gDead', 'gBoss', 'gCap', 'gSat', 'gTrap', 'gBosses',
-                  'gSafes', 'gSeed'];
+                  'gDead', 'gBoss', 'gCap', 'gSat', 'gTrap', 'gGrade',
+                  'gBosses', 'gSafes', 'gSeed'];
 
     function saveSettings() {
       var out = {};
@@ -310,6 +350,7 @@
         room_cap: val('gCap'),
         saturation: +val('gSat'),
         trap_share: +val('gTrap'),
+        trap_grade: val('gGrade'),
         boss_rooms: +val('gBosses'),
         safe_rooms: +val('gSafes')
       });
@@ -490,6 +531,26 @@
         og en ny etage plejer at løse det.</td>
     </tr>
     <tr>
+      <td><b>En fælde kunne vælte en karakter på level 1.</b> Graden fulgte bare med
+        fælden, og man kunne ikke sige fra.</td>
+      <td><b>Fældernes grad</b> kan sættes til <b>Kun Nuisance</b>. Så kommer der ingen
+        fælde på etagen der kan tage en karakter ud af kampen med ét rul — hverken
+        SRD'ens eller vores. Monstrene er uberørte. Målt over 300 etager med høj
+        mætning og mange fælder: <b>5.846 fælder lagt ud, 0 af dem Deadly</b>. Der er
+        ni Nuisance-fælder til døre og ni til rum, så en etage med rigtig mange
+        gentager sig oftere — det siger arket.</td>
+    </tr>
+    <tr>
+      <td><b>En fældedør gjorde altid skade.</b> Den kunne ikke bare være i vejen.</td>
+      <td>Tre fælder <b>ødelægger døren</b>: Smeltelås gør lås, hængsler og karm til ét
+        stykke jern, Faldbom kiler en jernbom fast bagved, og Styrtet dørkarm lader
+        loftet falde ned i åbningen. Derefter skal døren brydes ned, eller holdet må
+        finde den anden vej rundt — og <b>den vej skal findes</b>. Før fælderne lægges
+        ud, måles hver eneste dør ved at lukke den og tælle om alt det andet stadig kan
+        nås fra indgangen. Er døren etagens eneste vej til rummet bagved, kommer der
+        aldrig en spærrende fælde på den.</td>
+    </tr>
+    <tr>
       <td><b>Bossen kunne spærre for etagen.</b> Et bossrum skulle have mindst to døre,
         og så lå den midt i en gennemgang: kunne holdet ikke klare den, kom de ingen
         vegne.</td>
@@ -518,9 +579,9 @@
       <td>Hver fældedør har nu <b>en bestemt fælde</b>, valgt blandt dem der kan sidde
         på en dør — en nål i en lås kan, en rullende sten kan ikke. Den står i
         fældetabellen med udløser, virkning og hvordan den findes, og med de to rum den
-        sidder imellem, så den kan findes på kortet. Dertil <b>28 fælder vi selv har
+        sidder imellem, så den kan findes på kortet. Dertil <b>33 fælder vi selv har
         skrevet</b>, fordi otte er for få: de skalerer selv til holdets level i fire
-        trin, og de står på arket med det hele. Posen rummer 36, og den samme fælde
+        trin, og de står på arket med det hele. Posen rummer 41, og den samme fælde
         kommer ikke to gange på en etage, medmindre der er flere fælder end der findes
         i alt.</td>
     </tr>
