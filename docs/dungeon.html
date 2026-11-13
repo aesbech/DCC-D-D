@@ -30,14 +30,13 @@
 <main class="doc-main">
 
   <h1>Dungeon</h1>
-  <p class="lead">Etagerne kommer fra donjons kortgenerator med fire tilføjelser, så en
-    etage kan bruges som den er: trappen ned har mere end én udvej, der er et bossrum
-    med forkammer foran den, der er et safe room ved starttrappen, og der ligger XP nok
+  <p class="lead">donjons kortgenerator med tilføjelser, så en etage kan bruges som
+    den er: bossrum med forkammer, et safe room ved starttrappen, fælder, og XP nok
     til at stige et level.</p>
 
   <h2>Generér en etage</h2>
-  <p>Den kører her på siden. Ud kommer et ark du kan printe eller gemme: kortet på
-    én side, rapporten på den næste.</p>
+  <p>Ud kommer et ark du kan printe eller gemme: kortet på én side, rapporten på
+    den næste.</p>
 
   <form class="calc gen" id="gen" onsubmit="return false">
     <label>Holdets level
@@ -133,118 +132,21 @@
     <button type="button" id="gRun" class="btn btn-primary">Generér etage</button>
     <button type="button" id="gPrint" class="btn" disabled>Print</button>
     <button type="button" id="gSave" class="btn" disabled>Hent som fil</button>
+    <button type="button" id="gKeep" class="btn" disabled>Gem etagen</button>
   </p>
   <p class="note" id="gNote">Samme seed giver samme etage. Lad feltet stå tomt, så
-    finder den selv et — det står øverst på arket, så etagen kan laves igen hvis
-    printet forsvinder.</p>
-  <p class="note"><b>Indstillingerne huskes</b> i browseren, så de står som du satte
-    dem næste gang du åbner siden — også seedet. Siden skriver aldrig selv i
-    seedfeltet, så står der noget, har du tastet det. Husk at rydde feltet, hvis du
-    vil have en ny etage i stedet for den samme igen.</p>
-  <p class="note"><b>Etagens størrelse kan du ikke sætte — den regnes ud.</b> Af
-    budgettet følger hvor mange kamprum der skal til; af fældeandelen hvor mange rum der
-    skal lægges oveni; og af mætningen hvor mange tomme rum der skal til for at
-    procenten passer. Summen er rumantallet, og derfra følger gitteret. Vil du have en
-    stor etage, så sæt mætningen ned eller fældeandelen op — ikke flere felter. Hvad den
-    blev regnet til, og hvad den endte på, står på arket.</p>
-  <p class="note"><b>Mætning</b> er hvor stor en del af rummene der har noget i sig, og
-    <b>heraf fælder</b> deler det indhold op mellem fælder og monstre. En fælde koster
-    ikke XP — SRD'en giver fælder en grad og et niveauspænd, ikke en XP-værdi — så en høj
-    fældeandel presser hele budgettet sammen i færre kamprum. Bliver der for få til at
-    rumme det, laver generatoren om på fordelingen og lægger om nødvendigt rum til.</p>
-  <p class="note">Standarden er <b>ikke</b> donjons egen. Med spredte rum og halvdelen
-    af blindgyderne tilbage er <b>59 % af det åbne areal gang</b>, og holdet bruger
-    aftenen på at gå. Med rummene tæt og alle blindgyder væk er det <b>12 %</b>, og der
-    er tre gange så mange rum. Vil du have donjons oprindelige etage, så sæt
-    <i>Rummene ligger</i> til <i>Spredt</i>.</p>
+    finder den selv et — det står øverst på arket.</p>
+
+  <div id="gKeptWrap" hidden>
+    <h2>Gemte etager</h2>
+    <table id="gKept"></table>
+    <p class="note">En gemt etage er dens indstillinger og dens seed, ikke et billede af
+      kortet: den laves forfra når du åbner den. Det giver den samme etage, så længe
+      generatoren ikke selv bliver lavet om. Skal en etage ligge fast for altid, så brug
+      <b>Hent som fil</b>.</p>
+  </div>
 
   <div id="sheetWrap" class="sheet-wrap" hidden><div class="dsheet" id="sheet"></div></div>
-
-  <h3>Hvad der står på arket</h3>
-  <p>Kortet har ét felt pr. fem fod, så bevægelse kan tælles direkte på papiret.
-    Rummene er nummererede, og under nummeret står rummets XP-budget. Bossrummet og
-    safe room er tonede, og bossens <b>forkammer</b> er tonet lysere, så parret læses
-    som ét sted. Nøglen under kortet viser kun de dørtyper der faktisk er på etagen.
-    Rapporten siger hvor mange skridt der er til safe roomet og til bossen, så du kan
-    se hvor langt inde de ligger.</p>
-  <p>I <b>Noter</b> står et forslag til hvad der er i rummet — tema, navne og antal,
-    valgt så de bruger rummets budget uden at gå over. Et rum mærket <b>FÆLDE</b> har
-    en fælde i stedet. Det er et forslag: byt ud som du vil, <b>XP-tallet er facit</b>.
-    Skabningerne slås op i <a href="SRD_CC_v5.2.1.pdf">SRD 5.2.1</a>, der ligger under
-    Docs.</p>
-  <p><b>Et rum er ét tema og kun ét.</b> Skabningerne er delt i 21 temaer — goblinoider,
-    drager, udøde, elementarer, havet, urtidsdyr og så videre. Det er en redaktionel
-    inddeling og ikke SRD'ens type: «Beast» rummer både en rotte og en tyrannosaurus,
-    og et rum sat sammen efter type bliver et zoologisk udsnit frem for et sted nogen
-    bor. Reglen er enkel: <b>først trækkes én skabning, og så fyldes resten af rummet
-    med dens eget folk</b>. Etagen vælger tre temaer, som rummene trækker fra, så den
-    hænger sammen uden at være ens hele vejen. Et <b>bossrums forkammer får bossens
-    tema</b> — det er hendes forværelse.</p>
-  <p class="note">Rækker temaet ikke til rummets budget, bliver rummet lettere.
-    Goblinoiderne topper ved 700 XP, og otte goblin bosses er 5.600 — men et tema som
-    småkravlet kan ikke fylde et stort rum, og så lader vi være. Et let rum der hænger
-    sammen er bedre end et dyrt rum der ikke gør.</p>
-  <p><b>Fælderne står i deres egen tabel</b> efter rummene, med grad, udløser, virkning
-    og hvordan de findes og uskadeliggøres — også dem der sidder på en dør. En fældedør
-    er tegnet på kortet, og tabellen siger hvilke to rum den sidder imellem, så den kan
-    findes igen. Dørkolonnen i rumtabellen siger hvor mange af rummets døre der er
-    fælder.</p>
-  <p>Posen rummer 41 fælder. <b>De otte med engelsk navn er SRD'ens</b> og slås op i
-    PDF'en — deres fulde tekst og skaleringstabel er Wizards', ikke vores at trykke her.
-    <b>De 33 på dansk er vores egne</b>, skrevet til formålet, og de står på arket med
-    det hele: otte er for få til tyve etager, og en dør skal have en fælde der kan sidde
-    på en dør. Vores skalerer selv til holdets level i fire trin — 1-4, 5-10, 11-16,
-    17-20 — så DC og skade på arket passer allerede. Den samme fælde kommer ikke to
-    gange på en etage, medmindre der er flere fælder end der findes i alt.</p>
-
-  <h3>Hvornår er en fælde Deadly?</h3>
-  <p><b>For SRD'ens otte er det ikke en vurdering.</b> Graden står i databladet, og den
-    læses ordret af PDF'en: «Spiked Pit <i>Deadly Trap</i> (Levels 1–4)». Der er to
-    grader i SRD 5.2.1, Nuisance og Deadly, og der er ikke noget derimellem.</p>
-  <p><b>For vores egne 33 er det en vurdering — min.</b> Målestokken er SRD'ens egen,
-    og den handler ikke om hvor mange terninger der står i teksten, men om hvad fælden
-    koster holdet <i>på dens eget niveau</i>: <b>Nuisance</b> er besvær — en alarm, en
-    tilstand, et par hit points, noget der koster tid og ressourcer. <b>Deadly</b> er
-    noget der kan tage en karakter ud af kampen med ét rul.</p>
-  <p>SRD'en viser selv at det er niveauet og ikke tallene der afgør det:
-    <i>Rolling Stone</i> er <b>Deadly</b> på level 11-16 og <b>Nuisance</b> på level
-    17-20. Det er den samme sten med de samme 10d10. Derfor kan Rustpust gøre 24 (7d6)
-    og stadig være en Nuisance — på level 17-20 er det en ærgerlig runde, ikke en
-    begravelse.</p>
-  <p class="note">Og det er netop derfor loftet er værd at have. En Deadly fælde på
-    level 1-4 gør 9 (2d8) eller 10 (3d6), og en karakter på level 1 har omkring ti hit
-    points — så ét uheldigt rul kan vælte hende. SRD'ens <i>Spiked Pit</i> er værre
-    endnu: 3 (1d6) for faldet plus 9 (2d8) for spyddene, <b>uden et saving throw</b>.
-    Sæt <b>Fældernes grad</b> til <b>Kun Nuisance</b>, så kommer der ingen fælde på
-    etagen der kan vælte en karakter af sig selv. Monstrene er uberørte — det er kun
-    fælderne.</p>
-
-  <h3>Fælder der ødelægger døren</h3>
-  <p>En dørfælde behøver ikke gøre skade for at koste noget. <b>Smeltelås</b> løber ud
-    i hvidglødende metal og gør lås, hængsler og karm til ét stykke jern; <b>Faldbom</b>
-    kiler en jernbom fast bag døren; <b>Styrtet dørkarm</b> lader loftet falde ned i
-    åbningen. Derefter er døren ikke en dør mere — den skal brydes ned, eller holdet må
-    finde den anden vej rundt.</p>
-  <p>Det kræver at der <i>er</i> en anden vej. Før fælderne lægges ud, måles hver eneste
-    dør: den lukkes, og der tælles om alt det andet stadig kan nås fra indgangen. Er
-    døren etagens eneste vej til rummet bagved, kommer der aldrig en spærrende fælde på
-    den. Arket siger hvor mange af fældedørene der er af den slags, og fældetabellen
-    mærker dem <b>spærrer</b>.</p>
-  <p>Rum der står <b>tom</b> har ingen kamp; det er ikke et hul i budgettet, men plads
-    til alt det andet. Safe room står altid tomt, og bossen er præcis én kamp af den
-    slags du har valgt. Et rum mærket <b>FORKAMMER</b> er vejen ind til et bossrum og
-    er ellers et rum som alle andre — det kan have fælde og monstre, og det må gerne
-    have flere ind- og udgange. Selve bossrummet har kun den ene dør ind fra
-    forkammeret.</p>
-  <p class="note">Sammensætningen kender XP og skabningens slags — ikke hvor den bor.
-    Der kan godt lande en fiskestime i et tørt rum. Det er et af de steder, hvor du
-    bytter ud.</p>
-  <p class="note">Kan budgettet ikke ligge i rummene uden at bryde loftet, <b>laver
-    generatoren etagen om</b>: først med flere rum på det samme gitter, og hjælper det
-    ikke — fordi de nye rum lander oven i dem der allerede står — med et større gitter.
-    Arket siger til, når det er sket. Målt over 600 etager på level 1 til 20 er der
-    ingen, der mangler budget; gitteret måtte vokse i 22 af dem. Går det helt i stå,
-    er kravet umuligt frem for svært, og så er svaret at sænke slack.</p>
 
   <script src="../assets/data/monsters.js"></script>
   <script src="../assets/data/traps.js"></script>
@@ -307,17 +209,14 @@
       try { localStorage.setItem(K_GEN, JSON.stringify(out)); } catch (e) { }
     }
 
-    function loadSettings() {
-      var saved = null;
-      try { saved = JSON.parse(localStorage.getItem(K_GEN) || 'null'); }
-      catch (e) { return; }
+    /* Sæt felterne fra et gemt sæt. En gemt værdi kan være en mulighed der
+       ikke findes længere; sætter man den alligevel, står feltet tomt, og et
+       tomt felt er værre end standarden. */
+    function applyFields(saved) {
       if (!saved) return;
       FIELDS.forEach(function (id) {
         var el = document.getElementById(id), v = saved[id];
         if (!el || v === undefined || v === null) return;
-        /* En gemt værdi kan være en mulighed der ikke findes længere. Sætter
-           man den alligevel, står feltet tomt — og et tomt felt er værre end
-           standarden. */
         if (el.tagName === 'SELECT') {
           var ok = Array.prototype.some.call(el.options, function (o) {
             return o.value === v;
@@ -326,6 +225,11 @@
         }
         el.value = v;
       });
+    }
+
+    function loadSettings() {
+      try { applyFields(JSON.parse(localStorage.getItem(K_GEN) || 'null')); }
+      catch (e) { /* ingen adgang eller ødelagt data — standarden står */ }
     }
 
     loadSettings();
@@ -372,6 +276,7 @@
       wrap.hidden = false;
       document.getElementById('gPrint').disabled = false;
       document.getElementById('gSave').disabled = false;
+      document.getElementById('gKeep').disabled = false;
 
       var xp = current.xp, fit = current.fit;
       var size = current.n_rows + ' × ' + current.n_cols + ' med '
@@ -419,198 +324,119 @@
     });
 
     document.getElementById('gRun').addEventListener('click', run);
+
+    /* ---------- gemte etager ----------
+     *
+     * En etage er en ren funktion af sit seed og sine indstillinger, så det
+     * er dem der gemmes — ikke arket. Det fylder nogle få hundrede tegn i
+     * stedet for hundrede kilobyte, og etagen laves forfra når den åbnes.
+     * Prisen er, at en etage kan se anderledes ud, hvis generatoren selv
+     * bliver lavet om; skal en etage ligge fast for altid, er Hent som fil
+     * svaret, og det står på siden.
+     */
+    var K_KEPT = 'dccdd.dungeons.v1';
+    var MAX_KEPT = 60;
+
+    function esc(t) {
+      return String(t).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+
+    function readKept() {
+      try {
+        var v = JSON.parse(localStorage.getItem(K_KEPT) || '[]');
+        return Object.prototype.toString.call(v) === '[object Array]' ? v : [];
+      } catch (e) { return []; }
+    }
+
+    function writeKept(list) {
+      try { localStorage.setItem(K_KEPT, JSON.stringify(list)); return true; }
+      catch (e) { return false; }
+    }
+
+    function keptName(d) {
+      return 'Level ' + d.xp.level + ' · ' + d.n_rooms + ' rum · seed ' + d.seed;
+    }
+
+    function when(iso) {
+      var t = new Date(iso);
+      if (isNaN(t.getTime())) return '';
+      try {
+        return t.toLocaleString('da-DK', { dateStyle: 'short', timeStyle: 'short' });
+      } catch (e) { return t.toISOString().slice(0, 16).replace('T', ' '); }
+    }
+
+    var keptWrap = document.getElementById('gKeptWrap');
+    var keptTable = document.getElementById('gKept');
+
+    function drawKept() {
+      var list = readKept();
+      keptWrap.hidden = !list.length;
+      if (!list.length) { keptTable.innerHTML = ''; return; }
+      var rows = ['<tr><th>Etage</th><th>Gemt</th><th></th></tr>'];
+      list.forEach(function (x, i) {
+        rows.push('<tr><td>' + esc(x.name) + '</td><td>' + esc(when(x.at)) + '</td>'
+          + '<td class="kept-do">'
+          + '<button type="button" class="btn btn-sm" data-open="' + i + '">Åbn</button> '
+          + '<button type="button" class="btn btn-sm btn-danger" data-del="' + i
+          + '">Slet</button></td></tr>');
+      });
+      keptTable.innerHTML = rows.join('');
+    }
+
+    document.getElementById('gKeep').addEventListener('click', function () {
+      if (!current) return;
+      var fields = {};
+      FIELDS.forEach(function (id) { fields[id] = val(id); });
+      /* Det seed etagen faktisk blev lavet med — feltet kan have stået tomt,
+         og så fandt generatoren selv et. */
+      fields.gSeed = String(current.seed);
+
+      var fallback = keptName(current);
+      var name = window.prompt('Navn på etagen', fallback);
+      if (name === null) return;                 // fortrudt
+
+      var list = readKept();
+      list.unshift({ name: (name.trim() || fallback).slice(0, 80),
+                     at: new Date().toISOString(), fields: fields });
+      if (list.length > MAX_KEPT) list.length = MAX_KEPT;
+      if (!writeKept(list)) {
+        note.textContent = 'Etagen kunne ikke gemmes — browseren vil ikke lade siden '
+          + 'gemme noget, eller der er ikke plads til flere. Brug Hent som fil i stedet.';
+        return;
+      }
+      drawKept();
+      note.textContent = 'Gemt. Etagen står nu under Gemte etager og kan åbnes igen.';
+    });
+
+    keptTable.addEventListener('click', function (e) {
+      var open = e.target.getAttribute && e.target.getAttribute('data-open');
+      var del = e.target.getAttribute && e.target.getAttribute('data-del');
+      var list = readKept();
+
+      if (open !== null && open !== undefined) {
+        var x = list[+open];
+        if (!x) return;
+        applyFields(x.fields);
+        saveSettings();
+        run();
+        wrap.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      if (del !== null && del !== undefined) {
+        var gone = list[+del];
+        if (!gone) return;
+        if (!window.confirm('Slet «' + gone.name + '»?')) return;
+        list.splice(+del, 1);
+        writeKept(list);
+        drawKept();
+      }
+    });
+
+    drawKept();
   }());
   </script>
-
-  <h2>Hvad der er ændret</h2>
-  <table>
-    <tr><th>Problem</th><th>Løsning</th></tr>
-    <tr>
-      <td><b>Trappen ned lå i en blindgang.</b> Originalens
-        <code>emplace_stairs</code> sætter altid trapper for enden af en blindgyde —
-        <code>check_tunnel</code> kræver netop syv vægge omkring — så man kunne blive
-        trængt op i et hjørne ved udgangen.</td>
-      <td>Trappen lægges inde i et rum med <b>mindst to døre</b>. Målt over 1000
-        etager med standardindstillingerne skete det 1000 gange ud af 1000.</td>
-    </tr>
-    <tr>
-      <td><b>Ingen boss.</b></td>
-      <td>Bossrummet er det rum der ligger længst fra indgangen målt i skridt gennem
-        åbne felter. Trappen ned står i den ende af rummet der ligger længst fra
-        indgangen, så man skal tværs gennem bossrummet for at komme ned.</td>
-    </tr>
-    <tr>
-      <td><b>Man kunne slentre ind til bossen.</b> Døren ind var lige så tit en åben
-        portal som noget andet — donjons tabel giver 15 låste ud af 110.</td>
-      <td>Bossrummets døre rulles om: <b>ingen åbne portaler, og 55 ud af 100 låste</b>.
-        Målt over 600 etager blev 56 % af dem låst. Hemmelige døre er med vilje ikke
-        med — trappen ned står i bossrummet, så et rum man kun finder ved et heldigt
-        tjek kan spærre for hele etagen.</td>
-    </tr>
-    <tr>
-      <td><b>Intet sted at puste ud</b> — og da der kom et, lå det tæt på bossen, hvor
-        man ikke har brug for det, og nogle gange bag den.</td>
-      <td>Et eller flere rum er <b>safe room</b>: skåret ned til <b>3 × 3 felter</b> med
-        <b>præcis én dør</b>, der altid er en rigtig dør — låst eller ulåst, aldrig en
-        fælde og aldrig et faldgitter. Et hvilested skal man kunne lukke efter sig, ikke
-        blive fanget i. Rummet står tomt. <b>Det første</b> vælges så tæt på indgangen
-        som muligt, og <b>vejen derhen går aldrig gennem bossrummet</b> — et hvilested
-        man skal slå bossen for at nå er ikke et hvilested. Findes der ikke et rum med
-        én dør, mures resten af rummet til klippe. Det sker kun hvis hele etagen stadig
-        kan nås, bossrummet beholder sin vej ind, og rummet stadig kan nås udenom. Målt
-        over 700 etager med blandede indstillinger lykkedes det 681 gange, alle 3 × 3
-        med én dør, og ingen af dem lå bag et bossrum — heller ikke når der er flere
-        safe rooms, hvor det ene kan komme til at ligge bag det andet. Resten siger
-        arket til om, og arket siger også hvor mange skridt der er derhen.</td>
-    </tr>
-    <tr>
-      <td><b>Ingen styring på XP.</b> Holdet skulle støvsuge etagen for at stige.</td>
-      <td>Etagen får <code>party_size × XP-til-næste-level × xp_slack</code>.
-        <b>Bossen er præcis én High-kamp</b> efter tabellen nedenfor, og intet rum må være
-        hårdere end det. Med slack på 1,5 kan de springe en tredjedel over og stadig
-        stige et level.</td>
-    </tr>
-    <tr>
-      <td><b>Budgettet blev smurt tyndt ud — og efter rummenes areal.</b> Delte man
-        1800 XP mellem tyve rum, fik hvert af dem halvtreds. Og et stort rum er ikke en
-        svær kamp: seks goblins i et kosteskab er værre end seks goblins i en hal.</td>
-      <td>Et rum med kamp i får <b>mindst en Low-kamp</b> efter tabellen nedenfor, og
-        der bruges kun så mange rum, som budgettet rækker til. Det der er tilbage ud over
-        den bund, lægges oveni <b>efter afstanden fra indgangen</b>, så kampene vokser
-        jo længere inde man er. Målt over 600 etager er den sidste kamp mindst lige så
-        hård som den første i alle sammen. <b>Resten står tomme</b>, og det er meningen:
-        et tomt rum er et sted at ånde, en skat, en fælde eller en samtale. På level 1
-        bliver det seks rum med kamp og ni tomme.</td>
-    </tr>
-    <tr>
-      <td><b>Budgettet sagde hvor meget, ikke hvad.</b> 307 XP er et tal, man selv
-        skulle veksle til monstre, rum for rum.</td>
-      <td>Rummene fyldes ud med skabninger fra <b>SRD 5.2.1</b> efter SRD'ens egne
-        regler: hver skabning har en XP-værdi, og der bruges så meget af budgettet som
-        muligt uden at gå over. Målt over 400 etager bruges <b>98 %</b> af budgettet, og
-        intet rum går over. SRD'ens ene advarsel — højst to skabninger pr. karakter —
-        er loftet. <b>Forslagene står i Noter og er forslag</b>; XP-tallet er facit.</td>
-    </tr>
-    <tr>
-      <td><b>Rummene var zoologiske udsnit.</b> Etagen blev bygget over én af SRD'ens
-        typer, og «Beast» rummer både en rotte og en tyrannosaurus. Så kunne der stå
-        fem flagermus og en kæmpeabe i det samme rum — og gik budgettet ikke op, vandt
-        budgettet over temaet, så der kom noget helt fjerde ind.</td>
-      <td>Alle 291 skabninger har fået et <b>tema</b>: 21 grupper efter hvem der holder
-        til sammen — goblinoider, drager, udøde, djævle, havet, urtidsdyr, småkravl og
-        så videre. Det er skrevet i hånden i
-        <code>scripts/monster_themes.py</code>, for det står ikke i SRD'en, og ingen
-        regel i databladene kan regne ud at en worg hører til hos goblins og en pegasus
-        ikke gør. Reglen i rummet er: <b>træk én skabning, og fyld resten op med dens
-        eget folk</b>. Etagen vælger tre temaer at trække fra, og et bossrums forkammer
-        får bossens tema. Målt over 400 etager: <b>0 rum ud af 4.275 med blandede
-        temaer</b>, og alle 640 befolkede forkamre med bossens eget folk.
-        Budgetforbruget står stille på <b>98 %</b> — den snævrere pulje koster ikke
-        noget, fordi søgningen efter det bedste rum nu også søger over temaer.</td>
-    </tr>
-    <tr>
-      <td><b>Alt lå fast.</b> Én boss, ét safe room, og et rumantal der kun fulgte
-        budgettet.</td>
-      <td><b>Mætning</b> sætter hvor mange rum der har noget i sig, og <b>fældeandelen</b>
-        deler det mellem fælder og monstre. <b>Bossrum</b> og <b>safe rooms</b> kan sættes
-        op til fire af hver. Flere bosser lægges spredt og alle dybt inde — mindst to
-        tredjedele så langt inde som den dybeste — og <b>hvert bossrum har sin egen
-        trappe ned</b>, så holdet kan vælge hvilken boss de vil forbi for at komme
-        videre. Hver boss er én kamp af den valgte slags, så fire bosser deler budgettet
-        i fire, og arket siger hvad hver af dem er værd.</td>
-    </tr>
-    <tr>
-      <td><b>Man kunne ikke gå tilbage og hvile.</b> Safe roomet lå hvor der var plads,
-        og vejen tilbage til starttrappen gik gennem andre rum.</td>
-      <td>Ét safe room skal <b>støde op til starttrappen</b>: kun gange imellem, ingen
-        rum. Gangen må gerne være lang. Selve trappen vælges med det for øje — blandt
-        blindgyderne tages den, hvis gang ender i et rum der kan undværes, og det måles
-        ved at se om etagen stadig hænger sammen uden det rum. Det lykkes på
-        <b>fem ud af seks etager</b>; på resten er rummet for enden af gangen etagens
-        eneste gennemgang, og så kan det ikke lukkes ned til én dør. Arket siger det,
-        og en ny etage plejer at løse det.</td>
-    </tr>
-    <tr>
-      <td><b>En fælde kunne vælte en karakter på level 1.</b> Graden fulgte bare med
-        fælden, og man kunne ikke sige fra.</td>
-      <td><b>Fældernes grad</b> kan sættes til <b>Kun Nuisance</b>. Så kommer der ingen
-        fælde på etagen der kan tage en karakter ud af kampen med ét rul — hverken
-        SRD'ens eller vores. Monstrene er uberørte. Målt over 300 etager med høj
-        mætning og mange fælder: <b>5.846 fælder lagt ud, 0 af dem Deadly</b>. Der er
-        ni Nuisance-fælder til døre og ni til rum, så en etage med rigtig mange
-        gentager sig oftere — det siger arket.</td>
-    </tr>
-    <tr>
-      <td><b>En fældedør gjorde altid skade.</b> Den kunne ikke bare være i vejen.</td>
-      <td>Tre fælder <b>ødelægger døren</b>: Smeltelås gør lås, hængsler og karm til ét
-        stykke jern, Faldbom kiler en jernbom fast bagved, og Styrtet dørkarm lader
-        loftet falde ned i åbningen. Derefter skal døren brydes ned, eller holdet må
-        finde den anden vej rundt — og <b>den vej skal findes</b>. Før fælderne lægges
-        ud, måles hver eneste dør ved at lukke den og tælle om alt det andet stadig kan
-        nås fra indgangen. Er døren etagens eneste vej til rummet bagved, kommer der
-        aldrig en spærrende fælde på den.</td>
-    </tr>
-    <tr>
-      <td><b>Bossen kunne spærre for etagen.</b> Et bossrum skulle have mindst to døre,
-        og så lå den midt i en gennemgang: kunne holdet ikke klare den, kom de ingen
-        vegne.</td>
-      <td>Bossrummet er nu <b>todelt</b>. Rummet deles på langs med en væg: holdet
-        kommer ind i et <b>forkammer</b>, og bagved ligger selve bossrummet med
-        <b>én dør imellem</b>. Bossrummets egne døre mures til, så det er en blindgyde
-        — en boss man går uden om spærrer ikke længere for noget. Forkammeret bærer de
-        andre veje videre og må gerne have flere; det er et rum som alle andre og kan
-        have fælde og monstre. Delingen afgør valget: kan et rum ikke lukkes ned til én
-        dør uden at skære etagen over, er det netop dér en boss ville spærre, og så
-        prøves det næste. Målt over 700 etager blev <b>1.627 af 1.750 bossrum delt</b>;
-        resten var for små, og arket siger hvilke.</td>
-    </tr>
-    <tr>
-      <td><b>Alle safe rooms lå ved indgangen.</b> Reglen om at ligge tæt på starten
-        gjaldt dem alle, så to safe rooms lå side om side inden for døren.</td>
-      <td>Kun <b>det første</b> skal ligge ved starttrappen. De øvrige lægges så langt
-        fra det og fra hinanden som etagen tillader — samme greb som bosserne spredes
-        med — så der også er et hvilested inde på etagen. Målt over 700 etager ligger
-        der i snit <b>38 felter</b> mellem det første og de næste.</td>
-    </tr>
-    <tr>
-      <td><b>En fældedør var bare en fældedør.</b> Kortet sagde at der var en fælde i
-        døren; hvad den gjorde, sagde ingen. Og SRD'ens otte fælder gentog sig
-        allerede på den anden etage.</td>
-      <td>Hver fældedør har nu <b>en bestemt fælde</b>, valgt blandt dem der kan sidde
-        på en dør — en nål i en lås kan, en rullende sten kan ikke. Den står i
-        fældetabellen med udløser, virkning og hvordan den findes, og med de to rum den
-        sidder imellem, så den kan findes på kortet. Dertil <b>33 fælder vi selv har
-        skrevet</b>, fordi otte er for få: de skalerer selv til holdets level i fire
-        trin, og de står på arket med det hele. Posen rummer 41, og den samme fælde
-        kommer ikke to gange på en etage, medmindre der er flere fælder end der findes
-        i alt.</td>
-    </tr>
-    <tr>
-      <td><b>Nogle etager kunne man ikke komme igennem.</b> donjon lover ikke at hele
-        etagen hænger sammen. Lå trappen ned i en lukket lomme, var etagen ubrugelig.</td>
-      <td>Lommerne <b>skæres væk</b>: alt uden vej til bliver til klippe, og de rum der lå
-        der findes ikke længere. Den største del er etagen — det er ikke nok at beholde
-        den del indgangen ligger i, for indgangen kan selv ligge i lommen. Oprydningen
-        kunne desuden mure selve indgangstrappen inde; nu er trapper fredede. Målt over
-        700 etager: <b>0 ubrugelige, 0 uden indgang</b>.</td>
-    </tr>
-    <tr>
-      <td><b>Alt lå fast i størrelsen.</b> Man valgte et gitter, og så måtte resten
-        passe sig ind.</td>
-      <td>Rumantallet <b>regnes baglæns</b> fra budget, mætning, fældeandel og antal
-        boss- og safe rooms, og gitteret følger af rumantallet — rum pr. felt i anden er
-        målt for hver kombination af layout og rumstørrelse. Målt over ni opsætninger
-        rammer den inden for et par rum af det planlagte hver gang.</td>
-    </tr>
-    <tr>
-      <td><b>Etagen kunne være for lille til budgettet.</b> Et loft pr. rum gange
-        antallet af rum er et tag, og over det lå XP'en bare og manglede.</td>
-      <td>Rumantallet følger nu budgettet. Kan det ikke ligge der, laves etagen om med
-        <b>flere rum</b> — og er der ikke plads til flere, med et <b>større gitter</b>.
-        Det koster ingenting at prøve: en etage tager 3 ms i snit. Flere rum på den
-        samme plads betyder samtidig færre gange.</td>
-    </tr>
-  </table>
 
   <h2>Hvor meget XP skal der på etagen?</h2>
   <p>Vælg holdets level, så regner den resten. Tallene til venstre kommer fra D&amp;D's
@@ -720,77 +546,17 @@
   }());
   </script>
 
-  <p class="note">Generatoren regner det samme ud og lægger tallene i rummene. Vil du
-    have et andet loft, så sæt <code>room_cap</code> til <code>'moderate'</code> — eller
-    gør bossen mildere med <code>boss_fight</code>.</p>
+  <p class="note">Generatoren regner det samme ud og lægger tallene i rummene.</p>
 
-  <h2>Perl-udgaven</h2>
-  <p>Den samme geometri findes som et Perl-script, mest til hvis du vil lave tyve
-    etager i træk eller rode i koden.</p>
-  <p class="note"><b>Scriptet lægger ikke selv rum til</b>, og det smører stadig
-    budgettet ud over alle rum i stedet for at samle det i færre, rigtige kampe. Begge
-    dele findes kun i browseren, og scriptet starter desuden fra donjons egne
-    indstillinger — spredte rum, 39 × 39, halvdelen af blindgyderne. Siden er den, der
-    bliver vedligeholdt.</p>
-  <pre>perl tools/dungeon.pl</pre>
-  <p>Den skriver et kort som <code>&lt;seed&gt;.gif</code> og en rapport i terminalen.
-    Den kræver Perls GD-modul — <code>apt install libgd-perl</code> eller
-    <code>cpan GD</code>.</p>
-  <p><a class="doc-card" href="https://github.com/aesbech/DCC-D-D/blob/main/tools/dungeon.pl">
-    <b>tools/dungeon.pl</b>
-    <span>Hele scriptet. Tilføjelserne står i blokke mærket DCC-D-D og kan fjernes uden
-      at røre resten.</span>
-  </a></p>
-  <p class="note"><b>Samme seed giver ikke samme etage de to steder.</b> Perl og
-    JavaScript har hver sin terning, så et seed er kun gentageligt inden for den
-    udgave det kommer fra.</p>
-
-  <h3>Indstillinger</h3>
-  <p>Alt sidder i <code>get_opts</code>. De fem nederste er nye:</p>
-  <pre>'n_rows'          =&gt; 39,          # skal være ulige
-'n_cols'          =&gt; 39,
-'room_min'        =&gt; 3,
-'room_max'        =&gt; 9,
-'room_layout'     =&gt; 'Scattered', # eller 'Packed'
-'corridor_layout' =&gt; 'Bent',      # 'Labyrinth', 'Bent', 'Straight'
-'remove_deadends' =&gt; 50,          # procent
-
-'party_size'      =&gt; 4,
-'party_level'     =&gt; 1,           # holdets level på vej ind
-'xp_slack'        =&gt; 1.5,         # 1.5 = 50 % mere XP end der skal til
-'boss_fight'      =&gt; 'high',      # bossen er én kamp af denne slags
-'room_cap'        =&gt; 'high',      # intet rum må være hårdere end dette</pre>
-
-  <p><b>Rumantallet er ikke en indstilling.</b> Med <i>Spredt</i> er det
-    <code>int(n_rows × n_cols / room_max²)</code> <i>forsøg</i> — et rum der kolliderer
-    med et andet bliver stille droppet, så man får altid færre. Med <i>Tæt</i> lægges
-    der et rum i hvert felt af gitteret der ikke allerede er optaget, og så er antallet
-    givet af pladsen. Oveni kan generatoren selv lægge rum til, hvis XP-budgettet ikke
-    kan ligge i dem der er.</p>
-
-  <table>
-    <tr><th>Gitter</th><th>Tæt</th><th>Spredt</th></tr>
-    <tr><td>18 × 18</td><td>8 rum · 15 % gang</td><td>7 rum · 36 % gang</td></tr>
-    <tr><td>24 × 24</td><td>13 rum · 14 %</td><td>7 rum · 37 %</td></tr>
-    <tr><td>30 × 30 (standard)</td><td>20 rum · 13 %</td><td>7 rum · 40 %</td></tr>
-    <tr><td>38 × 38</td><td>32 rum · 11 %</td><td>9 rum · 43 %</td></tr>
-  </table>
-  <p class="note">Målt over 40 etager pr. felt, level 1, store rum, alle blindgyder væk.
-    <i>Spredt</i> står stille på syv rum, fordi det er dét XP-budgettet kræver på level 1
-    — generatoren lægger rum til, indtil det passer, og på et spredt layout er der ikke
-    grund til flere. <i>Tæt</i> fylder gitteret, og de rum der bliver til overs, står
-    tomme.</p>
-  <p class="note">Sæt <code>seed</code> til et fast tal, så kan den samme etage
-    genskabes — nyttigt hvis printet forsvinder.</p>
-
-  <h2>Kredit</h2>
-  <p class="note"><b>Random Dungeon Generator af drow</b>,
-    <a href="https://donjon.bin.sh/">donjon.bin.sh</a> — brugt og ændret under
-    <a href="https://creativecommons.org/licenses/by-nc/3.0/">Creative Commons
-    Attribution-NonCommercial 3.0 Unported</a>. Kreditlinjen står i headeren på
-    <code>tools/dungeon.pl</code> og <code>assets/js/dungeon.js</code> og skal blive
-    stående. Licensen tillader ikke kommerciel brug — den følger med etagearket, så
-    den også står på det der bliver printet.</p>
+  <h2>Hvorfor den gør som den gør</h2>
+  <ul class="doc-list">
+    <li><a class="doc-card" href="https://github.com/aesbech/DCC-D-D/blob/main/docs/etagegeneratoren.md">
+      <b>Etagegeneratoren</b>
+      <span>Den lange forklaring: hvad der står på arket, hvordan rummene får tema og
+        indhold, hvornår en fælde er Deadly, hvad der er ændret i donjons kode punkt for
+        punkt, og Perl-udgaven.</span>
+    </a></li>
+  </ul>
 
 </main>
 

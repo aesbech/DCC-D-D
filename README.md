@@ -1121,6 +1121,20 @@ er på etagen — og en rapport med rum, døre og XP. *Print* lægger kortet på
 rapporten på den næste; *Hent som fil* gemmer det hele som én HTML-fil, der virker uden
 net og uden JavaScript.
 
+**Siden er værktøjet, ikke forklaringen.** Al prosaen om hvordan generatoren virker står
+i [`docs/etagegeneratoren.md`](docs/etagegeneratoren.md) — hvad der står på arket,
+temaerne, fældernes grad, hvad der er ændret i donjons kode punkt for punkt, og
+Perl-udgaven. Siden selv holder sig til formularen, knapperne, de gemte etager og
+XP-regneren.
+
+**Etager kan gemmes.** *Gem etagen* lægger den under `dccdd.dungeons.v1` med et navn man
+selv vælger, og listen står på siden med *Åbn* og *Slet*. Det der gemmes, er etagens
+indstillinger og dens seed — ikke arket: en etage er en ren funktion af de to, så den
+laves forfra når den åbnes, og det fylder nogle hundrede tegn i stedet for hundrede
+kilobyte. Prisen er, at en gammel etage kan se anderledes ud, hvis generatoren selv
+bliver lavet om; skal en etage ligge fast for altid, er *Hent som fil* svaret. Der er
+plads til 60, og den ældste falder ud.
+
 Indstillingerne huskes i browserens `localStorage` under `dccdd.dungeon.v1`, så de står
 som man satte dem næste gang. Seedet er med: siden skriver aldrig selv i feltet, så står
 der noget, er det tastet med vilje, og så er det værd at beholde — men et husket seed
@@ -1314,6 +1328,8 @@ python3 scripts/check_srd.py docs/SRD_CC_v5.2.1.pdf.txt --mark
 
 ```
 index.html                     markup og faner
+docs/dungeon.html              etagegeneratoren som side: formular, ark, gemte etager
+docs/etagegeneratoren.md       den lange forklaring bag siden
 assets/css/app.css             styling, inkl. print-layout
 assets/js/core.js              datamodel, prisparsing, import, trækning
 assets/js/ui.js                UI og hændelser
