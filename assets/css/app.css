@@ -125,6 +125,8 @@ a{color:var(--accent-2)}
 .gen{gap:12px 16px}
 .gen label{min-width:150px}
 .gen-actions{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 10px}
+/* Knapperne i listen over gemte etager skal blive paa én linje. */
+.kept-do{text-align:right;white-space:nowrap}
 .btn[disabled]{opacity:.45;cursor:default}
 .btn[disabled]:hover{border-color:var(--line);color:var(--text)}
 .sheet-wrap{
