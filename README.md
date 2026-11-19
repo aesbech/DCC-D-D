@@ -1243,7 +1243,20 @@ skabninger pr. karakter. Skabningerne er trukket ud af SRD-PDF'en med
 `scripts/import_monsters.py`. Forslagene står i rapportens Noter-kolonne og er forslag
 — XP-tallet er facit.
 
-**Et rum er ét tema og kun ét.** Alle 291 skabninger har et tema: 21 grupper efter hvem
+**Arket trykker databladene.** De skabninger etagen faktisk bruger får deres fulde stat
+block med på arket — AC, hit points, bevægelse, evner, sanser og alt hvad de kan gøre —
+så DM'en ikke skal bladre i en PDF på 364 sider midt i en kamp. De står på deres egne
+sider efter rapporten, én blok ad gangen, og de kan slås fra hvis arket skal være kort.
+Teksten er SRD 5.2.1's egen, trykt under CC BY 4.0; kreditten står i footeren på arket.
+
+Databladene ligger i `assets/data/statblocks.js`, trukket ud af SRD-PDF'en med
+`scripts/import_statblocks.py`. Udtrækket læser PDF'en **med skriften i behold**: en
+handlings navn er sat med fed, og det er den eneste sikre markering af hvor en handling
+begynder — afstande i teksten er for usikre, for en kort sætning ser ud som et navn.
+Hver af de 327 blokke er krydstjekket mod `monsters.js`: AC, hit points, bevægelse,
+seks evner, mindst ét afsnit, og XP-tallet i CR-linjen skal passe. Alle 327 passer.
+
+**Et rum er ét tema og kun ét.** Alle 327 skabninger har et tema: 24 grupper efter hvem
 der holder til sammen — goblinoider, drager, udøde, djævle, havet, urtidsdyr, småkravl
 og så videre. Det står i `scripts/monster_themes.py` og er skrevet i hånden, for det
 står ikke i SRD'en. SRD'ens egen inddeling er *typen*, og den er god til regler og
@@ -1337,6 +1350,7 @@ assets/js/dungeon.js           etagegeneratoren
 assets/js/dungeon-map.js       etagens kort og rapport som printbart ark
 assets/js/encounters.js        fylder rum og døre med skabninger og fælder
 assets/data/monsters.js        SRD 5.2.1's skabninger med CR, XP og tema
+assets/data/statblocks.js      deres fulde datablade, til arket
 assets/data/traps.js           SRD 5.2.1's otte fælder med grad og udløser
 assets/data/traps-dcc.js       vores egne 33 fælder, med fuld tekst og skalering
 assets/data/items.js           items fra regnearket
@@ -1347,6 +1361,7 @@ scripts/import_magic.py        magic_items.txt → magic-items.js
 scripts/import_class_cards.py  feats.txt + systematiske kort → class-cards.js
 scripts/check_srd.py           hvilke kort ligger uden for SRD 5.2.1?
 scripts/import_monsters.py     SRD-PDF'en → monsters.js
+scripts/import_statblocks.py   SRD-PDF'en → statblocks.js
 scripts/monster_themes.py      hvem holder til sammen (vores inddeling)
 scripts/import_traps.py        SRD-PDF'en → traps.js
 data/dnd_items.xlsx            kilderegnearket

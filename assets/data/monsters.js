@@ -1,7 +1,7 @@
 /* Auto-genereret fra SRD 5.2.1 af scripts/import_monsters.py.
    System Reference Document 5.2.1 af Wizards of the Coast LLC,
    CC BY 4.0 — den fulde kredit står i kolofonen og i LICENSE.md. */
-window.MONSTERS_VERSION = "2cf38441ed99";
+window.MONSTERS_VERSION = "14f5368abbfd";
 window.MONSTERS = [
  {
   "name": "Awakened Shrub",
@@ -42,6 +42,14 @@ window.MONSTERS = [
   "cr": "0",
   "xp": 10,
   "theme": "Småkravl og kreaturer"
+ },
+ {
+  "name": "Commoner",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "0",
+  "xp": 10,
+  "theme": "Røvere og soldater"
  },
  {
   "name": "Crab",
@@ -212,6 +220,14 @@ window.MONSTERS = [
   "theme": "Småkravl og kreaturer"
  },
  {
+  "name": "Bandit",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "1/8",
+  "xp": 25,
+  "theme": "Røvere og soldater"
+ },
+ {
   "name": "Blood Hawk",
   "size": "Small",
   "type": "Beast",
@@ -226,6 +242,14 @@ window.MONSTERS = [
   "cr": "1/8",
   "xp": 25,
   "theme": "Småkravl og kreaturer"
+ },
+ {
+  "name": "Cultist",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "1/8",
+  "xp": 25,
+  "theme": "Kultister og magere"
  },
  {
   "name": "Flying Snake",
@@ -268,6 +292,14 @@ window.MONSTERS = [
   "theme": "Goblinoider"
  },
  {
+  "name": "Guard",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "1/8",
+  "xp": 25,
+  "theme": "Røvere og soldater"
+ },
+ {
   "name": "Kobold Warrior",
   "size": "Small",
   "type": "Dragon",
@@ -300,6 +332,14 @@ window.MONSTERS = [
   "theme": "Småkravl og kreaturer"
  },
  {
+  "name": "Noble",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "1/8",
+  "xp": 25,
+  "theme": "Røvere og soldater"
+ },
+ {
   "name": "Pony",
   "size": "Medium",
   "type": "Beast",
@@ -322,6 +362,14 @@ window.MONSTERS = [
   "cr": "1/8",
   "xp": 25,
   "theme": "Slanger og øgler"
+ },
+ {
+  "name": "Warrior Infantry",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "1/8",
+  "xp": 25,
+  "theme": "Røvere og soldater"
  },
  {
   "name": "Animated Flying Sword",
@@ -474,6 +522,14 @@ window.MONSTERS = [
   "cr": "1/4",
   "xp": 50,
   "theme": "Rovdyr"
+ },
+ {
+  "name": "Priest Acolyte",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "1/4",
+  "xp": 50,
+  "theme": "Kultister og magere"
  },
  {
   "name": "Pseudodragon",
@@ -724,6 +780,14 @@ window.MONSTERS = [
   "theme": "Skovfolk og planter"
  },
  {
+  "name": "Scout",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "1/2",
+  "xp": 100,
+  "theme": "Røvere og soldater"
+ },
+ {
   "name": "Shadow",
   "size": "Medium",
   "type": "Undead",
@@ -738,6 +802,14 @@ window.MONSTERS = [
   "cr": "1/2",
   "xp": 100,
   "theme": "Edderkopper og kryb"
+ },
+ {
+  "name": "Tough",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "1/2",
+  "xp": 100,
+  "theme": "Røvere og soldater"
  },
  {
   "name": "Troll Limb",
@@ -932,6 +1004,14 @@ window.MONSTERS = [
   "theme": "Rovdyr"
  },
  {
+  "name": "Pirate",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "1",
+  "xp": 200,
+  "theme": "Røvere og soldater"
+ },
+ {
   "name": "Quasit",
   "size": "Tiny",
   "type": "Fiend",
@@ -954,6 +1034,14 @@ window.MONSTERS = [
   "cr": "1",
   "xp": 200,
   "theme": "Himmelske"
+ },
+ {
+  "name": "Spy",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "1",
+  "xp": 200,
+  "theme": "Røvere og soldater"
  },
  {
   "name": "Swarm of Piranhas",
@@ -1012,6 +1100,22 @@ window.MONSTERS = [
   "theme": "Elementarer"
  },
  {
+  "name": "Bandit Captain",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "2",
+  "xp": 450,
+  "theme": "Røvere og soldater"
+ },
+ {
+  "name": "Berserker",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "2",
+  "xp": 450,
+  "theme": "Røvere og soldater"
+ },
+ {
   "name": "Black Dragon Wyrmling",
   "size": "Medium",
   "type": "Dragon",
@@ -1034,6 +1138,22 @@ window.MONSTERS = [
   "cr": "2",
   "xp": 450,
   "theme": "Skovfolk og planter"
+ },
+ {
+  "name": "Cultist Fanatic",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "2",
+  "xp": 450,
+  "theme": "Kultister og magere"
+ },
+ {
+  "name": "Druid",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "2",
+  "xp": 450,
+  "theme": "Kultister og magere"
  },
  {
   "name": "Ettercap",
@@ -1204,6 +1324,14 @@ window.MONSTERS = [
   "theme": "Rovdyr"
  },
  {
+  "name": "Priest",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "2",
+  "xp": 450,
+  "theme": "Kultister og magere"
+ },
+ {
   "name": "Rhinoceros",
   "size": "Large",
   "type": "Beast",
@@ -1228,12 +1356,36 @@ window.MONSTERS = [
   "theme": "Hekse og bedragere"
  },
  {
+  "name": "Silver Dragon Wyrmling",
+  "size": "Medium",
+  "type": "Dragon",
+  "cr": "2",
+  "xp": 450,
+  "theme": "Drager"
+ },
+ {
   "name": "Swarm of Venomous Snakes",
   "size": "Medium",
   "type": "Swarm",
   "cr": "2",
   "xp": 450,
   "theme": "Slanger og øgler"
+ },
+ {
+  "name": "Wererat",
+  "size": "Medium",
+  "type": "Monstrosity",
+  "cr": "2",
+  "xp": 450,
+  "theme": "Varulve"
+ },
+ {
+  "name": "White Dragon Wyrmling",
+  "size": "Medium",
+  "type": "Dragon",
+  "cr": "2",
+  "xp": 450,
+  "theme": "Drager"
  },
  {
   "name": "Will-o’-Wisp",
@@ -1300,6 +1452,14 @@ window.MONSTERS = [
   "theme": "Edderkopper og kryb"
  },
  {
+  "name": "Gold Dragon Wyrmling",
+  "size": "Medium",
+  "type": "Dragon",
+  "cr": "3",
+  "xp": 700,
+  "theme": "Drager"
+ },
+ {
   "name": "Green Hag",
   "size": "Medium",
   "type": "Fey",
@@ -1332,6 +1492,14 @@ window.MONSTERS = [
   "theme": "Havet"
  },
  {
+  "name": "Knight",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "3",
+  "xp": 700,
+  "theme": "Røvere og soldater"
+ },
+ {
   "name": "Manticore",
   "size": "Large",
   "type": "Monstrosity",
@@ -1346,6 +1514,14 @@ window.MONSTERS = [
   "cr": "3",
   "xp": 700,
   "theme": "Gnoller og hyæner"
+ },
+ {
+  "name": "Mummy",
+  "size": "Medium",
+  "type": "Undead",
+  "cr": "3",
+  "xp": 700,
+  "theme": "Udøde"
  },
  {
   "name": "Nightmare",
@@ -1378,6 +1554,30 @@ window.MONSTERS = [
   "cr": "3",
   "xp": 700,
   "theme": "Udøde"
+ },
+ {
+  "name": "Vampire Familiar",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "3",
+  "xp": 700,
+  "theme": "Udøde"
+ },
+ {
+  "name": "Warrior Veteran",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "3",
+  "xp": 700,
+  "theme": "Røvere og soldater"
+ },
+ {
+  "name": "Werewolf",
+  "size": "Medium",
+  "type": "Monstrosity",
+  "cr": "3",
+  "xp": 700,
+  "theme": "Varulve"
  },
  {
   "name": "Wight",
@@ -1452,6 +1652,14 @@ window.MONSTERS = [
   "theme": "Udøde"
  },
  {
+  "name": "Guard Captain",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "4",
+  "xp": 1100,
+  "theme": "Røvere og soldater"
+ },
+ {
   "name": "Hippopotamus",
   "size": "Large",
   "type": "Beast",
@@ -1490,6 +1698,30 @@ window.MONSTERS = [
   "cr": "4",
   "xp": 1100,
   "theme": "Hekse og bedragere"
+ },
+ {
+  "name": "Tough Boss",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "4",
+  "xp": 1100,
+  "theme": "Røvere og soldater"
+ },
+ {
+  "name": "Wereboar",
+  "size": "Medium",
+  "type": "Monstrosity",
+  "cr": "4",
+  "xp": 1100,
+  "theme": "Varulve"
+ },
+ {
+  "name": "Weretiger",
+  "size": "Medium",
+  "type": "Monstrosity",
+  "cr": "4",
+  "xp": 1100,
+  "theme": "Varulve"
  },
  {
   "name": "Air Elemental",
@@ -1554,6 +1786,14 @@ window.MONSTERS = [
   "cr": "5",
   "xp": 1800,
   "theme": "Havet"
+ },
+ {
+  "name": "Gladiator",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "5",
+  "xp": 1800,
+  "theme": "Røvere og soldater"
  },
  {
   "name": "Gorgon",
@@ -1644,12 +1884,36 @@ window.MONSTERS = [
   "theme": "Himmelske"
  },
  {
+  "name": "Vampire Spawn",
+  "size": "Medium",
+  "type": "Undead",
+  "cr": "5",
+  "xp": 1800,
+  "theme": "Udøde"
+ },
+ {
   "name": "Water Elemental",
   "size": "Large",
   "type": "Elemental",
   "cr": "5",
   "xp": 1800,
   "theme": "Elementarer"
+ },
+ {
+  "name": "Werebear",
+  "size": "Medium",
+  "type": "Monstrosity",
+  "cr": "5",
+  "xp": 1800,
+  "theme": "Varulve"
+ },
+ {
+  "name": "Wraith",
+  "size": "Medium",
+  "type": "Undead",
+  "cr": "5",
+  "xp": 1800,
+  "theme": "Udøde"
  },
  {
   "name": "Xorn",
@@ -1684,6 +1948,14 @@ window.MONSTERS = [
   "theme": "Elementarer"
  },
  {
+  "name": "Mage",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "6",
+  "xp": 2300,
+  "theme": "Kultister og magere"
+ },
+ {
   "name": "Mammoth",
   "size": "Huge",
   "type": "Beast",
@@ -1698,6 +1970,14 @@ window.MONSTERS = [
   "cr": "6",
   "xp": 2300,
   "theme": "Hekse og bedragere"
+ },
+ {
+  "name": "Pirate Captain",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "6",
+  "xp": 2300,
+  "theme": "Røvere og soldater"
  },
  {
   "name": "Vrock",
@@ -1717,6 +1997,14 @@ window.MONSTERS = [
  },
  {
   "name": "Young Brass Dragon",
+  "size": "Large",
+  "type": "Dragon",
+  "cr": "6",
+  "xp": 2300,
+  "theme": "Drager"
+ },
+ {
+  "name": "Young White Dragon",
   "size": "Large",
   "type": "Dragon",
   "cr": "6",
@@ -1770,6 +2058,14 @@ window.MONSTERS = [
   "cr": "7",
   "xp": 2900,
   "theme": "Drager"
+ },
+ {
+  "name": "Assassin",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "8",
+  "xp": 3900,
+  "theme": "Røvere og soldater"
  },
  {
   "name": "Chain Devil",
@@ -1884,14 +2180,6 @@ window.MONSTERS = [
   "theme": "Dæmoner"
  },
  {
-  "name": "Silver Dragon Wyrmling",
-  "size": "Medium",
-  "type": "Dragon",
-  "cr": "9",
-  "xp": 5000,
-  "theme": "Drager"
- },
- {
   "name": "Treant",
   "size": "Huge",
   "type": "Plant",
@@ -1922,14 +2210,6 @@ window.MONSTERS = [
   "cr": "10",
   "xp": 5900,
   "theme": "Himmelske"
- },
- {
-  "name": "Gold Dragon Wyrmling",
-  "size": "Medium",
-  "type": "Dragon",
-  "cr": "10",
-  "xp": 5900,
-  "theme": "Drager"
  },
  {
   "name": "Guardian Naga",
@@ -2020,6 +2300,14 @@ window.MONSTERS = [
   "theme": "Himmelske"
  },
  {
+  "name": "Archmage",
+  "size": "Medium",
+  "type": "Humanoid",
+  "cr": "12",
+  "xp": 8000,
+  "theme": "Kultister og magere"
+ },
+ {
   "name": "Erinyes",
   "size": "Medium",
   "type": "Fiend",
@@ -2068,20 +2356,12 @@ window.MONSTERS = [
   "theme": "Jætter og trolde"
  },
  {
-  "name": "White Dragon Wyrmling",
+  "name": "Vampire",
   "size": "Medium",
-  "type": "Dragon",
+  "type": "Undead",
   "cr": "13",
   "xp": 10000,
-  "theme": "Drager"
- },
- {
-  "name": "Young White Dragon",
-  "size": "Large",
-  "type": "Dragon",
-  "cr": "13",
-  "xp": 10000,
-  "theme": "Drager"
+  "theme": "Udøde"
  },
  {
   "name": "Adult Black Dragon",
@@ -2122,6 +2402,14 @@ window.MONSTERS = [
   "cr": "15",
   "xp": 13000,
   "theme": "Drager"
+ },
+ {
+  "name": "Mummy Lord",
+  "size": "Medium",
+  "type": "Undead",
+  "cr": "15",
+  "xp": 13000,
+  "theme": "Udøde"
  },
  {
   "name": "Purple Worm",

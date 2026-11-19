@@ -52,6 +52,21 @@ THEMES = {
         "Skeleton", "Zombie", "Shadow", "Warhorse Skeleton", "Ghoul",
         "Specter", "Ghast", "Minotaur Skeleton", "Ogre Zombie",
         "Will-o’-Wisp", "Wight", "Ghost", "Lich", "Swarm of Crawling Claws",
+        "Mummy", "Mummy Lord", "Wraith",
+        "Vampire", "Vampire Spawn", "Vampire Familiar",
+    ],
+    "Røvere og soldater": [
+        "Commoner", "Noble", "Guard", "Guard Captain",
+        "Bandit", "Bandit Captain", "Pirate", "Pirate Captain",
+        "Tough", "Tough Boss", "Warrior Infantry", "Warrior Veteran",
+        "Scout", "Spy", "Assassin", "Berserker", "Gladiator", "Knight",
+    ],
+    "Kultister og magere": [
+        "Cultist", "Cultist Fanatic", "Priest Acolyte", "Priest",
+        "Druid", "Mage", "Archmage",
+    ],
+    "Varulve": [
+        "Wererat", "Werewolf", "Wereboar", "Weretiger", "Werebear",
     ],
     "Dæmoner": [
         "Dretch", "Quasit", "Vrock", "Hezrou", "Glabrezu", "Nalfeshnee",

@@ -111,6 +111,12 @@
         <option value="75">75 % — mest fælder</option>
       </select>
     </label>
+    <label>Stat blocks
+      <select id="gStats">
+        <option value="yes" selected>Med — databladene på arket</option>
+        <option value="no">Uden — kun kort og rapport</option>
+      </select>
+    </label>
     <label>Fældernes grad
       <select id="gGrade">
         <option value="all" selected>Op til Deadly — kan vælte en karakter</option>
@@ -151,6 +157,7 @@
   <script src="../assets/data/monsters.js"></script>
   <script src="../assets/data/traps.js"></script>
   <script src="../assets/data/traps-dcc.js"></script>
+  <script src="../assets/data/statblocks.js"></script>
   <script src="../assets/js/dungeon.js"></script>
   <script src="../assets/js/encounters.js"></script>
   <script src="../assets/js/dungeon-map.js"></script>
@@ -199,7 +206,7 @@
     var K_GEN = 'dccdd.dungeon.v1';
     var FIELDS = ['gLevel', 'gSize', 'gSlack', 'gRoom', 'gLayout', 'gCorr',
                   'gDead', 'gBoss', 'gCap', 'gSat', 'gTrap', 'gGrade',
-                  'gBosses', 'gSafes', 'gSeed'];
+                  'gStats', 'gBosses', 'gSafes', 'gSeed'];
 
     function saveSettings() {
       var out = {};
@@ -266,7 +273,8 @@
          der lægges oveni. */
       if (window.ENCOUNTERS && window.MONSTERS) {
         ENCOUNTERS.stock(current, window.MONSTERS,
-          (window.TRAPS || []).concat(window.TRAPS_DCC || []));
+          (window.TRAPS || []).concat(window.TRAPS_DCC || []),
+          val('gStats') === 'yes' ? window.STATBLOCKS : null);
       }
 
       /* Seedet skrives med vilje ikke tilbage i feltet. Gør man det, bliver

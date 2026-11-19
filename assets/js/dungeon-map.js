@@ -684,6 +684,26 @@
     '.dsheet .dgrade{color:#60656f;font-size:11px;letter-spacing:0.3px;',
     'text-transform:uppercase}',
     '.dsheet .dsmall{color:#60656f;font-size:11px}',
+    /* Stat blocks. De fylder, så de får deres egne sider, og en enkelt blok
+       må helst ikke brække midt over. */
+    '.dsheet .dstats{margin-top:22px}',
+    '.dsheet .dstats h2{font:bold 15px Georgia,serif;margin:0 0 2px;color:#14161c}',
+    '.dsheet .dstats-note{color:#60656f;font-size:11.5px;margin:0 0 10px}',
+    '.dsheet .dstat{border-top:1.5px solid #14161c;padding:8px 0 10px;',
+    'font-size:11.5px;line-height:1.45}',
+    '.dsheet .dstat h3{font:bold 13.5px Georgia,serif;margin:0;color:#14161c;',
+    'border:0;padding:0;letter-spacing:0}',
+    '.dsheet .dstat-kind{margin:0 0 5px;font-style:italic;color:#60656f;',
+    'font-size:11px}',
+    '.dsheet .dstat-top{margin:0 0 6px}',
+    '.dsheet .dstat-lines{margin:6px 0 0}',
+    '.dsheet .dstat h4{font:bold 11.5px Helvetica,Arial,sans-serif;',
+    'margin:9px 0 3px;color:#14161c;letter-spacing:0.4px;text-transform:uppercase}',
+    '.dsheet .dstat-do{margin:0 0 4px}',
+    '.dsheet table.dstat-ab{width:auto;margin:6px 0 0;font-size:11px}',
+    '.dsheet table.dstat-ab th,.dsheet table.dstat-ab td{padding:1px 12px 1px 0;',
+    'text-align:left;font-size:11px}',
+    '.dsheet table.dstat-ab th{color:#60656f;font-weight:600}',
     '.dsheet footer{margin-top:16px;font-size:10.5px;color:#7a7f88}',
     '.dsheet footer a{color:inherit}',
     '@media print{.dsheet{padding:10mm}',
@@ -692,7 +712,9 @@
        læse den færdig. */
     '.dsheet .drep{page-break-before:always}',
     '.dsheet .drooms{page-break-inside:avoid}',
-    '.dsheet .dtraps tr{page-break-inside:avoid}}'
+    '.dsheet .dtraps tr{page-break-inside:avoid}',
+    '.dsheet .dstats{page-break-before:always}',
+    '.dsheet .dstat{page-break-inside:avoid}}'
   ].join('');
 
   var CREDIT = 'Kortet er lavet med DCC-D-D’s etagegenerator, bygget på '
@@ -701,11 +723,81 @@
     + 'Ikke til kommerciel brug.';
 
   /* Selve arket — det samme indhold på skærmen og i filen. */
+  /* ---------- stat blocks ----------
+   *
+   * De skabninger etagen faktisk bruger, med deres fulde datablad, så man
+   * ikke skal bladre i en PDF på 364 sider midt i en kamp. Teksten er
+   * SRD 5.2.1's egen, trykt under CC BY 4.0; kreditten står i footeren.
+   *
+   * encounters.js har lagt dem på d.statblocks i den rækkefølge rummene
+   * møder dem, så arket er det samme uanset om det bliver tegnet her på
+   * siden eller gemt som fil.
+   */
+  var ABIL = [['str', 'Str'], ['dex', 'Dex'], ['con', 'Con'],
+              ['int', 'Int'], ['wis', 'Wis'], ['cha', 'Cha']];
+
+  var LINES = [['skills', 'Skills'], ['gear', 'Gear'],
+               ['resistances', 'Resistances'], ['immunities', 'Immunities'],
+               ['vulnerabilities', 'Vulnerabilities'], ['senses', 'Senses'],
+               ['languages', 'Languages'], ['cr', 'CR']];
+
+  function statBlocks(d) {
+    var list = d.statblocks || [];
+    if (!list.length) return '';
+
+    var out = ['<div class="dstats"><h2>Stat blocks</h2>',
+      '<p class="dstats-note">De ' + list.length + ' skabninger der står i '
+      + 'rummene. Teksten er SRD 5.2.1’s egen.</p>'];
+    list.forEach(function (b) { out.push(statBlock(b)); });
+    out.push('</div>');
+    return out.join('');
+  }
+
+  function statBlock(b) {
+    var out = ['<section class="dstat">'];
+    out.push('<h3>' + esc(b.name) + '</h3>');
+    out.push('<p class="dstat-kind">' + esc(b.kind) + '</p>');
+
+    out.push('<p class="dstat-top"><b>AC</b> ' + esc(String(b.ac))
+      + ' · <b>Initiative</b> ' + esc(b.initiative)
+      + ' · <b>HP</b> ' + esc(b.hp)
+      + ' · <b>Speed</b> ' + esc(b.speed) + '</p>');
+
+    var head = ['<table class="dstat-ab"><tr><th></th>'], mod = ['<tr><th>Mod</th>'],
+        save = ['<tr><th>Save</th>'], score = ['<tr><th>Værdi</th>'];
+    ABIL.forEach(function (a) {
+      var v = (b.abilities || {})[a[0]] || {};
+      head.push('<th>' + a[1] + '</th>');
+      score.push('<td>' + esc(String(v.score === undefined ? '' : v.score)) + '</td>');
+      mod.push('<td>' + esc(v.mod || '') + '</td>');
+      save.push('<td>' + esc(v.save || '') + '</td>');
+    });
+    out.push(head.join('') + '</tr>' + score.join('') + '</tr>'
+      + mod.join('') + '</tr>' + save.join('') + '</tr></table>');
+
+    var lines = [];
+    LINES.forEach(function (l) {
+      if (b[l[0]]) lines.push('<b>' + l[1] + '</b> ' + esc(b[l[0]]));
+    });
+    if (lines.length) out.push('<p class="dstat-lines">' + lines.join('<br>') + '</p>');
+
+    (b.sections || []).forEach(function (s) {
+      out.push('<h4>' + esc(s.name) + '</h4>');
+      s.entries.forEach(function (e) {
+        out.push('<p class="dstat-do">'
+          + (e.name ? '<b>' + esc(e.name) + '.</b> ' : '')
+          + esc(e.text) + '</p>');
+      });
+    });
+    out.push('</section>');
+    return out.join('');
+  }
+
   function sheet(d) {
     return '<h1>Etage — seed ' + d.seed + '</h1>\n'
       + '<p class="sub">' + d.n_rooms + ' rum · ' + d.xp.size + ' spillere på level '
       + d.xp.level + ' · ' + n(d.xp.floor) + ' XP på etagen · ét felt er 5 fod</p>\n'
-      + svg(d) + '\n' + legend(d) + '\n' + report(d) + '\n'
+      + svg(d) + '\n' + legend(d) + '\n' + report(d) + '\n' + statBlocks(d) + '\n'
       + '<footer>' + CREDIT + '</footer>';
   }
 
