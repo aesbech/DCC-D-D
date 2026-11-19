@@ -17,9 +17,14 @@ greb i spil:
   afsnitsoverskriften — «Animated Objects Animated Armor» — så navnet er det
   længste navn fra indholdsfortegnelsen, som teksten ender på.
 
-    python3 scripts/import_monsters.py docs/SRD_CC_v5.2.1.pdf.txt
+    node scripts/extract_srd_text.mjs docs/SRD_CC_v5.2.1.pdf srd-rich.txt
+    python3 scripts/import_monsters.py srd-rich.txt
 
-Tekstfilen laves som beskrevet i scripts/check_srd.py.
+Udtrækket skal have skriften med, så blokkene kan findes på deres struktur.
+Uden den må CR findes med en søgning i den flade tekst, og PDF'en har to
+spalter: i læserækkefølgen kan den næste skabnings CR stå før denne skabnings
+egen. Det gav fire drager en CR og en XP-værdi der hørte til naboen, og det
+skjulte 36 skabninger helt — alle humanoiderne, lykantroperne og vampyrerne.
 """
 
 import hashlib
@@ -29,17 +34,18 @@ import sys
 from pathlib import Path
 
 from monster_themes import by_name as themes_by_name
+from import_statblocks import items, starts, scan, tidy, SIZELINE
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "assets" / "data" / "monsters.js"
 
 SIZES = "Tiny|Small|Medium|Large|Huge|Gargantuan"
 
-BLOCK = re.compile(
-    r"([A-Z][A-Za-z'’\- ]{2,60}?)\s+(" + SIZES + r")\s+"
-    r"([A-Z][a-zA-Z]+)[^,]{0,40},\s*[A-Za-z ]{3,30}?\s+AC\s+\d+")
-
-CR = re.compile(r"\bCR\s+(\d+/\d+|\d+)\s*\(XP\s+([\d,]+)")
+# SRD'en skriver CR-linjen på to måder: «CR 1/4 (XP 50; PB +2)» og
+# «CR 2 (450 XP; PB +2)». Begge skal læses, ellers falder netop de
+# skabninger ud der bruger den anden form.
+CR = re.compile(r"(\d+/\d+|\d+)\s*\((?:XP\s+([\d,]+)|([\d,]+)\s*XP)")
+KIND = re.compile(r"^(" + SIZES + r")(?:\s+or\s+(?:" + SIZES + r"))?\s+([A-Z][a-zA-Z]+)")
 
 # Indholdsfortegnelsens linjer: «Goblin Warrior ......... 290»
 INDEX = re.compile(r"([A-Z][A-Za-z'’\-, ]{2,40}?)\s*\.{4,}\s*\d{1,3}")
@@ -48,29 +54,46 @@ INDEX = re.compile(r"([A-Z][A-Za-z'’\-, ]{2,40}?)\s*\.{4,}\s*\d{1,3}")
 def main():
     if len(sys.argv) < 2:
         sys.exit(__doc__)
-    text = re.sub(r"\s+", " ", Path(sys.argv[1]).read_text(encoding="utf-8"))
+    all_items = items(sys.argv[1])
+    flat = re.sub(r"\s+", " ", "".join(t for f, t in all_items))
 
-    names = {m.group(1).strip() for m in INDEX.finditer(text)}
+    # Navnene står rene med sidetal i indholdsfortegnelsen. Det er den eneste
+    # liste i dokumentet hvor et navn står for sig selv.
+    names = {m.group(1).strip() for m in INDEX.finditer(flat)}
     names = {n for n in names if len(n) > 2}
-    # Længste først, så «Goblin Warrior» vinder over «Goblin».
-    by_len = sorted(names, key=len, reverse=True)
 
     seen, out = {}, []
-    for m in BLOCK.finditer(text):
-        cr = CR.search(text[m.end():m.end() + 4000])
+    marks = starts(all_items, names)
+    for n, (i, name) in enumerate(marks):
+        if name in seen:
+            continue
+        stop = marks[n + 1][0] if n + 1 < len(marks) else len(all_items)
+        block = all_items[i:stop]
+
+        j = scan(block, 1, lambda t: bool(SIZELINE.match(t)), 4)
+        if j < 0:
+            continue
+        kind = KIND.match(tidy(block[j][1]))
+        if not kind:
+            continue
+
+        # CR står i blokkens egen CR-etiket. Den må ikke findes med en søgning
+        # i den flade tekst: PDF'en har to spalter, og i læserækkefølgen kan
+        # den næste skabnings CR stå før denne skabnings egen.
+        k = [x for x in range(len(block)) if block[x][1].strip() == "CR"]
+        if not k:
+            continue
+        cr = CR.match(tidy("".join(t for f, t in block[k[0] + 1:k[0] + 8])))
         if not cr:
             continue
-        raw = m.group(1).strip()
-        name = next((n for n in by_len if raw.endswith(n)), None)
-        if not name or name in seen:
-            continue
+
         seen[name] = 1
         out.append({
             "name": name,
-            "size": m.group(2),
-            "type": m.group(3),
+            "size": kind.group(1),
+            "type": kind.group(2),
             "cr": cr.group(1),
-            "xp": int(cr.group(2).replace(",", "")),
+            "xp": int((cr.group(2) or cr.group(3)).replace(",", "")),
         })
 
     # XP 0-skabninger kan ikke bruges til et budget.

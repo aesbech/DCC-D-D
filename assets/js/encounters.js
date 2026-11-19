@@ -278,7 +278,26 @@
 
   /* Læg et forslag i hvert rum der har noget i sig. Rummene røres ikke ud over
      det — etagen er den samme, uanset om den er stokket eller ej. */
-  function stock(d, monsters, traps) {
+  /* Hvilke skabninger står der i rummene? Hver kun én gang, i rumrækkefølge.
+     Mangler en af dem et datablad, springes den over — arket skal kunne
+     tegnes uden statblocks.js. */
+  function usedBlocks(d, blocks) {
+    if (!blocks || !blocks.length) return [];
+    var by = {}, out = [], seen = {};
+    blocks.forEach(function (b) { by[b.name] = b; });
+    for (var id = 1; id <= d.n_rooms; id++) {
+      var room = d.room[id];
+      if (!room || !room.encounter) continue;
+      room.encounter.parts.forEach(function (p) {
+        if (seen[p.name] || !by[p.name]) return;
+        seen[p.name] = 1;
+        out.push(by[p.name]);
+      });
+    }
+    return out;
+  }
+
+  function stock(d, monsters, traps, blocks) {
     if (!d || !monsters || !monsters.length) return d;
     var rand = rng(d.seed ^ 0x5f3759df);
     var maxN = Math.max(2, 2 * (d.xp ? d.xp.size : 4));
@@ -325,7 +344,13 @@
       if (t.blocks) blocked++;
     });
 
+    /* De skabninger etagen faktisk bruger, med deres fulde datablad, i den
+       rækkefølge rummene møder dem. De lægges på etagen og ikke slås op i
+       arket, så den gemte fil viser det samme som siden. */
+    d.statblocks = usedBlocks(d, blocks);
+
     d.stocked = { themes: pool.names || [], max: maxN,
+                  statblocks: d.statblocks.length,
                   traps: traps ? traps.length : 0,
                   srd_traps: (traps || []).filter(function (t) {
                     return t.srd;
